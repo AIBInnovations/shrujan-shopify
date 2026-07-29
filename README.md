@@ -28,24 +28,26 @@ scripts, and the SPA router became real Shopify URLs.
 
 ## Installing
 
-**Fastest — the ready-made zip.** `../shrujan-theme.zip` (46.9 MB) uploads
-directly: **Online Store → Themes → Add theme → Upload zip file**. To fit
-Shopify's 50 MB zip cap (the theme carries ~160 MB of media) the zip:
+The whole theme — code plus **all 384 media files** — fits Shopify's 50 MB
+theme cap (49 MB total). Two equivalent routes:
 
-- leaves out the 11 large films (`craft-*.mp4`, `reel-*.mp4`, 107 MB) — every
-  page still renders correctly, those players show their poster frames;
-- re-encodes the 141 largest photos at webp q78 (dimensions/ICC unchanged,
-  visually identical). The originals in this folder are untouched.
+- **Zip:** `../shrujan-theme.zip` (48 MB, also on the Desktop) via
+  **Online Store → Themes → Add theme → Upload ZIP file**.
+- **GitHub:** the same theme lives at
+  `github.com/AIBInnovations/shrujan-shopify` (branch `main`) — **Add theme →
+  Connect from GitHub**. Commits to `main` auto-sync to the store.
 
-**Full fidelity afterwards (optional, one command).** From this folder:
-`shopify theme push` targeting the uploaded theme — the CLI syncs
-file-by-file with no 50 MB cap, restoring the original images byte-for-byte
-and uploading the films. `craft-discharge.mp4` (24 MB) may exceed the
-per-file upload limit; if it's rejected, either shrink it once
-(`ffmpeg -i craft-discharge.mp4 -crf 26 -preset slow -movflags +faststart
-assets/craft-discharge.mp4`) or upload it under **Content → Files** and swap
-that one URL in `snippets/page-craft-traditions.liquid`.
-3. Create the pages (Online Store → Pages) so the URLs exist. Give each page
+To fit the cap, media is compressed in the theme (masks, logos and all code
+untouched): films re-encoded 960×540 two-pass H.264 with audio dropped (every
+player on the site is muted), card/gallery photos webp q58, editorial photos
+q68, single-generation from the pristine originals in `../website/public` —
+which remain the full-quality masters if a lossless setup is ever wanted
+(e.g. serving media from Content → Files via `file_url`).
+
+After installing:
+
+
+1. Create the pages (Online Store → Pages) so the URLs exist. Give each page
    its matching template; the page body can stay empty:
 
    | Page title | Handle | Template |
@@ -62,7 +64,7 @@ that one URL in `snippets/page-craft-traditions.liquid`.
 
    (The React routes `/pages/studio-collection/heritage|avinya|gifting` became
    flat handles — Shopify page URLs cannot nest.)
-4. Product pages: `/products/<slug>` renders `templates/product.liquid`, which
+2. Product pages: `/products/<slug>` renders `templates/product.liquid`, which
    draws everything client-side from `window.SHRUJAN` by the URL slug — the
    same way the React page did. For those URLs to resolve, create products in
    admin whose **handles equal the catalogue slugs** (the slug is
