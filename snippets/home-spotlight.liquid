@@ -1,0 +1,80 @@
+<section class="section container spotlight" id="heritage">
+  <div class="spotlight__head" data-reveal>
+    <p class="eyebrow">Heritage &amp; Innovation</p>
+
+    <h2 class="spotlight__title">
+      <span class="spotlight__line">Heritage elegance<span class="spotlight__chip"><img src="{{ 'hero-beside-right.webp' | asset_url }}" alt="" loading="lazy"></span>redefined</span>
+      <span class="spotlight__line"><span class="spotlight__chip"><img src="{{ 'top-right.webp' | asset_url }}" alt="" loading="lazy"></span>through living craft</span>
+    </h2>
+  </div>
+
+  <div class="spotlight__split" data-reveal>
+    <p class="spotlight__copy">Shrujan merges centuries-old embroidery with contemporary silhouettes, a refined and craft-driven wardrobe that aligns seamlessly with your life.</p>
+  </div>
+
+  <div class="spotlight__stage" data-reveal>
+    <div class="spotlight__figure">
+      <span class="spotlight__circle" aria-hidden="true"></span>
+
+      <svg class="spotlight__arc" viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="48.5" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-dasharray="82 223"></circle>
+      </svg>
+
+      <p class="spotlight__ghost" aria-hidden="true">100%<span>Hand-embroidered</span></p>
+
+      <img class="spotlight__model" src="{{ 'model.webp' | asset_url }}" alt="Model in a crimson mirror-work jacket draped with a hand-embroidered patola sari" loading="lazy">
+
+      <figure class="spotlight__plate spotlight__plate--tr" aria-hidden="true">
+        <img src="{{ 'cat-c1.webp' | asset_url }}" alt="" loading="lazy">
+      </figure>
+      <figure class="spotlight__plate spotlight__plate--bl" aria-hidden="true">
+        <img src="{{ 'top-right.webp' | asset_url }}" alt="" loading="lazy">
+      </figure>
+    </div>
+
+    <div class="spotlight__stat spotlight__stat--women"><strong>4,000+</strong><span>Artisan women behind every piece</span></div>
+
+    <div class="spotlight__stat spotlight__stat--crafts"><strong>12</strong><span>Living craft traditions of Kutch</span></div>
+
+    <p class="spotlight__note">Every piece signed by the hands that made it</p>
+
+    <div class="spotlight__stat spotlight__stat--villages"><strong>40</strong><span>Villages across the Kutch desert</span></div>
+  </div>
+
+  <div class="spotlight__outro" data-reveal>
+    <p>Naturally dyed cloth, hand-embroidered over weeks and finished in our Bhuj atelier, made to be worn today and handed down tomorrow.</p>
+  </div>
+</section>
+
+<script>
+(function () {
+  var root = document.querySelector('.spotlight');
+  if (!root || root.__shrujanInit) return;
+  root.__shrujanInit = true;
+
+  var mm = gsap.matchMedia(root);
+
+  // The arc orbits the circle as the section scrolls through the viewport.
+  mm.add('(prefers-reduced-motion: no-preference)', function () {
+    gsap.fromTo(
+      '.spotlight__arc circle',
+      { rotation: -250, svgOrigin: '50 50' },
+      {
+        rotation: 110,
+        svgOrigin: '50 50',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.spotlight__stage',
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 0.6,
+        },
+      }
+    );
+  });
+
+  mm.add('(prefers-reduced-motion: reduce)', function () {
+    gsap.set('.spotlight__arc circle', { rotation: -118, svgOrigin: '50 50' });
+  });
+})();
+</script>

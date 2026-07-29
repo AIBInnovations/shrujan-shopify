@@ -1,0 +1,17 @@
+<section class="container" style="padding: 120px 0; min-height: 40vh;">
+  <p class="eyebrow">Shopping bag</p>
+  <h1 class="page-hero__title">Your bag</h1>
+  {% if cart.item_count == 0 %}
+    <p class="page-hero__lede">Your bag is empty. <a href="/pages/shop-shrujan">Continue shopping</a>.</p>
+  {% else %}
+    <form action="/cart" method="post" novalidate>
+      <ul>
+        {% for item in cart.items %}
+          <li style="margin: 12px 0;"><a href="{{ item.url }}">{{ item.product.title }}</a> × {{ item.quantity }} — {{ item.final_line_price | money }}</li>
+        {% endfor %}
+      </ul>
+      <p style="margin: 16px 0;">Subtotal: {{ cart.total_price | money }}</p>
+      <button type="submit" name="checkout" class="btn btn--primary">Checkout</button>
+    </form>
+  {% endif %}
+</section>

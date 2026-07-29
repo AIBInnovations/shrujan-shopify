@@ -1,0 +1,4957 @@
+/* ============================================================
+   INNER PAGES — Shop, Studio, Craft Traditions, Story, LLDC,
+   Visit, and the product detail page.
+   Everything here reuses the tokens, hairlines, serif display and
+   gerua accent already established in global.css. Type sizes use
+   the shared scale — no bespoke steps.
+   ============================================================ */
+
+.page {
+  padding-bottom: clamp(60px, 6vw, 110px);
+}
+
+/* Inner-page sections carry `.section`, so they inherit --section-gap and sit
+   on the same vertical rhythm as the home page. The block right after the
+   masthead is the exception: the masthead already ends with its own margin,
+   and stacking --section-gap on top of that doubles the gap.
+
+   `+ *`, not `+ .section` — four pages put a rail (.strands, .chapters)
+   directly under the masthead instead, and those carry a margin of their own,
+   so the old selector missed them and their gap came out different. */
+.page-hero + * {
+  padding-top: 0;
+  margin-top: 0;
+}
+
+/* the block after a rail starts tight too: the rail is not a section of its
+   own, and a full --section-gap under it stranded the first heading */
+.strands + .section,
+.chapters + .section {
+  padding-top: 0;
+}
+
+/* ============================================================
+   MASTHEAD — shared type, several different compositions
+   ============================================================ */
+
+.page-hero {
+  position: relative;
+  padding-top: clamp(40px, 4.5vw, 78px);
+  padding-bottom: clamp(28px, 3vw, 48px);
+  border-bottom: 1px solid var(--hairline);
+  /* The site's own section rhythm, so the gap under a masthead matches every
+     other gap on the page at every width. This ran on a 4vw ramp of its own,
+     which capped at 66px while section gaps ran to 168px — so the mismatch
+     widened with the viewport and bottomed out at 36px on a phone. */
+  margin-bottom: var(--section-gap);
+}
+
+.page-hero__grid {
+  position: relative;
+  z-index: 2;
+}
+
+.page-hero__title {
+  margin-top: 14px;
+  max-width: 18ch;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(38.1px, calc(32.4px + 1.445vw), 69.4px);
+  line-height: 1.06;
+  color: var(--ink);
+}
+
+.page-hero__title em {
+  font-style: italic;
+  color: var(--gerua);
+}
+
+.page-hero__lede {
+  margin-top: clamp(18px, 1.8vw, 28px);
+  max-width: 58ch;
+  color: var(--ink-soft);
+}
+
+.page-hero__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: clamp(16px, 1.8vw, 30px);
+  margin-top: clamp(22px, 2.4vw, 36px);
+}
+
+.page-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(20px, 2.4vw, 44px);
+  margin-top: clamp(26px, 2.8vw, 44px);
+  padding-top: clamp(20px, 2.2vw, 34px);
+  border-top: 1px solid var(--hairline);
+  list-style: none;
+}
+
+/* a hairline between the figures, not just air */
+.page-meta li + li {
+  padding-left: clamp(20px, 2.4vw, 44px);
+  border-left: 1px solid var(--hairline);
+}
+
+.page-meta__value {
+  display: block;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(29.1px, calc(26.3px + 0.717vw), 44.8px);
+  line-height: 1;
+  color: var(--gerua);
+}
+
+.page-meta__label {
+  display: block;
+  margin-top: 8px;
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: lowercase;
+  font-variant-caps: small-caps;
+  color: var(--ink-soft);
+}
+
+/* ---- plain: text, then a wide band ---- */
+
+.page-hero__media {
+  margin-top: clamp(30px, 3.4vw, 56px);
+  aspect-ratio: 21 / 9;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.page-hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 28%;
+}
+
+/* ---- cover (Studio): reversed out over a full-bleed image ---- */
+
+.page-hero--cover {
+  border-bottom: 0;
+  padding-top: clamp(80px, 11vw, 190px);
+  padding-bottom: clamp(80px, 11vw, 190px);
+  overflow: hidden;
+}
+
+.page-hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.page-hero__bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+
+.page-hero__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(30, 18, 14, 0.82) 0%,
+    rgba(30, 18, 14, 0.55) 48%,
+    rgba(30, 18, 14, 0.2) 100%
+  );
+}
+
+/* ---- frame: the masthead as a home-hero cell ----
+   The same 6px inset, corner radius and fold-filling height the home hero and
+   the shop banner use, so a full-bleed image masthead reads as part of that
+   system rather than as a photograph that has escaped the page. */
+
+.page-hero--frame {
+  margin-top: 6px;
+  margin-inline: 6px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  /* fills the fold on the header's measured height, less its own 6px inset top
+     and bottom — the flat 130px it used to subtract was a guess, and left the
+     next block peeking in above the fold */
+  min-height: clamp(420px, calc(100vh - var(--header-h, 130px) - 12px), 1200px);
+  /* Centred across the frame, but held in its upper third rather than dead
+     centre: the middle of the photograph is faces and hands, and type laid
+     over them reads as a mistake however good the scrim is. */
+  display: flex;
+  align-items: flex-start;
+  padding-top: clamp(46px, 6vw, 104px);
+  padding-bottom: clamp(38px, 4.4vw, 82px);
+}
+
+.page-hero--frame .page-hero__grid {
+  width: 100%;
+}
+
+.page-hero--frame .page-hero__text {
+  text-align: center;
+}
+
+/* both have a max-width, so centring the text alone would leave the measure
+   itself sitting against the left rail */
+.page-hero--frame .page-hero__title,
+.page-hero--frame .page-hero__lede {
+  margin-inline: auto;
+}
+
+/* the 18ch measure the left-aligned mastheads use broke this title after
+   "one", stranding a single word on its own line under a centred block */
+.page-hero--frame .page-hero__title {
+  max-width: 30ch;
+}
+
+/* the copy sits along the top edge, so the image gives way there */
+.page-hero--frame .page-hero__scrim {
+  background: linear-gradient(
+    180deg,
+    rgba(30, 18, 14, 0.62) 0%,
+    rgba(30, 18, 14, 0.34) 42%,
+    rgba(30, 18, 14, 0.12) 70%,
+    rgba(30, 18, 14, 0.3) 100%
+  );
+}
+
+/* no hairline under a masthead that is now a single centred block */
+.page-hero--frame .page-hero__rule {
+  display: none;
+}
+
+/* Reversed out in cream throughout, the way the shop banner does it — the tan
+   the other dark mastheads use for accents turns muddy against a photograph
+   this warm, and the gold on gold sand stopped reading at all.
+   Both classes in each selector on purpose: the shared `--cover` colours are
+   declared further down this file, so matching their specificity would lose
+   on source order. */
+.page-hero--cover.page-hero--frame .eyebrow,
+.page-hero--cover.page-hero--frame .page-hero__title,
+.page-hero--cover.page-hero--frame .page-hero__title em,
+.page-hero--cover.page-hero--frame .page-meta__value {
+  color: var(--cream);
+}
+
+.page-hero--cover.page-hero--frame .page-hero__lede,
+.page-hero--cover.page-hero--frame .page-meta__label {
+  color: var(--cream-dim);
+}
+
+.page-hero--frame .page-hero__text {
+  text-shadow: 0 1px 18px rgba(30, 18, 14, 0.35);
+}
+
+/* A framed masthead holds its type in the upper third, so a stat row below the
+   lede drops onto the middle of the photograph. Neither page that uses this
+   variant passes `meta` for that reason — they set their figures in the body. */
+
+/* ---- dark (Craft): a maroon cinema panel, since the page is film-led ---- */
+
+.page-hero--dark {
+  border-bottom: 0;
+  background: var(--maroon);
+  padding-top: clamp(48px, 5.5vw, 96px);
+  padding-bottom: clamp(48px, 5.5vw, 96px);
+}
+
+.page-hero__rule {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: min(100% - 2 * var(--gutter), var(--page-max));
+  height: 1px;
+  background: rgba(242, 237, 224, 0.18);
+}
+
+/* ---- reversed-out type, shared by the dark mastheads ---- */
+
+.page-hero--cover .page-hero__title,
+.page-hero--dark .page-hero__title {
+  color: var(--cream);
+}
+
+.page-hero--cover .page-hero__title em,
+.page-hero--dark .page-hero__title em {
+  color: var(--tan);
+}
+
+.page-hero--cover .page-hero__lede,
+.page-hero--dark .page-hero__lede {
+  color: var(--cream-dim);
+}
+
+/* not --gerua-300: at #c05c50 on maroon that is 3.1:1, and the eyebrow is
+   ~13px uppercase on wide tracking — it simply vanished */
+.page-hero--cover .eyebrow,
+.page-hero--dark .eyebrow {
+  color: var(--tan);
+}
+
+.page-hero--cover .page-meta__value,
+.page-hero--dark .page-meta__value {
+  color: var(--tan);
+}
+
+.page-hero--cover .page-meta__label,
+.page-hero--dark .page-meta__label {
+  color: var(--cream-dim);
+}
+
+.page-hero--cover .page-meta,
+.page-hero--dark .page-meta,
+.page-hero--cover .page-meta li + li,
+.page-hero--dark .page-meta li + li {
+  border-color: rgba(242, 237, 224, 0.22);
+}
+
+.page-hero--cover .page-hero__actions .arrow-link,
+.page-hero--dark .page-hero__actions .arrow-link {
+  color: var(--cream);
+}
+
+.page-hero--cover .page-hero__actions .arrow-link:hover,
+.page-hero--dark .page-hero__actions .arrow-link:hover {
+  color: var(--tan);
+}
+
+/* ---- ghost (Story): the founding year set huge behind the title ---- */
+
+.page-hero--ghost {
+  overflow: hidden;
+}
+
+.page-hero--ghost .page-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: clamp(28px, 3.4vw, 70px);
+  align-items: center;
+}
+
+.page-hero__ghost {
+  position: absolute;
+  right: calc(-1 * clamp(10px, 2vw, 40px));
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(140px, 22vw, 340px);
+  line-height: 0.8;
+  letter-spacing: -0.02em;
+  color: rgba(43, 29, 25, 0.07);
+  pointer-events: none;
+  user-select: none;
+}
+
+.hero-plate {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.hero-plate img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+/* ---- plaque (LLDC): text beside a museum visiting card ---- */
+
+.page-hero--plaque .page-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  gap: clamp(28px, 3.4vw, 70px);
+  align-items: end;
+}
+
+.hero-plaque {
+  padding: clamp(22px, 2.2vw, 36px);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.hero-plaque__title {
+  padding-bottom: 14px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--hairline-strong);
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  color: var(--gerua);
+}
+
+.hero-plaque dl > div {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.hero-plaque dl > div:last-child {
+  border-bottom: 0;
+}
+
+.hero-plaque dt {
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.hero-plaque dd {
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  color: var(--ink);
+}
+
+/* ---- map (Visit): text beside the tan India panel ---- */
+
+.page-hero--map .page-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: clamp(28px, 3.4vw, 70px);
+  align-items: center;
+}
+
+.hero-map {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius);
+  background: var(--tan);
+  overflow: hidden;
+}
+
+.hero-map__shape {
+  position: absolute;
+  inset: clamp(22px, 2.6vw, 48px);
+  background: rgba(255, 253, 245, 0.75);
+  -webkit-mask: url('india-map.svg') center / contain no-repeat;
+  mask: url('india-map.svg') center / contain no-repeat;
+}
+
+.hero-map__label {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.hero-map__label em {
+  display: block;
+  margin-bottom: 6px;
+  font-family: var(--font-serif);
+  font-style: normal;
+  font-weight: 600;
+  font-size: clamp(29.1px, calc(26.3px + 0.717vw), 44.8px);
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--gerua-600);
+}
+
+/* ============================================================
+   SHARED PAGE FURNITURE
+   ============================================================ */
+
+.page-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: clamp(56px, 6vw, 100px);
+  padding-top: clamp(28px, 3vw, 46px);
+  border-top: 1px solid var(--hairline);
+}
+
+.page-cta p {
+  font-family: var(--font-serif);
+  font-size: clamp(24.6px, calc(21.8px + 0.717vw), 40.3px);
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+/* key/value table — LLDC visiting hours, Visit itinerary */
+
+.info-table {
+  border-top: 1px solid var(--hairline);
+}
+
+.info-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr);
+  gap: clamp(16px, 2vw, 40px);
+  padding: clamp(16px, 1.6vw, 26px) 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.info-row dt {
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gerua);
+}
+
+.info-row dd {
+  color: var(--ink);
+}
+
+/* ornamented section head — the Phool glyph between two fading rules */
+
+.shop-head {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: 14px;
+  margin-bottom: clamp(28px, 3vw, 48px);
+}
+
+.orn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--gerua);
+}
+
+.orn i {
+  display: block;
+  width: clamp(40px, 7vw, 110px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--hairline-strong));
+}
+
+.orn i:last-child {
+  background: linear-gradient(270deg, transparent, var(--hairline-strong));
+}
+
+.shop-head__copy {
+  max-width: 62ch;
+  color: var(--ink-soft);
+}
+
+/* ============================================================
+   1 · SHOP SHRUJAN
+   ============================================================ */
+
+/* ---- hero banner ---- */
+
+.shop-banner {
+  /* the same inset the home hero and marquee use */
+  margin: 6px 6px 0;
+}
+
+.shop-banner__frame {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+  /* Fills the fold. Twelve, not six: .shop-banner carries a 6px margin above
+     it as well as the 6px gap wanted below, where the home hero starts flush
+     against the header and only owes the gap underneath. */
+  height: clamp(420px, calc(100vh - var(--header-h, 130px) - 12px), 1200px);
+}
+
+.shop-banner__frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.4s var(--ease);
+}
+
+.shop-banner__frame:hover img {
+  transform: scale(1.02);
+}
+
+/* The artwork's own headline was cleaned out of the middle panel so this can
+   sit there instead. The clear wall runs to about 45% down, so the block lifts
+   out of the vertical centre — dead-centre drops it onto the cushion. */
+.shop-banner__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  text-align: center;
+  padding: var(--gutter);
+  color: var(--cream);
+  text-shadow: 0 1px 18px rgba(30, 18, 14, 0.35);
+  transform: translateY(-17%);
+}
+
+/* keep the block inside the panel, which is only ~34% of the frame wide */
+.shop-banner__overlay > * {
+  max-width: min(33vw, 480px);
+}
+
+.shop-banner__eyebrow {
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--cream);
+}
+
+.shop-banner__title {
+  margin-top: clamp(10px, 1.2vw, 18px);
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(38.1px, calc(32.4px + 1.445vw), 69.4px);
+  line-height: 1.02;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--cream);
+}
+
+.shop-banner__copy {
+  margin-top: clamp(12px, 1.4vw, 22px);
+  max-width: 32ch;
+  font-size: clamp(16.8px, calc(16.4px + 0.101vw), 19px);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1.6;
+  color: var(--cream-dim);
+}
+
+.shop-banner__view {
+  margin-top: clamp(20px, 2.2vw, 36px);
+  padding: clamp(12px, 1vw, 16px) clamp(34px, 3vw, 56px);
+  border: 1px solid rgba(242, 237, 224, 0.7);
+  border-radius: 2px;
+  font-size: clamp(13.4px, calc(13px + 0.101vw), 15.7px);
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--cream);
+  transition:
+    background var(--dur-quick) var(--ease),
+    color var(--dur-quick) var(--ease),
+    border-color var(--dur-quick) var(--ease);
+}
+
+.shop-banner__view:hover {
+  background: var(--cream);
+  border-color: var(--cream);
+  color: var(--ink);
+  text-shadow: none;
+}
+
+/* ---- assurance strip ---- */
+
+/* Five separate cards on the band rather than one band cut by hairlines —
+   a divided strip has no edge to round, so the radius needs each cell to
+   carry its own surface. The drop pushes them clear of the hero above. */
+/* The band carries the corner, not the cards inside it. Inset by the same 6px
+   the hero cells and the banner above use, so the curve has an edge to show
+   against instead of running off the viewport. */
+.shop-assure {
+  --assure-drop: 22px;
+
+  margin: 6px;
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+  padding-block: var(--assure-drop) clamp(18px, 1.8vw, 26px);
+}
+
+.shop-assure__row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  list-style: none;
+}
+
+.shop-assure__row li {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: 6px;
+  padding: clamp(20px, 2.2vw, 34px) clamp(10px, 1.2vw, 20px);
+  background: var(--ivory);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  transition: box-shadow var(--dur-quick) var(--ease);
+}
+
+.shop-assure__row li:hover {
+  box-shadow: inset 0 0 0 1px var(--gerua-300);
+}
+
+.shop-assure__mark {
+  display: grid;
+  place-items: center;
+  width: clamp(38px, 3.4vw, 50px);
+  aspect-ratio: 1;
+  margin-bottom: 6px;
+  border-radius: 50%;
+  background: var(--ivory-2);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  color: var(--gerua);
+  transition: background var(--dur-quick) var(--ease), color var(--dur-quick) var(--ease);
+}
+
+.shop-assure__row li:hover .shop-assure__mark {
+  background: var(--gerua);
+  color: var(--cream);
+}
+
+.shop-assure__title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.shop-assure__copy {
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+/* ---- categories as medallions ---- */
+
+.shop-cats__wrap {
+  position: relative;
+}
+
+.shop-cats__rail {
+  display: flex;
+  gap: clamp(14px, 1.6vw, 30px);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  /* overflow-x:auto makes the vertical axis clip too, so the hover ring and
+     lift were being cut off. Pad the scroll box, then pull it back so the
+     first disc still lines up with the container. */
+  --rail-bleed: 16px;
+  padding: 20px var(--rail-bleed) 16px;
+  margin-inline: calc(-1 * var(--rail-bleed));
+  scroll-padding-inline: var(--rail-bleed);
+}
+
+.shop-cats__rail::-webkit-scrollbar {
+  display: none;
+}
+
+.medallion {
+  flex: 0 0 calc((100% - 4 * clamp(14px, 1.6vw, 30px)) / 5);
+  scroll-snap-align: start;
+  display: grid;
+  justify-items: center;
+  text-align: center;
+}
+
+.medallion__disc {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--tint, var(--ivory-2));
+  box-shadow: 0 0 0 1px var(--hairline), 0 0 0 7px var(--ivory), 0 0 0 8px transparent;
+  transition: box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease-out);
+}
+
+.medallion:hover .medallion__disc {
+  transform: translateY(-6px);
+  box-shadow: 0 0 0 1px var(--hairline), 0 0 0 7px var(--ivory), 0 0 0 8px var(--gerua);
+}
+
+.medallion__disc img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: transform 1.1s var(--ease);
+}
+
+.medallion:hover .medallion__disc img {
+  transform: scale(1.07);
+}
+
+.medallion__name {
+  margin-top: clamp(14px, 1.4vw, 22px);
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  line-height: 1.2;
+  color: var(--ink);
+  transition: color var(--dur-quick) var(--ease);
+}
+
+.medallion:hover .medallion__name {
+  color: var(--gerua-600);
+}
+
+.medallion__sub {
+  margin-top: 4px;
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.medallion__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 10px;
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gerua);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity var(--dur-quick) var(--ease), transform var(--dur-quick) var(--ease);
+}
+
+.medallion:hover .medallion__go {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.shop-cats__arrows {
+  justify-content: center;
+  margin-top: clamp(24px, 2.4vw, 38px);
+}
+
+/* ---- one collection, given a full spread ---- */
+
+.spotlight-col {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+  gap: clamp(30px, 4vw, 84px);
+  align-items: center;
+}
+
+.spotlight-col__media {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--ivory-2);
+}
+
+.spotlight-col__media > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+/* a second plate breaking the corner, so it is not one flat rectangle */
+.spotlight-col__inset {
+  position: absolute;
+  right: clamp(-10px, -1vw, -4px);
+  bottom: clamp(16px, 2vw, 34px);
+  width: clamp(110px, 13vw, 190px);
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: clamp(5px, 0.6vw, 9px) solid var(--ivory);
+  background: var(--ivory-2);
+}
+
+.spotlight-col__inset img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.spotlight-col__no {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  letter-spacing: 0.08em;
+  color: var(--gold);
+}
+
+.spotlight-col .eyebrow {
+  margin-top: 14px;
+}
+
+.spotlight-col__name {
+  margin-top: 10px;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(31.4px, calc(27.8px + 0.93vw), 51.5px);
+  line-height: 1.04;
+  color: var(--ink);
+}
+
+.spotlight-col__copy {
+  margin-top: clamp(14px, 1.4vw, 22px);
+  max-width: 48ch;
+  color: var(--ink-soft);
+}
+
+.spotlight-col__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(18px, 2vw, 40px);
+  margin-top: clamp(22px, 2.4vw, 36px);
+  padding-block: clamp(18px, 1.8vw, 26px);
+  border-block: 1px solid var(--hairline);
+  list-style: none;
+}
+
+.spotlight-col__facts strong {
+  display: block;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(29.1px, calc(26.3px + 0.717vw), 44.8px);
+  line-height: 1;
+  color: var(--gerua);
+}
+
+.spotlight-col__facts span {
+  display: block;
+  margin-top: 6px;
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.spotlight-col .btn {
+  margin-top: clamp(22px, 2.4vw, 36px);
+}
+
+/* ---- craft rail + product grid ---- */
+
+.shop-body {
+  display: grid;
+  grid-template-columns: clamp(190px, 17vw, 260px) minmax(0, 1fr);
+  gap: clamp(28px, 3vw, 64px);
+  align-items: start;
+}
+
+.shop-rail {
+  position: sticky;
+  top: 28px;
+  padding: clamp(18px, 1.8vw, 28px);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.shop-rail__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--hairline-strong);
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.shop-rail__title svg {
+  color: var(--gerua);
+}
+
+.shop-rail__list {
+  margin-top: 12px;
+  list-style: none;
+}
+
+.shop-rail__item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 9px 12px;
+  border-radius: var(--radius-pill);
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  color: var(--ink-soft);
+  transition: color var(--dur-quick) var(--ease), background var(--dur-quick) var(--ease);
+}
+
+.shop-rail__item:hover {
+  color: var(--ink);
+  background: var(--ivory);
+}
+
+.shop-rail__item.is-active {
+  background: var(--ivory);
+  color: var(--gerua);
+  font-weight: 500;
+  box-shadow: inset 0 0 0 1px var(--gerua);
+}
+
+.shop-rail__note {
+  margin-top: clamp(18px, 1.8vw, 28px);
+  padding-top: 14px;
+  border-top: 1px solid var(--hairline);
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.shop-main__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: clamp(16px, 1.6vw, 26px);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--hairline);
+  /* The sort panel is absolutely positioned inside this bar, and the product
+     grid below it is painted later in DOM order. GSAP's reveal also leaves a
+     transform on each card, which opens a stacking context per card. Lifting
+     the whole bar puts the panel above all of that — a z-index on the panel
+     alone only ranks it against its own siblings. */
+  position: relative;
+  z-index: 30;
+}
+
+.shop-main__count {
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.shop-main__clear {
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gerua);
+  border-bottom: 1px solid currentColor;
+}
+
+.shop-main__empty {
+  padding: 40px 0;
+  color: var(--ink-soft);
+}
+
+.shop-main__empty a {
+  color: var(--gerua);
+  border-bottom: 1px solid currentColor;
+}
+
+/* three up: the rail has already taken a column */
+.shop-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  row-gap: clamp(30px, 3.2vw, 50px);
+}
+
+/* tinted plate behind each product, cycled in JSX */
+.shop-piece .piece__media {
+  background: var(--tint, var(--ivory-2));
+}
+
+/* ---- why it costs what it costs ---- */
+
+.shop-why__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(18px, 2vw, 40px);
+}
+
+.why-card__media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.why-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.1s var(--ease);
+}
+
+.why-card:hover .why-card__media img {
+  transform: scale(1.05);
+}
+
+.why-card__no {
+  position: absolute;
+  left: 14px;
+  bottom: 12px;
+  z-index: 2;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(29.1px, calc(26.3px + 0.717vw), 44.8px);
+  line-height: 1;
+  color: var(--cream);
+  text-shadow: 0 1px 14px rgba(30, 18, 14, 0.5);
+}
+
+.why-card__title {
+  margin-top: clamp(14px, 1.4vw, 22px);
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.why-card__copy {
+  margin-top: 8px;
+  max-width: 44ch;
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+/* ============================================================
+   2 · STUDIO COLLECTION — alternating editorial spreads
+   ============================================================ */
+
+.studio-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 80px);
+  align-items: center;
+  padding-block: clamp(34px, 4vw, 70px);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.studio-row:first-child {
+  padding-top: 0;
+}
+
+/* every second spread flips, so the eye zig-zags down the page */
+.studio-row:nth-child(even) .studio-row__media {
+  order: 2;
+}
+
+.studio-row__media {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.studio-row__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.studio-row__no {
+  display: block;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(29.1px, calc(26.3px + 0.717vw), 44.8px);
+  line-height: 1;
+  color: rgba(43, 29, 25, 0.16);
+}
+
+.studio-row__craft {
+  margin-top: 14px;
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gerua);
+}
+
+.studio-row__name {
+  margin-top: 10px;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(31.4px, calc(27.8px + 0.93vw), 51.5px);
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.studio-row__copy {
+  margin-top: 14px;
+  max-width: 46ch;
+  color: var(--ink-soft);
+}
+
+.studio-row__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: clamp(18px, 1.8vw, 28px);
+  list-style: none;
+}
+
+.studio-row__facts li {
+  padding: 7px 16px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius-pill);
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.studio-row__link {
+  margin-top: clamp(20px, 2vw, 30px);
+  color: var(--gerua);
+}
+
+/* ============================================================
+   3 · CRAFT TRADITIONS — an opening spread, then the atlas:
+   one sticky player against six scrolling craft entries.
+   ============================================================ */
+
+/* ---- opening spread: a serif statement beside the page's own intro ---- */
+
+.craft-open {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 88px);
+  align-items: start;
+}
+
+.craft-open__lead {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(28px, calc(23.4px + 1.16vw), 44px);
+  line-height: 1.16;
+  max-width: 18ch;
+  color: var(--ink);
+}
+
+.craft-open__lead em {
+  font-style: italic;
+  color: var(--gerua);
+}
+
+.craft-open__copy {
+  display: grid;
+  gap: clamp(14px, 1.4vw, 22px);
+  max-width: 58ch;
+  color: var(--ink-soft);
+  /* optically aligns the first body line with the x-height of the statement */
+  padding-top: clamp(4px, 0.6vw, 10px);
+}
+
+/* ---- the atlas ---- */
+
+.craft-atlas__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.94fr) minmax(0, 1fr);
+  gap: clamp(32px, 4vw, 84px);
+  align-items: start;
+}
+
+/* The player follows the reader instead of the reader scrolling back to it.
+   `align-self: start` is what lets a grid item stick at all — the default
+   `stretch` makes the item as tall as the row, and a box that is already the
+   height of its track has nothing to slide within. */
+.craft-atlas__media {
+  position: sticky;
+  top: 96px;
+  align-self: start;
+  z-index: 2;
+  /* a grid item's automatic minimum is its min-content width, and on phones
+     the index turns into a scrolling chip row far wider than the screen —
+     without this the column is sized to the whole row and the page runs off
+     to the right */
+  min-width: 0;
+}
+
+.craft-stage {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--ink-deep);
+  aspect-ratio: 16 / 9;
+  box-shadow: 0 18px 44px rgba(43, 29, 25, 0.16);
+}
+
+.craft-stage__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* the running title, over a scrim so it holds on any frame */
+.craft-stage__tag {
+  position: absolute;
+  inset: 0 0 auto 0;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: clamp(14px, 1.4vw, 22px) clamp(16px, 1.6vw, 26px) clamp(30px, 3vw, 44px);
+  background: linear-gradient(180deg, rgba(24, 12, 9, 0.62), rgba(24, 12, 9, 0));
+  pointer-events: none;
+}
+
+.craft-stage__no {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  color: var(--tan);
+}
+
+.craft-stage__name {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  line-height: 1.1;
+  color: var(--cream);
+}
+
+/* ---- index under the player ----
+   A chapter list, not a tab bar: six numbered rows reading down, so the
+   number and the name sit on one line instead of stacking into a ragged
+   two-line block. The rule on the right fills in on the running craft. */
+
+.craft-index {
+  margin-top: clamp(16px, 1.6vw, 24px);
+  border-top: 1px solid var(--hairline);
+  list-style: none;
+}
+
+.craft-index__pick {
+  display: grid;
+  grid-template-columns: 2.4rem minmax(0, 1fr) 34px;
+  align-items: center;
+  gap: clamp(10px, 1vw, 16px);
+  width: 100%;
+  text-align: left;
+  padding: clamp(9px, 0.85vw, 13px) 2px;
+  border-bottom: 1px solid var(--hairline);
+  transition: background var(--dur-quick) var(--ease);
+}
+
+.craft-index__pick::after {
+  content: '';
+  height: 1px;
+  background: var(--gerua);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--dur) var(--ease-out);
+}
+
+.craft-index__pick.is-active::after {
+  transform: scaleX(1);
+}
+
+.craft-index__pick:hover {
+  background: var(--ivory-2);
+}
+
+.craft-index__no {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  line-height: 1;
+  color: var(--gold);
+}
+
+.craft-index__name {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  line-height: 1;
+  color: var(--ink-soft);
+  transition: color var(--dur-quick) var(--ease);
+}
+
+.craft-index__pick:hover .craft-index__name {
+  color: var(--ink);
+}
+
+.craft-index__pick.is-active .craft-index__no,
+.craft-index__pick.is-active .craft-index__name {
+  color: var(--gerua);
+}
+
+/* the credit the films carry on screen, set as the column's closing line */
+.craft-credit {
+  margin-top: clamp(14px, 1.4vw, 20px);
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  color: var(--ink-soft);
+}
+
+.craft-credit a {
+  color: var(--ink);
+  border-bottom: 1px solid var(--hairline);
+  transition: border-color var(--dur-quick) var(--ease);
+}
+
+.craft-credit a:hover {
+  border-bottom-color: var(--gerua);
+  color: var(--gerua);
+}
+
+/* ---- the six entries ---- */
+
+/* Entries need a floor, or a one-paragraph craft like weaving would flick past
+   the player before it had finished loading. Kept well under a full screen:
+   any taller and the short entries end in a band of dead space. */
+.craft-entry {
+  position: relative;
+  min-height: 56vh;
+  padding: clamp(28px, 3vw, 52px) 0 clamp(34px, 3.6vw, 64px) clamp(20px, 2vw, 34px);
+  border-top: 1px solid var(--hairline);
+}
+
+.craft-entry:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+/* The min-height above paces the scroll so the player never swaps twice in one
+   flick of the wheel. On the last entry there is nothing left to pace against,
+   so it would only leave a screen of dead space under the final paragraph. */
+.craft-entry:last-child {
+  min-height: 0;
+  padding-bottom: 0;
+}
+
+/* the marker that ties an entry to whatever the player is showing */
+.craft-entry::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: clamp(28px, 3vw, 52px);
+  bottom: clamp(34px, 3.6vw, 64px);
+  width: 2px;
+  background: var(--gerua);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform var(--dur) var(--ease-out);
+}
+
+.craft-entry:first-child::before {
+  top: 0;
+}
+
+.craft-entry.is-active::before {
+  transform: scaleY(1);
+}
+
+.craft-entry__eyebrow {
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.craft-entry__eyebrow span {
+  margin-right: 10px;
+  color: var(--gold);
+}
+
+.craft-entry__title {
+  margin-top: 12px;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(31.4px, calc(27.8px + 0.93vw), 51.5px);
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+/* facts pulled from the craft's own text — they give the one-paragraph
+   entries enough substance to hold the column */
+.craft-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(12px, 1.4vw, 26px);
+  margin-top: clamp(20px, 2.2vw, 34px);
+  padding-top: clamp(16px, 1.6vw, 24px);
+  border-top: 1px solid var(--hairline);
+}
+
+.craft-facts dt {
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.craft-facts dd {
+  margin-top: 6px;
+  font-family: var(--font-serif);
+  font-size: clamp(17px, calc(16.3px + 0.19vw), 21px);
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.craft-entry__body {
+  display: grid;
+  gap: clamp(12px, 1.2vw, 20px);
+  margin-top: clamp(22px, 2.4vw, 36px);
+  max-width: 64ch;
+  color: var(--ink-soft);
+}
+
+.craft-entry__more {
+  margin-top: clamp(18px, 1.8vw, 26px);
+  color: var(--gerua);
+}
+
+.craft-entry__more:hover {
+  color: var(--gerua-600);
+}
+
+/* ============================================================
+   4 · THE SHRUJAN STORY — milestones on a stitched thread
+   ============================================================ */
+
+.timeline {
+  list-style: none;
+  max-width: 78ch;
+  margin-inline: auto;
+}
+
+.tl {
+  position: relative;
+  padding-left: clamp(28px, 3vw, 56px);
+  padding-bottom: clamp(34px, 3.6vw, 64px);
+  /* the running stitch, the same device as the bestseller rail */
+  border-left: 1px dashed var(--hairline-strong);
+}
+
+.tl:last-child {
+  border-left-color: transparent;
+  padding-bottom: 0;
+}
+
+.tl__marker {
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background: var(--ivory);
+  box-shadow: inset 0 0 0 1px var(--hairline-strong);
+  transition: background var(--dur-quick) var(--ease);
+}
+
+.tl:hover .tl__marker {
+  background: var(--gerua);
+  box-shadow: inset 0 0 0 1px var(--gerua);
+}
+
+.tl__year {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(29.1px, calc(26.3px + 0.717vw), 44.8px);
+  line-height: 1;
+  color: var(--gerua);
+}
+
+.tl__title {
+  margin-top: 10px;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(31.4px, calc(27.8px + 0.93vw), 51.5px);
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.tl__copy {
+  margin-top: 12px;
+  max-width: 56ch;
+  color: var(--ink-soft);
+}
+
+.tl__media {
+  margin-top: clamp(20px, 2vw, 32px);
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.tl__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+
+.founder {
+  max-width: 68ch;
+  margin-inline: auto;
+  padding: clamp(30px, 3.4vw, 56px);
+  border-radius: var(--radius);
+  background: var(--maroon);
+  color: var(--cream);
+  text-align: center;
+}
+
+.founder__quote {
+  font-family: var(--font-serif);
+  font-size: clamp(24.6px, calc(21.8px + 0.717vw), 40.3px);
+  line-height: 1.3;
+}
+
+.founder__attr {
+  margin-top: clamp(20px, 2vw, 30px);
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+}
+
+.founder__attr span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--tan);
+}
+
+/* ============================================================
+   5 · LLDC — gallery mosaic + visitor information
+   ============================================================ */
+
+/* ---- Heritage: the archive grid ---- */
+
+.arch-grid {
+  margin-top: clamp(26px, 3vw, 48px);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.arch-grid figure {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+/* These sources are 720×1280, so a landscape frame throws most of the height
+   away. Held high in the frame rather than centred — dead centre on a standing
+   figure lands on the waist and takes the head off. */
+.arch-grid img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 18%;
+  transition: transform 1.1s var(--ease);
+}
+
+.arch-grid figure:hover img {
+  transform: scale(1.04);
+}
+
+/* the show's own strip: these are panoramic gallery views, and the story
+   page's 4:3 gallery cropped the sides off them */
+.lldc-show {
+  margin-top: clamp(26px, 3vw, 48px);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.lldc-show figure {
+  aspect-ratio: 2 / 1;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.lldc-show img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.1s var(--ease);
+}
+
+.lldc-show figure:hover img {
+  transform: scale(1.04);
+}
+
+/* The mosaic: three wide halls among six cards, so the row never reads as a
+   plain grid. Two things keep it from running long — the frames are set flat
+   rather than near-square, and each one grows to fill its row, so a short card
+   no longer ends in a band of dead ivory. */
+.lldc__mosaic {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* the house gutter, as everywhere else on the site */
+  gap: 6px;
+}
+
+.lldc .section-head {
+  margin-bottom: clamp(20px, 2.2vw, 34px);
+}
+
+.lldc-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--ivory-2);
+}
+
+/* the three wide halls take two columns each, so it never reads as a plain grid */
+.lldc-card--wide {
+  grid-column: span 2;
+}
+
+/* the ratio sets the card's own height; the grow takes up whatever the tallest
+   card in the row leaves over */
+.lldc-card__media {
+  position: relative;
+  aspect-ratio: 2 / 1;
+  flex: 1 0 auto;
+  overflow: hidden;
+}
+
+.lldc-card--wide .lldc-card__media {
+  aspect-ratio: 3 / 1;
+}
+
+/* absolute, so the photograph's own proportions can never set the card height */
+.lldc-card__media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.1s var(--ease);
+}
+
+.lldc-card:hover .lldc-card__media img {
+  transform: scale(1.04);
+}
+
+.lldc-card__body {
+  padding: clamp(13px, 1.3vw, 20px) clamp(15px, 1.5vw, 24px);
+}
+
+.lldc-card__name {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+/* two lines' worth whether the sentence fills them or not: the frame above
+   takes the remainder, so an unequal caption would stagger the titles across
+   the row */
+.lldc-card__copy {
+  margin-top: 6px;
+  min-height: 3.2em;
+  max-width: 46ch;
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.lldc-visit__head {
+  display: grid;
+  gap: 12px;
+  margin-bottom: clamp(24px, 2.6vw, 40px);
+}
+
+/* ---- visitor information: three plates, then the dark address strip ---- */
+
+.visit-plates {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.plate {
+  display: grid;
+  align-content: start;
+  padding: clamp(20px, 2vw, 34px);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.plate__label {
+  font-size: clamp(11px, calc(10.6px + 0.09vw), 13px);
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--gerua);
+}
+
+/* the two things a visitor is actually looking for, set at heading size */
+.plate__head {
+  margin-top: clamp(10px, 1.1vw, 16px);
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(24.6px, calc(21.8px + 0.717vw), 40.3px);
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.plate__lines {
+  margin-top: clamp(12px, 1.3vw, 18px);
+  padding-top: clamp(12px, 1.3vw, 18px);
+  border-top: 1px solid var(--hairline);
+  display: grid;
+  gap: 7px;
+  list-style: none;
+}
+
+.plate__lines li {
+  font-size: clamp(14px, calc(13.6px + 0.078vw), 15.7px);
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.visit-bar {
+  margin-top: 6px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(20px, 2.4vw, 48px);
+  padding: clamp(20px, 2vw, 34px);
+  border-radius: var(--radius);
+  background: var(--maroon);
+  color: var(--cream);
+}
+
+.visit-bar__label {
+  font-size: clamp(11px, calc(10.6px + 0.09vw), 13px);
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--tan);
+}
+
+.visit-bar__value {
+  margin-top: 8px;
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  line-height: 1.6;
+  color: var(--cream);
+}
+
+.visit-bar__col--note .visit-bar__value {
+  color: var(--cream-dim);
+}
+
+.visit-bar a {
+  transition: color var(--dur-quick) var(--ease);
+}
+
+.visit-bar a:hover {
+  color: var(--tan);
+}
+
+/* ============================================================
+   6 · VISIT & EXPERIENCE — destination list
+   ============================================================ */
+
+.visit--full .visit__list {
+  max-width: 92ch;
+  margin-inline: auto;
+}
+
+.visit__list {
+  list-style: none;
+  border-top: 1px solid var(--hairline);
+}
+
+.visit-row {
+  display: grid;
+  grid-template-columns: 3.4rem clamp(96px, 9vw, 148px) minmax(0, 1fr) 1.6rem;
+  align-items: center;
+  gap: clamp(14px, 1.4vw, 26px);
+  padding: clamp(18px, 1.8vw, 30px) 0;
+  border-bottom: 1px solid var(--hairline);
+  transition: border-color var(--dur) var(--ease);
+}
+
+.visit-row:hover {
+  border-bottom-color: var(--gerua);
+}
+
+.visit-row__no {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(29.1px, calc(26.3px + 0.717vw), 44.8px);
+  line-height: 1;
+  color: rgba(43, 29, 25, 0.16);
+  transition: color var(--dur-quick) var(--ease);
+}
+
+.visit-row:hover .visit-row__no {
+  color: var(--gerua);
+}
+
+.visit-row__media {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.visit-row__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.visit-row:hover .visit-row__media img {
+  transform: scale(1.06);
+}
+
+.visit-row__name {
+  display: block;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  line-height: 1.2;
+  color: var(--ink);
+  transition: color var(--dur-quick) var(--ease);
+}
+
+.visit-row:hover .visit-row__name {
+  color: var(--gerua-600);
+}
+
+.visit-row__where {
+  display: block;
+  margin-top: 4px;
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.visit-row__copy {
+  display: block;
+  margin-top: 8px;
+  max-width: 52ch;
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.visit-row__go {
+  display: grid;
+  place-items: center;
+  justify-self: end;
+  color: var(--ink-soft);
+  transition: color var(--dur-quick) var(--ease), transform var(--dur) var(--ease-out);
+}
+
+.visit-row:hover .visit-row__go {
+  color: var(--gerua);
+  transform: translateX(5px);
+}
+
+/* ============================================================
+   7 · PRODUCT DETAIL
+   ============================================================ */
+
+.pdp-page {
+  padding-top: clamp(20px, 2.4vw, 40px);
+}
+
+.pdp {
+  display: grid;
+  /* The text column takes close to half, and is the one that must not drop
+     below a readable width, so it carries the minmax floor. */
+  grid-template-columns: minmax(0, 1.05fr) minmax(440px, 1fr);
+  gap: 6px;
+  align-items: start;
+}
+
+/* Rail + shot. This is what bounds the rail's sticky travel: a sticky element
+   stops at the bottom of its containing block, so wrapping the two means the
+   pinned block releases with the shots rather than riding down beside the
+   much taller buying column. */
+.pdp__media {
+  position: sticky;
+  top: clamp(14px, 1.6vw, 26px);
+  align-self: start;
+  display: grid;
+  grid-template-columns: clamp(60px, 4.6vw, 76px) minmax(0, 1fr);
+  gap: 6px;
+  align-items: start;
+}
+
+.pdp__rail {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+}
+
+.pdp__thumb {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--ivory-2);
+  /* inset ring rather than a border, so the box never changes size when the
+     active thumbnail changes and the rail does not twitch */
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  opacity: 0.55;
+  transition: opacity var(--dur-quick) var(--ease), box-shadow var(--dur-quick) var(--ease);
+}
+
+.pdp__thumb:hover {
+  opacity: 0.85;
+}
+
+.pdp__thumb.is-active {
+  opacity: 1;
+  box-shadow: inset 0 0 0 2px var(--gerua);
+}
+
+.pdp__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+/* one frame, sized to the viewport so the pinned block fills the screen */
+.pdp__stage {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+  height: min(calc(100vh - 2 * clamp(14px, 1.6vw, 26px)), 860px);
+}
+
+/* every shot is stacked in the frame; scroll position decides which is opaque */
+.pdp__shot {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.75s var(--ease);
+}
+
+.pdp__shot.is-active {
+  opacity: 1;
+}
+
+.pdp__shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.pdp__badge {
+  position: absolute;
+  z-index: 2;
+  top: 14px;
+  left: 14px;
+  padding: 7px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--ivory);
+  color: var(--ink);
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* ---- the buying column ---- */
+
+.pdp__buy {
+  /* matches the page's own outer inset, so the copy sits the same distance
+     from the shots as the layout sits from the window edge */
+  padding-left: var(--gutter);
+}
+
+.pdp__rating {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  color: var(--ink-soft);
+}
+
+.pdp__stars {
+  display: inline-flex;
+  gap: 2px;
+  color: var(--gold);
+}
+
+.pdp__rating a {
+  color: var(--gerua);
+  border-bottom: 1px solid currentColor;
+}
+
+.pdp__name {
+  margin-top: 12px;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(29.1px, calc(26.3px + 0.717vw), 44.8px);
+  line-height: 1.08;
+  color: var(--ink);
+}
+
+.pdp__craft {
+  margin-top: 8px;
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gerua);
+}
+
+.pdp__copy {
+  margin-top: clamp(14px, 1.4vw, 20px);
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+.pdp__block {
+  margin-top: clamp(20px, 2vw, 30px);
+  padding-top: clamp(18px, 1.8vw, 26px);
+  border-top: 1px solid var(--hairline);
+}
+
+.pdp__label {
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.pdp__label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pdp__label-row a,
+.pdp__size-guide {
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gerua);
+  border-bottom: 1px solid currentColor;
+}
+
+.pdp__specs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+  list-style: none;
+}
+
+.pdp__specs li {
+  padding: 7px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--ivory-2);
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+}
+
+.pdp__sizes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.pdp__size {
+  min-width: 46px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  box-shadow: inset 0 0 0 1px var(--hairline-strong);
+  font-size: clamp(13.4px, calc(13px + 0.101vw), 15.7px);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  transition:
+    background var(--dur-quick) var(--ease),
+    color var(--dur-quick) var(--ease),
+    box-shadow var(--dur-quick) var(--ease);
+}
+
+.pdp__size:hover {
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+
+.pdp__size.is-active {
+  background: var(--ink);
+  color: var(--cream);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+
+.pdp__options {
+  display: grid;
+  gap: 8px;
+  margin-top: clamp(20px, 2vw, 30px);
+}
+
+.pdp__option {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: clamp(12px, 1.2vw, 16px);
+  border-radius: var(--radius);
+  box-shadow: inset 0 0 0 1px var(--hairline-strong);
+  cursor: pointer;
+  transition: box-shadow var(--dur-quick) var(--ease), background var(--dur-quick) var(--ease);
+}
+
+.pdp__option.is-active {
+  background: var(--ivory-2);
+  box-shadow: inset 0 0 0 2px var(--gerua);
+}
+
+.pdp__option input {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--gerua);
+}
+
+.pdp__option-title {
+  display: block;
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.pdp__option-note {
+  display: block;
+  margin-top: 2px;
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  color: var(--ink-soft);
+}
+
+.pdp__option-price {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.pdp__cta {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  margin-top: clamp(18px, 1.8vw, 26px);
+}
+
+.pdp__add {
+  justify-content: center;
+  width: 100%;
+}
+
+.pdp__wish {
+  display: grid;
+  place-items: center;
+  width: clamp(48px, 4vw, 58px);
+  border-radius: var(--radius);
+  box-shadow: inset 0 0 0 1px var(--hairline-strong);
+  color: var(--ink);
+  transition: background var(--dur-quick) var(--ease), color var(--dur-quick) var(--ease);
+}
+
+.pdp__wish:hover {
+  background: var(--gerua);
+  color: var(--cream);
+  box-shadow: inset 0 0 0 1px var(--gerua);
+}
+
+.pdp__reassure {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  color: var(--ink-soft);
+}
+
+.pdp__reassure svg {
+  color: var(--gerua);
+  flex-shrink: 0;
+}
+
+/* ---- accordions ---- */
+
+.pdp__details {
+  margin-top: clamp(24px, 2.4vw, 36px);
+  border-top: 1px solid var(--hairline);
+}
+
+.pdp__detail {
+  border-bottom: 1px solid var(--hairline);
+}
+
+.pdp__detail-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  padding: clamp(14px, 1.4vw, 20px) 0;
+  text-align: left;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  color: var(--ink);
+  transition: color var(--dur-quick) var(--ease);
+}
+
+.pdp__detail-summary:hover,
+.pdp__detail.is-open .pdp__detail-summary {
+  color: var(--gerua);
+}
+
+.pdp__detail-icon {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--hairline-strong);
+  transition:
+    transform var(--dur) var(--ease),
+    background var(--dur-quick) var(--ease),
+    color var(--dur-quick) var(--ease);
+}
+
+.pdp__detail.is-open .pdp__detail-icon {
+  transform: rotate(45deg);
+  background: var(--gerua);
+  color: var(--cream);
+  box-shadow: inset 0 0 0 1px var(--gerua);
+}
+
+/* 0fr -> 1fr animates the row's height without anyone measuring it, so the
+   panel opens smoothly whatever the copy. `hidden` could not animate at all. */
+.pdp__detail-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--dur) var(--ease-out);
+}
+
+.pdp__detail.is-open .pdp__detail-panel {
+  grid-template-rows: 1fr;
+}
+
+.pdp__detail-inner {
+  overflow: hidden;
+  /* keeps the closed copy out of the accessibility tree, but only after the
+     collapse has finished so it does not blink out mid-animation */
+  visibility: hidden;
+  transition: visibility 0s linear var(--dur);
+}
+
+.pdp__detail.is-open .pdp__detail-inner {
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.pdp__detail-inner p {
+  padding-bottom: clamp(14px, 1.4vw, 20px);
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+/* ---- worn by ---- */
+
+.pdp__worn {
+  margin-top: clamp(24px, 2.4vw, 36px);
+  padding: clamp(18px, 1.8vw, 26px);
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.pdp__faces {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.pdp__faces img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  object-position: center 15%;
+  border-radius: 8px;
+}
+
+.pdp__quote {
+  margin-top: 16px;
+  font-family: var(--font-serif);
+  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.pdp__quote cite {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--font-sans);
+  font-style: normal;
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.pdp__back {
+  margin-top: clamp(20px, 2vw, 30px);
+  color: var(--gerua);
+}
+
+/* ---- reviews: the write-a-review panel and the cards share one grid, so
+        every gutter is the same 6px the rest of the page uses ---- */
+
+.reviews {
+  display: grid;
+  grid-template-columns: clamp(220px, 21vw, 300px) repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  align-items: stretch;
+}
+
+.review-add {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(18px, 1.8vw, 28px);
+  border-radius: var(--radius);
+  box-shadow: inset 0 0 0 1px var(--hairline-strong);
+}
+
+.review-add__score {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(29.1px, calc(26.3px + 0.717vw), 44.8px);
+  line-height: 1;
+  color: var(--ink);
+}
+
+.review-add .pdp__stars {
+  margin-top: 10px;
+}
+
+.review-add__count {
+  margin-top: 8px;
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  color: var(--ink-soft);
+}
+
+.review-add .btn {
+  justify-content: center;
+  margin-top: clamp(16px, 1.6vw, 24px);
+}
+
+.review-add__note {
+  margin-top: auto;
+  padding-top: clamp(16px, 1.6vw, 24px);
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.review {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(18px, 1.8vw, 28px);
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.review__body {
+  margin-top: 14px;
+  flex: 1;
+  font-family: var(--font-serif);
+  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.review__who {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: clamp(16px, 1.6vw, 24px);
+  padding-top: clamp(14px, 1.4vw, 20px);
+  border-top: 1px solid var(--hairline);
+}
+
+.review__who img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center 15%;
+}
+
+.review__name {
+  display: block;
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.review__place {
+  display: block;
+  margin-top: 2px;
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* ============================================================
+   STUDIO STRANDS — Heritage, Avinya, Gifting & Collaborations
+   The three pages the brand publishes under Studio Collection.
+   They share the strand rail and the callback form; everything
+   else is per-page so the three do not read as one template.
+   ============================================================ */
+
+/* ---- the rail carried across all three ---- */
+
+.strands {
+  position: relative;
+  margin-block: clamp(6px, 1.4vw, 18px) clamp(10px, 2vw, 26px);
+}
+
+.strands__inner {
+  display: flex;
+  justify-content: center;
+}
+
+.strands__list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  list-style: none;
+  padding: 6px;
+  border-radius: calc(var(--radius) + 4px);
+  background: color-mix(in srgb, var(--ivory) 96%, transparent);
+  border: 1px solid color-mix(in srgb, var(--maroon) 14%, transparent);
+  box-shadow: 0 8px 26px rgba(43, 29, 25, 0.09);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.strands__link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: var(--radius);
+  color: var(--ink-soft);
+  font-size: clamp(11px, calc(10.6px + 0.09vw), 13px);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background 0.35s var(--ease), color 0.35s var(--ease);
+}
+
+.strands__no {
+  font-size: 0.82em;
+  opacity: 0.55;
+  font-variant-numeric: tabular-nums;
+}
+
+.strands__link:hover {
+  color: var(--maroon);
+  background: color-mix(in srgb, var(--maroon) 7%, transparent);
+}
+
+.strands__link.is-active {
+  background: var(--maroon);
+  color: var(--ivory);
+}
+
+.strands__link.is-active .strands__no {
+  opacity: 0.7;
+}
+
+/* ---- strand cards on the parent page ---- */
+
+.strand-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  list-style: none;
+}
+
+.strand-card {
+  display: grid;
+  height: 100%;
+  padding: clamp(16px, 1.6vw, 26px);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+  transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+
+.strand-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--gerua);
+}
+
+.strand-card__media {
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--sand);
+}
+
+.strand-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.1s var(--ease);
+}
+
+.strand-card:hover .strand-card__media img {
+  transform: scale(1.05);
+}
+
+.strand-card__no {
+  display: block;
+  margin-top: clamp(14px, 1.4vw, 22px);
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  letter-spacing: 0.2em;
+  color: var(--gold);
+}
+
+.strand-card__name {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.strand-card__copy {
+  display: block;
+  margin-top: 8px;
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.strand-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  /* pinned to the foot so the three CTAs sit on one line whatever the copy */
+  margin-top: auto;
+  padding-top: clamp(14px, 1.4vw, 22px);
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gerua);
+}
+
+.strand-card:hover .strand-card__cta svg {
+  transform: translateX(5px);
+}
+
+.strand-card__cta svg {
+  transition: transform var(--dur-quick) var(--ease);
+}
+
+/* ---- Heritage: the four marks ---- */
+
+.marks {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: clamp(36px, 4vw, 68px);
+  list-style: none;
+}
+
+.mark {
+  padding: clamp(18px, 1.8vw, 30px);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.mark__no {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(29.1px, calc(26.3px + 0.717vw), 44.8px);
+  line-height: 1;
+  color: rgba(43, 29, 25, 0.16);
+}
+
+.mark__title {
+  margin-top: clamp(12px, 1.2vw, 18px);
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.mark__copy {
+  margin-top: 8px;
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+/* ---- Avinya: the word, set as a gloss ---- */
+
+.gloss {
+  max-width: 44ch;
+  margin-bottom: clamp(30px, 3.4vw, 58px);
+  padding: clamp(20px, 2.2vw, 36px) clamp(22px, 2.4vw, 40px);
+  border-left: 2px solid var(--gerua);
+  background: var(--ivory-2);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.gloss__head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.gloss__word {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-style: italic;
+  font-size: clamp(29.1px, calc(26.3px + 0.717vw), 44.8px);
+  line-height: 1;
+  color: var(--ink);
+}
+
+.gloss__lang {
+  font-size: clamp(11px, calc(10.6px + 0.09vw), 13px);
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gerua);
+}
+
+.gloss__meaning {
+  margin-top: 12px;
+  font-family: var(--font-serif);
+  font-size: clamp(22px, calc(19.5px + 0.64vw), 32px);
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.gloss__note {
+  margin-top: 8px;
+  color: var(--ink-soft);
+}
+
+/* ---- Avinya and Gifting: numbered process rows ---- */
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  list-style: none;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(16px, 1.8vw, 30px);
+  padding: clamp(18px, 1.9vw, 32px);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.step__no {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(29.1px, calc(26.3px + 0.717vw), 44.8px);
+  line-height: 1;
+  color: var(--gerua);
+  opacity: 0.55;
+}
+
+.step__title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.step__copy {
+  margin-top: 8px;
+  max-width: 46ch;
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+/* ---- the callback form, shared by all three ---- */
+
+.enquiry {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: clamp(28px, 4vw, 76px);
+  align-items: start;
+}
+
+.enquiry__intro .section-title {
+  margin-top: 14px;
+  max-width: 18ch;
+}
+
+.enquiry__copy {
+  margin-top: 16px;
+  max-width: 46ch;
+  color: var(--ink-soft);
+}
+
+.enquiry__reach {
+  margin-top: clamp(24px, 2.6vw, 42px);
+  border-top: 1px solid var(--hairline);
+}
+
+.enquiry__reach > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 20px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.enquiry__reach dt {
+  font-size: clamp(11px, calc(10.6px + 0.09vw), 13px);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gerua);
+}
+
+.enquiry__reach dd {
+  color: var(--ink);
+}
+
+.enquiry__reach a:hover {
+  color: var(--gerua);
+}
+
+.enquiry__form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(14px, 1.4vw, 22px);
+  padding: clamp(22px, 2.4vw, 40px);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.field {
+  display: grid;
+  gap: 7px;
+}
+
+.field--wide {
+  grid-column: 1 / -1;
+}
+
+.field label {
+  font-size: clamp(11px, calc(10.6px + 0.09vw), 13px);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.field label span {
+  color: var(--gerua);
+}
+
+.field input,
+.field textarea,
+.field select {
+  width: 100%;
+  padding: 12px 14px;
+  font: inherit;
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  color: var(--ink);
+  background: var(--ivory);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  transition: border-color var(--dur-quick) var(--ease), box-shadow var(--dur-quick) var(--ease);
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 88px;
+}
+
+/* the native arrow is drawn in the OS accent, which fights the palette */
+.field select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink-soft) 50%),
+    linear-gradient(135deg, var(--ink-soft) 50%, transparent 50%);
+  background-position: calc(100% - 19px) calc(50% + 1px), calc(100% - 14px) calc(50% + 1px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 38px;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: color-mix(in srgb, var(--ink-soft) 62%, transparent);
+}
+
+.field input:focus-visible,
+.field textarea:focus-visible,
+.field select:focus-visible {
+  outline: none;
+  border-color: var(--gerua);
+  box-shadow: 0 0 0 3px rgba(178, 49, 39, 0.14);
+}
+
+.enquiry__submit {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 4px;
+}
+
+.enquiry__note {
+  max-width: 34ch;
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.enquiry__note span {
+  color: var(--gerua);
+}
+
+.enquiry__done {
+  align-self: start;
+  padding: clamp(26px, 3vw, 48px);
+  border: 1px solid var(--gerua);
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+  color: var(--ink-soft);
+}
+
+.enquiry__done-title {
+  margin-bottom: 10px;
+  font-family: var(--font-serif);
+  font-size: clamp(24.6px, calc(21.8px + 0.717vw), 40.3px);
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.enquiry__done a {
+  color: var(--gerua);
+}
+
+.enquiry__done .arrow-link {
+  margin-top: clamp(18px, 2vw, 30px);
+  color: var(--gerua);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1180px) {
+  .medallion {
+    flex-basis: calc((100% - 3 * clamp(14px, 1.6vw, 30px)) / 4);
+  }
+
+  .shop-assure__row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  /* the 4th and 5th wrap to a second row, so their left rules must reset */
+  .shop-assure__row li:nth-child(4) {
+    border-left: 0;
+  }
+
+  .shop-assure__row li:nth-child(n + 4) {
+    border-top: 1px solid var(--hairline);
+  }
+
+  .craft-index__name {
+    letter-spacing: 0.14em;
+  }
+}
+
+@media (max-width: 1080px) {
+  .page-hero--ghost .page-hero__grid,
+  .page-hero--plaque .page-hero__grid,
+  .page-hero--map .page-hero__grid {
+    grid-template-columns: 1fr;
+    gap: clamp(24px, 3vw, 40px);
+  }
+
+  .shop-body {
+    grid-template-columns: 1fr;
+  }
+
+  /* the rail becomes a chip row above the grid rather than a column */
+  .shop-rail {
+    position: static;
+  }
+
+  .shop-rail__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .shop-rail__item {
+    width: auto;
+    padding: 9px 18px;
+    box-shadow: inset 0 0 0 1px var(--hairline-strong);
+  }
+
+  .shop-rail__note {
+    display: none;
+  }
+
+  .spotlight-col {
+    grid-template-columns: 1fr;
+  }
+
+  .medallion {
+    flex-basis: calc((100% - 2 * clamp(14px, 1.6vw, 30px)) / 3);
+  }
+
+  /* the buying column drops under the shots rather than squeezing to nothing */
+  .pdp {
+    grid-template-columns: 1fr;
+  }
+
+  /* nothing left to scroll past it, so it stops being pinned */
+  .pdp__media {
+    position: static;
+  }
+
+  .pdp__stage {
+    height: min(70vh, 620px);
+  }
+
+  .pdp__buy {
+    padding-left: 0;
+    margin-top: clamp(24px, 3vw, 44px);
+  }
+
+  .reviews {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* the panel spans the row rather than sitting as a narrow first cell */
+  .review-add {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 900px) {
+  .studio-row {
+    grid-template-columns: 1fr;
+  }
+
+  /* the flip only makes sense while there are two columns to flip */
+  .studio-row:nth-child(even) .studio-row__media {
+    order: 0;
+  }
+
+  /* The scrim reads left-to-right, which works while the text occupies half
+     the width. On one column the copy runs the full bleed and its right edge
+     ends up over the bright part of the photograph, so the fade has to run
+     down the image instead of across it. */
+  .page-hero__scrim {
+    background: linear-gradient(
+      180deg,
+      rgba(30, 18, 14, 0.72) 0%,
+      rgba(30, 18, 14, 0.66) 62%,
+      rgba(30, 18, 14, 0.34) 100%
+    );
+  }
+
+  /* One column. The player stays sticky, but now at the top of the stack —
+     the film is still on screen while its own paragraphs scroll under it, so
+     the pairing survives without a second set of <video> elements. It needs an
+     opaque backdrop and a lift, or the text would show through beneath it. */
+  .craft-open {
+    grid-template-columns: 1fr;
+  }
+
+  .craft-atlas__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .craft-atlas__media {
+    top: 0;
+    z-index: 10;
+    padding: 12px 0 clamp(18px, 2.4vw, 28px);
+    background: var(--ivory);
+    /* bleeds the backdrop past the container padding so nothing peeks by */
+    box-shadow: 0 0 0 100vmax var(--ivory);
+    clip-path: inset(0 -100vmax);
+  }
+
+  /* the chapter list turns back into a scrollable chip row — six stacked rows
+     would eat the whole screen the sticky player is trying to share */
+  .craft-index {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-top: 0;
+  }
+
+  .craft-index::-webkit-scrollbar {
+    display: none;
+  }
+
+  .craft-index li {
+    flex: 0 0 auto;
+  }
+
+  .craft-index__pick {
+    grid-template-columns: auto auto;
+    gap: 9px;
+    padding: 10px 15px;
+    border-bottom: 2px solid transparent;
+    border-top: 1px solid var(--hairline);
+  }
+
+  .craft-index__pick::after {
+    display: none;
+  }
+
+  .craft-index__pick.is-active {
+    border-bottom-color: var(--gerua);
+  }
+
+  .craft-entry {
+    min-height: 0;
+    padding-left: clamp(14px, 2vw, 20px);
+  }
+
+  .craft-entry:first-child {
+    padding-top: clamp(24px, 3vw, 36px);
+  }
+
+  /* two across, and the wide halls take the full row */
+  .lldc__mosaic {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lldc-card--wide {
+    grid-column: span 2;
+  }
+
+  .lldc-card__media,
+  .lldc-card--wide .lldc-card__media {
+    aspect-ratio: 16 / 9;
+  }
+
+  .visit-plates,
+  .visit-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .visit-bar {
+    gap: clamp(16px, 2vw, 26px);
+  }
+
+  .shop-why__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-cta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 720px) {
+  /* a fraction over two, so the next disc peeks and the rail reads scrollable */
+  .medallion {
+    flex-basis: calc((100% - 1.4 * clamp(14px, 1.6vw, 30px)) / 2.4);
+  }
+
+  .shop-assure__row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .shop-assure__row li:nth-child(odd) {
+    border-left: 0;
+  }
+
+  .shop-assure__row li:nth-child(n + 3) {
+    border-top: 1px solid var(--hairline);
+  }
+
+  .shop-assure__copy {
+    display: none;
+  }
+
+  .spotlight-col__inset {
+    display: none;
+  }
+
+  .info-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  /* three facts side by side stop being readable well before this */
+  .craft-facts {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .craft-facts div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+    gap: 12px;
+    align-items: baseline;
+  }
+
+  .craft-facts dd {
+    margin-top: 0;
+  }
+
+  .lldc__mosaic,
+  .lldc-show,
+  .arch-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lldc-card--wide {
+    grid-column: auto;
+  }
+
+  .page-meta {
+    gap: 20px 28px;
+  }
+
+  .page-meta li + li {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .visit-row {
+    grid-template-columns: 2.6rem clamp(72px, 20vw, 96px) minmax(0, 1fr);
+  }
+
+  .visit-row__go {
+    display: none;
+  }
+
+  .hero-map {
+    aspect-ratio: 16 / 10;
+  }
+
+  .page-hero__ghost {
+    font-size: clamp(110px, 32vw, 200px);
+    top: auto;
+    bottom: -8%;
+    transform: none;
+  }
+
+  /* The artwork is a ~2:1 landscape with the headline baked in. Cropping a
+     phone-width slice would cut that type in half, so the frame gets shorter
+     and the image sits to its centre instead. */
+  .shop-banner__frame {
+    height: clamp(360px, 62vh, 560px);
+  }
+
+  .shop-banner__frame img {
+    object-position: center;
+  }
+
+  .pdp__media {
+    grid-template-columns: 1fr;
+  }
+
+  /* no room for a vertical rail — it becomes a scrolling strip under the shot */
+  .pdp__rail {
+    grid-auto-flow: column;
+    grid-auto-columns: 64px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    order: 2;
+    padding-top: 10px;
+  }
+
+  .pdp__rail::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pdp__stage {
+    order: 1;
+    height: min(64vh, 520px);
+  }
+
+  .reviews {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
+   THE SHRUJAN STORY — origins, values, people
+   ============================================================ */
+
+.origin {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(24px, 3vw, 56px);
+  align-items: start;
+}
+
+.origin__lead {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(19px, calc(17px + 0.5vw), 27px);
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.origin__body {
+  display: grid;
+  gap: 14px;
+  color: var(--ink-soft);
+}
+
+.origin__gallery {
+  margin-top: clamp(26px, 3vw, 48px);
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  gap: 6px;
+}
+
+.origin__shot {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.origin__shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.1s var(--ease);
+}
+
+.origin__shot:hover img {
+  transform: scale(1.04);
+}
+
+.origin__pull {
+  margin: clamp(30px, 3.4vw, 56px) auto 0;
+  max-width: 46ch;
+  text-align: center;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(22px, calc(19.5px + 0.64vw), 36px);
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+/* ---- values ---- */
+
+.values {
+  display: grid;
+  gap: 6px;
+}
+
+.value {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  align-items: stretch;
+}
+
+.value:nth-child(even) .value__media {
+  order: 2;
+}
+
+.value__media {
+  min-height: clamp(240px, 26vw, 380px);
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.value__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.2s var(--ease);
+}
+
+.value:hover .value__media img {
+  transform: scale(1.03);
+}
+
+.value__body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  padding: clamp(22px, 2.4vw, 46px);
+  background: var(--ivory-2);
+  border-radius: var(--radius);
+}
+
+.value__no {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(13px, calc(12.6px + 0.09vw), 15px);
+  letter-spacing: 0.22em;
+  color: var(--gold);
+}
+
+.value__title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(22px, calc(19.5px + 0.64vw), 34px);
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.value__copy {
+  max-width: 52ch;
+  color: var(--ink-soft);
+}
+
+/* ---- people ---- */
+
+.people {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.person__media {
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.person__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 18%;
+  transition: transform 1.1s var(--ease);
+}
+
+.person:hover .person__media img {
+  transform: scale(1.04);
+}
+
+.person__name {
+  margin-top: 14px;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(17px, calc(16.1px + 0.23vw), 22px);
+  color: var(--ink);
+}
+
+.person__role {
+  margin-top: 3px;
+  font-size: clamp(11px, calc(10.6px + 0.09vw), 13px);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gerua);
+}
+
+.person__copy {
+  margin-top: 10px;
+  font-size: clamp(13px, calc(12.6px + 0.09vw), 15px);
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 1080px) {
+  .people {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px 6px;
+  }
+}
+
+@media (max-width: 900px) {
+  .origin,
+  .value {
+    grid-template-columns: 1fr;
+  }
+
+  .value:nth-child(even) .value__media {
+    order: 0;
+  }
+
+  .origin__gallery {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ==========================================================================
+   The Shrujan Story — chapter rail, photo journal, press, lightbox
+   The five chapters the brand publishes separately live on one page, so the
+   rail is what keeps them reachable.
+   ========================================================================== */
+
+.chapters {
+  /* deliberately NOT sticky: pinned, it rode over the body copy all the way
+     down the page. It sits once, under the masthead, and scrolls away. */
+  position: relative;
+  margin-block: clamp(6px, 1.4vw, 18px) clamp(10px, 2vw, 26px);
+}
+
+.chapters__inner {
+  display: flex;
+  justify-content: center;
+}
+
+.chapters__list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  border-radius: calc(var(--radius) + 4px);
+  /* the rail rides over body copy, so it needs to read as a solid object
+     rather than a tint — 86% left the text beneath legible through it */
+  background: color-mix(in srgb, var(--ivory) 96%, transparent);
+  border: 1px solid color-mix(in srgb, var(--maroon) 14%, transparent);
+  box-shadow: 0 8px 26px rgba(43, 29, 25, 0.09);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.chapters__link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--ink-soft);
+  font-family: var(--font-sans);
+  font-size: clamp(11px, calc(10.6px + 0.09vw), 13px);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background 0.35s var(--ease), color 0.35s var(--ease);
+}
+
+.chapters__no {
+  font-size: 0.82em;
+  opacity: 0.55;
+  font-variant-numeric: tabular-nums;
+}
+
+.chapters__link:hover {
+  color: var(--maroon);
+  background: color-mix(in srgb, var(--maroon) 7%, transparent);
+}
+
+.chapters__link.is-active {
+  background: var(--maroon);
+  color: var(--ivory);
+}
+
+.chapters__link.is-active .chapters__no {
+  opacity: 0.7;
+}
+
+/* ---- 04 Photo Journal ------------------------------------------------- */
+
+.journal-bento {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: clamp(120px, 12vw, 190px);
+  gap: 6px; /* the hero bento gutter, kept sitewide */
+}
+
+/* Auto-placement cannot pack mixed 2-row and 3-row spans without leaving holes,
+   so the twelve frames are placed by hand into a flush 4 x 7 block. Each column
+   carries two landscape cells (2 rows) and one portrait (3 rows) = 7 rows, which
+   is why the bottom edge closes level. The four portrait photographs are items
+   3, 6, 11 and 12 — see the note in data/story.js before reordering either. */
+@media (min-width: 901px) {
+  .journal-bento > :nth-child(1)  { grid-column: 1; grid-row: 1 / span 2; }
+  .journal-bento > :nth-child(2)  { grid-column: 3; grid-row: 1 / span 2; }
+  .journal-bento > :nth-child(3)  { grid-column: 2; grid-row: 1 / span 3; }
+  .journal-bento > :nth-child(4)  { grid-column: 4; grid-row: 1 / span 2; }
+  .journal-bento > :nth-child(5)  { grid-column: 3; grid-row: 3 / span 2; }
+  .journal-bento > :nth-child(6)  { grid-column: 1; grid-row: 3 / span 3; }
+  .journal-bento > :nth-child(7)  { grid-column: 2; grid-row: 4 / span 2; }
+  .journal-bento > :nth-child(8)  { grid-column: 2; grid-row: 6 / span 2; }
+  .journal-bento > :nth-child(9)  { grid-column: 1; grid-row: 6 / span 2; }
+  .journal-bento > :nth-child(10) { grid-column: 4; grid-row: 6 / span 2; }
+  .journal-bento > :nth-child(11) { grid-column: 4; grid-row: 3 / span 3; }
+  .journal-bento > :nth-child(12) { grid-column: 3; grid-row: 5 / span 3; }
+}
+
+.jshot {
+  position: relative;
+  overflow: hidden;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  border-radius: var(--radius);
+  background: var(--tan);
+  cursor: pointer;
+  grid-row: span 2;
+}
+
+/* portrait frames earn a taller cell so nothing is cropped to a letterbox */
+.jshot--tall {
+  grid-row: span 3;
+}
+
+.jshot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.9s var(--ease);
+}
+
+.jshot:hover img,
+.jshot:focus-visible img {
+  transform: scale(1.045);
+}
+
+.jshot__cap {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 34px 14px 12px;
+  text-align: left;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--ivory);
+  background: linear-gradient(to top, rgba(30, 14, 11, 0.82), transparent);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+}
+
+.jshot:hover .jshot__cap,
+.jshot:focus-visible .jshot__cap {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---- 05 In the Media -------------------------------------------------- */
+
+.press {
+  display: grid;
+  gap: clamp(28px, 3.4vw, 56px);
+}
+
+.press__item {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr);
+  gap: clamp(24px, 3vw, 54px);
+  align-items: start;
+  padding-bottom: clamp(28px, 3.4vw, 56px);
+  border-bottom: 1px solid color-mix(in srgb, var(--maroon) 14%, transparent);
+}
+
+.press__item:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.press__section {
+  font-family: var(--font-sans);
+  font-size: clamp(11px, calc(10.6px + 0.09vw), 13px);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gerua);
+  margin-bottom: 8px;
+}
+
+.press__pub {
+  font-family: var(--font-serif);
+  font-size: clamp(22px, calc(19.5px + 0.64vw), 34px);
+  color: var(--maroon);
+  line-height: 1.15;
+}
+
+.press__head {
+  margin-top: 6px;
+  line-height: 1.3;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(17px, calc(16.1px + 0.23vw), 22px);
+  color: var(--gerua);
+}
+
+.press__trans {
+  margin-top: 4px;
+  font-family: var(--font-sans);
+  font-size: clamp(13px, calc(12.6px + 0.09vw), 15px);
+  color: var(--ink-soft);
+}
+
+.press__byline {
+  margin-top: 10px;
+  font-family: var(--font-sans);
+  font-size: clamp(11px, calc(10.6px + 0.09vw), 13px);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  opacity: 0.85;
+}
+
+.press__note {
+  margin-top: 12px;
+  color: var(--ink-soft);
+  font-size: clamp(13px, calc(12.6px + 0.09vw), 15px);
+  max-width: 42ch;
+}
+
+.press__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+  list-style: none;
+  padding: 0;
+}
+
+.press__facts li {
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--maroon) 18%, transparent);
+  font-family: var(--font-sans);
+  font-size: clamp(11px, calc(10.6px + 0.09vw), 13px);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.press__sheets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.press__sheet {
+  position: relative;
+  display: block;
+  border: 1px solid color-mix(in srgb, var(--maroon) 12%, transparent);
+  padding: 0;
+  margin: 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #fff;
+  cursor: pointer;
+  transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease);
+}
+
+.press__sheet img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* a tearsheet is a document: show the top of the page, never crop to fill */
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.press__sheet:hover,
+.press__sheet:focus-visible {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 34px rgba(43, 29, 25, 0.16);
+}
+
+.press__pageno {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--maroon) 88%, transparent);
+  color: var(--ivory);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- lightbox --------------------------------------------------------- */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200; /* above the floating header at 60 */
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(8px, 2vw, 28px);
+  padding: clamp(16px, 4vw, 54px);
+  background: rgba(26, 12, 10, 0.93);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: lb-in 0.28s var(--ease) both;
+}
+
+@keyframes lb-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.lightbox__frame {
+  margin: 0;
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+  min-height: 0;
+}
+
+.lightbox__frame img {
+  max-width: 100%;
+  /* leave room for the caption under it */
+  max-height: calc(100vh - clamp(96px, 14vw, 190px));
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: var(--radius);
+  background: #fff;
+  animation: lb-pop 0.34s var(--ease) both;
+}
+
+@keyframes lb-pop {
+  from { opacity: 0; transform: scale(0.975); }
+  to   { opacity: 1; transform: none; }
+}
+
+.lightbox__cap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  color: color-mix(in srgb, var(--ivory) 82%, transparent);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  text-align: center;
+  max-width: 64ch;
+}
+
+.lightbox__count {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.6;
+}
+
+.lightbox__nav,
+.lightbox__close {
+  display: grid;
+  place-items: center;
+  width: clamp(38px, 4vw, 50px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid rgba(249, 245, 234, 0.28);
+  background: rgba(249, 245, 234, 0.08);
+  color: var(--ivory);
+  cursor: pointer;
+  transition: background 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+
+.lightbox__nav:hover,
+.lightbox__close:hover {
+  background: rgba(249, 245, 234, 0.2);
+  border-color: rgba(249, 245, 234, 0.55);
+}
+
+.lightbox__close {
+  position: absolute;
+  top: clamp(14px, 2.4vw, 30px);
+  right: clamp(14px, 2.4vw, 30px);
+  z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lightbox,
+  .lightbox__frame img {
+    animation: none;
+  }
+  .jshot img,
+  .press__sheet {
+    transition: none;
+  }
+}
+
+/* ---- story responsive ------------------------------------------------- */
+
+@media (max-width: 1100px) {
+  .press__item {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .press__sheets {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  /* the form stacks under its intro before the two columns get too narrow to
+     hold a label and a field side by side */
+  .enquiry {
+    grid-template-columns: 1fr;
+  }
+  .enquiry__intro .section-title {
+    max-width: 24ch;
+  }
+  .marks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .journal-bento {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: clamp(104px, 15vw, 150px);
+  }
+  /* uniform cells: the hand-placed 4-column block no longer applies */
+  .jshot,
+  .jshot--tall {
+    grid-row: span 2;
+  }
+  .chapters__list {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .chapters__list::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* the strand rail scrolls sideways rather than wrapping, same as chapters */
+  .strands__list {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .strands__list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .strand-cards {
+    grid-template-columns: 1fr;
+  }
+  .steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .journal-bento {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* one field per row — two side by side leaves nothing to type into */
+  .enquiry__form {
+    grid-template-columns: 1fr;
+  }
+  .marks {
+    grid-template-columns: 1fr;
+  }
+  .step {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .press__sheets {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  /* captions are hover-only, which touch has no equivalent for */
+  .jshot__cap {
+    display: none;
+  }
+  .lightbox {
+    grid-template-columns: 1fr;
+    grid-template-areas: 'frame';
+  }
+  .lightbox__frame {
+    grid-area: frame;
+  }
+  .lightbox__nav {
+    position: absolute;
+    bottom: 18px;
+    z-index: 2;
+  }
+  .lightbox__nav--prev { left: 22%; }
+  .lightbox__nav--next { right: 22%; }
+}
+
+/* count beside a collection in the rail — sits right, dimmed, and is only
+   rendered for real collections (never for "Everything") */
+.shop-rail__item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.shop-rail__n {
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-soft);
+}
+
+.shop-rail__item.is-active .shop-rail__n {
+  color: var(--gerua);
+}
+
+/* the medallion is a real control now, so it needs the button reset */
+.medallion {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: center;
+}
+
+
+/* ---- sort, right of the result count ---- */
+
+.shop-sort {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 1.6vw, 26px);
+}
+
+.sortmenu {
+  position: relative;
+  z-index: 1;
+}
+
+.sortmenu__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  border-radius: var(--radius);
+  box-shadow: inset 0 0 0 1px var(--hairline-strong);
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+  white-space: nowrap;
+  transition: box-shadow var(--dur-quick) var(--ease);
+}
+
+.sortmenu__button:hover,
+.sortmenu.is-open .sortmenu__button {
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+
+.sortmenu__label {
+  color: var(--ink-soft);
+}
+
+.sortmenu__value {
+  font-weight: 500;
+}
+
+.sortmenu__button svg {
+  opacity: 0.55;
+  transition: transform var(--dur-quick) var(--ease);
+}
+
+.sortmenu.is-open .sortmenu__button svg {
+  transform: rotate(180deg);
+}
+
+/* the panel — same ivory card the header dropdowns use */
+.sortmenu__list {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 40;
+  min-width: 100%;
+  width: max-content;
+  padding: 6px;
+  list-style: none;
+  background: var(--ivory);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  box-shadow: 0 24px 50px rgba(43, 29, 25, 0.16);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition:
+    opacity var(--dur-quick) var(--ease),
+    transform var(--dur-quick) var(--ease),
+    visibility 0s linear var(--dur-quick);
+}
+
+.sortmenu.is-open .sortmenu__list {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition-delay: 0s;
+}
+
+.sortmenu__option {
+  padding: 10px 34px 10px 14px;
+  border-radius: 6px;
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--dur-quick) var(--ease), color var(--dur-quick) var(--ease);
+}
+
+/* keyboard cursor and pointer hover share one highlight, so arrowing down
+   looks exactly like moving the mouse */
+.sortmenu__option.is-cursor {
+  background: var(--ivory-2);
+  color: var(--ink);
+}
+
+.sortmenu__option.is-selected {
+  position: relative;
+  color: var(--gerua);
+  font-weight: 500;
+}
+
+.sortmenu__option.is-selected::after {
+  content: '';
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  width: 11px;
+  height: 6px;
+  border-left: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-70%) rotate(-45deg);
+}
+
+@media (max-width: 560px) {
+  .sortmenu__label {
+    display: none;
+  }
+}
+
+/* ---- Visit: the two invitations ---- */
+
+.ways {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.way {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.way__media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+}
+
+.way__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 35%;
+  transition: transform 1.2s var(--ease);
+}
+
+.way:hover .way__media img {
+  transform: scale(1.04);
+}
+
+.way__no {
+  position: absolute;
+  left: clamp(14px, 1.4vw, 22px);
+  bottom: clamp(10px, 1vw, 16px);
+  z-index: 2;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(29.1px, calc(26.3px + 0.717vw), 44.8px);
+  line-height: 1;
+  color: var(--cream);
+  text-shadow: 0 1px 14px rgba(30, 18, 14, 0.5);
+}
+
+.way__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: clamp(20px, 2.2vw, 38px);
+}
+
+.way__kicker {
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gerua);
+}
+
+.way__name {
+  margin-top: 10px;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(31.4px, calc(27.8px + 0.93vw), 51.5px);
+  line-height: 1.08;
+  color: var(--ink);
+}
+
+.way__copy {
+  margin-top: clamp(12px, 1.2vw, 18px);
+  max-width: 46ch;
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+.way__points {
+  margin-top: clamp(16px, 1.6vw, 24px);
+  padding-top: clamp(14px, 1.4vw, 20px);
+  border-top: 1px solid var(--hairline);
+  list-style: none;
+}
+
+.way__points li {
+  position: relative;
+  padding-left: 20px;
+  padding-block: 5px;
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  color: var(--ink);
+}
+
+/* a small stitched tick, rather than a bullet */
+.way__points li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 9px;
+  height: 5px;
+  border-left: 1.5px solid var(--gerua);
+  border-bottom: 1.5px solid var(--gerua);
+  transform: translateY(-70%) rotate(-45deg);
+}
+
+.way__cta {
+  /* pinned to the bottom so both cards line their action up, whatever the copy */
+  margin-top: auto;
+  padding-top: clamp(18px, 1.8vw, 26px);
+  align-self: flex-start;
+  color: var(--gerua);
+}
+
+/* a place with nowhere to link keeps the row's look without pretending to be
+   a link — no hover lift, no arrow */
+.visit-row--plain {
+  cursor: default;
+}
+
+.visit-row--plain:hover {
+  border-bottom-color: var(--hairline);
+}
+
+.visit-row--plain:hover .visit-row__no,
+.visit-row--plain:hover .visit-row__name {
+  color: inherit;
+}
+
+.visit-row--plain .visit-row__media img {
+  transform: none;
+}
+
+@media (max-width: 900px) {
+  .ways {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
+   VISIT — bespoke hero and trip panel
+   ============================================================ */
+
+.visit-hero {
+  position: relative;
+  display: grid;
+  place-items: center;
+  margin: 6px 6px 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  height: clamp(420px, calc(100vh - var(--header-h, 130px) - 12px), 1200px);
+  color: var(--cream);
+}
+
+.visit-hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.visit-hero__bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* the herd sits in a band across the lower third, with a lot of sky above —
+     hold that band in view rather than filling the frame with sky */
+  object-position: center 68%;
+}
+
+/* even across the frame, since the text is centred rather than cornered */
+.visit-hero__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    0deg,
+    rgba(24, 10, 8, 0.55) 0%,
+    rgba(24, 10, 8, 0.34) 45%,
+    rgba(24, 10, 8, 0.4) 100%
+  );
+}
+
+.visit-hero__inner {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  text-shadow: 0 1px 18px rgba(24, 10, 8, 0.4);
+}
+
+.visit-hero__eyebrow {
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--cream);
+}
+
+.visit-hero__title {
+  margin-top: clamp(10px, 1.2vw, 18px);
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(38.1px, calc(32.4px + 1.445vw), 69.4px);
+  line-height: 1.02;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--cream);
+}
+
+.visit-hero__lede {
+  margin-top: clamp(12px, 1.4vw, 22px);
+  max-width: 32ch;
+  font-size: clamp(16.8px, calc(16.4px + 0.101vw), 19px);
+  letter-spacing: 0.01em;
+  line-height: 1.6;
+  color: var(--cream-dim);
+}
+
+.visit-hero__cta {
+  margin-top: clamp(20px, 2.2vw, 36px);
+  padding: clamp(12px, 1vw, 16px) clamp(34px, 3vw, 56px);
+  border: 1px solid rgba(242, 237, 224, 0.7);
+  border-radius: 2px;
+  font-size: clamp(13.4px, calc(13px + 0.101vw), 15.7px);
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--cream);
+  transition:
+    background var(--dur-quick) var(--ease),
+    color var(--dur-quick) var(--ease),
+    border-color var(--dur-quick) var(--ease);
+}
+
+.visit-hero__cta:hover {
+  background: var(--cream);
+  border-color: var(--cream);
+  color: var(--ink);
+  text-shadow: none;
+}
+
+@media (max-width: 720px) {
+}
+
+/* ============================================================
+   VISIT — stops and planning
+   Contained cards on the page ground rather than full-bleed rows:
+   a small pill for the place, the photograph inside the card, and
+   plenty of air. Quiet enough to read as a guide, not a catalogue.
+   ============================================================ */
+
+.stops__head {
+  display: grid;
+  gap: 14px;
+  max-width: 62ch;
+  margin-bottom: clamp(28px, 3.2vw, 52px);
+}
+
+.stops__lede {
+  color: var(--ink-soft);
+}
+
+.stops__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.stop {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(12px, 1.1vw, 16px);
+  border-radius: clamp(14px, 1.2vw, 20px);
+  background: var(--ivory-2);
+  transition: background var(--dur-quick) var(--ease);
+}
+
+.stop--link:hover {
+  background: var(--sand);
+}
+
+.stop__media {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: clamp(10px, 0.9vw, 14px);
+  background: var(--ivory);
+}
+
+.stop__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+  transition: transform 1.1s var(--ease);
+}
+
+.stop--link:hover .stop__media img {
+  transform: scale(1.04);
+}
+
+/* the index sits on the image as a small disc, not in the text column */
+.stop__no {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(249, 245, 234, 0.92);
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  color: var(--ink);
+}
+
+/* the location as a pill, the way the references label their cards */
+.stop__where {
+  align-self: flex-start;
+  margin-top: clamp(14px, 1.4vw, 20px);
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--ivory);
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gerua);
+}
+
+.stop__name {
+  margin-top: 12px;
+  padding-inline: 4px;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.stop__copy {
+  margin-top: 8px;
+  padding-inline: 4px;
+  padding-bottom: 6px;
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.stop__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding: 8px 4px 2px;
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gerua);
+}
+
+.stop--link:hover .stop__go svg {
+  transform: translateX(4px);
+}
+
+.stop__go svg {
+  transition: transform var(--dur-quick) var(--ease);
+}
+
+/* ---- planning ---- */
+
+.plan__head {
+  display: grid;
+  gap: 14px;
+  margin-bottom: clamp(24px, 2.8vw, 44px);
+}
+
+/* stretch, not start: the aside is the taller column, and with `start` the
+   left column only took its content height — so the invitation's flex:1 had
+   no leftover space to absorb and the two ends never met */
+.plan__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  gap: 6px;
+  align-items: stretch;
+}
+
+/* the steps column and the invitation beneath it, so the two together match
+   the height of the taller aside */
+.plan__main {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.plan__steps {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  list-style: none;
+}
+
+.stay {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(18px, 1.8vw, 28px);
+  border-radius: clamp(14px, 1.2vw, 20px);
+  background: var(--ivory-2);
+}
+
+.stay__no {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  letter-spacing: 0.16em;
+  color: var(--gold);
+}
+
+.stay__len {
+  margin-top: 10px;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.stay__what {
+  margin-top: 8px;
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.plan__invite {
+  /* takes whatever height the aside leaves over, so the column has no gap */
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(16px, 2vw, 34px);
+  padding: clamp(18px, 1.8vw, 30px);
+  border-radius: clamp(14px, 1.2vw, 20px);
+  background: var(--maroon);
+  color: var(--cream);
+}
+
+.plan__invite-copy {
+  max-width: 26ch;
+  font-family: var(--font-serif);
+  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  line-height: 1.3;
+  color: var(--cream);
+}
+
+.plan__invite-cta {
+  color: var(--cream);
+  box-shadow: inset 0 0 0 1px rgba(242, 237, 224, 0.5);
+}
+
+.plan__invite-cta:hover {
+  background: var(--cream);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--cream);
+}
+
+.plan__aside {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(18px, 1.8vw, 28px);
+  border-radius: clamp(14px, 1.2vw, 20px);
+  box-shadow: inset 0 0 0 1px var(--hairline-strong);
+}
+
+.plan__season {
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.plan__pill {
+  display: inline-block;
+  margin-right: 10px;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--gerua-100);
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gerua-600);
+}
+
+.plan__facts {
+  margin-top: clamp(18px, 1.8vw, 26px);
+  border-top: 1px solid var(--hairline);
+}
+
+.plan__facts > div {
+  padding: clamp(11px, 1.1vw, 15px) 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.plan__facts > div:last-child {
+  border-bottom: 0;
+}
+
+.plan__facts dt {
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.plan__facts dd {
+  margin-top: 3px;
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  color: var(--ink);
+}
+
+.plan__cta {
+  justify-content: center;
+  margin-top: auto;
+  padding-top: clamp(18px, 1.8vw, 26px);
+}
+
+@media (max-width: 1080px) {
+  .stops__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .plan__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .stops__grid,
+  .plan__steps {
+    grid-template-columns: 1fr;
+  }
+
+  .plan__invite {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ============================================================
+   MOBILE — inner pages
+   The same phone layer global.css closes with: a stepped-down
+   type scale, full-width stacks, and swipe-snap rails. Appended
+   last so these declarations win at equal specificity.
+   ============================================================ */
+
+/* the catalogue drops to two across as soon as the rail stacks —
+   the base .shop-grid rule otherwise outranks global's curated
+   overrides in the cascade and held three columns on phones */
+@media (max-width: 900px) {
+  .shop-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  /* ---- mastheads ------------------------------------------- */
+
+  .page-hero__title {
+    font-size: clamp(29px, 8.2vw, 36px);
+  }
+
+  .page-hero__lede {
+    font-size: 14.5px;
+  }
+
+  .page-hero--frame {
+    min-height: clamp(380px, 68vh, 620px);
+  }
+
+  .page-meta {
+    gap: 16px 22px;
+  }
+
+  .page-meta__value {
+    font-size: 25px;
+  }
+
+  .page-meta__label {
+    font-size: 11.5px;
+  }
+
+  /* ---- shop banner: the overlay was capped at 33vw ---------- */
+
+  .shop-banner__overlay > * {
+    max-width: min(86vw, 480px);
+  }
+
+  .shop-banner__title,
+  .visit-hero__title {
+    font-size: clamp(30px, 8.6vw, 38px);
+  }
+
+  .shop-banner__copy,
+  .visit-hero__lede {
+    font-size: 14.5px;
+  }
+
+  .visit-hero {
+    height: clamp(380px, 64vh, 560px);
+  }
+
+  /* ---- assurance strip: the copy comes back ----------------- */
+
+  .shop-assure__copy {
+    display: block;
+    font-size: 12px;
+  }
+
+  .shop-assure__title {
+    font-size: 16.5px;
+  }
+
+  /* ---- medallions swipe one at a time ----------------------- */
+
+  .medallion {
+    scroll-snap-stop: always;
+  }
+
+  .medallion__name {
+    font-size: 17.5px;
+  }
+
+  /* ---- shared display type steps down ----------------------- */
+
+  .studio-row__name,
+  .spotlight-col__name,
+  .tl__title,
+  .way__name,
+  .craft-entry__title,
+  .enquiry__done-title {
+    font-size: clamp(24px, 6.8vw, 29px);
+  }
+
+  .craft-open__lead {
+    font-size: clamp(22px, 6.2vw, 27px);
+  }
+
+  .founder__quote {
+    font-size: clamp(19px, 5.4vw, 24px);
+  }
+
+  .page-cta p,
+  .plate__head {
+    font-size: clamp(20px, 5.6vw, 26px);
+  }
+
+  .gloss__word {
+    font-size: 25px;
+  }
+
+  .gloss__meaning {
+    font-size: 18px;
+  }
+
+  .tl__year,
+  .studio-row__no,
+  .spotlight-col__facts strong,
+  .mark__no,
+  .step__no,
+  .visit-row__no,
+  .why-card__no,
+  .review-add__score {
+    font-size: 25px;
+  }
+
+  .why-card__title,
+  .strand-card__name,
+  .mark__title,
+  .step__title,
+  .lldc-card__name,
+  .visit-row__name,
+  .stay__len,
+  .stop__name,
+  .hero-plaque__title,
+  .pdp__detail-summary {
+    font-size: 17.5px;
+  }
+
+  .review__body,
+  .pdp__quote {
+    font-size: 17px;
+  }
+
+  /* ---- product page ---------------------------------------- */
+
+  .pdp__name {
+    font-size: clamp(24px, 6.8vw, 30px);
+  }
+
+  .pdp__option-price {
+    font-size: 17.5px;
+  }
+
+  /* ---- studio spreads breathe less -------------------------- */
+
+  .studio-row {
+    padding-block: 26px;
+  }
+
+  .way__body {
+    padding: 20px 18px;
+  }
+
+  /* ---- story timeline --------------------------------------- */
+
+  .tl {
+    padding-left: 22px;
+    padding-bottom: 30px;
+  }
+}
+
+/* ---- ≤600: the last inner-page grids unroll ------------------ */
+
+@media (max-width: 600px) {
+  .shop-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .shop-grid .piece__media {
+    aspect-ratio: 4 / 5;
+  }
+
+  .people {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .origin__gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .origin__shot {
+    aspect-ratio: 16 / 10;
+  }
+
+  .pdp__cta {
+    grid-template-columns: 1fr;
+  }
+
+  .pdp__wish {
+    width: 100%;
+    padding: 13px;
+  }
+}
