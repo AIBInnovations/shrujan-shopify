@@ -1,1 +1,107 @@
-[]
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Shrujan — Heritage by Hand",
+    "theme_version": "2.0.0",
+    "theme_author": "Shrujan",
+    "theme_documentation_url": "https://shrujan.com",
+    "theme_support_url": "https://shrujan.com"
+  },
+  {
+    "name": "Brand",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Used by the header. Leave the image empty to keep the packaged Shrujan wordmark."
+      },
+      { "type": "image_picker", "id": "logo", "label": "Logo" },
+      { "type": "range", "id": "logo_width", "label": "Logo width", "min": 80, "max": 320, "step": 4, "unit": "px", "default": 168 },
+      { "type": "text", "id": "brand_tagline", "label": "Tagline", "default": "Heritage by Hand" }
+    ]
+  },
+  {
+    "name": "Colours",
+    "settings": [
+      { "type": "header", "content": "Canvas" },
+      { "type": "color", "id": "color_ivory", "label": "Page background", "default": "#f9f5ea" },
+      { "type": "color", "id": "color_ivory_2", "label": "Raised surface", "default": "#eae3d2" },
+      { "type": "color", "id": "color_cream", "label": "Text on dark", "default": "#f2ede0" },
+      { "type": "color", "id": "color_sand", "label": "Borders and inset panels", "default": "#dcd2bc" },
+      { "type": "header", "content": "Text" },
+      { "type": "color", "id": "color_ink", "label": "Primary text", "default": "#2b1d19" },
+      { "type": "color", "id": "color_ink_soft", "label": "Secondary text", "default": "#75665f" },
+      { "type": "color", "id": "color_ink_deep", "label": "Deepest text", "default": "#3a120e" },
+      { "type": "header", "content": "Dark panels" },
+      { "type": "color", "id": "color_maroon", "label": "Maroon panel", "default": "#571c16" },
+      { "type": "color", "id": "color_maroon_deep", "label": "Maroon panel, deep", "default": "#43140f" },
+      { "type": "header", "content": "Accents" },
+      { "type": "color", "id": "color_gerua", "label": "Primary accent", "default": "#b23127" },
+      { "type": "color", "id": "color_gerua_600", "label": "Accent hover", "default": "#90231c" },
+      { "type": "color", "id": "color_gerua_300", "label": "Accent on dark", "default": "#c05c50" },
+      { "type": "color", "id": "color_gold", "label": "Gold", "default": "#b99155" },
+      { "type": "color", "id": "color_tan", "label": "Tan", "default": "#c7a56a" }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "select",
+        "id": "font_pairing",
+        "label": "Font pairing",
+        "info": "Heritage is the pairing this site was designed with.",
+        "default": "heritage",
+        "options": [
+          { "value": "heritage", "label": "Heritage: Cormorant Garamond + Jost" },
+          { "value": "classic", "label": "Classic: Playfair Display + Inter" },
+          { "value": "modern", "label": "Modern: Fraunces + Work Sans" }
+        ]
+      },
+      { "type": "range", "id": "type_scale", "label": "Overall text size", "min": 90, "max": 115, "step": 1, "unit": "%", "default": 100 }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      { "type": "range", "id": "page_max", "label": "Content width", "min": 1200, "max": 1900, "step": 20, "unit": "px", "default": 1580 },
+      { "type": "range", "id": "header_max", "label": "Header width", "min": 1200, "max": 1920, "step": 20, "unit": "px", "default": 1880 },
+      { "type": "range", "id": "gutter_scale", "label": "Side gutters", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
+      { "type": "range", "id": "section_gap_scale", "label": "Space between sections", "min": 50, "max": 160, "step": 5, "unit": "%", "default": 100 },
+      { "type": "range", "id": "radius", "label": "Corner radius", "min": 0, "max": 28, "step": 1, "unit": "px", "default": 10 },
+      { "type": "range", "id": "radius_pill", "label": "Pill radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 30 }
+    ]
+  },
+  {
+    "name": "Motion",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Scroll reveals, smooth scrolling and the hero timeline. Visitors whose device asks for reduced motion always get a still page."
+      },
+      { "type": "checkbox", "id": "animations_enabled", "label": "Animate on scroll", "default": true },
+      { "type": "checkbox", "id": "smooth_scroll", "label": "Smooth scrolling", "default": true },
+      { "type": "range", "id": "motion_speed", "label": "Animation speed", "min": 50, "max": 150, "step": 5, "unit": "%", "default": 100 },
+      {
+        "type": "select",
+        "id": "motion_easing",
+        "label": "Easing",
+        "default": "premium",
+        "options": [
+          { "value": "premium", "label": "Premium, no overshoot" },
+          { "value": "soft", "label": "Soft, long tail" },
+          { "value": "linear", "label": "Linear" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Custom CSS",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Applies to every page. For one section only, use that section's own Custom CSS box."
+      },
+      { "type": "textarea", "id": "custom_css", "label": "Custom CSS" }
+    ]
+  }
+]

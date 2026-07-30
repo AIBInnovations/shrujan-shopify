@@ -7,6 +7,15 @@
 
   gsap.registerPlugin(ScrollTrigger);
 
+  /* Theme settings → Motion, published by layout/theme.liquid. Defaults keep
+     the packaged behaviour when the layout has not set them. */
+  var MOTION = window.SHRUJAN_MOTION || {};
+  var ANIMATE = MOTION.animate !== false;
+  var SMOOTH = MOTION.smooth !== false;
+  var SPEED = typeof MOTION.speed === 'number' && MOTION.speed > 0 ? MOTION.speed : 1;
+  /* a higher "speed" percentage means quicker, so it divides the duration */
+  var dur = function (seconds) { return seconds / SPEED; };
+
   /* ------------------------------------------------------------------ *
    *  Smooth scroll (port of hooks/useSmoothScroll.js)
    * ------------------------------------------------------------------ */
@@ -117,9 +126,11 @@
     // Honour the OS setting: no hijacked scrolling for people who opt out.
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
     if (reduced.matches) return;
+    // Theme settings → Motion → Smooth scrolling
+    if (!SMOOTH) return;
 
     var lenis = new Lenis({
-      duration: 1.05,
+      duration: dur(1.05),
       // gentle exponential ease-out; no overshoot, matching the site's motion
       easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
       smoothWheel: true,
@@ -153,6 +164,12 @@
    * ------------------------------------------------------------------ */
 
   function initReveals() {
+    // Theme settings → Motion → Animate on scroll: show everything in place.
+    if (!ANIMATE) {
+      gsap.set('[data-reveal], [data-reveal-child] > *', { clearProps: 'all', opacity: 1 });
+      return;
+    }
+
     var mm = gsap.matchMedia();
 
     mm.add('(prefers-reduced-motion: no-preference)', function () {
@@ -166,7 +183,7 @@
           {
             opacity: 1,
             y: 0,
-            duration: 0.85,
+            duration: dur(0.85),
             ease: 'power3.out',
             scrollTrigger: { trigger: el, start: 'top 88%', once: true },
           }
@@ -181,7 +198,7 @@
           {
             opacity: 1,
             y: 0,
-            duration: 0.8,
+            duration: dur(0.8),
             ease: 'power3.out',
             stagger: 0.09,
             scrollTrigger: { trigger: group, start: 'top 86%', once: true },

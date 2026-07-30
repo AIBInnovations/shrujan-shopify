@@ -1,0 +1,100 @@
+{%- comment -%}
+  Shared per-section design controls. Every section renders this once, right at
+  its top, and gets: width, extra spacing (desktop + mobile), colour overrides,
+  per-device visibility, an animation switch and a custom-CSS escape hatch.
+
+  Two rules make this safe:
+   1. Every default is a no-op — a merchant who touches nothing gets exactly the
+      hand-built design. Spacing is applied as *margin* rather than padding, so
+      it adds to the section's own rhythm instead of overwriting it.
+   2. `.shopify-section` is `display: contents`, so the wrapper itself cannot be
+      painted or padded. Colours are therefore published as CSS custom
+      properties (which still inherit through `display: contents`) and spacing
+      targets the section's own first/last child.
+
+  Usage: {% render 'section-design', section: section %}
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign sel = '#shopify-section-' | append: section.id
+  assign has_style = false
+  if s.sec_width != 'default' or s.sec_space_top != 0 or s.sec_space_bottom != 0
+    assign has_style = true
+  endif
+  if s.sec_space_top_m != 0 or s.sec_space_bottom_m != 0 or s.sec_bg != blank
+    assign has_style = true
+  endif
+  if s.sec_text != blank or s.sec_accent != blank or s.sec_hide_desktop or s.sec_hide_mobile
+    assign has_style = true
+  endif
+  if s.sec_animate == false or s.sec_custom_css != blank
+    assign has_style = true
+  endif
+-%}
+
+{%- if has_style -%}
+  <style>
+    {%- if s.sec_width == 'full' -%}
+      {{ sel }} { --page-max: 100%; }
+    {%- elsif s.sec_width == 'narrow' -%}
+      {{ sel }} { --page-max: 1180px; }
+    {%- elsif s.sec_width == 'wide' -%}
+      {{ sel }} { --page-max: 1880px; }
+    {%- endif -%}
+
+    {%- if s.sec_bg != blank -%}
+      {{ sel }} > * { background-color: {{ s.sec_bg }}; }
+      {{ sel }} { --ivory: {{ s.sec_bg }}; }
+    {%- endif -%}
+    {%- if s.sec_text != blank -%}
+      {{ sel }} { --ink: {{ s.sec_text }}; color: {{ s.sec_text }}; }
+    {%- endif -%}
+    {%- if s.sec_accent != blank -%}
+      {{ sel }} { --gerua: {{ s.sec_accent }}; --gold: {{ s.sec_accent }}; }
+    {%- endif -%}
+
+    {%- if s.sec_space_top != 0 -%}
+      {{ sel }} > *:first-child { margin-top: {{ s.sec_space_top }}px; }
+    {%- endif -%}
+    {%- if s.sec_space_bottom != 0 -%}
+      {{ sel }} > *:last-child { margin-bottom: {{ s.sec_space_bottom }}px; }
+    {%- endif -%}
+
+    @media (max-width: 767px) {
+      {%- if s.sec_space_top_m != 0 -%}
+        {{ sel }} > *:first-child { margin-top: {{ s.sec_space_top_m }}px; }
+      {%- endif -%}
+      {%- if s.sec_space_bottom_m != 0 -%}
+        {{ sel }} > *:last-child { margin-bottom: {{ s.sec_space_bottom_m }}px; }
+      {%- endif -%}
+      {%- if s.sec_hide_mobile -%}
+        {{ sel }} { display: none !important; }
+      {%- endif -%}
+    }
+    {%- if s.sec_hide_desktop -%}
+      @media (min-width: 768px) { {{ sel }} { display: none !important; } }
+    {%- endif -%}
+
+    {%- comment -%}
+      Animation off: the reveal tweens are GSAP inline styles, so `!important`
+      is what actually wins here — the section simply renders in place.
+    {%- endcomment -%}
+    {%- if s.sec_animate == false -%}
+      {{ sel }} [data-reveal],
+      {{ sel }} [data-reveal-child] > *,
+      {{ sel }} [data-parallax] img {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    {%- endif -%}
+
+    {%- comment -%}
+      Custom CSS is nested inside the section's own id, so a merchant's plain
+      selector (`.hero__title { … }`) only ever affects this section.
+    {%- endcomment -%}
+    {%- if s.sec_custom_css != blank -%}
+      {{ sel }} { {{ s.sec_custom_css }} }
+    {%- endif -%}
+  </style>
+{%- endif -%}

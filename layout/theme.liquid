@@ -8,15 +8,97 @@
     <title>SHRUJAN — Heritage by Hand</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap"
-      rel="stylesheet"
-    >
+    {%- comment -%} the pairing chosen in Theme settings → Typography {%- endcomment -%}
+    {%- case settings.font_pairing -%}
+      {%- when 'classic' -%}
+        {%- assign font_families = 'family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@300;400;500;600' -%}
+        {%- assign font_serif = "'Playfair Display', Georgia, serif" -%}
+        {%- assign font_sans = "'Inter', system-ui, sans-serif" -%}
+      {%- when 'modern' -%}
+        {%- assign font_families = 'family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Work+Sans:wght@300;400;500;600' -%}
+        {%- assign font_serif = "'Fraunces', Georgia, serif" -%}
+        {%- assign font_sans = "'Work Sans', system-ui, sans-serif" -%}
+      {%- else -%}
+        {%- assign font_families = 'family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Jost:wght@300;400;500;600' -%}
+        {%- assign font_serif = "'Cormorant Garamond', 'Times New Roman', Georgia, serif" -%}
+        {%- assign font_sans = "'Jost', 'Futura', 'Avenir Next', system-ui, sans-serif" -%}
+    {%- endcase -%}
+    <link href="https://fonts.googleapis.com/css2?{{ font_families }}&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ 'shrujan-global.css' | asset_url }}">
     <link rel="stylesheet" href="{{ 'shrujan-pages.css' | asset_url }}">
     {% comment %} Section/section-group wrapper divs must not affect layout —
         the stylesheets were written for the unwrapped React DOM. {% endcomment %}
     <style>.shopify-section{display:contents}</style>
+
+    {%- comment -%}
+      Theme settings → the design tokens the stylesheets already run on, so the
+      customizer changes the real system rather than layering overrides. Emitted
+      after the stylesheets, and every default equals the packaged value.
+    {%- endcomment -%}
+    {%- liquid
+      case settings.motion_easing
+        when 'soft'
+          assign ease = 'cubic-bezier(0.16, 1, 0.3, 1)'
+        when 'linear'
+          assign ease = 'linear'
+        else
+          assign ease = 'cubic-bezier(0.4, 0, 0.2, 1)'
+      endcase
+      assign speed = settings.motion_speed | default: 100 | divided_by: 100.0
+      assign gutter_f = settings.gutter_scale | default: 100 | divided_by: 100.0
+      assign gap_f = settings.section_gap_scale | default: 100 | divided_by: 100.0
+    -%}
+    <style>
+      :root {
+        --ivory: {{ settings.color_ivory }};
+        --ivory-2: {{ settings.color_ivory_2 }};
+        --sand: {{ settings.color_sand }};
+        --cream: {{ settings.color_cream }};
+        --ink: {{ settings.color_ink }};
+        --ink-soft: {{ settings.color_ink_soft }};
+        --ink-deep: {{ settings.color_ink_deep }};
+        --maroon: {{ settings.color_maroon }};
+        --maroon-deep: {{ settings.color_maroon_deep }};
+        --tan: {{ settings.color_tan }};
+        --gerua: {{ settings.color_gerua }};
+        --gerua-600: {{ settings.color_gerua_600 }};
+        --gerua-300: {{ settings.color_gerua_300 }};
+        --gold: {{ settings.color_gold }};
+        --hairline: {{ settings.color_ink | color_modify: 'alpha', 0.16 }};
+        --hairline-strong: {{ settings.color_ink | color_modify: 'alpha', 0.4 }};
+        --cream-dim: {{ settings.color_cream | color_modify: 'alpha', 0.72 }};
+
+        --font-serif: {{ font_serif }};
+        --font-sans: {{ font_sans }};
+
+        --page-max: {{ settings.page_max }}px;
+        --header-max: {{ settings.header_max }}px;
+        --gutter: calc(clamp(22px, 4vw, 60px) * {{ gutter_f }});
+        --section-gap: calc(clamp(56px, calc(36px + 5.2vw), 168px) * {{ gap_f }});
+        --radius: {{ settings.radius }}px;
+        --radius-pill: {{ settings.radius_pill }}px;
+
+        --ease: {{ ease }};
+        --dur-quick: {{ 0.25 | times: speed }}s;
+        --dur: {{ 0.55 | times: speed }}s;
+        --dur-slow: {{ 0.9 | times: speed }}s;
+      }
+      {%- if settings.type_scale != 100 -%}
+        {%- assign ts = settings.type_scale | divided_by: 100.0 -%}
+        body { font-size: calc(1rem * {{ ts }}); }
+        h1, h2, h3, h4, .page-hero__title, .hero__title { font-size: calc(1em * {{ ts }}); }
+      {%- endif -%}
+      {%- if settings.custom_css != blank -%}
+        {{ settings.custom_css }}
+      {%- endif -%}
+    </style>
+    <script>
+      window.SHRUJAN_MOTION = {
+        animate: {{ settings.animations_enabled | default: true | json }},
+        smooth: {{ settings.smooth_scroll | default: true | json }},
+        speed: {{ speed }}
+      };
+    </script>
     <script>window.SHRUJAN_ASSET_BASE = "{{ 'shrujan-core.js' | asset_url | split: 'shrujan-core.js' | first }}";</script>
     <script src="{{ 'gsap.min.js' | asset_url }}"></script>
     <script src="{{ 'ScrollTrigger.min.js' | asset_url }}"></script>
