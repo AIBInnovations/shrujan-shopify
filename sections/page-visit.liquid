@@ -401,6 +401,90 @@
     },
     {
       "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "stops_cols_m",
+      "label": "Stop columns",
+      "info": "620px and under, where the stops stack one per row. Between 620 and 1080px the theme shows two.",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "select",
+      "id": "stop_ratio_m",
+      "label": "Stop photograph shape",
+      "info": "620px and under. The stop photograph holds 4:3 at every width otherwise.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default (4:3)"
+        },
+        {
+          "value": "16/9",
+          "label": "Wide (16:9)"
+        },
+        {
+          "value": "1/1",
+          "label": "Square (1:1)"
+        },
+        {
+          "value": "4/5",
+          "label": "Portrait (4:5)"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "ways_cols_m",
+      "label": "Ways-to-visit columns",
+      "info": "900px and under, where the ways stack one per row.",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "select",
+      "id": "way_ratio_m",
+      "label": "Ways-to-visit photograph shape",
+      "info": "900px and under. It holds 16:10 at every width otherwise.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default (16:10)"
+        },
+        {
+          "value": "16/9",
+          "label": "Wide (16:9)"
+        },
+        {
+          "value": "4/3",
+          "label": "Landscape (4:3)"
+        },
+        {
+          "value": "1/1",
+          "label": "Square (1:1)"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "steps_cols_m",
+      "label": "How-long-to-stay columns",
+      "info": "620px and under, where the pairs of stay lengths stack.",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "header",
       "content": "Design"
     },
     {

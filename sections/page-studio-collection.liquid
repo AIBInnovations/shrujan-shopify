@@ -9,12 +9,44 @@
   assign cfg = section.settings
   assign root_sel = '#shopify-section-' | append: section.id
 -%}
-{%- if cfg.strand_cols != 3 -%}
+{%- liquid
+  comment
+    Mobile group. Both of this page's layouts step at the same 900px: the strand
+    cards go to one column, and the media/body rows stack — with the theme
+    resetting the alternating order there so every row leads with its photograph.
+    That reset is what a stacking-order control keys on. Neither the card nor the
+    row photograph has a phone shape of its own; both hold 4:3 to 320px.
+  endcomment
+  assign sc_style = false
+  if cfg.strand_cols != 3 or cfg.strand_cols_m != 1
+    assign sc_style = true
+  endif
+  if cfg.strand_ratio_m != 'default' or cfg.row_order_m != 'image'
+    assign sc_style = true
+  endif
+-%}
+{%- if sc_style -%}
   <style>
-    {{ root_sel }} { --strand-cols: {{ cfg.strand_cols }}; }
-    @media (min-width: 901px) {
-      {{ root_sel }} .strand-cards { grid-template-columns: repeat(var(--strand-cols), minmax(0, 1fr)); }
-    }
+    {%- if cfg.strand_cols != 3 -%}
+      {{ root_sel }} { --strand-cols: {{ cfg.strand_cols }}; }
+      @media (min-width: 901px) {
+        {{ root_sel }} .strand-cards { grid-template-columns: repeat(var(--strand-cols), minmax(0, 1fr)); }
+      }
+    {%- endif -%}
+    {%- if cfg.strand_cols_m != 1 or cfg.strand_ratio_m != 'default' or cfg.row_order_m != 'image' -%}
+      @media (max-width: 900px) {
+        {%- if cfg.strand_cols_m != 1 -%}
+          {{ root_sel }} .strand-cards { grid-template-columns: repeat({{ cfg.strand_cols_m }}, minmax(0, 1fr)); }
+        {%- endif -%}
+        {%- if cfg.strand_ratio_m != 'default' -%}
+          {{ root_sel }} .strand-card__media { aspect-ratio: {{ cfg.strand_ratio_m }}; }
+        {%- endif -%}
+        {%- if cfg.row_order_m != 'image' -%}
+          {{ root_sel }} .studio-row__media { order: 2; }
+          {{ root_sel }} .studio-row__body { order: 1; }
+        {%- endif -%}
+      }
+    {%- endif -%}
   </style>
 {%- endif -%}
 <div class="page">
