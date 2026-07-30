@@ -1,0 +1,270 @@
+{%- liquid
+  assign max_sold = 0
+  for b in section.blocks
+    assign s = b.settings.sold | plus: 0
+    if s > max_sold
+      assign max_sold = s
+    endif
+  endfor
+  if max_sold == 0
+    assign max_sold = 1
+  endif
+-%}
+<section class="section container best" id="bestsellers">
+  <div class="section-head" data-reveal>
+    <div class="section-head__titles">
+      <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+      <h2 class="section-title">{{ section.settings.title }}</h2>
+    </div>
+
+    <div class="section-head__aside">
+      <p class="best__legend">{{ section.settings.legend }}</p>
+      <div class="carousel-arrows">
+        <button type="button" aria-label="Previous bestsellers">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5 8 12l6.5 6.5"></path></svg>
+        </button>
+        <button type="button" aria-label="Next bestsellers">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9.5 5.5 6.5 6.5-6.5 6.5"></path></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="best__rail" data-reveal-child>
+    {%- for block in section.blocks %}
+    <a class="best-card" href="{{ block.settings.link }}"{{ block.shopify_attributes }}>
+      <span class="best-card__rank"><span class="best-card__num">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span><span class="best-card__thread" aria-hidden="true"></span></span>
+      <div class="best-card__media">
+        <img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1200 }}{% else %}{{ block.settings.img_asset | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
+        <button class="best-card__wish" type="button" aria-label="Save {{ block.settings.name | escape }} to wishlist">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19.8S4.5 15.3 4.5 9.9c0-2.6 2-4.4 4.2-4.4 1.5 0 2.7.8 3.3 2 .6-1.2 1.8-2 3.3-2 2.2 0 4.2 1.8 4.2 4.4 0 5.4-7.5 9.9-7.5 9.9Z"></path></svg>
+        </button>
+        {% if block.settings.note != blank %}<span class="best-card__note">{{ block.settings.note }}</span>{% endif %}
+      </div>
+      <div class="best-card__info">
+        <p class="best-card__name">{{ block.settings.name }}</p>
+        <p class="best-card__craft">{{ block.settings.craft }}</p>
+        <p class="best-card__price">{{ block.settings.price }}{% if block.settings.was_price != blank %}<span>{{ block.settings.was_price }}</span>{% endif %}</p>
+        <span class="best-card__meter" style="--fill: {{ block.settings.sold | plus: 0 | times: 100.0 | divided_by: max_sold | round }}%" aria-hidden="true"></span>
+        <p class="best-card__sold"><strong>{{ block.settings.sold }}</strong> {{ section.settings.sold_label }}</p>
+        <span class="best-card__swatches" aria-hidden="true">{% assign swatch_list = block.settings.swatches | split: ',' %}{% for swatch in swatch_list %}<i style="background: {{ swatch | strip }}"></i>{% endfor %}</span>
+      </div>
+    </a>
+    {%- endfor %}
+  </div>
+
+  <div class="best__more" data-reveal>
+    <a class="arrow-link" href="{{ section.settings.more_link }}">{{ section.settings.more_label }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
+  </div>
+</section>
+
+<script>
+(function () {
+  var root = document.querySelector('.best');
+  if (!root || root.__shrujanInit) return;
+  root.__shrujanInit = true;
+
+  var rail = root.querySelector('.best__rail');
+
+  // Scroll one full page — however many cards currently fit.
+  function page(dir) {
+    if (!rail) return;
+    rail.scrollBy({ left: dir * rail.clientWidth, behavior: 'smooth' });
+  }
+
+  var arrows = root.querySelectorAll('.carousel-arrows button');
+  if (arrows[0]) arrows[0].addEventListener('click', function () { page(-1); });
+  if (arrows[1]) arrows[1].addEventListener('click', function () { page(1); });
+
+  // The wish button sits inside the card link; keep a tap on it from navigating.
+  root.querySelectorAll('.best-card__wish').forEach(function (btn) {
+    btn.addEventListener('click', function (e) { e.preventDefault(); });
+  });
+})();
+</script>
+{% schema %}
+{
+  "name": "Bestsellers carousel",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Most Loved"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Title",
+      "default": "Bestsellers, ranked by <em>you</em>"
+    },
+    {
+      "type": "text",
+      "id": "legend",
+      "label": "Legend",
+      "default": "Ordered by pieces taken home over the last six months."
+    },
+    {
+      "type": "text",
+      "id": "sold_label",
+      "label": "Sold count label",
+      "default": "taken home",
+      "info": "Shown after the number on every card."
+    },
+    {
+      "type": "text",
+      "id": "more_label",
+      "label": "Bottom link label",
+      "default": "See the full ranking"
+    },
+    {
+      "type": "url",
+      "id": "more_link",
+      "label": "Bottom link",
+      "default": "/pages/shop-shrujan#catalogue"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "img_asset",
+          "label": "Fallback image (theme asset filename)",
+          "default": "sj-black-pakko-hand-embroidered-kanchli-1.webp",
+          "info": "Used when no image is picked above."
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Image alt text",
+          "default": "Model wearing the black pakko hand embroidered kanchli"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Product name",
+          "default": "Black Pakko Hand Embroidered Kanchli"
+        },
+        {
+          "type": "text",
+          "id": "craft",
+          "label": "Craft line",
+          "default": "Pakko · Kutch"
+        },
+        {
+          "type": "text",
+          "id": "price",
+          "label": "Price",
+          "default": "₹ 25,000"
+        },
+        {
+          "type": "text",
+          "id": "was_price",
+          "label": "Was price (optional)",
+          "default": ""
+        },
+        {
+          "type": "number",
+          "id": "sold",
+          "label": "Pieces taken home",
+          "default": 412,
+          "info": "The meter fills relative to the highest count in this section."
+        },
+        {
+          "type": "text",
+          "id": "note",
+          "label": "Note badge",
+          "default": "Reordered by 6 in 10 buyers"
+        },
+        {
+          "type": "text",
+          "id": "swatches",
+          "label": "Swatch colors (comma-separated hex)",
+          "default": "#241f1f, #c7a56a, #f2ede0"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "default": "/products/kanchli-copy"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bestsellers carousel",
+      "blocks": [
+        {
+          "type": "product",
+          "settings": {
+            "img_asset": "sj-black-pakko-hand-embroidered-kanchli-1.webp",
+            "alt": "Model wearing the black pakko hand embroidered kanchli",
+            "name": "Black Pakko Hand Embroidered Kanchli",
+            "craft": "Pakko · Kutch",
+            "price": "₹ 25,000",
+            "was_price": "",
+            "sold": 412,
+            "note": "Reordered by 6 in 10 buyers",
+            "swatches": "#241f1f, #c7a56a, #f2ede0",
+            "link": "/products/kanchli-copy"
+          }
+        },
+        {
+          "type": "product",
+          "settings": {
+            "img_asset": "sj-green-hand-woven-top-1.webp",
+            "alt": "Green Hand woven Top, made in Kutch",
+            "name": "Green Hand woven Top",
+            "craft": "Handloom · Bhujodi",
+            "price": "₹ 7,040",
+            "was_price": "₹ 8,800",
+            "sold": 368,
+            "note": "Handwoven, then cut in the atelier",
+            "swatches": "#2f6b52, #c7a56a, #f2ede0",
+            "link": "/products/green-hand-woven-top"
+          }
+        },
+        {
+          "type": "product",
+          "settings": {
+            "img_asset": "sj-pakko-embroidered-divya-bag-1.webp",
+            "alt": "Tote Bag, hand-embroidered in Kutch",
+            "name": "Tote Bag",
+            "craft": "Kutchi hand-embroidery",
+            "price": "₹ 6,800",
+            "was_price": "",
+            "sold": 344,
+            "note": "Our most gifted piece",
+            "swatches": "#8d2f26, #c7a56a, #f2ede0",
+            "link": "/products/pakko-embroidered-divya-bag"
+          }
+        },
+        {
+          "type": "product",
+          "settings": {
+            "img_asset": "sj-ijari-mashroo-pant-1.webp",
+            "alt": "Ijari Mashroo Pant, made in Kutch",
+            "name": "Ijari Mashroo Pant",
+            "craft": "Kutchi hand-embroidery",
+            "price": "₹ 8,800",
+            "was_price": "₹ 11,000",
+            "sold": 291,
+            "note": "Mashroo silk, woven in Bhuj",
+            "swatches": "#8d2f26, #c7a56a, #f2ede0",
+            "link": "/products/mashroo-pant"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

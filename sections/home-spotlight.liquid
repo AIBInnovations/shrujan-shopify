@@ -1,0 +1,226 @@
+<section class="section container spotlight" id="heritage">
+  <div class="spotlight__head" data-reveal>
+    <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+
+    <h2 class="spotlight__title">
+      <span class="spotlight__line">{{ section.settings.title_l1_a | escape }}<span class="spotlight__chip"><img src="{% if section.settings.chip1_img %}{{ section.settings.chip1_img | image_url: width: 1000 }}{% else %}{{ 'hero-beside-right.webp' | asset_url }}{% endif %}" alt="" loading="lazy"></span>{{ section.settings.title_l1_b | escape }}</span>
+      <span class="spotlight__line"><span class="spotlight__chip"><img src="{% if section.settings.chip2_img %}{{ section.settings.chip2_img | image_url: width: 900 }}{% else %}{{ 'top-right.webp' | asset_url }}{% endif %}" alt="" loading="lazy"></span>{{ section.settings.title_l2 | escape }}</span>
+    </h2>
+  </div>
+
+  <div class="spotlight__split" data-reveal>
+    <p class="spotlight__copy">{{ section.settings.copy | escape }}</p>
+  </div>
+
+  <div class="spotlight__stage" data-reveal>
+    <div class="spotlight__figure">
+      <span class="spotlight__circle" aria-hidden="true"></span>
+
+      <svg class="spotlight__arc" viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="48.5" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-dasharray="82 223"></circle>
+      </svg>
+
+      <p class="spotlight__ghost" aria-hidden="true">{{ section.settings.ghost_value | escape }}<span>{{ section.settings.ghost_label | escape }}</span></p>
+
+      <img class="spotlight__model" src="{% if section.settings.model_img %}{{ section.settings.model_img | image_url: width: 1200 }}{% else %}{{ 'model.webp' | asset_url }}{% endif %}" alt="{{ section.settings.model_alt | escape }}" loading="lazy">
+
+      <figure class="spotlight__plate spotlight__plate--tr" aria-hidden="true">
+        <img src="{% if section.settings.plate_tr_img %}{{ section.settings.plate_tr_img | image_url: width: 1000 }}{% else %}{{ 'cat-c1.webp' | asset_url }}{% endif %}" alt="" loading="lazy">
+      </figure>
+      <figure class="spotlight__plate spotlight__plate--bl" aria-hidden="true">
+        <img src="{% if section.settings.plate_bl_img %}{{ section.settings.plate_bl_img | image_url: width: 900 }}{% else %}{{ 'top-right.webp' | asset_url }}{% endif %}" alt="" loading="lazy">
+      </figure>
+    </div>
+
+    <div class="spotlight__stat spotlight__stat--women"><strong>{{ section.settings.stat1_value | escape }}</strong><span>{{ section.settings.stat1_label | escape }}</span></div>
+
+    <div class="spotlight__stat spotlight__stat--crafts"><strong>{{ section.settings.stat2_value | escape }}</strong><span>{{ section.settings.stat2_label | escape }}</span></div>
+
+    <p class="spotlight__note">{{ section.settings.note | escape }}</p>
+
+    <div class="spotlight__stat spotlight__stat--villages"><strong>{{ section.settings.stat3_value | escape }}</strong><span>{{ section.settings.stat3_label | escape }}</span></div>
+  </div>
+
+  <div class="spotlight__outro" data-reveal>
+    <p>{{ section.settings.outro | escape }}</p>
+  </div>
+</section>
+
+<script>
+(function () {
+  var root = document.querySelector('.spotlight');
+  if (!root || root.__shrujanInit) return;
+  root.__shrujanInit = true;
+
+  var mm = gsap.matchMedia(root);
+
+  // The arc orbits the circle as the section scrolls through the viewport.
+  mm.add('(prefers-reduced-motion: no-preference)', function () {
+    gsap.fromTo(
+      '.spotlight__arc circle',
+      { rotation: -250, svgOrigin: '50 50' },
+      {
+        rotation: 110,
+        svgOrigin: '50 50',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.spotlight__stage',
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 0.6,
+        },
+      }
+    );
+  });
+
+  mm.add('(prefers-reduced-motion: reduce)', function () {
+    gsap.set('.spotlight__arc circle', { rotation: -118, svgOrigin: '50 50' });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Home spotlight",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Heritage & Innovation"
+    },
+    {
+      "type": "header",
+      "content": "Title"
+    },
+    {
+      "type": "text",
+      "id": "title_l1_a",
+      "label": "Line 1 before chip",
+      "default": "Heritage elegance"
+    },
+    {
+      "type": "image_picker",
+      "id": "chip1_img",
+      "label": "Line 1 chip image"
+    },
+    {
+      "type": "text",
+      "id": "title_l1_b",
+      "label": "Line 1 after chip",
+      "default": "redefined"
+    },
+    {
+      "type": "image_picker",
+      "id": "chip2_img",
+      "label": "Line 2 chip image"
+    },
+    {
+      "type": "text",
+      "id": "title_l2",
+      "label": "Line 2 after chip",
+      "default": "through living craft"
+    },
+    {
+      "type": "textarea",
+      "id": "copy",
+      "label": "Lede copy",
+      "default": "Shrujan merges centuries-old embroidery with contemporary silhouettes, a refined and craft-driven wardrobe that aligns seamlessly with your life."
+    },
+    {
+      "type": "header",
+      "content": "Figure"
+    },
+    {
+      "type": "text",
+      "id": "ghost_value",
+      "label": "Ghost stat value",
+      "default": "100%"
+    },
+    {
+      "type": "text",
+      "id": "ghost_label",
+      "label": "Ghost stat label",
+      "default": "Hand-embroidered"
+    },
+    {
+      "type": "image_picker",
+      "id": "model_img",
+      "label": "Model image"
+    },
+    {
+      "type": "text",
+      "id": "model_alt",
+      "label": "Model image alt text",
+      "default": "Model in a crimson mirror-work jacket draped with a hand-embroidered patola sari"
+    },
+    {
+      "type": "image_picker",
+      "id": "plate_tr_img",
+      "label": "Top-right plate image"
+    },
+    {
+      "type": "image_picker",
+      "id": "plate_bl_img",
+      "label": "Bottom-left plate image"
+    },
+    {
+      "type": "header",
+      "content": "Stats"
+    },
+    {
+      "type": "text",
+      "id": "stat1_value",
+      "label": "Stat 1 value",
+      "default": "4,000+"
+    },
+    {
+      "type": "text",
+      "id": "stat1_label",
+      "label": "Stat 1 label",
+      "default": "Artisan women behind every piece"
+    },
+    {
+      "type": "text",
+      "id": "stat2_value",
+      "label": "Stat 2 value",
+      "default": "12"
+    },
+    {
+      "type": "text",
+      "id": "stat2_label",
+      "label": "Stat 2 label",
+      "default": "Living craft traditions of Kutch"
+    },
+    {
+      "type": "text",
+      "id": "note",
+      "label": "Note",
+      "default": "Every piece signed by the hands that made it"
+    },
+    {
+      "type": "text",
+      "id": "stat3_value",
+      "label": "Stat 3 value",
+      "default": "40"
+    },
+    {
+      "type": "text",
+      "id": "stat3_label",
+      "label": "Stat 3 label",
+      "default": "Villages across the Kutch desert"
+    },
+    {
+      "type": "textarea",
+      "id": "outro",
+      "label": "Outro copy",
+      "default": "Naturally dyed cloth, hand-embroidered over weeks and finished in our Bhuj atelier, made to be worn today and handed down tomorrow."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Home spotlight"
+    }
+  ]
+}
+{% endschema %}

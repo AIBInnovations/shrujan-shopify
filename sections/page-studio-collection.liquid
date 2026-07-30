@@ -1,0 +1,283 @@
+<div class="page">
+  <header class="page-hero page-hero--cover page-hero--frame" data-reveal>
+    <div class="page-hero__bg" aria-hidden="true">
+      <img src="{% if section.settings.hero_image %}{{ section.settings.hero_image | image_url: width: 2000 }}{% else %}{{ 'look-b2.webp' | asset_url }}{% endif %}" alt="" fetchpriority="high">
+      <span class="page-hero__scrim"></span>
+    </div>
+
+    <div class="container page-hero__grid">
+      <div class="page-hero__text">
+        <p class="eyebrow">{{ section.settings.hero_eyebrow | escape }}</p>
+        <h1 class="page-hero__title">{{ section.settings.hero_title }}</h1>
+      </div>
+    </div>
+
+    <span class="page-hero__rule" aria-hidden="true"></span>
+  </header>
+
+  <section class="section container">
+    <div class="section-intro" data-reveal>
+      <p class="eyebrow">{{ section.settings.strands_eyebrow | escape }}</p>
+      <h2 class="section-title">{{ section.settings.strands_title }}</h2>
+    </div>
+
+    <ul class="strand-cards" data-reveal-child>
+      {%- assign strand_i = 0 -%}
+      {%- for block in section.blocks -%}
+      {%- if block.type == 'strand' -%}
+      {%- assign strand_i = strand_i | plus: 1 %}
+      <li {{ block.shopify_attributes }}>
+        <a class="strand-card" href="{{ block.settings.link }}">
+          <span class="strand-card__media">
+            <img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1200 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}" alt="{{ block.settings.image_alt | escape }}" loading="lazy">
+          </span>
+          <span class="strand-card__no">{% if strand_i < 10 %}0{% endif %}{{ strand_i }}</span>
+          <span class="strand-card__name">{{ block.settings.name }}</span>
+          <span class="strand-card__copy">{{ block.settings.copy | escape }}</span>
+          <span class="strand-card__cta">{{ block.settings.cta_label | escape }} <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
+        </a>
+      </li>
+      {%- endif -%}
+      {%- endfor %}
+    </ul>
+  </section>
+
+  <div class="section container studio">
+    {%- assign row_i = 0 -%}
+    {%- for block in section.blocks -%}
+    {%- if block.type == 'row' -%}
+    {%- assign row_i = row_i | plus: 1 -%}
+    {%- if row_i > 1 %}
+{% endif %}
+    <article class="studio-row" data-reveal {{ block.shopify_attributes }}>
+      <div class="studio-row__media" data-parallax>
+        <img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1600 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}" alt="{{ block.settings.image_alt | escape }}" loading="lazy">
+      </div>
+
+      <div class="studio-row__body">
+        <span class="studio-row__no" aria-hidden="true">{% if row_i < 10 %}0{% endif %}{{ row_i }}</span>
+        <p class="studio-row__craft">{{ block.settings.craft | escape }}</p>
+        <h2 class="studio-row__name">{{ block.settings.name }}</h2>
+        <p class="studio-row__copy">{{ block.settings.copy | escape }}</p>
+
+        <ul class="studio-row__facts">
+          {%- assign row_facts = block.settings.facts | newline_to_br | split: '<br />' -%}
+          {%- for fact in row_facts -%}
+          {%- assign fact_text = fact | strip -%}
+          {%- unless fact_text == blank %}
+          <li>{{ fact_text | escape }}</li>
+          {%- endunless -%}
+          {%- endfor %}
+        </ul>
+
+        <a class="arrow-link studio-row__link" href="{{ block.settings.link | escape }}">{{ block.settings.link_label | escape }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
+      </div>
+    </article>
+    {%- endif -%}
+    {%- endfor %}
+  </div>
+
+  <section class="section container page-cta" data-reveal>
+    <p>{{ section.settings.cta_copy | escape }}</p>
+    <a class="btn" href="{{ section.settings.cta_link | escape }}">{{ section.settings.cta_label | escape }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
+  </section>
+</div>
+{% schema %}
+{
+  "name": "Studio Collection",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Background image",
+      "info": "Falls back to the theme's studio look photo."
+    },
+    {
+      "type": "text",
+      "id": "hero_eyebrow",
+      "label": "Eyebrow",
+      "default": "Studio Collection"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "hero_title",
+      "label": "Title",
+      "default": "Small runs, <em>signed</em> by the maker"
+    },
+    {
+      "type": "header",
+      "content": "Strands intro"
+    },
+    {
+      "type": "text",
+      "id": "strands_eyebrow",
+      "label": "Eyebrow",
+      "default": "Studio Collection"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "strands_title",
+      "label": "Title",
+      "default": "Three strands, three ways in"
+    },
+    {
+      "type": "header",
+      "content": "Closing call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_copy",
+      "label": "Line",
+      "default": "The next collection opens to the list first."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Join the studio list"
+    },
+    {
+      "type": "text",
+      "id": "cta_link",
+      "label": "Button link",
+      "default": "#letters"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "strand",
+      "name": "Strand card",
+      "settings": [
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "default": "/pages/studio-heritage"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "asset",
+          "label": "Fallback image file",
+          "info": "Theme asset filename used until an image is picked.",
+          "default": "frame-r2t24.webp"
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "label": "Image description",
+          "default": "Densely hand-embroidered heritage textile in crimson and gold"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "name",
+          "label": "Name",
+          "default": "Heritage"
+        },
+        {
+          "type": "text",
+          "id": "copy",
+          "label": "Copy",
+          "default": "Heirloom textiles made to be collected, preserved and passed on."
+        },
+        {
+          "type": "text",
+          "id": "cta_label",
+          "label": "Link label",
+          "default": "Open"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "name": "Studio piece",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "asset",
+          "label": "Fallback image file",
+          "info": "Theme asset filename used until an image is picked.",
+          "default": "sj-black-pakko-hand-embroidered-kanchli-1.webp"
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "label": "Image description",
+          "default": "Model in a dark embroidered kanchli with a black silk drape"
+        },
+        {
+          "type": "text",
+          "id": "craft",
+          "label": "Craft line",
+          "default": "Aabhla · Kutch"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "name",
+          "label": "Title",
+          "default": "The Kanchli, reworked"
+        },
+        {
+          "type": "textarea",
+          "id": "copy",
+          "label": "Copy",
+          "default": "The Kutchi bodice cut for a modern silhouette, the mirror-work kept exactly as it has always been stitched. Sixty hours on the frame before a single seam is closed."
+        },
+        {
+          "type": "textarea",
+          "id": "facts",
+          "label": "Facts (one per line)",
+          "default": "Hand-embroidered\n60 hours\nEdition of 24"
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "Link label",
+          "default": "Enquire about this piece"
+        },
+        {
+          "type": "text",
+          "id": "link",
+          "label": "Link",
+          "default": "mailto:marketing@shrujan.com?subject=Studio%20enquiry%20%E2%80%94%20The%20Kanchli%2C%20reworked"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Studio Collection",
+      "blocks": [
+        {
+          "type": "strand"
+        },
+        {
+          "type": "strand"
+        },
+        {
+          "type": "strand"
+        },
+        {
+          "type": "row"
+        },
+        {
+          "type": "row"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

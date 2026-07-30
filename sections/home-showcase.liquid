@@ -1,0 +1,151 @@
+<section class="section container manifesto" id="promise">
+  <div class="section-intro" data-reveal>
+    <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+    <h2 class="section-title">
+      {{ section.settings.title }}
+    </h2>
+    <p class="section-intro__copy">
+      {{ section.settings.copy | escape }}
+    </p>
+  </div>
+
+  <ol class="manifesto__grid" data-reveal-child>
+    {%- for block in section.blocks %}
+    <li class="seal" {{ block.shopify_attributes }}>
+      <span class="seal__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
+
+      <span class="seal__ring">
+        <img src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 900 }}{% else %}{{ block.settings.fallback | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
+      </span>
+
+      <h3 class="seal__title">{{ block.settings.title | escape }}</h3>
+      <p class="seal__copy">{{ block.settings.copy | escape }}</p>
+    </li>
+    {%- endfor %}
+  </ol>
+
+  <div class="manifesto__more" data-reveal>
+    <a class="arrow-link" href="{{ section.settings.more_link }}">
+      {{ section.settings.more_label | escape }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
+    </a>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Home promises",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "The future of heritage is here"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Title",
+      "default": "Craft that cares: <em>four promises</em> in every piece"
+    },
+    {
+      "type": "textarea",
+      "id": "copy",
+      "label": "Intro copy",
+      "default": "Living embroidery, natural cloth and honest making, held to the same four standards since 1969."
+    },
+    {
+      "type": "text",
+      "id": "more_label",
+      "label": "Link label",
+      "default": "How we make it"
+    },
+    {
+      "type": "text",
+      "id": "more_link",
+      "label": "Link",
+      "default": "#craft"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "seal",
+      "name": "Promise seal",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "img",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "fallback",
+          "label": "Fallback asset file",
+          "info": "Theme asset filename used until an image is picked.",
+          "default": "top-right.webp"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Image alt text",
+          "default": "Close crop of mirror-work embroidery in crimson and gold threads"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Hand Embroidery"
+        },
+        {
+          "type": "textarea",
+          "id": "copy",
+          "label": "Copy",
+          "default": "Every motif counted and stitched by hand. No machine ever touches the cloth."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Home promises",
+      "blocks": [
+        {
+          "type": "seal",
+          "settings": {
+            "fallback": "top-right.webp",
+            "alt": "Close crop of mirror-work embroidery in crimson and gold threads",
+            "title": "Hand Embroidery",
+            "copy": "Every motif counted and stitched by hand. No machine ever touches the cloth."
+          }
+        },
+        {
+          "type": "seal",
+          "settings": {
+            "fallback": "frame-r5t15.webp",
+            "alt": "Close crop of turquoise Kutchi mirror-work embroidery",
+            "title": "Natural Dyes",
+            "copy": "Madder, indigo and pomegranate on handloom cotton and mulberry silk."
+          }
+        },
+        {
+          "type": "seal",
+          "settings": {
+            "fallback": "bottom-left.webp",
+            "alt": "Master weaver working threads at his handloom",
+            "title": "Fair Wages",
+            "copy": "Paid per piece, on time, directly to the woman whose hands made it."
+          }
+        },
+        {
+          "type": "seal",
+          "settings": {
+            "fallback": "bottom-right.webp",
+            "alt": "Model in a mehendi-green hand-embroidered kurta set",
+            "title": "Made to Last",
+            "copy": "Finished to be worn today, repaired for free, and handed down tomorrow."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

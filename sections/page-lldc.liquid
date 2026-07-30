@@ -1,0 +1,560 @@
+{%- capture nl %}
+{% endcapture -%}
+<div class="page">
+  <header class="page-hero page-hero--cover page-hero--frame" data-reveal>
+    <div class="page-hero__bg" aria-hidden="true">
+      <img src="{% if section.settings.hero_img %}{{ section.settings.hero_img | image_url: width: 2000 }}{% else %}{{ 'lldc-hero.webp' | asset_url }}{% endif %}" alt="" fetchpriority="high">
+      <span class="page-hero__scrim"></span>
+    </div>
+
+    <div class="container page-hero__grid">
+      <div class="page-hero__text">
+        <p class="eyebrow">{{ section.settings.hero_eyebrow }}</p>
+        <h1 class="page-hero__title">{{ section.settings.hero_title }}</h1>
+      </div>
+    </div>
+
+    <span class="page-hero__rule" aria-hidden="true"></span>
+  </header>
+
+  <section class="section container">
+    <div class="origin" data-reveal>
+      <p class="origin__lead">{{ section.settings.origin_lead }}</p>
+      <div class="origin__body">
+        {%- assign origin_paras = section.settings.origin_body | strip | split: nl -%}
+        {%- for para in origin_paras %}
+        <p>{{ para | strip }}</p>
+        {%- endfor %}
+      </div>
+    </div>
+
+    <div class="craft__stats" data-reveal-child>
+    {%- for block in section.blocks %}
+    {%- if block.type == 'stat' %}
+      <div class="stat" {{ block.shopify_attributes }}>
+        <p class="stat__value">{{ block.settings.value }}</p>
+        <p class="stat__label">{{ block.settings.label }}</p>
+      </div>
+    {%- endif %}
+    {%- endfor %}
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="section-intro" data-reveal>
+      <p class="eyebrow">{{ section.settings.show_eyebrow }}</p>
+      <h2 class="section-title">{{ section.settings.show_title }}</h2>
+      <p class="section-intro__copy">{{ section.settings.show_copy }}</p>
+    </div>
+
+    <div class="lldc-show" data-reveal-child>
+    {%- for block in section.blocks %}
+    {%- if block.type == 'figure' %}
+      <figure {{ block.shopify_attributes }}>
+        <img src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 1200 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
+      </figure>
+    {%- endif %}
+    {%- endfor %}
+    </div>
+  </section>
+
+  <section class="section container lldc" aria-label="On the campus">
+    <div class="section-head" data-reveal>
+      <div class="section-head__titles">
+        <p class="eyebrow">{{ section.settings.campus_eyebrow }}</p>
+        <h2 class="section-title">{{ section.settings.campus_title }}</h2>
+      </div>
+    </div>
+
+    <div class="lldc__mosaic" data-reveal-child>
+    {%- for block in section.blocks %}
+    {%- if block.type == 'card' %}
+      <article class="lldc-card{% if block.settings.wide %} lldc-card--wide{% endif %}" {{ block.shopify_attributes }}>
+        <div class="lldc-card__media">
+          <img src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 1200 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
+        </div>
+        <div class="lldc-card__body">
+          <h3 class="lldc-card__name">{{ block.settings.name }}</h3>
+          <p class="lldc-card__copy">{{ block.settings.copy }}</p>
+        </div>
+      </article>
+    {%- endif %}
+    {%- endfor %}
+    </div>
+  </section>
+
+  <section class="section container lldc-visit">
+    <div class="lldc-visit__head" data-reveal>
+      <p class="eyebrow">{{ section.settings.visit_eyebrow }}</p>
+      <h2 class="section-title">{{ section.settings.visit_title }}</h2>
+    </div>
+
+    <div class="visit-plates" data-reveal-child>
+    {%- for block in section.blocks %}
+    {%- if block.type == 'plate' %}
+      <div class="plate" {{ block.shopify_attributes }}>
+        <p class="plate__label">{{ block.settings.label }}</p>
+        <p class="plate__head">{{ block.settings.head }}</p>
+        <ul class="plate__lines">
+          {%- assign plate_lines = block.settings.lines | strip | split: nl -%}
+          {%- for line in plate_lines %}
+          <li>{{ line | strip }}</li>
+          {%- endfor %}
+        </ul>
+      </div>
+    {%- endif %}
+    {%- endfor %}
+    </div>
+
+    <div class="visit-bar" data-reveal>
+      <div class="visit-bar__col">
+        <p class="visit-bar__label">{{ section.settings.bar1_label }}</p>
+        <p class="visit-bar__value">{{ section.settings.bar1_line1 }}<br>{{ section.settings.bar1_line2 }}</p>
+      </div>
+
+      <div class="visit-bar__col">
+        <p class="visit-bar__label">{{ section.settings.bar2_label }}</p>
+        <p class="visit-bar__value"><a href="mailto:{{ section.settings.bar_email | escape }}">{{ section.settings.bar_email }}</a><br><a href="tel:{{ section.settings.bar_tel | escape }}">{{ section.settings.bar_phone }}</a></p>
+      </div>
+
+      <div class="visit-bar__col visit-bar__col--note">
+        <p class="visit-bar__label">{{ section.settings.bar3_label }}</p>
+        <p class="visit-bar__value">{{ section.settings.bar3_note }}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section container page-cta" data-reveal>
+    <p>{{ section.settings.cta_text }}</p>
+    <a class="btn" href="{{ section.settings.cta_url }}" target="_blank" rel="noreferrer noopener">{{ section.settings.cta_label }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "LLDC page",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_img",
+      "label": "Hero image"
+    },
+    {
+      "type": "text",
+      "id": "hero_eyebrow",
+      "label": "Eyebrow",
+      "default": "Living &amp; Learning Design Centre"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "hero_title",
+      "label": "Title",
+      "default": "The crafts of Kutch, <em>kept and taught</em>"
+    },
+    {
+      "type": "header",
+      "content": "Origin"
+    },
+    {
+      "type": "textarea",
+      "id": "origin_lead",
+      "label": "Lead paragraph",
+      "default": "The Living and Learning Design Centre is a museum and cultural institution dedicated to the crafts of Kutch, working to preserve, document and share the region&rsquo;s craft traditions."
+    },
+    {
+      "type": "textarea",
+      "id": "origin_body",
+      "label": "Body paragraphs (one per line)",
+      "default": "Through its galleries, research initiatives and archives, the LLDC offers deeper insight into materials, processes, histories and the communities that sustain these living traditions. It is a space for learning, dialogue and exchange — for artisans, students, researchers and visitors alike.\nIt is, however, much more than a museum. Dedicated to the craftspeople of Kutch, it is a multi-dimensional crafts education and resource centre that trains and supports them in traditional crafts, so that they are capable of earning a dignified livelihood."
+    },
+    {
+      "type": "header",
+      "content": "Current show"
+    },
+    {
+      "type": "text",
+      "id": "show_eyebrow",
+      "label": "Eyebrow",
+      "default": "On now, in Gallery One"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "show_title",
+      "label": "Title",
+      "default": "The Living Embroideries of Kutch"
+    },
+    {
+      "type": "textarea",
+      "id": "show_copy",
+      "label": "Intro copy",
+      "default": "An ongoing show celebrating the rich, diverse and awe-inspiring embroideries of twelve different Kutchi communities. The exhibits include traditionally embroidered textiles alongside specially commissioned pieces and contemporary expressions — all at the highest levels of creative and technical excellence."
+    },
+    {
+      "type": "header",
+      "content": "Campus"
+    },
+    {
+      "type": "text",
+      "id": "campus_eyebrow",
+      "label": "Eyebrow",
+      "default": "On the campus"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "campus_title",
+      "label": "Title",
+      "default": "What is <em>here</em>"
+    },
+    {
+      "type": "header",
+      "content": "Plan your visit"
+    },
+    {
+      "type": "text",
+      "id": "visit_eyebrow",
+      "label": "Eyebrow",
+      "default": "Plan your visit"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "visit_title",
+      "label": "Title",
+      "default": "Before you come"
+    },
+    {
+      "type": "header",
+      "content": "Visit bar"
+    },
+    {
+      "type": "text",
+      "id": "bar1_label",
+      "label": "Address label",
+      "default": "The museum"
+    },
+    {
+      "type": "text",
+      "id": "bar1_line1",
+      "label": "Address line 1",
+      "default": "705, Bhuj&ndash;Bhachau Highway"
+    },
+    {
+      "type": "text",
+      "id": "bar1_line2",
+      "label": "Address line 2",
+      "default": "Ajrakhpur 370105, Kutch, Gujarat"
+    },
+    {
+      "type": "text",
+      "id": "bar2_label",
+      "label": "Contact label",
+      "default": "Contact"
+    },
+    {
+      "type": "text",
+      "id": "bar_email",
+      "label": "Email address",
+      "default": "info@shrujanlldc.org"
+    },
+    {
+      "type": "text",
+      "id": "bar_phone",
+      "label": "Phone (as shown)",
+      "default": "(0) 2832 229090"
+    },
+    {
+      "type": "text",
+      "id": "bar_tel",
+      "label": "Phone (dialled number)",
+      "default": "+912832229090"
+    },
+    {
+      "type": "text",
+      "id": "bar3_label",
+      "label": "Note label",
+      "default": "Please note"
+    },
+    {
+      "type": "text",
+      "id": "bar3_note",
+      "label": "Note",
+      "default": "Photography and videography are not permitted in any of the galleries."
+    },
+    {
+      "type": "header",
+      "content": "Closing call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Line",
+      "default": "The museum keeps its own site, with events, the virtual tour and booking."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Visit the LLDC website"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button link",
+      "default": "https://shrujanlldc.org"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "settings": [
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Value",
+          "default": "3"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Galleries"
+        }
+      ]
+    },
+    {
+      "type": "figure",
+      "name": "Show image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "img",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "asset",
+          "label": "Fallback asset filename",
+          "info": "Theme asset used until an image is picked.",
+          "default": "lldc-gallery-1.webp"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Alt text",
+          "default": "Mannequins in the embroidered dress of Kutchi communities, in a museum gallery"
+        }
+      ]
+    },
+    {
+      "type": "card",
+      "name": "Campus card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "img",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "asset",
+          "label": "Fallback asset filename",
+          "info": "Theme asset used until an image is picked.",
+          "default": "lldc-hero.webp"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Alt text",
+          "default": "Figures in the ceremonial dress of twelve Kutchi communities, arranged in a circular gallery"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "The Museum"
+        },
+        {
+          "type": "text",
+          "id": "copy",
+          "label": "Copy",
+          "default": "Three galleries, a library and the crafts studios — the whole complex built around the collection."
+        },
+        {
+          "type": "checkbox",
+          "id": "wide",
+          "label": "Wide card",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "plate",
+      "name": "Visit plate",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Hours"
+        },
+        {
+          "type": "text",
+          "id": "head",
+          "label": "Headline",
+          "default": "10 AM – 6 PM"
+        },
+        {
+          "type": "textarea",
+          "id": "lines",
+          "label": "Lines (one per line)",
+          "default": "Last entry at 5:15 PM\nClosed Mondays and public holidays"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "LLDC page",
+      "blocks": [
+        {
+          "type": "stat",
+          "settings": {
+            "value": "3",
+            "label": "Galleries"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "value": "12",
+            "label": "Kutchi communities"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "value": "126",
+            "label": "Seats in the auditorium"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "value": "15 km",
+            "label": "From Bhuj"
+          }
+        },
+        {
+          "type": "figure",
+          "settings": {
+            "asset": "lldc-gallery-1.webp",
+            "alt": "Mannequins in the embroidered dress of Kutchi communities, in a museum gallery"
+          }
+        },
+        {
+          "type": "figure",
+          "settings": {
+            "asset": "lldc-gallery-2.webp",
+            "alt": "Gallery wall of framed embroidery panels beside costumed figures"
+          }
+        },
+        {
+          "type": "figure",
+          "settings": {
+            "asset": "lldc-gallery-3.webp",
+            "alt": "A curved gallery of Kutchi costume under museum lighting"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "asset": "lldc-hero.webp",
+            "alt": "Figures in the ceremonial dress of twelve Kutchi communities, arranged in a circular gallery",
+            "name": "The Museum",
+            "copy": "Three galleries, a library and the crafts studios — the whole complex built around the collection.",
+            "wide": true
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "asset": "lldc-studio.webp",
+            "alt": "A potter throwing a vessel on the wheel in the LLDC crafts studio",
+            "name": "Crafts Studio",
+            "copy": "A working space for craftspeople — weaving, block-printing, pottery and the metal work of Kutch.",
+            "wide": false
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "asset": "lldc-auditorium.webp",
+            "alt": "An audience watching a craft film in the LLDC auditorium",
+            "name": "Auditorium",
+            "copy": "A 126-seater, fully equipped with audio-visual facilities.",
+            "wide": false
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "asset": "lldc-hands-on.webp",
+            "alt": "A child block-printing cloth under an instructor’s hand",
+            "name": "Hands On Area",
+            "copy": "Inspired by the crafts? This is where you try them yourself.",
+            "wide": true
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "asset": "sj-jat-garasiya-party-bag-1.webp",
+            "alt": "Hand-embroidered Jat Garasiya bag",
+            "name": "The Shop",
+            "copy": "Make sure you take back a little bit of Kutch with you.",
+            "wide": false
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "asset": "lldc-cafe.webp",
+            "alt": "The LLDC courtyard cafe at dusk, tables under a pergola",
+            "name": "The Cafe",
+            "copy": "Refresh yourself with a hot cup of masala chai.",
+            "wide": true
+          }
+        },
+        {
+          "type": "plate",
+          "settings": {
+            "label": "Hours",
+            "head": "10 AM – 6 PM",
+            "lines": "Last entry at 5:15 PM\nClosed Mondays and public holidays"
+          }
+        },
+        {
+          "type": "plate",
+          "settings": {
+            "label": "Admission",
+            "head": "₹ 200",
+            "lines": "Adults\n₹ 50 — children, 5 to 12 years\nA wheelchair is available"
+          }
+        },
+        {
+          "type": "plate",
+          "settings": {
+            "label": "Getting there",
+            "head": "15 km from Bhuj",
+            "lines": "Ajrakhpur, on the Bhuj–Bhachau highway\nState transport and private buses run there, as do shared chhakada-rickshaws\nBhuj itself: rail from Ahmedabad, Mumbai and Delhi, flights from Mumbai and Delhi"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

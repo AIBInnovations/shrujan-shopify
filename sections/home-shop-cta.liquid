@@ -1,0 +1,145 @@
+<section class="shopcta" aria-label="{{ section.settings.cta_label | escape }}">
+  <div class="shopcta__grid" data-reveal>
+    <div class="shopcta__media">
+      <img src="{% if section.settings.image %}{{ section.settings.image | image_url: width: 1200 }}{% else %}{{ 'cta-band.webp' | asset_url }}{% endif %}" alt="{{ section.settings.image_alt | escape }}" loading="lazy">
+    </div>
+
+    <div class="shopcta__panel">
+      <p class="shopcta__eyebrow">{{ section.settings.eyebrow }}</p>
+
+      <h2 class="shopcta__title">
+        {{ section.settings.title_line_1 }}
+        <br>
+        {{ section.settings.title_line_2 }}
+      </h2>
+
+      <p class="shopcta__copy">
+        {{ section.settings.copy }}
+      </p>
+
+      <div class="shopcta__actions">
+        <a class="btn" href="{{ section.settings.cta_url }}">
+          {{ section.settings.cta_label }}
+        </a>
+        <a class="arrow-link shopcta__link" href="{{ section.settings.link_url }}">
+          {{ section.settings.link_label }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
+        </a>
+      </div>
+
+      <ul class="shopcta__micro">
+        {%- for block in section.blocks %}
+        <li {{ block.shopify_attributes }}>{{ block.settings.text }}</li>
+        {%- endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Shop CTA banner",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Image alt text",
+      "default": "Model in a maroon silk sari with a gold zari border"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "The Festive Edit"
+    },
+    {
+      "type": "text",
+      "id": "title_line_1",
+      "label": "Title line 1",
+      "default": "Wear your"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title_line_2",
+      "label": "Title line 2",
+      "default": "<em>heritage</em> forward"
+    },
+    {
+      "type": "textarea",
+      "id": "copy",
+      "label": "Copy",
+      "default": "Twenty new pieces from forty villages, hand-embroidered, naturally dyed, and signed by the women who made them."
+    },
+    {
+      "type": "header",
+      "content": "Actions"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Shop the collection"
+    },
+    {
+      "type": "text",
+      "id": "cta_url",
+      "label": "Button link",
+      "default": "#categories"
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Secondary link label",
+      "default": "Book a styling call"
+    },
+    {
+      "type": "text",
+      "id": "link_url",
+      "label": "Secondary link",
+      "default": "#support"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "micro",
+      "name": "Micro promise",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Shipping over ₹5,000"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shop CTA banner",
+      "blocks": [
+        {
+          "type": "micro",
+          "settings": {
+            "text": "Shipping over ₹5,000"
+          }
+        },
+        {
+          "type": "micro",
+          "settings": {
+            "text": "14-day returns"
+          }
+        },
+        {
+          "type": "micro",
+          "settings": {
+            "text": "Free alterations"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

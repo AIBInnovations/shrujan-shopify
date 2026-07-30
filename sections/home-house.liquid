@@ -1,0 +1,248 @@
+<section class="section container house" id="house">
+  <div class="section-intro" data-reveal>
+    <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+    <h2 class="section-title">
+      {{ section.settings.title }}
+    </h2>
+    <p class="section-intro__copy">
+      {{ section.settings.copy | escape }}
+    </p>
+  </div>
+
+  <div class="house__grid">
+    {%- assign tiles = section.blocks | where: 'type', 'tile' -%}
+    {%- for block in tiles %}
+    <a class="house-tile" href="{{ block.settings.link }}" {{ block.shopify_attributes }}>
+      <img src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 1200 }}{% else %}{{ block.settings.fallback | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
+      <span class="house-tile__scrim" aria-hidden="true"></span>
+      <span class="house-tile__body">
+        <span class="house-tile__name">{{ block.settings.name | escape }}</span>
+        <span class="house-tile__note">{{ block.settings.note | escape }}</span>
+      </span>
+      <span class="house-tile__arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
+      </span>
+    </a>
+    {%- endfor %}
+  </div>
+
+  <div class="house__strip" data-reveal>
+    <span class="house__strip-label">{{ section.settings.strip_label | escape }}</span>
+    <ul class="house__strip-links">
+      {%- assign strip_links = section.blocks | where: 'type', 'strip_link' -%}
+      {%- for block in strip_links %}
+      <li {{ block.shopify_attributes }}>
+        <a href="{{ block.settings.link }}">
+          {{ block.settings.label | escape }} <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
+        </a>
+      </li>
+      {%- endfor %}
+    </ul>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Home house grid",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Everything Shrujan makes"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Title",
+      "default": "What Shrujan has <em>mastered</em>"
+    },
+    {
+      "type": "textarea",
+      "id": "copy",
+      "label": "Intro copy",
+      "default": "The same counted stitches, worked into what you wear, what you carry and the cloth that dresses the house."
+    },
+    {
+      "type": "text",
+      "id": "strip_label",
+      "label": "Strip label",
+      "default": "All bags"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Category tile",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "img",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "fallback",
+          "label": "Fallback asset file",
+          "info": "Theme asset filename used until an image is picked.",
+          "default": "sj-black-pakko-hand-embroidered-kanchli-1.webp"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Image alt text",
+          "default": "Model wearing the black pakko hand embroidered kanchli"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Kanchli"
+        },
+        {
+          "type": "text",
+          "id": "note",
+          "label": "Note",
+          "default": "The Kutchi bodice, cut and stitched the traditional way"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "default": "/pages/shop-shrujan?c=kanchli"
+        }
+      ]
+    },
+    {
+      "type": "strip_link",
+      "name": "Bag strip link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Potlis & Batwas"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "default": "/pages/shop-shrujan?c=potlis-and-batwas"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Home house grid",
+      "blocks": [
+        {
+          "type": "tile",
+          "settings": {
+            "fallback": "sj-black-pakko-hand-embroidered-kanchli-1.webp",
+            "alt": "Model wearing the black pakko hand embroidered kanchli",
+            "name": "Kanchli",
+            "note": "The Kutchi bodice, cut and stitched the traditional way",
+            "link": "/pages/shop-shrujan?c=kanchli"
+          }
+        },
+        {
+          "type": "tile",
+          "settings": {
+            "fallback": "sj-dupatta-copy-1.webp",
+            "alt": "Dupatta, hand-embroidered in Kutch",
+            "name": "Accessories",
+            "note": "Dupattas, stoles and shawls finished with hand borders",
+            "link": "/pages/shop-shrujan?c=accessories"
+          }
+        },
+        {
+          "type": "tile",
+          "settings": {
+            "fallback": "sj-ahir-batwa-copy-4-1.webp",
+            "alt": "Crossbody Bag, hand-embroidered in Kutch",
+            "name": "Crossbody & Sling",
+            "note": "Small bags for a long day, worn across the body",
+            "link": "/pages/shop-shrujan?c=crossbody-and-sling"
+          }
+        },
+        {
+          "type": "tile",
+          "settings": {
+            "fallback": "sj-hand-bag-copy-23-1.webp",
+            "alt": "Hand Bag, hand-embroidered in Kutch",
+            "name": "Hand Bags",
+            "note": "Structured bags, embroidered panel by panel",
+            "link": "/pages/shop-shrujan?c=hand-bags"
+          }
+        },
+        {
+          "type": "tile",
+          "settings": {
+            "fallback": "sj-pakko-embroidered-divya-bag-1.webp",
+            "alt": "Tote Bag, hand-embroidered in Kutch",
+            "name": "Tote Bags",
+            "note": "Roomy totes in handwoven cotton",
+            "link": "/pages/shop-shrujan?c=tote-bags"
+          }
+        },
+        {
+          "type": "tile",
+          "settings": {
+            "fallback": "sj-ahir-batwa-1.webp",
+            "alt": "Potli Bag, hand-embroidered in Kutch",
+            "name": "Potlis & Batwas",
+            "note": "Drawstring potlis in silk, for the festive months",
+            "link": "/pages/shop-shrujan?c=potlis-and-batwas"
+          }
+        },
+        {
+          "type": "tile",
+          "settings": {
+            "fallback": "sj-jat-garasiya-mobile-pouch-1-1.webp",
+            "alt": "Mobile Pouch, hand-embroidered in Kutch",
+            "name": "Pouches",
+            "note": "Pouches and purses in offcuts too good to waste",
+            "link": "/pages/shop-shrujan?c=pouches"
+          }
+        },
+        {
+          "type": "strip_link",
+          "settings": {
+            "label": "Potlis & Batwas",
+            "link": "/pages/shop-shrujan?c=potlis-and-batwas"
+          }
+        },
+        {
+          "type": "strip_link",
+          "settings": {
+            "label": "Tote Bags",
+            "link": "/pages/shop-shrujan?c=tote-bags"
+          }
+        },
+        {
+          "type": "strip_link",
+          "settings": {
+            "label": "Crossbody & Sling",
+            "link": "/pages/shop-shrujan?c=crossbody-and-sling"
+          }
+        },
+        {
+          "type": "strip_link",
+          "settings": {
+            "label": "Hand Bags",
+            "link": "/pages/shop-shrujan?c=hand-bags"
+          }
+        },
+        {
+          "type": "strip_link",
+          "settings": {
+            "label": "Pouches",
+            "link": "/pages/shop-shrujan?c=pouches"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

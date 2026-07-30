@@ -404,13 +404,16 @@
 
   function initFooter() {
     var form = document.querySelector('.fletters__form');
-    if (!form) return;
+    if (!form || form.__shrujanInit) return;
+    form.__shrujanInit = true;
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var sent = document.createElement('p');
       sent.className = 'fletters__sent';
       sent.setAttribute('role', 'status');
-      sent.textContent = 'Shukriya. Your first letter is on its way.';
+      // the message is a customizer setting on the footer section
+      sent.textContent =
+        form.getAttribute('data-success-text') || 'Shukriya. Your first letter is on its way.';
       form.parentNode.replaceChild(sent, form);
     });
   }
@@ -431,8 +434,21 @@
     init();
   }
 
-  // Shopify theme editor re-renders sections; keep trigger positions correct.
-  document.addEventListener('shopify:section:load', function () {
+  // Shopify theme editor re-renders a section's HTML on every setting change,
+  // and scripts inside re-injected markup do not execute on their own. Every
+  // section script is an idempotent IIFE guarded on its root element, so
+  // re-running it against the fresh DOM is safe.
+  document.addEventListener('shopify:section:load', function (e) {
+    var scripts = (e.target || document).querySelectorAll('script');
+    scripts.forEach(function (s) {
+      if (s.src) return;
+      try {
+        new Function(s.textContent)();
+      } catch (err) {
+        /* a section script that throws must not break the editor */
+      }
+    });
+    initFooter(); // the footer form is wired here, not in a section script
     ScrollTrigger.refresh();
   });
 })();

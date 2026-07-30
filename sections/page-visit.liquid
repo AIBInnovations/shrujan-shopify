@@ -1,0 +1,458 @@
+<div class="page">
+  <header class="visit-hero">
+    <div class="visit-hero__bg" aria-hidden="true">
+      <img src="{% if section.settings.hero_image %}{{ section.settings.hero_image | image_url: width: 2000 }}{% else %}{{ 'kutch-rann.webp' | asset_url }}{% endif %}" alt="" fetchpriority="high">
+      <span class="visit-hero__scrim"></span>
+    </div>
+
+    <div class="container visit-hero__inner">
+      <p class="visit-hero__eyebrow">{{ section.settings.hero_eyebrow | escape }}</p>
+      <h1 class="visit-hero__title">{{ section.settings.hero_title }}</h1>
+      <p class="visit-hero__lede">{{ section.settings.hero_lede | escape }}</p>
+      <a class="visit-hero__cta" href="{{ section.settings.hero_cta_link | escape }}">{{ section.settings.hero_cta_label | escape }}</a>
+    </div>
+  </header>
+
+  <section class="section container ways" aria-label="Two ways to visit">
+    {%- assign way_i = 0 -%}
+    {%- for block in section.blocks -%}
+    {%- if block.type == 'way' -%}
+    {%- assign way_i = way_i | plus: 1 -%}
+    {%- if way_i > 1 %}
+{% endif %}
+    <article class="way" {{ block.shopify_attributes }}>
+      <div class="way__media">
+        <img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1600 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}" alt="{{ block.settings.image_alt | escape }}" loading="lazy">
+        <span class="way__no" aria-hidden="true">{% if way_i < 10 %}0{% endif %}{{ way_i }}</span>
+      </div>
+
+      <div class="way__body">
+        <p class="way__kicker">{{ block.settings.kicker | escape }}</p>
+        <h2 class="way__name">{{ block.settings.name }}</h2>
+        <p class="way__copy">{{ block.settings.copy | escape }}</p>
+
+        <ul class="way__points">
+          {%- assign way_points = block.settings.points | newline_to_br | split: '<br />' -%}
+          {%- for point in way_points -%}
+          {%- assign point_text = point | strip -%}
+          {%- unless point_text == blank %}
+          <li>{{ point_text | escape }}</li>
+          {%- endunless -%}
+          {%- endfor %}
+        </ul>
+
+        <a class="arrow-link way__cta" href="{{ block.settings.cta_link | escape }}">{{ block.settings.cta_label | escape }} <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
+      </div>
+    </article>
+    {%- endif -%}
+    {%- endfor %}
+  </section>
+
+  <section class="section container stops" id="places">
+    <div class="stops__head" data-reveal>
+      <p class="eyebrow">{{ section.settings.stops_eyebrow | escape }}</p>
+      <h2 class="section-title">{{ section.settings.stops_title }}</h2>
+      <p class="stops__lede">{{ section.settings.stops_lede | escape }}</p>
+    </div>
+
+    <div class="stops__grid" data-reveal-child>
+      {%- assign stop_i = 0 -%}
+      {%- for block in section.blocks -%}
+      {%- if block.type == 'stop' -%}
+      {%- assign stop_i = stop_i | plus: 1 -%}
+      {%- if stop_i > 1 %}
+{% endif %}
+      {%- if block.settings.link != blank %}
+      <a class="stop stop--link" href="{{ block.settings.link }}" {{ block.shopify_attributes }}>
+        <span class="stop__media">
+          <img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1200 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}" alt="{{ block.settings.image_alt | escape }}" loading="lazy">
+          <span class="stop__no" aria-hidden="true">{% if stop_i < 10 %}0{% endif %}{{ stop_i }}</span>
+        </span>
+
+        <span class="stop__where">{{ block.settings.where | escape }}</span>
+        <span class="stop__name">{{ block.settings.name }}</span>
+        <span class="stop__copy">{{ block.settings.copy | escape }}</span>
+
+        <span class="stop__go">{{ block.settings.go_label | escape }} <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
+      </a>
+      {%- else %}
+      <article class="stop" {{ block.shopify_attributes }}>
+        <span class="stop__media">
+          <img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1200 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}" alt="{{ block.settings.image_alt | escape }}" loading="lazy">
+          <span class="stop__no" aria-hidden="true">{% if stop_i < 10 %}0{% endif %}{{ stop_i }}</span>
+        </span>
+
+        <span class="stop__where">{{ block.settings.where | escape }}</span>
+        <span class="stop__name">{{ block.settings.name }}</span>
+        <span class="stop__copy">{{ block.settings.copy | escape }}</span>
+      </article>
+      {%- endif -%}
+      {%- endif -%}
+      {%- endfor %}
+    </div>
+  </section>
+
+  <section class="section container plan" id="plan">
+    <div class="plan__head" data-reveal>
+      <p class="eyebrow">{{ section.settings.plan_eyebrow | escape }}</p>
+      <h2 class="section-title">{{ section.settings.plan_title }}</h2>
+    </div>
+
+    <div class="plan__grid">
+      <div class="plan__main">
+        <ol class="plan__steps" data-reveal-child>
+          {%- assign stay_i = 0 -%}
+          {%- for block in section.blocks -%}
+          {%- if block.type == 'stay' -%}
+          {%- assign stay_i = stay_i | plus: 1 %}
+          <li class="stay" {{ block.shopify_attributes }}>
+            <span class="stay__no" aria-hidden="true">{% if stay_i < 10 %}0{% endif %}{{ stay_i }}</span>
+            <span class="stay__len">{{ block.settings.len | escape }}</span>
+            <span class="stay__what">{{ block.settings.what | escape }}</span>
+          </li>
+          {%- endif -%}
+          {%- endfor %}
+        </ol>
+
+        <div class="plan__invite" data-reveal>
+          <p class="plan__invite-copy">{{ section.settings.invite_copy | escape }}</p>
+          <a class="btn btn--ghost plan__invite-cta" href="{{ section.settings.invite_cta_link | escape }}">{{ section.settings.invite_cta_label | escape }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
+        </div>
+      </div>
+
+      <aside class="plan__aside" data-reveal>
+        <p class="plan__season"><span class="plan__pill">{{ section.settings.season_pill | escape }}</span>{{ section.settings.season_copy | escape }}</p>
+
+        <dl class="plan__facts">
+          {%- for block in section.blocks -%}
+          {%- if block.type == 'fact' %}
+          <div {{ block.shopify_attributes }}>
+            <dt>{{ block.settings.term | escape }}</dt>
+            <dd>{{ block.settings.detail | escape }}</dd>
+          </div>
+          {%- endif -%}
+          {%- endfor %}
+        </dl>
+
+        <a class="btn plan__cta" href="{{ section.settings.aside_cta_link | escape }}">{{ section.settings.aside_cta_label | escape }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
+      </aside>
+    </div>
+  </section>
+</div>
+{% schema %}
+{
+  "name": "Visit & Experience",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Background image",
+      "info": "Falls back to the theme's Rann of Kutch photo."
+    },
+    {
+      "type": "text",
+      "id": "hero_eyebrow",
+      "label": "Eyebrow",
+      "default": "Visit & Experience"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "hero_title",
+      "label": "Title",
+      "default": "Kutch"
+    },
+    {
+      "type": "text",
+      "id": "hero_lede",
+      "label": "Lede",
+      "default": "Stand where it is made — the studio, the museum and the villages."
+    },
+    {
+      "type": "text",
+      "id": "hero_cta_label",
+      "label": "Button label",
+      "default": "Explore"
+    },
+    {
+      "type": "text",
+      "id": "hero_cta_link",
+      "label": "Button link",
+      "default": "#places"
+    },
+    {
+      "type": "header",
+      "content": "Where to go"
+    },
+    {
+      "type": "text",
+      "id": "stops_eyebrow",
+      "label": "Eyebrow",
+      "default": "Where to go"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "stops_title",
+      "label": "Title",
+      "default": "Six stops, <em>all near Bhuj</em>"
+    },
+    {
+      "type": "textarea",
+      "id": "stops_lede",
+      "label": "Lede",
+      "default": "The workrooms, the museum, and the villages the stitches are named after — none of them more than a couple of hours apart."
+    },
+    {
+      "type": "header",
+      "content": "Plan the trip"
+    },
+    {
+      "type": "text",
+      "id": "plan_eyebrow",
+      "label": "Eyebrow",
+      "default": "How long to stay"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "plan_title",
+      "label": "Title",
+      "default": "Plan the <em>trip</em>"
+    },
+    {
+      "type": "text",
+      "id": "invite_copy",
+      "label": "Invite line",
+      "default": "Tell us when you are coming and we will open the studio."
+    },
+    {
+      "type": "text",
+      "id": "invite_cta_label",
+      "label": "Invite button label",
+      "default": "Write to the studio"
+    },
+    {
+      "type": "text",
+      "id": "invite_cta_link",
+      "label": "Invite button link",
+      "default": "mailto:marketing@shrujan.com?subject=Visiting%20Shrujan"
+    },
+    {
+      "type": "header",
+      "content": "Plan sidebar"
+    },
+    {
+      "type": "text",
+      "id": "season_pill",
+      "label": "Season pill",
+      "default": "Best season"
+    },
+    {
+      "type": "textarea",
+      "id": "season_copy",
+      "label": "Season note",
+      "default": "November to February. The desert is unforgiving either side of it."
+    },
+    {
+      "type": "text",
+      "id": "aside_cta_label",
+      "label": "Call button label",
+      "default": "Call to plan"
+    },
+    {
+      "type": "text",
+      "id": "aside_cta_link",
+      "label": "Call button link",
+      "default": "tel:+919099974319"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "way",
+      "name": "Way to visit",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "asset",
+          "label": "Fallback image file",
+          "info": "Theme asset filename used until an image is picked.",
+          "default": "visit-campus.webp"
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "label": "Image description",
+          "default": "The Shrujan studio floor, with racks of finished cloth and staff at work"
+        },
+        {
+          "type": "text",
+          "id": "kicker",
+          "label": "Kicker",
+          "default": "By appointment"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "name",
+          "label": "Title",
+          "default": "The Shrujan Campus"
+        },
+        {
+          "type": "textarea",
+          "id": "copy",
+          "label": "Copy",
+          "default": "A behind-the-scenes visit, arranged in advance. You follow a piece from an idea through sampling and into production, and see how the design studio and the artisan communities actually work together. It is a visit about process, not a shop."
+        },
+        {
+          "type": "textarea",
+          "id": "points",
+          "label": "Points (one per line)",
+          "default": "Design studio & sampling\nPre and post production\nThe coordination team"
+        },
+        {
+          "type": "text",
+          "id": "cta_label",
+          "label": "Link label",
+          "default": "Enquire about a visit"
+        },
+        {
+          "type": "text",
+          "id": "cta_link",
+          "label": "Link",
+          "default": "mailto:marketing@shrujan.com?subject=Campus%20visit"
+        }
+      ]
+    },
+    {
+      "type": "stop",
+      "name": "Stop card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "asset",
+          "label": "Fallback image file",
+          "info": "Theme asset filename used until an image is picked.",
+          "default": "visit-design-studio.webp"
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "label": "Image description",
+          "default": "Designers at work on patterns in the Shrujan studio"
+        },
+        {
+          "type": "text",
+          "id": "where",
+          "label": "Where",
+          "default": "Bhuj · by appointment"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "name",
+          "label": "Name",
+          "default": "The Shrujan Campus"
+        },
+        {
+          "type": "text",
+          "id": "copy",
+          "label": "Copy",
+          "default": "The design studio, sampling rooms and production floor, 10am to 7pm."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link (optional)",
+          "info": "When set, the whole card becomes a link with an arrow label."
+        },
+        {
+          "type": "text",
+          "id": "go_label",
+          "label": "Arrow label",
+          "default": "Read more"
+        }
+      ]
+    },
+    {
+      "type": "stay",
+      "name": "Stay length",
+      "settings": [
+        {
+          "type": "text",
+          "id": "len",
+          "label": "How long",
+          "default": "Half a day"
+        },
+        {
+          "type": "text",
+          "id": "what",
+          "label": "What fits in",
+          "default": "The campus in the morning, LLDC in the afternoon."
+        }
+      ]
+    },
+    {
+      "type": "fact",
+      "name": "Fact row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "term",
+          "label": "Label",
+          "default": "Open"
+        },
+        {
+          "type": "text",
+          "id": "detail",
+          "label": "Value",
+          "default": "10 AM to 7 PM"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Visit & Experience",
+      "blocks": [
+        {
+          "type": "way"
+        },
+        {
+          "type": "way"
+        },
+        {
+          "type": "stop"
+        },
+        {
+          "type": "stop"
+        },
+        {
+          "type": "stop"
+        },
+        {
+          "type": "stay"
+        },
+        {
+          "type": "stay"
+        },
+        {
+          "type": "fact"
+        },
+        {
+          "type": "fact"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

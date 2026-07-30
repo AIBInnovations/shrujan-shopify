@@ -1,0 +1,188 @@
+<section class="section container" id="craft">
+  <div class="craft">
+    <div class="craft__body">
+      <p class="eyebrow" data-reveal>
+        {{ section.settings.eyebrow | escape }}
+      </p>
+      <h2 class="section-title" data-reveal>
+        {{ section.settings.title_l1 | escape }}
+        <br>
+        <em>{{ section.settings.title_l2 | escape }}</em>
+      </h2>
+      <div class="craft__copy" data-reveal>
+        {{ section.settings.copy }}
+      </div>
+
+      <a class="arrow-link craft__link" href="{{ section.settings.link }}" data-reveal>
+        {{ section.settings.link_label | escape }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
+      </a>
+    </div>
+
+    <div class="craft__gallery" data-reveal>
+      {%- assign shots = section.blocks | where: 'type', 'shot' -%}
+      {%- for block in shots %}
+      <figure class="craft__shot" {{ block.shopify_attributes }}>
+        <div class="craft__shot-media"{% if forloop.first %} data-parallax{% endif %}>
+          <img src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 900 }}{% else %}{{ block.settings.fallback | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
+        </div>
+        <figcaption>{{ block.settings.caption | escape }}</figcaption>
+      </figure>
+      {%- endfor %}
+    </div>
+  </div>
+
+  <div class="craft__stats" data-reveal-child>
+    {%- assign stats = section.blocks | where: 'type', 'stat' -%}
+    {%- for block in stats %}
+    <div class="stat" {{ block.shopify_attributes }}>
+      <p class="stat__value">{{ block.settings.value | escape }}</p>
+      <p class="stat__label">{{ block.settings.label | escape }}</p>
+    </div>
+    {%- endfor %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Home craft story",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Our Craft"
+    },
+    {
+      "type": "text",
+      "id": "title_l1",
+      "label": "Title line 1",
+      "default": "Every stitch carries"
+    },
+    {
+      "type": "text",
+      "id": "title_l2",
+      "label": "Title line 2 (italic)",
+      "default": "a signature"
+    },
+    {
+      "type": "richtext",
+      "id": "copy",
+      "label": "Story copy",
+      "default": "<p>Shrujan began in 1969 with Chanda Shroff, known as Kaki, who went to Kutch after a famine and found women whose embroidery was extraordinary and whose earnings were not. She turned that skill into a livelihood.</p><p>From her vision to the hands of thousands of women across Kutch, Shrujan has quietly safeguarded the region&rsquo;s living craft traditions for over five decades, preserving the knowledge and the dignity behind it.</p>"
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Link label",
+      "default": "Explore the Craft"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link",
+      "default": "/pages/video"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "shot",
+      "name": "Gallery shot",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "img",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "fallback",
+          "label": "Fallback asset file",
+          "info": "Theme asset filename used until an image is picked.",
+          "default": "bottom-left.webp"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Image alt text",
+          "default": "Master weaver working threads at his handloom"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Caption",
+          "default": "At the loom, Bhujodi"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "name": "Stat",
+      "settings": [
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Value",
+          "default": "1969"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Founded by Chanda Shroff"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Home craft story",
+      "blocks": [
+        {
+          "type": "shot",
+          "settings": {
+            "fallback": "bottom-left.webp",
+            "alt": "Master weaver working threads at his handloom",
+            "caption": "At the loom, Bhujodi"
+          }
+        },
+        {
+          "type": "shot",
+          "settings": {
+            "fallback": "top-right.webp",
+            "alt": "Artisan hand embroidering mirror-work flowers with a fine needle",
+            "caption": "Suf, stitched from the reverse"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "value": "1969",
+            "label": "Founded by Chanda Shroff"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "value": "5",
+            "label": "Decades of craft revival"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "value": "12",
+            "label": "Living craft traditions"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "value": "4,000+",
+            "label": "Artisan women at work"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

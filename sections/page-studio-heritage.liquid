@@ -1,0 +1,549 @@
+{%- assign strand_blocks = section.blocks | where: 'type', 'strand' -%}
+{%- assign stat_blocks = section.blocks | where: 'type', 'stat' -%}
+{%- assign mark_blocks = section.blocks | where: 'type', 'mark' -%}
+{%- assign shot_blocks = section.blocks | where: 'type', 'shot' -%}
+<div class="page">
+  <header class="page-hero page-hero--cover page-hero--frame" data-reveal>
+    <div class="page-hero__bg" aria-hidden="true">
+      <img src="{% if section.settings.hero_img %}{{ section.settings.hero_img | image_url: width: 2000 }}{% else %}{{ 'cta-band.webp' | asset_url }}{% endif %}" alt="" fetchpriority="high">
+      <span class="page-hero__scrim"></span>
+    </div>
+
+    <div class="container page-hero__grid">
+      <div class="page-hero__text">
+        <p class="eyebrow">{{ section.settings.hero_eyebrow | escape }}</p>
+        <h1 class="page-hero__title">{{ section.settings.hero_title }}</h1>
+      </div>
+    </div>
+
+    <span class="page-hero__rule" aria-hidden="true"></span>
+  </header>
+
+  <nav class="strands" aria-label="Studio Collection">
+    <div class="container strands__inner">
+      <ol class="strands__list">
+{%- for block in strand_blocks %}
+        <li {{ block.shopify_attributes }}>
+          <a href="{{ block.settings.link }}" class="strands__link{% if block.settings.current %} is-active{% endif %}"{% if block.settings.current %} aria-current="page"{% endif %}>
+            <span class="strands__no">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+            <span class="strands__label">{{ block.settings.label | escape }}</span>
+          </a>
+        </li>
+{%- endfor %}
+      </ol>
+    </div>
+  </nav>
+
+  <section class="section container">
+    <div class="origin" data-reveal>
+      <p class="origin__lead">{{ section.settings.lead }}</p>
+      <div class="origin__body">
+        {{ section.settings.body }}
+      </div>
+    </div>
+
+    <div class="craft__stats" data-reveal-child>
+{%- for block in stat_blocks %}
+      <div class="stat" {{ block.shopify_attributes }}>
+        <p class="stat__value">{{ block.settings.value }}</p>
+        <p class="stat__label">{{ block.settings.label }}</p>
+      </div>
+{%- endfor %}
+    </div>
+
+    <ol class="marks" data-reveal-child>
+{%- for block in mark_blocks %}
+      <li class="mark" {{ block.shopify_attributes }}>
+        <span class="mark__no">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+        <h3 class="mark__title">{{ block.settings.title }}</h3>
+        <p class="mark__copy">{{ block.settings.copy }}</p>
+      </li>
+{%- endfor %}
+    </ol>
+  </section>
+
+  <section class="section container">
+    <div class="section-intro" data-reveal>
+      <p class="eyebrow">{{ section.settings.arch_eyebrow | escape }}</p>
+      <h2 class="section-title">{{ section.settings.arch_title }}</h2>
+    </div>
+
+    <div class="arch-grid" data-reveal-child>
+{%- for block in shot_blocks %}
+      <figure {{ block.shopify_attributes }}>
+        <img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1200 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
+      </figure>
+{%- endfor %}
+    </div>
+
+    <blockquote class="origin__pull" data-reveal>{{ section.settings.pull }}</blockquote>
+  </section>
+
+  <section class="section container enquiry" id="heritage-enquiry" data-done-title="{{ section.settings.done_title | escape }}" data-done-body="{{ section.settings.done_body | escape }}" data-done-again="{{ section.settings.done_again | escape }}">
+    <div class="enquiry__intro" data-reveal>
+      <p class="eyebrow">{{ section.settings.enq_eyebrow | escape }}</p>
+      <h2 class="section-title">{{ section.settings.enq_title }}</h2>
+      <p class="enquiry__copy">{{ section.settings.enq_copy }}</p>
+
+      <dl class="enquiry__reach">
+        <div>
+          <dt>{{ section.settings.call_label }}</dt>
+          <dd>
+            <a href="tel:{{ section.settings.phone | remove: ' ' }}">{{ section.settings.phone }}</a>
+          </dd>
+        </div>
+        <div>
+          <dt>{{ section.settings.write_label }}</dt>
+          <dd>
+            <a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a>
+          </dd>
+        </div>
+        <div>
+          <dt>{{ section.settings.hours_label }}</dt>
+          <dd>{{ section.settings.hours }}</dd>
+        </div>
+      </dl>
+    </div>
+
+    <form class="enquiry__form" data-reveal>
+      <p class="field">
+        <label for="heritage-enquiry-name">Name <span aria-hidden="true">*</span></label>
+        <input id="heritage-enquiry-name" name="name" type="text" required autocomplete="name">
+      </p>
+
+      <p class="field">
+        <label for="heritage-enquiry-phone">Contact number <span aria-hidden="true">*</span></label>
+        <input id="heritage-enquiry-phone" name="phone" type="tel" required autocomplete="tel">
+      </p>
+
+      <p class="field">
+        <label for="heritage-enquiry-city">City</label>
+        <input id="heritage-enquiry-city" name="city" type="text" autocomplete="address-level2">
+      </p>
+
+      <p class="field">
+        <label for="heritage-enquiry-email">Email</label>
+        <input id="heritage-enquiry-email" name="email" type="email" autocomplete="email">
+      </p>
+
+      <p class="field">
+        <label for="heritage-enquiry-extra">Craft or piece of interest</label>
+        <input id="heritage-enquiry-extra" name="extra" type="text" placeholder="Suf, Pakko, Mutwa…">
+      </p>
+
+      <p class="field field--wide">
+        <label for="heritage-enquiry-looking">What are you looking for?</label>
+        <textarea id="heritage-enquiry-looking" name="looking" rows="3"></textarea>
+      </p>
+
+      <p class="field">
+        <label for="heritage-enquiry-slot">Preferred time slot</label>
+        <select id="heritage-enquiry-slot" name="slot">
+          <option value="" disabled selected>Choose a time</option>
+          <option value="9:00 AM">9:00 AM</option>
+          <option value="9:30 AM">9:30 AM</option>
+          <option value="10:00 AM">10:00 AM</option>
+          <option value="10:30 AM">10:30 AM</option>
+          <option value="11:00 AM">11:00 AM</option>
+          <option value="11:30 AM">11:30 AM</option>
+          <option value="12:00 PM">12:00 PM</option>
+          <option value="12:30 PM">12:30 PM</option>
+          <option value="1:00 PM">1:00 PM</option>
+          <option value="1:30 PM">1:30 PM</option>
+          <option value="2:00 PM">2:00 PM</option>
+          <option value="2:30 PM">2:30 PM</option>
+          <option value="3:00 PM">3:00 PM</option>
+          <option value="3:30 PM">3:30 PM</option>
+          <option value="4:00 PM">4:00 PM</option>
+          <option value="4:30 PM">4:30 PM</option>
+          <option value="5:00 PM">5:00 PM</option>
+          <option value="5:30 PM">5:30 PM</option>
+        </select>
+      </p>
+
+      <div class="enquiry__submit">
+        <button class="btn" type="submit">{{ section.settings.submit_label }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></button>
+        <span class="enquiry__note"><span aria-hidden="true">*</span> {{ section.settings.note }}</span>
+      </div>
+    </form>
+  </section>
+</div>
+
+<script>
+(function () {
+  var root = document.getElementById('heritage-enquiry');
+  if (!root || root.__shrujanInit) return;
+  root.__shrujanInit = true;
+
+  var form = root.querySelector('.enquiry__form');
+  if (!form) return;
+
+  var arrow = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>';
+
+  var done = document.createElement('div');
+  done.className = 'enquiry__done';
+  done.setAttribute('role', 'status');
+  done.setAttribute('data-reveal', '');
+  done.innerHTML =
+    '<p class="enquiry__done-title">' + (root.getAttribute('data-done-title') || 'Thank you — we have your request.') + '</p>' +
+    '<p>' + (root.getAttribute('data-done-body') || 'Someone from the Bhuj studio will call you in your chosen slot. If it is urgent, reach us on <a href="tel:+919099974319">+91 9099 974319</a>.') + '</p>' +
+    '<button class="arrow-link" type="button">' + (root.getAttribute('data-done-again') || 'Send another enquiry') + ' ' + arrow + '</button>';
+
+  done.querySelector('button').addEventListener('click', function () {
+    form.reset();
+    done.replaceWith(form);
+  });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    form.replaceWith(done);
+  });
+})();
+</script>
+{% schema %}
+{
+  "name": "Studio · Heritage",
+  "settings": [
+    {
+      "type": "text",
+      "id": "hero_eyebrow",
+      "label": "Hero eyebrow",
+      "default": "Studio Collection · Heritage"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "hero_title",
+      "label": "Hero title",
+      "default": "Heirlooms, made to be <em>handed on</em>"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_img",
+      "label": "Hero background image"
+    },
+    {
+      "type": "textarea",
+      "id": "lead",
+      "label": "Intro lead",
+      "default": "Heirloom textiles that carry the depth and detail of Kutch's craft traditions. Each piece is made with exceptional skill, and intended to be collected, preserved and passed on."
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Intro body",
+      "default": "<p>A heritage piece is not a season’s product. It is the fullest expression of a craft a community has kept for generations, made at the pace that craft asks for.</p><p>The embroideries of Kutch are not one tradition but a dozen — Ahir, Mutwa, Jat, Rabari, Suf, Pakko, Kharek — each with its own grammar of stitch, motif and colour, passed from mother to daughter rather than written down. A heritage commission asks an artisan to work at the top of that vocabulary, without abridging it for time.</p><p>That is why these pieces take months rather than weeks. Suf is counted from the reverse of the cloth with no pattern ever drawn. Pakko is worked so tightly the ground disappears. Mirror-work is cut, set and secured one disc at a time. None of it can be hurried without becoming something else.</p>"
+    },
+    {
+      "type": "text",
+      "id": "arch_eyebrow",
+      "label": "Archive eyebrow",
+      "default": "From the archive"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "arch_title",
+      "label": "Archive title",
+      "default": "Work at the top of the vocabulary"
+    },
+    {
+      "type": "textarea",
+      "id": "pull",
+      "label": "Pull quote",
+      "default": "These are made once, at the pace the craft asks for. When a piece is gone, it is not made again."
+    },
+    {
+      "type": "text",
+      "id": "enq_eyebrow",
+      "label": "Enquiry eyebrow",
+      "default": "Enquire"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "enq_title",
+      "label": "Enquiry title",
+      "default": "Interested to explore the Heritage Collection?"
+    },
+    {
+      "type": "textarea",
+      "id": "enq_copy",
+      "label": "Enquiry copy",
+      "default": "Tell us what you are looking for and when you are free. Someone from the Bhuj studio will call you back."
+    },
+    {
+      "type": "text",
+      "id": "call_label",
+      "label": "Phone label",
+      "default": "Call"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone number",
+      "default": "+91 9099 974319"
+    },
+    {
+      "type": "text",
+      "id": "write_label",
+      "label": "Email label",
+      "default": "Write"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email address",
+      "default": "marketing@shrujan.com"
+    },
+    {
+      "type": "text",
+      "id": "hours_label",
+      "label": "Hours label",
+      "default": "Studio hours"
+    },
+    {
+      "type": "text",
+      "id": "hours",
+      "label": "Hours",
+      "default": "10 AM – 7 PM, Bhuj"
+    },
+    {
+      "type": "text",
+      "id": "submit_label",
+      "label": "Submit button label",
+      "default": "Request a callback"
+    },
+    {
+      "type": "text",
+      "id": "note",
+      "label": "Form note",
+      "default": "Required. We only use these details to call you back."
+    },
+    {
+      "type": "text",
+      "id": "done_title",
+      "label": "Success title",
+      "default": "Thank you — we have your request."
+    },
+    {
+      "type": "inline_richtext",
+      "id": "done_body",
+      "label": "Success message",
+      "default": "Someone from the Bhuj studio will call you in your chosen slot. If it is urgent, reach us on <a href=\"tel:+919099974319\">+91 9099 974319</a>."
+    },
+    {
+      "type": "text",
+      "id": "done_again",
+      "label": "Success button label",
+      "default": "Send another enquiry"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "strand",
+      "name": "Strand link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Heritage"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "default": "/pages/studio-heritage"
+        },
+        {
+          "type": "checkbox",
+          "id": "current",
+          "label": "Current page",
+          "info": "Marks this strand as the page you are on",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "name": "Stat",
+      "settings": [
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Value",
+          "default": "12"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Living traditions"
+        }
+      ]
+    },
+    {
+      "type": "mark",
+      "name": "Hallmark",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "One pair of hands"
+        },
+        {
+          "type": "textarea",
+          "id": "copy",
+          "label": "Copy",
+          "default": "A heritage piece is never split across a workshop. One embroiderer carries it from the first counted thread to the last, and her name goes on it."
+        }
+      ]
+    },
+    {
+      "type": "shot",
+      "name": "Archive image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "asset",
+          "label": "Fallback asset file",
+          "info": "Theme asset shown when no image is picked",
+          "default": "frame-r3t26.webp"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Alt text",
+          "default": "Heritage embroidery worked in fine counted thread"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Studio · Heritage",
+      "blocks": [
+        {
+          "type": "strand",
+          "settings": {
+            "label": "Heritage",
+            "link": "/pages/studio-heritage",
+            "current": true
+          }
+        },
+        {
+          "type": "strand",
+          "settings": {
+            "label": "Avinya",
+            "link": "/pages/studio-avinya",
+            "current": false
+          }
+        },
+        {
+          "type": "strand",
+          "settings": {
+            "label": "Gifting & Collaborations",
+            "link": "/pages/studio-gifting",
+            "current": false
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "value": "12",
+            "label": "Living traditions"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "value": "6–14",
+            "label": "Months on the frame"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "value": "1",
+            "label": "Of its kind"
+          }
+        },
+        {
+          "type": "mark",
+          "settings": {
+            "title": "One pair of hands",
+            "copy": "A heritage piece is never split across a workshop. One embroiderer carries it from the first counted thread to the last, and her name goes on it."
+          }
+        },
+        {
+          "type": "mark",
+          "settings": {
+            "title": "The community canon",
+            "copy": "Every motif belongs to a community, and is stitched in the vocabulary that community has kept — not a house style drawn over the top of it."
+          }
+        },
+        {
+          "type": "mark",
+          "settings": {
+            "title": "Natural cloth, natural dye",
+            "copy": "Handloom cotton, mulberry silk and desert wool, coloured with madder, indigo and pomegranate rind. Nothing synthetic touches the ground cloth."
+          }
+        },
+        {
+          "type": "mark",
+          "settings": {
+            "title": "Recorded before it leaves",
+            "copy": "Each piece is photographed, measured and documented at the LLDC in Bhuj, so the record of how it was made outlives the cloth itself."
+          }
+        },
+        {
+          "type": "shot",
+          "settings": {
+            "asset": "frame-r3t26.webp",
+            "alt": "Heritage embroidery worked in fine counted thread"
+          }
+        },
+        {
+          "type": "shot",
+          "settings": {
+            "asset": "frame-r1t20.webp",
+            "alt": "Mirror-work set into a hand-embroidered panel"
+          }
+        },
+        {
+          "type": "shot",
+          "settings": {
+            "asset": "frame-r5t25.webp",
+            "alt": "Detail of a heritage textile in indigo and madder"
+          }
+        },
+        {
+          "type": "shot",
+          "settings": {
+            "asset": "frame-r2t5.webp",
+            "alt": "Border of a hand-embroidered heritage cloth"
+          }
+        },
+        {
+          "type": "shot",
+          "settings": {
+            "asset": "frame-r1t12.webp",
+            "alt": "Hand-embroidered panel in madder and indigo"
+          }
+        },
+        {
+          "type": "shot",
+          "settings": {
+            "asset": "frame-r3t6.webp",
+            "alt": "Kutchi mirror-work across a silk ground"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

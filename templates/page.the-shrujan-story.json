@@ -1,0 +1,354 @@
+{
+  "sections": {
+    "main": {
+      "type": "page-story",
+      "blocks": {
+        "c1": {
+          "type": "chapter",
+          "settings": {
+            "label": "Origins",
+            "anchor": "origins"
+          }
+        },
+        "c2": {
+          "type": "chapter",
+          "settings": {
+            "label": "Philosophy & Values",
+            "anchor": "values"
+          }
+        },
+        "c3": {
+          "type": "chapter",
+          "settings": {
+            "label": "The People of Shrujan",
+            "anchor": "people"
+          }
+        },
+        "c4": {
+          "type": "chapter",
+          "settings": {
+            "label": "Photo Journal",
+            "anchor": "journal"
+          }
+        },
+        "c5": {
+          "type": "chapter",
+          "settings": {
+            "label": "In the Media",
+            "anchor": "press"
+          }
+        },
+        "op1": {
+          "type": "origin_par",
+          "settings": {
+            "text": "Shrujan’s journey began in 1969 when Kutch was ravaged by drought. Mumbai-based Chanda Shroff volunteered for drought-relief work in the village of Dhaneti. She observed that the women dressed in exquisitely embroidered traditional clothing were reluctant to accept charity."
+          }
+        },
+        "op2": {
+          "type": "origin_par",
+          "settings": {
+            "text": "It was her genius that recognized that the very skill that the craftswomen possessed could empower them; that, for the first time, embroidery could become an income-generating, dignity-providing resource."
+          }
+        },
+        "op3": {
+          "type": "origin_par",
+          "settings": {
+            "text": "Shrujan’s craftswomen work from home. Our production team reaches fabrics and threads to them in their villages. The women do not have to pay for the materials. Shrujan pays them their fair dues at their doorstep, as soon as they have completed the embroidery."
+          }
+        },
+        "os1": {
+          "type": "origin_shot",
+          "settings": {
+            "asset": "story-origin-2.webp",
+            "alt": "Craftswomen of Kutch at work on embroidery"
+          }
+        },
+        "os2": {
+          "type": "origin_shot",
+          "settings": {
+            "asset": "story-origin-1.webp",
+            "alt": "Embroidery in progress on handloom cloth"
+          }
+        },
+        "os3": {
+          "type": "origin_shot",
+          "settings": {
+            "asset": "story-origin-3.webp",
+            "alt": "Shrujan craftswomen gathered in a village"
+          }
+        },
+        "st1": {
+          "type": "stat",
+          "settings": {
+            "value": "1969",
+            "label": "The year it began"
+          }
+        },
+        "st2": {
+          "type": "stat",
+          "settings": {
+            "value": "2,000+",
+            "label": "Craftswomen today"
+          }
+        },
+        "st3": {
+          "type": "stat",
+          "settings": {
+            "value": "66",
+            "label": "Remote villages"
+          }
+        },
+        "st4": {
+          "type": "stat",
+          "settings": {
+            "value": "50+",
+            "label": "Years of livelihood"
+          }
+        },
+        "v1": {
+          "type": "value",
+          "settings": {
+            "asset": "story-dignity.webp",
+            "alt": "Artisans working together at Shrujan",
+            "title": "Dignity and Respect",
+            "copy": "At Shrujan, dignity is central to how we work. The artisans we collaborate with and the team that supports the work are valued for their skill, commitment and integrity. We believe in fairness, mutual respect and the importance of creating an environment where people can grow through learning and experience. Our work is built on long-term relationships and a shared love for craft."
+          }
+        },
+        "v2": {
+          "type": "value",
+          "settings": {
+            "asset": "story-continuity.webp",
+            "alt": "Hands passing embroidery knowledge between generations",
+            "title": "Continuity of Craft",
+            "copy": "Shrujan works to ensure that the craft traditions of Kutch remain alive, relevant and respected. This is not preservation as nostalgia, but continuity as a living process. Knowledge passes through generations, adapts thoughtfully and finds a place in contemporary life without losing its roots."
+          }
+        },
+        "v3": {
+          "type": "value",
+          "settings": {
+            "asset": "story-conscious.webp",
+            "alt": "Naturally dyed yarn and handwoven cloth",
+            "title": "Conscious Practice",
+            "copy": "At Shrujan, consciousness is expressed through everyday decisions. From the materials we use to the systems we build, care and responsibility guide our choices. We work with natural fibres, minimise waste and pay attention to detail in how we design, produce and present our work. Thoughtfulness, not speed, shapes how we work."
+          }
+        },
+        "p1": {
+          "type": "person",
+          "settings": {
+            "asset": "story-chanda.webp",
+            "name": "Chanda Shroff",
+            "role": "Founder",
+            "copy": "She is the first Indian Laureate to be honoured with the prestigious Rolex Award for Enterprise."
+          }
+        },
+        "p2": {
+          "type": "person",
+          "settings": {
+            "asset": "story-dipesh.webp",
+            "name": "Dipesh Shroff",
+            "role": "Chairman",
+            "copy": "As Chairman, Dipesh provides steady guidance and oversight to the organisation. He supports Shrujan’s long-term direction while upholding the principles on which it was founded."
+          }
+        },
+        "p3": {
+          "type": "person",
+          "settings": {
+            "asset": "story-ami.webp",
+            "name": "Ami Shroff",
+            "role": "Trustee",
+            "copy": "Ami Shroff carries forward Shrujan’s vision with a deep sense of responsibility toward both craft and community."
+          }
+        },
+        "p4": {
+          "type": "person",
+          "settings": {
+            "asset": "story-rajiv.webp",
+            "name": "Rajiv Bhatt",
+            "role": "Chief Executive Officer",
+            "copy": "Rajiv serves as Chief Executive Officer of Shrujan, where he guides the organisation’s strategy and day-to-day functioning."
+          }
+        },
+        "j1": {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-1.webp",
+            "caption": "An early village visit, cloth and bundles laid out under the trees",
+            "span": "wide"
+          }
+        },
+        "j2": {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-4.webp",
+            "caption": "Finished embroidery reviewed together in the Shrujan workroom",
+            "span": "wide"
+          }
+        },
+        "j3": {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-3.webp",
+            "caption": "A craftswoman bent over her embroidery frame",
+            "span": "tall"
+          }
+        },
+        "j4": {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-5.webp",
+            "caption": "A gathering of craftswomen at the Shrujan campus",
+            "span": "wide"
+          }
+        },
+        "j5": {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-7.webp",
+            "caption": "Craftswomen seated in the exhibition hall, textiles hung on the walls",
+            "span": "wide"
+          }
+        },
+        "j6": {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-6.webp",
+            "caption": "A senior craftswoman photographed with her work",
+            "span": "tall"
+          }
+        },
+        "j7": {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-8.webp",
+            "caption": "Embroidered odhanis beside a mirrored mud-work wall",
+            "span": "wide"
+          }
+        },
+        "j8": {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-9.webp",
+            "caption": "Two craftswomen embroidering a length of yellow cloth",
+            "span": "wide"
+          }
+        },
+        "j9": {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-2.webp",
+            "caption": "Craftswomen embroidering together in the courtyard of a village home",
+            "span": "wide"
+          }
+        },
+        "j10": {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-10.webp",
+            "caption": "A craftswoman beside a finished embroidered panel",
+            "span": "wide"
+          }
+        },
+        "j11": {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-11.webp",
+            "caption": "A craftswoman in traditional jewellery with a completed textile",
+            "span": "tall"
+          }
+        },
+        "j12": {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-12.webp",
+            "caption": "Traditional dress against the carved wall of a Kutch home",
+            "span": "tall"
+          }
+        },
+        "pr1": {
+          "type": "press",
+          "settings": {
+            "section_label": "પાંજોકચ્છ · Panjo Kutch",
+            "pub": "Abhiyaan",
+            "head": "‘મશીનો’નું કચ્છી ભરતકામ પર આક્રમણ",
+            "head_lang": "gu",
+            "trans": "‘Machines’ encroach on Kutchi embroidery",
+            "byline": "By સુચિતા બોધાણી કનર · Suchita Bodhani Kanar",
+            "note": "A two-page report in the Gujarati weekly on machine embroidery spreading through Kutch, and what it means for the hand-embroidery traditions the craftswomen still work in.",
+            "facts": "17 February 2018\nIssue No. 1662\n2 pages",
+            "sheets": "press-abhiyaan-1.webp, press-abhiyaan-2.webp"
+          }
+        },
+        "pr2": {
+          "type": "press",
+          "settings": {
+            "section_label": "Lifestyle · Fashion",
+            "pub": "The Indian Express",
+            "head": "Wonder weaves: How these Kutchi women wove themselves a successful life and career",
+            "head_lang": "",
+            "trans": "",
+            "byline": "",
+            "note": "On the embroidery traditions of Kutch and the craftswomen who turned them into a livelihood and a career.",
+            "facts": "4 July 2018\n2 pages",
+            "sheets": "press-ie-1.webp, press-ie-2.webp"
+          }
+        },
+        "pr3": {
+          "type": "press",
+          "settings": {
+            "section_label": "Brand Profile",
+            "pub": "Apparel",
+            "head": "Inspiring Creativity",
+            "head_lang": "",
+            "trans": "",
+            "byline": "By Brinda Gill",
+            "note": "A four-page profile of Shrujan as a pioneering not-for-profit nurturing traditional Kutchi hand embroidery for the urban market, five decades on from its founding.",
+            "facts": "September 2018\nPages 62–65\n4 pages",
+            "sheets": "press-brinda-1.webp, press-brinda-2.webp, press-brinda-3.webp, press-brinda-4.webp"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5",
+        "op1",
+        "op2",
+        "op3",
+        "os1",
+        "os2",
+        "os3",
+        "st1",
+        "st2",
+        "st3",
+        "st4",
+        "v1",
+        "v2",
+        "v3",
+        "p1",
+        "p2",
+        "p3",
+        "p4",
+        "j1",
+        "j2",
+        "j3",
+        "j4",
+        "j5",
+        "j6",
+        "j7",
+        "j8",
+        "j9",
+        "j10",
+        "j11",
+        "j12",
+        "pr1",
+        "pr2",
+        "pr3"
+      ]
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

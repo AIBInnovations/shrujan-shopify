@@ -1,0 +1,143 @@
+<section class="section container faq-section" id="support">
+  <div class="section-intro" data-reveal>
+    <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+    <h2 class="section-title">{{ section.settings.title }}</h2>
+    <p class="section-intro__copy">
+      {{ section.settings.intro }}
+    </p>
+  </div>
+
+  <div class="faq" data-reveal>
+    {%- for block in section.blocks %}
+    <div class="faq__item{% if forloop.first %} is-open{% endif %}" {{ block.shopify_attributes }}>
+      <button class="faq__summary" type="button" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="faq-panel-{{ forloop.index0 }}">
+        <span class="faq__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
+        <span class="faq__q">{{ block.settings.question | escape }}</span>
+        <span class="faq__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>
+        </span>
+      </button>
+
+      <div class="faq__panel" id="faq-panel-{{ forloop.index0 }}" role="region">
+        <div class="faq__panel-inner">
+          <p class="faq__a">{{ block.settings.answer }}</p>
+        </div>
+      </div>
+    </div>
+    {%- endfor %}
+  </div>
+
+</section>
+
+<script>
+(function () {
+  var root = document.querySelector('.faq-section');
+  if (!root || root.__shrujanInit) return;
+  root.__shrujanInit = true;
+
+  var items = Array.prototype.slice.call(root.querySelectorAll('.faq__item'));
+
+  items.forEach(function (item) {
+    var button = item.querySelector('.faq__summary');
+    if (!button) return;
+    button.addEventListener('click', function () {
+      // setOpen(isOpen ? -1 : i) — one panel open at a time; clicking the
+      // open one closes everything.
+      var wasOpen = item.classList.contains('is-open');
+      items.forEach(function (other) {
+        var isOpen = !wasOpen && other === item;
+        other.classList.toggle('is-open', isOpen);
+        var btn = other.querySelector('.faq__summary');
+        if (btn) btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+    });
+  });
+})();
+</script>
+{% schema %}
+{
+  "name": "FAQ",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Help & Support"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Everything you need to know"
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Intro copy",
+      "default": "Thoughtful answers for a seamless shopping experience."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "FAQ item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "Are your pieces handcrafted?"
+        },
+        {
+          "type": "textarea",
+          "id": "answer",
+          "label": "Answer",
+          "default": "Yes. Every garment is embroidered by artisan women across forty villages of Kutch. No machine embroidery, ever. Each piece carries the name of the hands that made it."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ",
+      "blocks": [
+        {
+          "type": "item",
+          "settings": {
+            "question": "Are your pieces handcrafted?",
+            "answer": "Yes. Every garment is embroidered by artisan women across forty villages of Kutch. No machine embroidery, ever. Each piece carries the name of the hands that made it."
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "question": "What size options are available?",
+            "answer": "Our pieces come in XS to XXL, and every silhouette is cut to drape generously. Made-to-measure is available on request for saris, lehengas and bridal commissions."
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "question": "How long will my order take to reach me?",
+            "answer": "Ready pieces ship from Bhuj within 48 hours and arrive in 3–6 days across India. Made-to-order embroidery takes 2–3 weeks. Good things, stitched slowly."
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "question": "Do you offer international shipping?",
+            "answer": "We ship worldwide. International orders arrive in 8–14 days, fully tracked, with duties settled at checkout so there are no surprises."
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "question": "What is your return & exchange policy?",
+            "answer": "Easy returns and exchanges within 14 days for unworn pieces with tags intact. Hand-embroidered commissions and altered garments are made to order and non-returnable."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

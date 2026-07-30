@@ -11,14 +11,17 @@ scripts, and the SPA router became real Shopify URLs.
 - `layout/theme.liquid` — head (fonts, CSS, GSAP + ScrollTrigger + Lenis +
   data + core JS, loaded synchronously so section scripts can rely on them),
   then header / `main` / footer, matching the React tree.
-- `snippets/` — one file per React component or page
+- `sections/` — one customizer-editable section per React component or page
   (`home-*` = the 14 home-page components, `page-*` = the sub-pages,
-  `product-piece` = the product page, `shrujan-header` / `shrujan-footer`).
-  Interactive behavior lives in an inline `<script>` at the end of the same
-  snippet.
-- `templates/*.liquid` — thin wrappers that render the right snippet per URL.
-  `404.liquid` and `page.liquid` render the home sections because the React
-  app's catch-all route rendered the storefront.
+  `product-piece` = the product page, `shrujan-header` / `shrujan-footer`
+  wired through the `header-group`/`footer-group` section groups). Every
+  section carries a `{% schema %}` whose setting defaults reproduce today's
+  content exactly — texts, images and links are editable in Online Store →
+  Customize, repeating items (cards, FAQs, testimonials…) are blocks.
+  Interactive behavior lives in an inline `<script>` in the same section.
+- `templates/*.json` — OS 2.0 templates pre-populated with today's real
+  content as section blocks. `404.json` and `page.json` render the home
+  sections because the React app's catch-all route rendered the storefront.
 - `assets/` — all images/videos from `website/public` (three files renamed:
   `bottom left/bottom right/top right.webp` → hyphenated), the two stylesheets,
   `gsap.min.js`, `ScrollTrigger.min.js`, `lenis.min.js` (self-hosted, per
@@ -72,18 +75,6 @@ After installing:
    handle exists Shopify returns its 404 (which renders the storefront, like
    the React fallback). Prices/checkout stay display-only until you decide to
    wire the catalogue to real Shopify products.
-
-## Static preview (no Shopify needed)
-
-```
-node build-preview.mjs
-```
-
-writes `../preview/*.html` — the identical markup with `asset_url` resolved to
-`../shopify-theme/assets/` and a tiny click-time shim that maps the theme's
-real URLs onto the local files. Open `preview/index.html` directly, or serve
-the repo root (`python3 -m http.server` in `..`) and browse
-`http://localhost:8000/preview/`.
 
 ## Notes
 

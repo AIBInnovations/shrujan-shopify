@@ -1,0 +1,426 @@
+<!-- Product detail — three columns. Resolved from the URL at runtime, so the
+     whole page is client-rendered from window.SHRUJAN into the shell below. -->
+<div class="page pdp-page"
+  data-copy="{{ section.settings.copy | escape }}"
+  data-mode1-title="{{ section.settings.mode1_title | escape }}"
+  data-mode1-note="{{ section.settings.mode1_note | escape }}"
+  data-mode2-title="{{ section.settings.mode2_title | escape }}"
+  data-mode2-note="{{ section.settings.mode2_note | escape }}"
+  data-mode2-price="{{ section.settings.mode2_price | escape }}"
+  data-reassure="{{ section.settings.reassure | escape }}"
+  data-review-note="{{ section.settings.review_note | escape }}"></div>
+
+<script>
+(function () {
+  var root = document.querySelector('.pdp-page');
+  if (!root || root.__shrujanInit) return;
+  root.__shrujanInit = true;
+
+  var S = window.SHRUJAN;
+
+  /* ---- customizer text: data attributes on the shell, theme copy as fallback ---- */
+  function txt(name, fallback) {
+    return root.getAttribute('data-' + name) || fallback;
+  }
+  var TEXT = {
+    copy: txt('copy', 'Counted and stitched by hand on naturally dyed handloom cloth, then cut and finished in our Bhuj atelier. Made to be worn often and kept for a long time.'),
+    mode1Title: txt('mode1-title', 'Ready to ship'),
+    mode1Note: txt('mode1-note', 'Leaves Bhuj in 48 hours'),
+    mode2Title: txt('mode2-title', 'Made to your measure'),
+    mode2Note: txt('mode2-note', 'Cut for you · 2–3 weeks'),
+    mode2Price: txt('mode2-price', '+ ₹ 1,200'),
+    reassure: txt('reassure', 'Free alterations for as long as you own it'),
+    reviewNote: txt('review-note', 'Bought this piece? Tell us how it wears — we send every review back to the woman who made it.')
+  };
+
+  /* ---- resolve the piece: /products/<slug> from the path, ?slug= fallback ---- */
+  var m = location.pathname.match(/\/products\/([^\/?#]+)/);
+  var slug = m ? m[1] : new URLSearchParams(location.search).get('slug');
+
+  var piece = null;
+  for (var pi = 0; pi < S.PIECES.length; pi++) {
+    if (S.productSlug(S.PIECES[pi]) === slug) { piece = S.PIECES[pi]; break; }
+  }
+  if (!piece) piece = S.PIECES[0]; // no match falls back to the first piece, as the SPA does
+
+  var shots = S.galleryFor(piece.img, piece.gallery);
+
+  // same craft first, topped up with the rest of the catalogue
+  var pieceSlug = S.productSlug(piece);
+  var family = piece.craft.split('·')[0].trim().toLowerCase();
+  var rest = S.PIECES.filter(function (p) { return S.productSlug(p) !== pieceSlug; });
+  var sameCraft = rest.filter(function (p) { return p.craft.toLowerCase().includes(family); });
+  var alsoLike = sameCraft
+    .concat(rest.filter(function (p) { return !sameCraft.includes(p); }))
+    .slice(0, 5);
+
+  // the lower row must not repeat what the recommendation row already showed
+  var shown = new Set([pieceSlug].concat(alsoLike.map(S.productSlug)));
+  var others = S.PIECES.filter(function (p) { return !shown.has(S.productSlug(p)); }).slice(0, 5);
+
+  /* ---- icons ---- */
+  function lineIcon(size, paths) {
+    return '<svg viewBox="0 0 24 24" width="' + size + '" height="' + size + '" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' + paths + '</svg>';
+  }
+  function heartIcon(size) {
+    return lineIcon(size, '<path d="M12 19.8S4.5 15.3 4.5 9.9c0-2.6 2-4.4 4.2-4.4 1.5 0 2.7.8 3.3 2 .6-1.2 1.8-2 3.3-2 2.2 0 4.2 1.8 4.2 4.4 0 5.4-7.5 9.9-7.5 9.9Z"></path>');
+  }
+  function arrowIcon(size) {
+    return lineIcon(size, '<path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path>');
+  }
+  var plusIcon = lineIcon(16, '<path d="M12 5v14M5 12h14"></path>');
+  var phoolIcon = '<svg viewBox="0 0 32 32" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M16 2c1.3 4.6 3 7.4 5.2 8.8C23.4 12.2 26 13 30 13.4v.2c-4 .4-6.6 1.2-8.8 2.6C19 17.6 17.3 20.4 16 25c-1.3-4.6-3-7.4-5.2-8.8C8.6 14.8 6 14 2 13.6v-.2c4-.4 6.6-1.2 8.8-2.6C13 9.4 14.7 6.6 16 2Z"></path><circle cx="16" cy="28.5" r="1.6"></circle></svg>';
+
+  function stars(n) {
+    var star = '<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.6L12 17.6 6.1 20.7l1.2-6.6L2.5 9.5l6.6-.9Z"></path></svg>';
+    var out = '';
+    for (var i = 0; i < n; i++) out += star;
+    return '<span class="pdp__stars" aria-label="' + n + ' out of 5 stars">' + out + '</span>';
+  }
+
+  /* ---- the home page's product card, verbatim — same grid, same card ---- */
+  function cardHtml(p) {
+    var h = '<a class="piece" href="/products/' + S.productSlug(p) + '">';
+    h += '<div class="piece__media">';
+    h += '<img src="' + S.asset(p.img) + '" alt="' + p.alt + '" loading="lazy">';
+    if (p.badge) h += '<span class="piece__badge">' + p.badge + '</span>';
+    h += '<button class="piece__wish" type="button" aria-label="Save ' + p.name + ' to wishlist">' + heartIcon(16) + '</button>';
+    h += '<span class="piece__quick">Add to bag</span>';
+    h += '</div>';
+    h += '<div class="piece__info">';
+    h += '<p class="piece__name">' + p.name + '</p>';
+    h += '<p class="piece__craft">' + p.craft + '</p>';
+    h += '<p class="piece__price">' + p.price + (p.was ? '<span>' + p.was + '</span>' : '') + '</p>';
+    h += '<span class="piece__swatches" aria-hidden="true">';
+    for (var i = 0; i < p.swatches.length; i++) h += '<i style="background: ' + p.swatches[i] + '"></i>';
+    h += '</span>';
+    h += '</div>';
+    h += '</a>';
+    return h;
+  }
+
+  /* ---- left: thumbnail rail ---- */
+  var railHtml = '';
+  shots.forEach(function (src, i) {
+    railHtml += '<button type="button" class="pdp__thumb' + (i === 0 ? ' is-active' : '') + '" aria-label="View image ' + (i + 1) + ' of ' + shots.length + '"' + (i === 0 ? ' aria-current="true"' : '') + '>';
+    railHtml += '<img src="' + S.asset(src) + '" alt="" loading="lazy">';
+    railHtml += '</button>';
+  });
+
+  /* ---- middle: the pinned shot ---- */
+  var stageHtml = '';
+  shots.forEach(function (src, i) {
+    stageHtml += '<figure class="pdp__shot' + (i === 0 ? ' is-active' : '') + '" aria-hidden="' + (i !== 0 ? 'true' : 'false') + '">';
+    stageHtml += '<img src="' + S.asset(src) + '"' + (i === 0 ? ' alt="' + piece.alt + '" loading="eager" fetchpriority="high"' : ' alt="" loading="lazy"') + '>';
+    stageHtml += '</figure>';
+  });
+  if (piece.badge) stageHtml += '<span class="pdp__badge">' + piece.badge + '</span>';
+
+  /* ---- right: the buying column ---- */
+  var buyHtml = '<div class="pdp__rating">' + stars(5) + '<span>5.0</span><a href="#reviews">126 reviews</a></div>';
+  buyHtml += '<h1 class="pdp__name">' + piece.name + '</h1>';
+  buyHtml += '<p class="pdp__craft">' + piece.craft + '</p>';
+  buyHtml += '<p class="pdp__copy">' + TEXT.copy + '</p>';
+
+  buyHtml += '<div class="pdp__block"><p class="pdp__label">Made with</p><ul class="pdp__specs">';
+  S.SPECS.forEach(function (sp) { buyHtml += '<li>' + sp + '</li>'; });
+  buyHtml += '</ul></div>';
+
+  buyHtml += '<div class="pdp__block"><div class="pdp__label-row"><p class="pdp__label">Size</p><button type="button" class="pdp__size-guide">Size guide</button></div>';
+  buyHtml += '<div class="pdp__sizes" role="group" aria-label="Size">';
+  S.SIZES.forEach(function (sz) {
+    buyHtml += '<button type="button" class="pdp__size' + (sz === 'M' ? ' is-active' : '') + '" aria-pressed="' + (sz === 'M' ? 'true' : 'false') + '">' + sz + '</button>';
+  });
+  buyHtml += '</div></div>';
+
+  buyHtml += '<div class="pdp__options" role="radiogroup" aria-label="How it is made">';
+  buyHtml += '<label class="pdp__option is-active"><input type="radio" name="pdp-mode" checked><span class="pdp__option-body"><span class="pdp__option-title">' + TEXT.mode1Title + '</span><span class="pdp__option-note">' + TEXT.mode1Note + '</span></span><span class="pdp__option-price">' + piece.price + '</span></label>';
+  buyHtml += '<label class="pdp__option"><input type="radio" name="pdp-mode"><span class="pdp__option-body"><span class="pdp__option-title">' + TEXT.mode2Title + '</span><span class="pdp__option-note">' + TEXT.mode2Note + '</span></span><span class="pdp__option-price">' + TEXT.mode2Price + '</span></label>';
+  buyHtml += '</div>';
+
+  buyHtml += '<div class="pdp__cta"><button type="button" class="btn pdp__add">Add to bag — ' + piece.price + '</button><button type="button" class="pdp__wish" aria-label="Save to wishlist">' + heartIcon(17) + '</button></div>';
+  buyHtml += '<p class="pdp__reassure">' + phoolIcon + ' ' + TEXT.reassure + '</p>';
+
+  buyHtml += '<div class="pdp__details">';
+  S.DETAILS.forEach(function (d, i) {
+    buyHtml += '<div class="pdp__detail' + (i === 0 ? ' is-open' : '') + '">';
+    buyHtml += '<button type="button" class="pdp__detail-summary" aria-expanded="' + (i === 0 ? 'true' : 'false') + '" aria-controls="pdp-detail-' + i + '">';
+    buyHtml += '<span>' + d.q + '</span>';
+    buyHtml += '<span class="pdp__detail-icon" aria-hidden="true">' + plusIcon + '</span>';
+    buyHtml += '</button>';
+    buyHtml += '<div class="pdp__detail-panel" id="pdp-detail-' + i + '" role="region"><div class="pdp__detail-inner"><p>' + d.a + '</p></div></div>';
+    buyHtml += '</div>';
+  });
+  buyHtml += '</div>';
+
+  buyHtml += '<div class="pdp__worn"><div class="pdp__label-row"><p class="pdp__label">Worn by</p><a href="#reviews">All 126 reviews</a></div><div class="pdp__faces">';
+  S.REVIEW_FACES.forEach(function (f) { buyHtml += '<img src="' + S.asset(f) + '" alt="" loading="lazy">'; });
+  buyHtml += '</div><blockquote class="pdp__quote">“Five years on it has not lost a single stitch.”<cite>Meera S. · Mumbai</cite></blockquote></div>';
+
+  buyHtml += '<a class="arrow-link pdp__back" href="/pages/shop-shrujan">Back to the catalogue ' + arrowIcon(15) + '</a>';
+
+  /* ---- reviews ---- */
+  var reviewsHtml = '<section class="section container pdp-reviews" id="reviews">';
+  reviewsHtml += '<div class="section-head" data-reveal><div class="section-head__titles"><p class="eyebrow">126 reviews</p><h2 class="section-title">What buyers <em>say</em></h2></div><a class="arrow-link" href="#write-review">Write a review ' + arrowIcon(16) + '</a></div>';
+  reviewsHtml += '<div class="reviews" data-reveal-child>';
+  reviewsHtml += '<aside class="review-add" id="write-review"><p class="review-add__score">5.0</p>' + stars(5) + '<p class="review-add__count">Based on 126 reviews</p><button type="button" class="btn">Write a review</button><p class="review-add__note">' + TEXT.reviewNote + '</p></aside>';
+  S.REVIEWS.forEach(function (r, i) {
+    reviewsHtml += '<article class="review">' + stars(r.stars);
+    reviewsHtml += '<p class="review__body">' + r.body + '</p>';
+    reviewsHtml += '<div class="review__who"><img src="' + S.asset(S.REVIEW_FACES[i % S.REVIEW_FACES.length]) + '" alt="" loading="lazy"><span><span class="review__name">' + r.name + '</span><span class="review__place">' + r.place + '</span></span></div>';
+    reviewsHtml += '</article>';
+  });
+  reviewsHtml += '</div></section>';
+
+  /* ---- recommendation ---- */
+  var recHtml = '<section class="section container pdp-rec" aria-label="Recommended">';
+  recHtml += '<div class="section-head" data-reveal><div class="section-head__titles"><p class="eyebrow">You may also like</p><h2 class="section-title">More from the <em>same hands</em></h2></div></div>';
+  recHtml += '<div class="curated__grid" data-reveal-child>';
+  alsoLike.forEach(function (p) { recHtml += cardHtml(p); });
+  recHtml += '</div></section>';
+
+  /* ---- the rest of the catalogue ---- */
+  var otherHtml = '<section class="section container pdp-other" aria-label="Other products">';
+  otherHtml += '<div class="section-head" data-reveal><div class="section-head__titles"><p class="eyebrow">Elsewhere in the catalogue</p><h2 class="section-title">Other <em>pieces</em></h2></div><a class="arrow-link" href="/pages/shop-shrujan">Shop everything ' + arrowIcon(16) + '</a></div>';
+  otherHtml += '<div class="curated__grid" data-reveal-child>';
+  others.forEach(function (p) { otherHtml += cardHtml(p); });
+  otherHtml += '</div></section>';
+
+  root.innerHTML =
+    '<div class="container pdp"><div class="pdp__media"><div class="pdp__rail" aria-label="Product images">' + railHtml + '</div><div class="pdp__stage">' + stageHtml + '</div></div><div class="pdp__buy">' + buyHtml + '</div></div>' +
+    reviewsHtml + recHtml + otherHtml;
+
+  /* ---- behavior ---- */
+  var pdpEl = root.querySelector('.pdp');
+  var detailsEl = root.querySelector('.pdp__details');
+  var thumbEls = Array.prototype.slice.call(root.querySelectorAll('.pdp__thumb'));
+  var shotEls = Array.prototype.slice.call(root.querySelectorAll('.pdp__shot'));
+  var sizeEls = Array.prototype.slice.call(root.querySelectorAll('.pdp__size'));
+  var optionEls = Array.prototype.slice.call(root.querySelectorAll('.pdp__option'));
+  var modeInputs = Array.prototype.slice.call(root.querySelectorAll('.pdp__option input'));
+  var detailEls = Array.prototype.slice.call(root.querySelectorAll('.pdp__detail'));
+
+  var active = 0;
+  var size = 'M';
+  var mode = 'ready';
+  var open = 0;
+
+  function setActive(i) {
+    if (i === active) return;
+    active = i;
+    thumbEls.forEach(function (t, j) {
+      t.classList.toggle('is-active', j === i);
+      if (j === i) t.setAttribute('aria-current', 'true');
+      else t.removeAttribute('aria-current');
+    });
+    shotEls.forEach(function (s, j) {
+      s.classList.toggle('is-active', j === i);
+      s.setAttribute('aria-hidden', j !== i ? 'true' : 'false');
+    });
+  }
+
+  function applyOpen() {
+    detailEls.forEach(function (d, j) {
+      var isOpen = open === j;
+      d.classList.toggle('is-open', isOpen);
+      d.querySelector('.pdp__detail-summary').setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+  }
+
+  // Thumbnails scroll to that shot's band rather than setting state directly,
+  // so scroll position stays the single source of truth for what is showing.
+  function jumpTo(i) {
+    var el = pdpEl;
+    if (!el) return;
+    var travel = el.offsetHeight - window.innerHeight;
+    if (travel <= 0) return;
+    var top = el.offsetTop + (travel * (i + 0.5)) / shots.length;
+    window.Shrujan.scrollToY(top); // through Lenis, or it fights the smooth scroller
+  }
+
+  thumbEls.forEach(function (t, i) {
+    t.addEventListener('click', function () { jumpTo(i); });
+  });
+
+  sizeEls.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      size = btn.textContent;
+      sizeEls.forEach(function (b) {
+        var on = b.textContent === size;
+        b.classList.toggle('is-active', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+    });
+  });
+
+  modeInputs.forEach(function (input, idx) {
+    input.addEventListener('change', function () {
+      mode = idx === 0 ? 'ready' : 'measure';
+      optionEls.forEach(function (l, j) { l.classList.toggle('is-active', j === idx); });
+    });
+  });
+
+  // "Size guide" opens the fit panel rather than pointing at a page that does
+  // not exist. Found by label, so reordering DETAILS cannot silently open the
+  // wrong one.
+  root.querySelector('.pdp__size-guide').addEventListener('click', function () {
+    var i = S.DETAILS.findIndex(function (d) { return d.q === 'Fabric & fit'; });
+    if (i < 0) return;
+    open = i;
+    applyOpen();
+    var el = detailsEl;
+    if (el) window.Shrujan.scrollToY(el.getBoundingClientRect().top + window.scrollY - 120);
+  });
+
+  detailEls.forEach(function (d, i) {
+    d.querySelector('.pdp__detail-summary').addEventListener('click', function () {
+      open = open === i ? -1 : i;
+      applyOpen();
+    });
+  });
+
+  Array.prototype.forEach.call(root.querySelectorAll('.piece__wish'), function (b) {
+    b.addEventListener('click', function (e) { e.preventDefault(); });
+  });
+
+  // Scroll drives the gallery. The section is divided into as many bands as
+  // there are shots, and progress through it picks the one on screen — so the
+  // image changes only when you move, never on its own.
+  if (shots.length >= 2) {
+    var queued = false;
+
+    var read = function () {
+      queued = false;
+      var el = pdpEl;
+      if (!el) return;
+      var r = el.getBoundingClientRect();
+      var travel = r.height - window.innerHeight;
+      if (travel <= 0) return;
+      var progress = Math.min(1, Math.max(0, -r.top / travel));
+      setActive(Math.min(shots.length - 1, Math.floor(progress * shots.length)));
+    };
+
+    var onScroll = function () {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(read);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    read();
+  }
+
+  /* The central reveal system runs at DOMContentLoaded and never sees this
+     runtime-built DOM, so register the same reveals for the nodes above. */
+  var mm = gsap.matchMedia();
+
+  mm.add('(prefers-reduced-motion: no-preference)', function () {
+    gsap.utils.toArray(root.querySelectorAll('[data-reveal]')).forEach(function (el) {
+      gsap.fromTo(
+        el,
+        { opacity: 0, y: 28 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.85,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 88%', once: true }
+        }
+      );
+    });
+
+    gsap.utils.toArray(root.querySelectorAll('[data-reveal-child]')).forEach(function (group) {
+      gsap.fromTo(
+        group.children,
+        { opacity: 0, y: 32 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          stagger: 0.09,
+          scrollTrigger: { trigger: group, start: 'top 86%', once: true }
+        }
+      );
+    });
+  });
+
+  mm.add('(prefers-reduced-motion: reduce)', function () {
+    gsap.set(root.querySelectorAll('[data-reveal], [data-reveal-child] > *'), { clearProps: 'all', opacity: 1 });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Product piece",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "This page is client-rendered from the catalogue data (window.SHRUJAN) by URL slug — the product's name, price, images, sizes, specs, accordions and reviews are data-driven, not edited here. Only the static labels below are customizer-editable."
+    },
+    {
+      "type": "textarea",
+      "id": "copy",
+      "label": "Product description",
+      "default": "Counted and stitched by hand on naturally dyed handloom cloth, then cut and finished in our Bhuj atelier. Made to be worn often and kept for a long time."
+    },
+    {
+      "type": "header",
+      "content": "Ordering options"
+    },
+    {
+      "type": "text",
+      "id": "mode1_title",
+      "label": "Option 1 title",
+      "default": "Ready to ship"
+    },
+    {
+      "type": "text",
+      "id": "mode1_note",
+      "label": "Option 1 note",
+      "default": "Leaves Bhuj in 48 hours"
+    },
+    {
+      "type": "text",
+      "id": "mode2_title",
+      "label": "Option 2 title",
+      "default": "Made to your measure"
+    },
+    {
+      "type": "text",
+      "id": "mode2_note",
+      "label": "Option 2 note",
+      "default": "Cut for you · 2–3 weeks"
+    },
+    {
+      "type": "text",
+      "id": "mode2_price",
+      "label": "Option 2 surcharge",
+      "default": "+ ₹ 1,200"
+    },
+    {
+      "type": "header",
+      "content": "Notes"
+    },
+    {
+      "type": "text",
+      "id": "reassure",
+      "label": "Free-alterations note",
+      "default": "Free alterations for as long as you own it"
+    },
+    {
+      "type": "textarea",
+      "id": "review_note",
+      "label": "Write-a-review note",
+      "default": "Bought this piece? Tell us how it wears — we send every review back to the woman who made it."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product piece"
+    }
+  ]
+}
+{% endschema %}

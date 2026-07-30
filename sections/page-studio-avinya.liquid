@@ -1,0 +1,576 @@
+{%- assign strand_blocks = section.blocks | where: 'type', 'strand' -%}
+{%- assign meta_blocks = section.blocks | where: 'type', 'meta' -%}
+{%- assign step_blocks = section.blocks | where: 'type', 'step' -%}
+{%- assign shot_blocks = section.blocks | where: 'type', 'shot' -%}
+<div class="page">
+  <header class="page-hero page-hero--ghost" data-reveal>
+    <span class="page-hero__ghost" aria-hidden="true">{{ section.settings.hero_ghost }}</span>
+
+    <div class="container page-hero__grid">
+      <div class="page-hero__text">
+        <p class="eyebrow">{{ section.settings.hero_eyebrow | escape }}</p>
+        <h1 class="page-hero__title">{{ section.settings.hero_title }}</h1>
+        <p class="page-hero__lede">{{ section.settings.hero_lede }}</p>
+        <ul class="page-meta">
+{%- for block in meta_blocks %}
+          <li {{ block.shopify_attributes }}><span class="page-meta__value">{{ block.settings.value }}</span><span class="page-meta__label">{{ block.settings.label }}</span></li>
+{%- endfor %}
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <nav class="strands" aria-label="Studio Collection">
+    <div class="container strands__inner">
+      <ol class="strands__list">
+{%- for block in strand_blocks %}
+        <li {{ block.shopify_attributes }}>
+          <a href="{{ block.settings.link }}" class="strands__link{% if block.settings.current %} is-active{% endif %}"{% if block.settings.current %} aria-current="page"{% endif %}>
+            <span class="strands__no">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+            <span class="strands__label">{{ block.settings.label | escape }}</span>
+          </a>
+        </li>
+{%- endfor %}
+      </ol>
+    </div>
+  </nav>
+
+  <section class="section container">
+    <figure class="gloss" data-reveal>
+      <figcaption class="gloss__head">
+        <span class="gloss__word">{{ section.settings.gloss_word }}</span>
+        <span class="gloss__lang">{{ section.settings.gloss_lang }}</span>
+      </figcaption>
+      <p class="gloss__meaning">{{ section.settings.gloss_meaning }}</p>
+      <p class="gloss__note">{{ section.settings.gloss_note }}</p>
+    </figure>
+
+    <div class="origin" data-reveal>
+      <p class="origin__lead">{{ section.settings.lead }}</p>
+      <div class="origin__body">
+        {{ section.settings.body }}
+      </div>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="section-intro" data-reveal>
+      <p class="eyebrow">{{ section.settings.steps_eyebrow | escape }}</p>
+      <h2 class="section-title">{{ section.settings.steps_title }}</h2>
+    </div>
+
+    <ol class="steps" data-reveal-child>
+{%- for block in step_blocks %}
+      <li class="step" {{ block.shopify_attributes }}>
+        <span class="step__no">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+        <div class="step__body">
+          <h3 class="step__title">{{ block.settings.title }}</h3>
+          <p class="step__copy">{{ block.settings.copy }}</p>
+        </div>
+      </li>
+{%- endfor %}
+    </ol>
+
+    <blockquote class="origin__pull" data-reveal>{{ section.settings.pull }}</blockquote>
+  </section>
+
+  <section class="section container">
+    <div class="section-intro" data-reveal>
+      <p class="eyebrow">{{ section.settings.studio_eyebrow | escape }}</p>
+      <h2 class="section-title">{{ section.settings.studio_title }}</h2>
+    </div>
+
+    <div class="origin__gallery" data-reveal-child>
+{%- for block in shot_blocks %}
+      <figure class="origin__shot" {{ block.shopify_attributes }}>
+        <img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1200 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
+      </figure>
+{%- endfor %}
+    </div>
+  </section>
+
+  <section class="section container enquiry" id="avinya-enquiry" data-done-title="{{ section.settings.done_title | escape }}" data-done-body="{{ section.settings.done_body | escape }}" data-done-again="{{ section.settings.done_again | escape }}">
+    <div class="enquiry__intro" data-reveal>
+      <p class="eyebrow">{{ section.settings.enq_eyebrow | escape }}</p>
+      <h2 class="section-title">{{ section.settings.enq_title }}</h2>
+      <p class="enquiry__copy">{{ section.settings.enq_copy }}</p>
+
+      <dl class="enquiry__reach">
+        <div>
+          <dt>{{ section.settings.call_label }}</dt>
+          <dd>
+            <a href="tel:{{ section.settings.phone | remove: ' ' }}">{{ section.settings.phone }}</a>
+          </dd>
+        </div>
+        <div>
+          <dt>{{ section.settings.write_label }}</dt>
+          <dd>
+            <a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a>
+          </dd>
+        </div>
+        <div>
+          <dt>{{ section.settings.hours_label }}</dt>
+          <dd>{{ section.settings.hours }}</dd>
+        </div>
+      </dl>
+    </div>
+
+    <form class="enquiry__form" data-reveal>
+      <p class="field">
+        <label for="avinya-enquiry-name">Name <span aria-hidden="true">*</span></label>
+        <input id="avinya-enquiry-name" name="name" type="text" required autocomplete="name">
+      </p>
+
+      <p class="field">
+        <label for="avinya-enquiry-phone">Contact number <span aria-hidden="true">*</span></label>
+        <input id="avinya-enquiry-phone" name="phone" type="tel" required autocomplete="tel">
+      </p>
+
+      <p class="field">
+        <label for="avinya-enquiry-city">City</label>
+        <input id="avinya-enquiry-city" name="city" type="text" autocomplete="address-level2">
+      </p>
+
+      <p class="field">
+        <label for="avinya-enquiry-email">Email</label>
+        <input id="avinya-enquiry-email" name="email" type="email" autocomplete="email">
+      </p>
+
+      <p class="field field--wide">
+        <label for="avinya-enquiry-looking">What are you looking for?</label>
+        <textarea id="avinya-enquiry-looking" name="looking" rows="3"></textarea>
+      </p>
+
+      <p class="field">
+        <label for="avinya-enquiry-slot">Preferred time slot</label>
+        <select id="avinya-enquiry-slot" name="slot">
+          <option value="" disabled selected>Choose a time</option>
+          <option value="9:00 AM">9:00 AM</option>
+          <option value="9:30 AM">9:30 AM</option>
+          <option value="10:00 AM">10:00 AM</option>
+          <option value="10:30 AM">10:30 AM</option>
+          <option value="11:00 AM">11:00 AM</option>
+          <option value="11:30 AM">11:30 AM</option>
+          <option value="12:00 PM">12:00 PM</option>
+          <option value="12:30 PM">12:30 PM</option>
+          <option value="1:00 PM">1:00 PM</option>
+          <option value="1:30 PM">1:30 PM</option>
+          <option value="2:00 PM">2:00 PM</option>
+          <option value="2:30 PM">2:30 PM</option>
+          <option value="3:00 PM">3:00 PM</option>
+          <option value="3:30 PM">3:30 PM</option>
+          <option value="4:00 PM">4:00 PM</option>
+          <option value="4:30 PM">4:30 PM</option>
+          <option value="5:00 PM">5:00 PM</option>
+          <option value="5:30 PM">5:30 PM</option>
+        </select>
+      </p>
+
+      <div class="enquiry__submit">
+        <button class="btn" type="submit">{{ section.settings.submit_label }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></button>
+        <span class="enquiry__note"><span aria-hidden="true">*</span> {{ section.settings.note }}</span>
+      </div>
+    </form>
+  </section>
+</div>
+
+<script>
+(function () {
+  var root = document.getElementById('avinya-enquiry');
+  if (!root || root.__shrujanInit) return;
+  root.__shrujanInit = true;
+
+  var form = root.querySelector('.enquiry__form');
+  if (!form) return;
+
+  var arrow = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>';
+
+  var done = document.createElement('div');
+  done.className = 'enquiry__done';
+  done.setAttribute('role', 'status');
+  done.setAttribute('data-reveal', '');
+  done.innerHTML =
+    '<p class="enquiry__done-title">' + (root.getAttribute('data-done-title') || 'Thank you — we have your request.') + '</p>' +
+    '<p>' + (root.getAttribute('data-done-body') || 'Someone from the Bhuj studio will call you in your chosen slot. If it is urgent, reach us on <a href="tel:+919099974319">+91 9099 974319</a>.') + '</p>' +
+    '<button class="arrow-link" type="button">' + (root.getAttribute('data-done-again') || 'Send another enquiry') + ' ' + arrow + '</button>';
+
+  done.querySelector('button').addEventListener('click', function () {
+    form.reset();
+    done.replaceWith(form);
+  });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    form.replaceWith(done);
+  });
+})();
+</script>
+{% schema %}
+{
+  "name": "Studio · Avinya",
+  "settings": [
+    {
+      "type": "text",
+      "id": "hero_ghost",
+      "label": "Ghost word",
+      "default": "Avinya"
+    },
+    {
+      "type": "text",
+      "id": "hero_eyebrow",
+      "label": "Hero eyebrow",
+      "default": "Studio Collection · Avinya"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "hero_title",
+      "label": "Hero title",
+      "default": "Avinya — change, and <em>new beginnings</em>"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_lede",
+      "label": "Hero lede",
+      "default": "A collaboration between Shrujan and the LLDC that brings the artisans of Kutch together to make original work, rooted in their own perspective and their own hand."
+    },
+    {
+      "type": "text",
+      "id": "gloss_word",
+      "label": "Gloss word",
+      "default": "Avinya"
+    },
+    {
+      "type": "text",
+      "id": "gloss_lang",
+      "label": "Gloss language",
+      "default": "Sanskrit"
+    },
+    {
+      "type": "text",
+      "id": "gloss_meaning",
+      "label": "Gloss meaning",
+      "default": "innovation and beauty"
+    },
+    {
+      "type": "text",
+      "id": "gloss_note",
+      "label": "Gloss note",
+      "default": "It signifies change, and new beginnings."
+    },
+    {
+      "type": "textarea",
+      "id": "lead",
+      "label": "Intro lead",
+      "default": "Avinya puts artisans into teams of two and three and asks them to make something together — not to execute a design handed down to them."
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Intro body",
+      "default": "<p>For most of the women in these teams it is the first time they have worked this way: jointly, across craft traditions, with no brief to follow and no pattern to copy. The work that comes out of it is argued into being between them.</p><p>That is the point. Shrujan has worked since 1969 towards an empowered, self-reliant craft community, and a self-reliant maker is one whose own judgement is in the piece. Avinya is where heritage, contemporary design and the artisan’s own voice are allowed to meet without one being subordinated to the others.</p>"
+    },
+    {
+      "type": "text",
+      "id": "steps_eyebrow",
+      "label": "Steps eyebrow",
+      "default": "How it works"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "steps_title",
+      "label": "Steps title",
+      "default": "Four stages, two or three hands"
+    },
+    {
+      "type": "textarea",
+      "id": "pull",
+      "label": "Pull quote",
+      "default": "For most of the women in these teams, it is the first time they have made something that was not asked for."
+    },
+    {
+      "type": "text",
+      "id": "studio_eyebrow",
+      "label": "Gallery eyebrow",
+      "default": "In the studio"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "studio_title",
+      "label": "Gallery title",
+      "default": "Made between them"
+    },
+    {
+      "type": "text",
+      "id": "enq_eyebrow",
+      "label": "Enquiry eyebrow",
+      "default": "Enquire"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "enq_title",
+      "label": "Enquiry title",
+      "default": "Commission an Avinya work"
+    },
+    {
+      "type": "textarea",
+      "id": "enq_copy",
+      "label": "Enquiry copy",
+      "default": "Avinya pieces are made in small numbers and released as the teams finish them. Leave your details and we will call when the next works come off the frame."
+    },
+    {
+      "type": "text",
+      "id": "call_label",
+      "label": "Phone label",
+      "default": "Call"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone number",
+      "default": "+91 9099 974319"
+    },
+    {
+      "type": "text",
+      "id": "write_label",
+      "label": "Email label",
+      "default": "Write"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email address",
+      "default": "marketing@shrujan.com"
+    },
+    {
+      "type": "text",
+      "id": "hours_label",
+      "label": "Hours label",
+      "default": "Studio hours"
+    },
+    {
+      "type": "text",
+      "id": "hours",
+      "label": "Hours",
+      "default": "10 AM – 7 PM, Bhuj"
+    },
+    {
+      "type": "text",
+      "id": "submit_label",
+      "label": "Submit button label",
+      "default": "Request a callback"
+    },
+    {
+      "type": "text",
+      "id": "note",
+      "label": "Form note",
+      "default": "Required. We only use these details to call you back."
+    },
+    {
+      "type": "text",
+      "id": "done_title",
+      "label": "Success title",
+      "default": "Thank you — we have your request."
+    },
+    {
+      "type": "inline_richtext",
+      "id": "done_body",
+      "label": "Success message",
+      "default": "Someone from the Bhuj studio will call you in your chosen slot. If it is urgent, reach us on <a href=\"tel:+919099974319\">+91 9099 974319</a>."
+    },
+    {
+      "type": "text",
+      "id": "done_again",
+      "label": "Success button label",
+      "default": "Send another enquiry"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "strand",
+      "name": "Strand link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Avinya"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "default": "/pages/studio-avinya"
+        },
+        {
+          "type": "checkbox",
+          "id": "current",
+          "label": "Current page",
+          "info": "Marks this strand as the page you are on",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "meta",
+      "name": "Hero stat",
+      "settings": [
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Value",
+          "default": "2–3"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Artisans per team"
+        }
+      ]
+    },
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Pairing"
+        },
+        {
+          "type": "textarea",
+          "id": "copy",
+          "label": "Copy",
+          "default": "Artisans are placed in teams of two or three, often alongside someone from a craft other than their own — an embroiderer with a weaver, a dyer with a printer."
+        }
+      ]
+    },
+    {
+      "type": "shot",
+      "name": "Studio image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "asset",
+          "label": "Fallback asset file",
+          "info": "Theme asset shown when no image is picked",
+          "default": "journal-4.webp"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Alt text",
+          "default": "Artisans of Kutch at work on a collaborative piece"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Studio · Avinya",
+      "blocks": [
+        {
+          "type": "strand",
+          "settings": {
+            "label": "Heritage",
+            "link": "/pages/studio-heritage",
+            "current": false
+          }
+        },
+        {
+          "type": "strand",
+          "settings": {
+            "label": "Avinya",
+            "link": "/pages/studio-avinya",
+            "current": true
+          }
+        },
+        {
+          "type": "strand",
+          "settings": {
+            "label": "Gifting & Collaborations",
+            "link": "/pages/studio-gifting",
+            "current": false
+          }
+        },
+        {
+          "type": "meta",
+          "settings": {
+            "value": "2–3",
+            "label": "Artisans per team"
+          }
+        },
+        {
+          "type": "meta",
+          "settings": {
+            "value": "12",
+            "label": "Craft traditions"
+          }
+        },
+        {
+          "type": "meta",
+          "settings": {
+            "value": "1969",
+            "label": "Building since"
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Pairing",
+            "copy": "Artisans are placed in teams of two or three, often alongside someone from a craft other than their own — an embroiderer with a weaver, a dyer with a printer."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Co-creation",
+            "copy": "The team develops the work together. Nothing is handed down to be executed; the idea is reached between them, and changes as they make it."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Experiment",
+            "copy": "Material, scale and technique are tested against each other. Some of the combinations that come out of it have not been attempted in Kutch before."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "title": "Attribution",
+            "copy": "The finished work carries the name of everyone who made it. The artisan’s voice stays attached to the piece after it leaves the studio."
+          }
+        },
+        {
+          "type": "shot",
+          "settings": {
+            "asset": "journal-4.webp",
+            "alt": "Artisans of Kutch at work on a collaborative piece"
+          }
+        },
+        {
+          "type": "shot",
+          "settings": {
+            "asset": "journal-9.webp",
+            "alt": "Hands working thread across a shared frame"
+          }
+        },
+        {
+          "type": "shot",
+          "settings": {
+            "asset": "journal-2.webp",
+            "alt": "Craftswomen comparing embroidery samples"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

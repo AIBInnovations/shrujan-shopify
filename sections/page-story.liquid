@@ -1,0 +1,1180 @@
+<!-- The Shrujan Story — converted from src/pages/ShrujanStory.jsx (+ components/Lightbox.jsx) -->
+<header class="page-hero page-hero--ghost" data-reveal>
+  <span class="page-hero__ghost" aria-hidden="true">{{ section.settings.ghost | escape }}</span>
+
+  <div class="container page-hero__grid">
+    <div class="page-hero__text">
+      <p class="eyebrow">{{ section.settings.hero_eyebrow | escape }}</p>
+      <h1 class="page-hero__title">{{ section.settings.hero_title }}</h1>
+      <p class="page-hero__lede">{{ section.settings.hero_lede | escape }}</p>
+      <ul class="page-meta">
+        <li><span class="page-meta__value">{{ section.settings.meta1_value | escape }}</span><span class="page-meta__label">{{ section.settings.meta1_label | escape }}</span></li>
+        <li><span class="page-meta__value">{{ section.settings.meta2_value | escape }}</span><span class="page-meta__label">{{ section.settings.meta2_label | escape }}</span></li>
+        <li><span class="page-meta__value">{{ section.settings.meta3_value | escape }}</span><span class="page-meta__label">{{ section.settings.meta3_label | escape }}</span></li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<!-- ---- chapter rail ---- -->
+<nav class="chapters" aria-label="Story chapters">
+  <div class="container chapters__inner">
+    <ol class="chapters__list">
+      {%- assign chapter_n = 0 -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'chapter' -%}
+          {%- assign chapter_n = chapter_n | plus: 1 %}
+      <li {{ block.shopify_attributes }}>
+        <a href="#{{ block.settings.anchor | escape }}" class="chapters__link{% if chapter_n == 1 %} is-active{% endif %}"{% if chapter_n == 1 %} aria-current="true"{% endif %}><span class="chapters__no">{% if chapter_n < 10 %}0{% endif %}{{ chapter_n }}</span><span class="chapters__label">{{ block.settings.label | escape }}</span></a>
+      </li>
+        {%- endif -%}
+      {%- endfor %}
+    </ol>
+  </div>
+</nav>
+
+<!-- ---- 01 Origins ---- -->
+<section class="section container" id="origins">
+  <div class="section-intro" data-reveal>
+    <p class="eyebrow">{{ section.settings.origins_eyebrow | escape }}</p>
+    <h2 class="section-title">{{ section.settings.origins_title }}</h2>
+  </div>
+
+  <div class="origin" data-reveal>
+    <p class="origin__lead">{{ section.settings.origin_lead | escape }}</p>
+    <div class="origin__body">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'origin_par' %}
+      <p {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</p>
+        {%- endif -%}
+      {%- endfor %}
+    </div>
+  </div>
+
+  <div class="origin__gallery" data-reveal-child>
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'origin_shot' %}
+    <figure class="origin__shot" {{ block.shopify_attributes }}>
+      <img src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 1200 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
+    </figure>
+      {%- endif -%}
+    {%- endfor %}
+  </div>
+
+  <blockquote class="origin__pull" data-reveal>{{ section.settings.origin_quote | escape }}</blockquote>
+
+  <div class="craft__stats" data-reveal-child>
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'stat' %}
+    <div class="stat" {{ block.shopify_attributes }}>
+      <p class="stat__value">{{ block.settings.value | escape }}</p>
+      <p class="stat__label">{{ block.settings.label | escape }}</p>
+    </div>
+      {%- endif -%}
+    {%- endfor %}
+  </div>
+</section>
+
+<!-- ---- 02 Philosophy & Values ---- -->
+<section class="section container" id="values">
+  <div class="section-intro" data-reveal>
+    <p class="eyebrow">{{ section.settings.values_eyebrow | escape }}</p>
+    <h2 class="section-title">{{ section.settings.values_title }}</h2>
+  </div>
+
+  <div class="values" data-reveal-child>
+    {%- assign value_n = 0 -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'value' -%}
+        {%- assign value_n = value_n | plus: 1 %}
+    <article class="value value--{% cycle 'dignity', 'continuity', 'conscious' %}" {{ block.shopify_attributes }}>
+      <div class="value__media">
+        <img src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 1200 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
+      </div>
+      <div class="value__body">
+        <p class="value__no">{% if value_n < 10 %}0{% endif %}{{ value_n }}</p>
+        <h3 class="value__title">{{ block.settings.title | escape }}</h3>
+        <p class="value__copy">{{ block.settings.copy | escape }}</p>
+      </div>
+    </article>
+      {%- endif -%}
+    {%- endfor %}
+  </div>
+</section>
+
+<!-- ---- 03 The People of Shrujan ---- -->
+<section class="section container" id="people">
+  <div class="section-intro" data-reveal>
+    <p class="eyebrow">{{ section.settings.people_eyebrow | escape }}</p>
+    <h2 class="section-title">{{ section.settings.people_title }}</h2>
+  </div>
+
+  <div class="people" data-reveal-child>
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'person' %}
+    <article class="person" {{ block.shopify_attributes }}>
+      <div class="person__media">
+        <img src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 600 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}" alt="{{ block.settings.name | escape }}" loading="lazy">
+      </div>
+      <h3 class="person__name">{{ block.settings.name | escape }}</h3>
+      <p class="person__role">{{ block.settings.role | escape }}</p>
+      <p class="person__copy">{{ block.settings.copy | escape }}</p>
+    </article>
+      {%- endif -%}
+    {%- endfor %}
+  </div>
+</section>
+
+<!-- ---- 04 Photo Journal ---- -->
+<section class="section container" id="journal">
+  <div class="section-intro" data-reveal>
+    <p class="eyebrow">{{ section.settings.journal_eyebrow | escape }}</p>
+    <h2 class="section-title">{{ section.settings.journal_title }}</h2>
+    <p class="section-intro__copy">{{ section.settings.journal_copy | escape }}</p>
+  </div>
+  {%- capture journal_json -%}
+    [
+    {%- assign shot_n = 0 -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'jshot' -%}
+        {%- assign shot_n = shot_n | plus: 1 -%}
+        {%- if shot_n > 1 -%},{%- endif -%}
+        {%- if block.settings.img -%}
+          {%- assign shot_full = block.settings.img | image_url: width: 1600 -%}
+        {%- else -%}
+          {%- assign shot_full = block.settings.asset | asset_url -%}
+        {%- endif -%}
+        {"src":{{ shot_full | json }},"alt":{{ block.settings.caption | json }}}
+      {%- endif -%}
+    {%- endfor -%}
+    ]
+  {%- endcapture %}
+
+  <div class="journal-bento" data-reveal-child data-lightbox="{{ journal_json | escape }}">
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'jshot' %}
+    <button type="button" class="jshot jshot--{{ block.settings.span }}" aria-label="Open photograph: {{ block.settings.caption | escape }}" {{ block.shopify_attributes }}><img src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 1200 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}" alt="{{ block.settings.caption | escape }}" loading="lazy"><span class="jshot__cap">{{ block.settings.caption | escape }}</span></button>
+      {%- endif -%}
+    {%- endfor %}
+  </div>
+</section>
+
+<!-- ---- 05 In the Media ---- -->
+<section class="section container" id="press">
+  <div class="section-intro" data-reveal>
+    <p class="eyebrow">{{ section.settings.press_eyebrow | escape }}</p>
+    <h2 class="section-title">{{ section.settings.press_title }}</h2>
+    <p class="section-intro__copy">{{ section.settings.press_copy | escape }}</p>
+  </div>
+
+  <div class="press" data-reveal-child>
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'press' -%}
+        {%- assign sheet_list = block.settings.sheets | split: ',' -%}
+        {%- capture press_json -%}
+          {%- assign page_n = 0 -%}
+          {"publication":{{ block.settings.pub | json }},"headline":{{ block.settings.head | json }},"pages":[
+          {%- for s in sheet_list -%}
+            {%- assign sheet = s | strip -%}
+            {%- if sheet != blank -%}
+              {%- assign page_n = page_n | plus: 1 -%}
+              {%- if page_n > 1 -%},{%- endif -%}
+              {{ sheet | asset_url | json }}
+            {%- endif -%}
+          {%- endfor -%}
+          ]}
+        {%- endcapture %}
+    <article class="press__item" data-press="{{ press_json | escape }}" {{ block.shopify_attributes }}>
+      <div class="press__meta">
+        <p class="press__section">{{ block.settings.section_label | escape }}</p>
+        <h3 class="press__pub">{{ block.settings.pub | escape }}</h3>
+        <p class="press__head"{% if block.settings.head_lang != blank %} lang="{{ block.settings.head_lang | escape }}"{% endif %}>{{ block.settings.head | escape }}</p>
+        {%- if block.settings.trans != blank %}
+        <p class="press__trans">{{ block.settings.trans | escape }}</p>
+        {%- endif -%}
+        {%- if block.settings.byline != blank %}
+        <p class="press__byline">{{ block.settings.byline | escape }}</p>
+        {%- endif %}
+        <p class="press__note">{{ block.settings.note | escape }}</p>
+        <ul class="press__facts">
+          {%- assign fact_list = block.settings.facts | newline_to_br | split: '<br />' -%}
+          {%- for f in fact_list -%}
+            {%- assign fact = f | strip -%}
+            {%- if fact != blank %}
+          <li>{{ fact | escape }}</li>
+            {%- endif -%}
+          {%- endfor %}
+        </ul>
+      </div>
+
+      <div class="press__sheets">
+        {%- assign page_n = 0 -%}
+        {%- for s in sheet_list -%}
+          {%- assign sheet = s | strip -%}
+          {%- if sheet != blank -%}
+            {%- assign page_n = page_n | plus: 1 %}
+        <button type="button" class="press__sheet" aria-label="Read {{ block.settings.pub | escape }}, page {{ page_n }}"><img src="{{ sheet | asset_url }}" alt="{{ block.settings.pub | escape }}, page {{ page_n }}" loading="lazy"><span class="press__pageno">{% if page_n < 10 %}0{% endif %}{{ page_n }}</span></button>
+          {%- endif -%}
+        {%- endfor %}
+      </div>
+    </article>
+      {%- endif -%}
+    {%- endfor %}
+  </div>
+
+  <div class="curated__more" data-reveal>
+    <a class="btn btn--ghost" href="{{ section.settings.cta_url }}">{{ section.settings.cta_label | escape }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
+  </div>
+</section>
+
+<script>
+(function () {
+  var root = document.querySelector('.chapters');
+  if (!root || root.__shrujanInit) return;
+  root.__shrujanInit = true;
+
+  /* ---- Lightbox (port of components/Lightbox.jsx) ----
+     `items` is [{ src, alt, caption }]; `index` is the open frame, or -1 closed. */
+
+  var ICON_CLOSE = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg>';
+  var ICON_PREV = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5 8 12l6.5 6.5"></path></svg>';
+  var ICON_NEXT = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9.5 5.5 6.5 6.5-6.5 6.5"></path></svg>';
+
+  var lbItems = [];
+  var lbIndex = -1;
+  var lbEl = null;
+
+  function lbRender() {
+    var item = lbItems[lbIndex];
+    var many = lbItems.length > 1;
+    var html = '<button class="lightbox__close" aria-label="Close">' + ICON_CLOSE + '</button>';
+    if (many) {
+      html += '<button class="lightbox__nav lightbox__nav--prev" aria-label="Previous">' + ICON_PREV + '</button>';
+    }
+    html += '<figure class="lightbox__frame"><img src="' + item.src + '" alt="' + (item.alt || '') + '">';
+    if (item.caption || many) {
+      html += '<figcaption class="lightbox__cap"><span>' + (item.caption || item.alt) + '</span>';
+      if (many) {
+        html += '<span class="lightbox__count">' + (lbIndex + 1) + ' / ' + lbItems.length + '</span>';
+      }
+      html += '</figcaption>';
+    }
+    html += '</figure>';
+    if (many) {
+      html += '<button class="lightbox__nav lightbox__nav--next" aria-label="Next">' + ICON_NEXT + '</button>';
+    }
+    lbEl.setAttribute('aria-label', item.caption || item.alt || 'Image viewer');
+    lbEl.innerHTML = html;
+  }
+
+  function lbStep(delta) {
+    if (!lbItems.length) return;
+    lbIndex = (lbIndex + delta + lbItems.length) % lbItems.length; // wrap both ways
+    lbRender();
+  }
+
+  function lbKey(e) {
+    if (e.key === 'Escape') lbClose();
+    else if (e.key === 'ArrowRight') lbStep(1);
+    else if (e.key === 'ArrowLeft') lbStep(-1);
+  }
+
+  function lbClose() {
+    if (!lbEl) return;
+    lbIndex = -1;
+    window.removeEventListener('keydown', lbKey);
+    Shrujan.startScroll();
+    lbEl.remove();
+    lbEl = null;
+  }
+
+  function lbOpen(items, index) {
+    lbItems = items;
+    lbIndex = index;
+    if (!(lbIndex >= 0 && lbIndex < lbItems.length)) {
+      lbClose();
+      return;
+    }
+    if (lbEl) {
+      lbRender();
+      return;
+    }
+    lbEl = document.createElement('div');
+    lbEl.setAttribute('class', 'lightbox');
+    lbEl.setAttribute('role', 'dialog');
+    lbEl.setAttribute('aria-modal', 'true');
+    lbEl.addEventListener('click', function (e) {
+      if (e.target.closest('.lightbox__close')) { lbClose(); return; }
+      if (e.target.closest('.lightbox__nav--prev')) { lbStep(-1); return; }
+      if (e.target.closest('.lightbox__nav--next')) { lbStep(1); return; }
+      if (e.target.closest('.lightbox__frame')) return; // clicking the picture itself does not close
+      lbClose();
+    });
+    lbRender();
+    document.body.appendChild(lbEl);
+    Shrujan.stopScroll();
+    window.addEventListener('keydown', lbKey);
+  }
+
+  /* ---- Photo Journal: open the twelve frames ---- */
+
+  // [{ src, alt }] emitted by the section's journal blocks — every src is
+  // already a resolved asset/image URL, ready for the lightbox as it is.
+  var journalHost = document.querySelector('.journal-bento');
+  var JOURNAL = JSON.parse((journalHost && journalHost.getAttribute('data-lightbox')) || '[]');
+
+  document.querySelectorAll('.journal-bento .jshot').forEach(function (btn, i) {
+    btn.addEventListener('click', function () {
+      lbOpen(JOURNAL.map(function (x) {
+        return { src: x.src, alt: x.alt, caption: x.alt };
+      }), i);
+    });
+  });
+
+  /* ---- In the Media: open the tearsheets ---- */
+
+  // Each article carries { publication, headline, pages } emitted by its
+  // press block; pages are the resolved tearsheet URLs in reading order.
+
+  document.querySelectorAll('.press .press__item').forEach(function (article) {
+    var p = JSON.parse(article.getAttribute('data-press') || 'null');
+    if (!p) return;
+    article.querySelectorAll('.press__sheet').forEach(function (btn, i) {
+      btn.addEventListener('click', function () {
+        lbOpen(p.pages.map(function (s, n) {
+          return {
+            src: s,
+            alt: p.publication + ': ' + p.headline + ', page ' + (n + 1),
+            caption: p.publication + ' · ' + p.headline + ' · page ' + (n + 1) + ' of ' + p.pages.length
+          };
+        }), i);
+      });
+    });
+  });
+
+  /* ---- Chapter rail: jumps + scroll-spy ---- */
+
+  // Land a section clear of the floating header, which reappears on scroll up.
+  // Measured rather than assumed: the bar's height changes with the breakpoint.
+  function jumpOffset() {
+    var header = document.querySelector('.site-header');
+    return (header ? header.offsetHeight : 0) + 28;
+  }
+
+  var chapterLinks = Array.prototype.slice.call(root.querySelectorAll('.chapters__link'));
+
+  chapterLinks.forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      var id = (link.getAttribute('href') || '').slice(1);
+      var el = document.getElementById(id);
+      if (!el) return;
+      Shrujan.scrollToY(el.getBoundingClientRect().top + window.scrollY - jumpOffset());
+    });
+  });
+
+  function setActive(id) {
+    chapterLinks.forEach(function (a) {
+      var on = a.getAttribute('href') === '#' + id;
+      a.classList.toggle('is-active', on);
+      if (on) a.setAttribute('aria-current', 'true');
+      else a.removeAttribute('aria-current');
+    });
+  }
+
+  // Light up the chapter the reader is actually in. rootMargin biases the
+  // decision to the upper third so a section counts as "current" once its head
+  // is near the top, not when it happens to cross the middle.
+  var sections = ['origins', 'values', 'people', 'journal', 'press']
+    .map(function (id) { return document.getElementById(id); })
+    .filter(Boolean);
+
+  if (sections.length) {
+    // A callback only carries the sections whose state CHANGED, so it cannot be
+    // read on its own — keep the live set across callbacks and decide from that.
+    var inBand = new Set();
+
+    var io = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) inBand.add(e.target);
+          else inBand.delete(e.target);
+        });
+        if (!inBand.size) return;
+        // At a boundary two sections straddle the band: take the greatest
+        // top — the last section to have started — or the rail reads one behind.
+        var current = Array.from(inBand).sort(function (a, b) {
+          return b.getBoundingClientRect().top - a.getBoundingClientRect().top;
+        })[0];
+        setActive(current.id);
+      },
+      { rootMargin: '-18% 0px -62% 0px', threshold: 0 }
+    );
+    sections.forEach(function (s) { io.observe(s); });
+  }
+
+  /* ---- Deep links (/pages/the-shrujan-story#press): land clear of the header ---- */
+
+  function scrollToHash() {
+    if (!location.hash) return;
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        var el = document.querySelector(location.hash);
+        if (!el) return;
+        Shrujan.scrollToY(el.getBoundingClientRect().top + window.scrollY - jumpOffset());
+      });
+    });
+  }
+  scrollToHash();
+  window.addEventListener('hashchange', scrollToHash);
+})();
+</script>
+{% schema %}
+{
+  "name": "The Shrujan Story",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero"
+    },
+    {
+      "type": "text",
+      "id": "ghost",
+      "label": "Ghost year (background)",
+      "default": "1969"
+    },
+    {
+      "type": "text",
+      "id": "hero_eyebrow",
+      "label": "Eyebrow",
+      "default": "The Shrujan Story"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "hero_title",
+      "label": "Title",
+      "default": "Fifty years of dignity, stitched by hand"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_lede",
+      "label": "Lede",
+      "default": "The first social enterprise in the crafts sector to turn embroidery into a livelihood for the craftswomen of Kutch."
+    },
+    {
+      "type": "text",
+      "id": "meta1_value",
+      "label": "Meta 1 — value",
+      "default": "1969"
+    },
+    {
+      "type": "text",
+      "id": "meta1_label",
+      "label": "Meta 1 — label",
+      "default": "The year it began"
+    },
+    {
+      "type": "text",
+      "id": "meta2_value",
+      "label": "Meta 2 — value",
+      "default": "2,000+"
+    },
+    {
+      "type": "text",
+      "id": "meta2_label",
+      "label": "Meta 2 — label",
+      "default": "Craftswomen today"
+    },
+    {
+      "type": "text",
+      "id": "meta3_value",
+      "label": "Meta 3 — value",
+      "default": "66"
+    },
+    {
+      "type": "text",
+      "id": "meta3_label",
+      "label": "Meta 3 — label",
+      "default": "Remote villages"
+    },
+    {
+      "type": "header",
+      "content": "01 · Origins"
+    },
+    {
+      "type": "text",
+      "id": "origins_eyebrow",
+      "label": "Eyebrow",
+      "default": "Origins"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "origins_title",
+      "label": "Title",
+      "default": "A livelihood, stitched from what they already knew"
+    },
+    {
+      "type": "textarea",
+      "id": "origin_lead",
+      "label": "Lead paragraph",
+      "default": "Shrujan is the first social enterprise in the crafts sector to empower embroidery craftswomen of Kutch to use their skill and artistry to earn a dignified livelihood. Today, more than two thousand craftswomen in sixty-six remote villages are part of the Shrujan family."
+    },
+    {
+      "type": "textarea",
+      "id": "origin_quote",
+      "label": "Pull quote",
+      "default": "Sustainable practices, slow fashion, ethical fair trade, minimal wastage. Shrujan takes a tiny bit of pride for having consciously practised these values from the first day."
+    },
+    {
+      "type": "header",
+      "content": "02 · Philosophy & Values"
+    },
+    {
+      "type": "text",
+      "id": "values_eyebrow",
+      "label": "Eyebrow",
+      "default": "Philosophy & Values"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "values_title",
+      "label": "Title",
+      "default": "What the work is built on"
+    },
+    {
+      "type": "header",
+      "content": "03 · The People of Shrujan"
+    },
+    {
+      "type": "text",
+      "id": "people_eyebrow",
+      "label": "Eyebrow",
+      "default": "The People of Shrujan"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "people_title",
+      "label": "Title",
+      "default": "The hands behind the house"
+    },
+    {
+      "type": "header",
+      "content": "04 · Photo Journal"
+    },
+    {
+      "type": "text",
+      "id": "journal_eyebrow",
+      "label": "Eyebrow",
+      "default": "Photo Journal"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "journal_title",
+      "label": "Title",
+      "default": "Fifty years, from the archive"
+    },
+    {
+      "type": "textarea",
+      "id": "journal_copy",
+      "label": "Intro copy",
+      "default": "Frames from the Shrujan archive, from the earliest village visits to the craftswomen at work today."
+    },
+    {
+      "type": "header",
+      "content": "05 · In the Media"
+    },
+    {
+      "type": "text",
+      "id": "press_eyebrow",
+      "label": "Eyebrow",
+      "default": "In the Media"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "press_title",
+      "label": "Title",
+      "default": "Written about elsewhere"
+    },
+    {
+      "type": "textarea",
+      "id": "press_copy",
+      "label": "Intro copy",
+      "default": "Tearsheets as they were printed. Open any page to read it full size."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Footer link label",
+      "default": "The Living & Learning Design Centre"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Footer link URL",
+      "default": "/pages/lldc"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "chapter",
+      "name": "Chapter link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Origins"
+        },
+        {
+          "type": "text",
+          "id": "anchor",
+          "label": "Jumps to (section id)",
+          "default": "origins",
+          "info": "One of: origins, values, people, journal, press. Numbering follows the order of the links."
+        }
+      ]
+    },
+    {
+      "type": "origin_par",
+      "name": "Origins paragraph",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Paragraph",
+          "default": "Shrujan’s journey began in 1969 when Kutch was ravaged by drought. Mumbai-based Chanda Shroff volunteered for drought-relief work in the village of Dhaneti. She observed that the women dressed in exquisitely embroidered traditional clothing were reluctant to accept charity."
+        }
+      ]
+    },
+    {
+      "type": "origin_shot",
+      "name": "Origins photo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "img",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "asset",
+          "label": "Theme asset (fallback)",
+          "default": "story-origin-2.webp",
+          "info": "Asset filename used when no image is picked."
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Alt text",
+          "default": "Craftswomen of Kutch at work on embroidery"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "name": "Stat",
+      "settings": [
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Value",
+          "default": "1969"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "The year it began"
+        }
+      ]
+    },
+    {
+      "type": "value",
+      "name": "Value",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "img",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "asset",
+          "label": "Theme asset (fallback)",
+          "default": "story-dignity.webp",
+          "info": "Asset filename used when no image is picked."
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Image alt text",
+          "default": "Artisans working together at Shrujan"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Dignity and Respect"
+        },
+        {
+          "type": "textarea",
+          "id": "copy",
+          "label": "Copy",
+          "default": "At Shrujan, dignity is central to how we work. The artisans we collaborate with and the team that supports the work are valued for their skill, commitment and integrity. We believe in fairness, mutual respect and the importance of creating an environment where people can grow through learning and experience. Our work is built on long-term relationships and a shared love for craft."
+        }
+      ]
+    },
+    {
+      "type": "person",
+      "name": "Person",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "img",
+          "label": "Portrait"
+        },
+        {
+          "type": "text",
+          "id": "asset",
+          "label": "Theme asset (fallback)",
+          "default": "story-chanda.webp",
+          "info": "Asset filename used when no image is picked."
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Chanda Shroff"
+        },
+        {
+          "type": "text",
+          "id": "role",
+          "label": "Role",
+          "default": "Founder"
+        },
+        {
+          "type": "textarea",
+          "id": "copy",
+          "label": "Copy",
+          "default": "She is the first Indian Laureate to be honoured with the prestigious Rolex Award for Enterprise."
+        }
+      ]
+    },
+    {
+      "type": "jshot",
+      "name": "Journal photo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "img",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "asset",
+          "label": "Theme asset (fallback)",
+          "default": "journal-1.webp",
+          "info": "Asset filename used when no image is picked."
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Caption",
+          "default": "An early village visit, cloth and bundles laid out under the trees"
+        },
+        {
+          "type": "select",
+          "id": "span",
+          "label": "Frame shape",
+          "options": [
+            {
+              "value": "wide",
+              "label": "Wide (landscape)"
+            },
+            {
+              "value": "tall",
+              "label": "Tall (portrait)"
+            }
+          ],
+          "default": "wide",
+          "info": "With twelve frames the desktop grid closes flush when frames 3, 6, 11 and 12 are tall."
+        }
+      ]
+    },
+    {
+      "type": "press",
+      "name": "Press item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "section_label",
+          "label": "Section label",
+          "default": "પાંજોકચ્છ · Panjo Kutch"
+        },
+        {
+          "type": "text",
+          "id": "pub",
+          "label": "Publication",
+          "default": "Abhiyaan"
+        },
+        {
+          "type": "text",
+          "id": "head",
+          "label": "Headline",
+          "default": "‘મશીનો’નું કચ્છી ભરતકામ પર આક્રમણ"
+        },
+        {
+          "type": "text",
+          "id": "head_lang",
+          "label": "Headline language code",
+          "default": "gu",
+          "info": "Leave empty for English (used as the lang attribute)."
+        },
+        {
+          "type": "text",
+          "id": "trans",
+          "label": "Headline translation",
+          "default": "‘Machines’ encroach on Kutchi embroidery",
+          "info": "Optional — leave empty to hide."
+        },
+        {
+          "type": "text",
+          "id": "byline",
+          "label": "Byline",
+          "default": "By સુચિતા બોધાણી કનર · Suchita Bodhani Kanar",
+          "info": "Optional — leave empty to hide."
+        },
+        {
+          "type": "textarea",
+          "id": "note",
+          "label": "Note",
+          "default": "A two-page report in the Gujarati weekly on machine embroidery spreading through Kutch, and what it means for the hand-embroidery traditions the craftswomen still work in."
+        },
+        {
+          "type": "textarea",
+          "id": "facts",
+          "label": "Facts (one per line)",
+          "default": "17 February 2018\nIssue No. 1662\n2 pages"
+        },
+        {
+          "type": "text",
+          "id": "sheets",
+          "label": "Tearsheet assets (comma-separated)",
+          "default": "press-abhiyaan-1.webp, press-abhiyaan-2.webp",
+          "info": "Theme asset filenames in reading order — the lightbox pages through them."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "The Shrujan Story",
+      "blocks": [
+        {
+          "type": "chapter",
+          "settings": {
+            "label": "Origins",
+            "anchor": "origins"
+          }
+        },
+        {
+          "type": "chapter",
+          "settings": {
+            "label": "Philosophy & Values",
+            "anchor": "values"
+          }
+        },
+        {
+          "type": "chapter",
+          "settings": {
+            "label": "The People of Shrujan",
+            "anchor": "people"
+          }
+        },
+        {
+          "type": "chapter",
+          "settings": {
+            "label": "Photo Journal",
+            "anchor": "journal"
+          }
+        },
+        {
+          "type": "chapter",
+          "settings": {
+            "label": "In the Media",
+            "anchor": "press"
+          }
+        },
+        {
+          "type": "origin_par",
+          "settings": {
+            "text": "Shrujan’s journey began in 1969 when Kutch was ravaged by drought. Mumbai-based Chanda Shroff volunteered for drought-relief work in the village of Dhaneti. She observed that the women dressed in exquisitely embroidered traditional clothing were reluctant to accept charity."
+          }
+        },
+        {
+          "type": "origin_par",
+          "settings": {
+            "text": "It was her genius that recognized that the very skill that the craftswomen possessed could empower them; that, for the first time, embroidery could become an income-generating, dignity-providing resource."
+          }
+        },
+        {
+          "type": "origin_par",
+          "settings": {
+            "text": "Shrujan’s craftswomen work from home. Our production team reaches fabrics and threads to them in their villages. The women do not have to pay for the materials. Shrujan pays them their fair dues at their doorstep, as soon as they have completed the embroidery."
+          }
+        },
+        {
+          "type": "origin_shot",
+          "settings": {
+            "asset": "story-origin-2.webp",
+            "alt": "Craftswomen of Kutch at work on embroidery"
+          }
+        },
+        {
+          "type": "origin_shot",
+          "settings": {
+            "asset": "story-origin-1.webp",
+            "alt": "Embroidery in progress on handloom cloth"
+          }
+        },
+        {
+          "type": "origin_shot",
+          "settings": {
+            "asset": "story-origin-3.webp",
+            "alt": "Shrujan craftswomen gathered in a village"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "value": "1969",
+            "label": "The year it began"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "value": "2,000+",
+            "label": "Craftswomen today"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "value": "66",
+            "label": "Remote villages"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "value": "50+",
+            "label": "Years of livelihood"
+          }
+        },
+        {
+          "type": "value",
+          "settings": {
+            "asset": "story-dignity.webp",
+            "alt": "Artisans working together at Shrujan",
+            "title": "Dignity and Respect",
+            "copy": "At Shrujan, dignity is central to how we work. The artisans we collaborate with and the team that supports the work are valued for their skill, commitment and integrity. We believe in fairness, mutual respect and the importance of creating an environment where people can grow through learning and experience. Our work is built on long-term relationships and a shared love for craft."
+          }
+        },
+        {
+          "type": "value",
+          "settings": {
+            "asset": "story-continuity.webp",
+            "alt": "Hands passing embroidery knowledge between generations",
+            "title": "Continuity of Craft",
+            "copy": "Shrujan works to ensure that the craft traditions of Kutch remain alive, relevant and respected. This is not preservation as nostalgia, but continuity as a living process. Knowledge passes through generations, adapts thoughtfully and finds a place in contemporary life without losing its roots."
+          }
+        },
+        {
+          "type": "value",
+          "settings": {
+            "asset": "story-conscious.webp",
+            "alt": "Naturally dyed yarn and handwoven cloth",
+            "title": "Conscious Practice",
+            "copy": "At Shrujan, consciousness is expressed through everyday decisions. From the materials we use to the systems we build, care and responsibility guide our choices. We work with natural fibres, minimise waste and pay attention to detail in how we design, produce and present our work. Thoughtfulness, not speed, shapes how we work."
+          }
+        },
+        {
+          "type": "person",
+          "settings": {
+            "asset": "story-chanda.webp",
+            "name": "Chanda Shroff",
+            "role": "Founder",
+            "copy": "She is the first Indian Laureate to be honoured with the prestigious Rolex Award for Enterprise."
+          }
+        },
+        {
+          "type": "person",
+          "settings": {
+            "asset": "story-dipesh.webp",
+            "name": "Dipesh Shroff",
+            "role": "Chairman",
+            "copy": "As Chairman, Dipesh provides steady guidance and oversight to the organisation. He supports Shrujan’s long-term direction while upholding the principles on which it was founded."
+          }
+        },
+        {
+          "type": "person",
+          "settings": {
+            "asset": "story-ami.webp",
+            "name": "Ami Shroff",
+            "role": "Trustee",
+            "copy": "Ami Shroff carries forward Shrujan’s vision with a deep sense of responsibility toward both craft and community."
+          }
+        },
+        {
+          "type": "person",
+          "settings": {
+            "asset": "story-rajiv.webp",
+            "name": "Rajiv Bhatt",
+            "role": "Chief Executive Officer",
+            "copy": "Rajiv serves as Chief Executive Officer of Shrujan, where he guides the organisation’s strategy and day-to-day functioning."
+          }
+        },
+        {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-1.webp",
+            "caption": "An early village visit, cloth and bundles laid out under the trees",
+            "span": "wide"
+          }
+        },
+        {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-4.webp",
+            "caption": "Finished embroidery reviewed together in the Shrujan workroom",
+            "span": "wide"
+          }
+        },
+        {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-3.webp",
+            "caption": "A craftswoman bent over her embroidery frame",
+            "span": "tall"
+          }
+        },
+        {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-5.webp",
+            "caption": "A gathering of craftswomen at the Shrujan campus",
+            "span": "wide"
+          }
+        },
+        {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-7.webp",
+            "caption": "Craftswomen seated in the exhibition hall, textiles hung on the walls",
+            "span": "wide"
+          }
+        },
+        {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-6.webp",
+            "caption": "A senior craftswoman photographed with her work",
+            "span": "tall"
+          }
+        },
+        {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-8.webp",
+            "caption": "Embroidered odhanis beside a mirrored mud-work wall",
+            "span": "wide"
+          }
+        },
+        {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-9.webp",
+            "caption": "Two craftswomen embroidering a length of yellow cloth",
+            "span": "wide"
+          }
+        },
+        {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-2.webp",
+            "caption": "Craftswomen embroidering together in the courtyard of a village home",
+            "span": "wide"
+          }
+        },
+        {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-10.webp",
+            "caption": "A craftswoman beside a finished embroidered panel",
+            "span": "wide"
+          }
+        },
+        {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-11.webp",
+            "caption": "A craftswoman in traditional jewellery with a completed textile",
+            "span": "tall"
+          }
+        },
+        {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-12.webp",
+            "caption": "Traditional dress against the carved wall of a Kutch home",
+            "span": "tall"
+          }
+        },
+        {
+          "type": "press",
+          "settings": {
+            "section_label": "પાંજોકચ્છ · Panjo Kutch",
+            "pub": "Abhiyaan",
+            "head": "‘મશીનો’નું કચ્છી ભરતકામ પર આક્રમણ",
+            "head_lang": "gu",
+            "trans": "‘Machines’ encroach on Kutchi embroidery",
+            "byline": "By સુચિતા બોધાણી કનર · Suchita Bodhani Kanar",
+            "note": "A two-page report in the Gujarati weekly on machine embroidery spreading through Kutch, and what it means for the hand-embroidery traditions the craftswomen still work in.",
+            "facts": "17 February 2018\nIssue No. 1662\n2 pages",
+            "sheets": "press-abhiyaan-1.webp, press-abhiyaan-2.webp"
+          }
+        },
+        {
+          "type": "press",
+          "settings": {
+            "section_label": "Lifestyle · Fashion",
+            "pub": "The Indian Express",
+            "head": "Wonder weaves: How these Kutchi women wove themselves a successful life and career",
+            "head_lang": "",
+            "trans": "",
+            "byline": "",
+            "note": "On the embroidery traditions of Kutch and the craftswomen who turned them into a livelihood and a career.",
+            "facts": "4 July 2018\n2 pages",
+            "sheets": "press-ie-1.webp, press-ie-2.webp"
+          }
+        },
+        {
+          "type": "press",
+          "settings": {
+            "section_label": "Brand Profile",
+            "pub": "Apparel",
+            "head": "Inspiring Creativity",
+            "head_lang": "",
+            "trans": "",
+            "byline": "By Brinda Gill",
+            "note": "A four-page profile of Shrujan as a pioneering not-for-profit nurturing traditional Kutchi hand embroidery for the urban market, five decades on from its founding.",
+            "facts": "September 2018\nPages 62–65\n4 pages",
+            "sheets": "press-brinda-1.webp, press-brinda-2.webp, press-brinda-3.webp, press-brinda-4.webp"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,363 @@
+<section class="section container" aria-label="{{ section.settings.title | escape }}">
+  <div class="tw__intro" data-reveal>
+    <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+    <h2 class="section-title">{{ section.settings.title }}</h2>
+    <p class="tw__intro-copy">
+      {{ section.settings.intro }}
+    </p>
+  </div>
+
+  <div class="tw" data-reveal>
+    <header class="tw__head">
+      <p class="tw__title">
+        {{ section.settings.kind_title }}
+      </p>
+
+      <div class="tw__meta">
+        <div class="tw-rating">
+          <span class="tw-rating__stars" aria-label="5 out of 5 stars">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.6L12 17.6 6.1 20.7l1.2-6.6L2.5 9.5l6.6-.9Z"></path></svg>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.6L12 17.6 6.1 20.7l1.2-6.6L2.5 9.5l6.6-.9Z"></path></svg>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.6L12 17.6 6.1 20.7l1.2-6.6L2.5 9.5l6.6-.9Z"></path></svg>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.6L12 17.6 6.1 20.7l1.2-6.6L2.5 9.5l6.6-.9Z"></path></svg>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.6L12 17.6 6.1 20.7l1.2-6.6L2.5 9.5l6.6-.9Z"></path></svg>
+          </span>
+          <span class="tw-rating__count">{{ section.settings.rating_count }}</span>
+        </div>
+
+        <div class="tw-loved">
+          <span class="tw-loved__stack" aria-hidden="true">
+            <img src="{% if section.settings.stack_img_1 %}{{ section.settings.stack_img_1 | image_url: width: 1200 }}{% else %}{{ 'cat-c1.webp' | asset_url }}{% endif %}" alt="" loading="lazy">
+            <img src="{% if section.settings.stack_img_2 %}{{ section.settings.stack_img_2 | image_url: width: 1200 }}{% else %}{{ 'cat-c5.webp' | asset_url }}{% endif %}" alt="" loading="lazy">
+            <img src="{% if section.settings.stack_img_3 %}{{ section.settings.stack_img_3 | image_url: width: 1200 }}{% else %}{{ 'frame-r5t25.webp' | asset_url }}{% endif %}" alt="" loading="lazy">
+          </span>
+          <span class="tw-loved__label">
+            {{ section.settings.loved_line_1 }}
+            <br>
+            {{ section.settings.loved_line_2 }}
+          </span>
+        </div>
+
+        <div class="carousel-arrows">
+          <button type="button" aria-label="Previous testimonials">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5 8 12l6.5 6.5"></path></svg>
+          </button>
+          <button type="button" aria-label="Next testimonials">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9.5 5.5 6.5 6.5-6.5 6.5"></path></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="tw__grid">
+      {%- for block in section.blocks %}
+      {%- assign twmod = forloop.index0 | modulo: 2 %}
+      <article class="tw-cell{% if twmod == 1 %} tw-cell--flip{% endif %}" {{ block.shopify_attributes }}>
+        <div class="tw-cell__inner">
+          <div class="tw-cell__face tw-cell__face--front">
+            <div class="tw-cell__person">
+              <img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1200 }}{% else %}{{ block.settings.image_asset | asset_url }}{% endif %}" alt="" loading="lazy">
+              <div>
+                <p class="tw-cell__name">{{ block.settings.name }}</p>
+                <p class="tw-cell__role">{{ block.settings.place }}</p>
+              </div>
+            </div>
+
+            <p class="tw-cell__label">{{ block.settings.label }}</p>
+
+            <blockquote class="tw-cell__quote">“{{ block.settings.quote }}”</blockquote>
+          </div>
+
+          <div class="tw-cell__face tw-cell__face--back">
+            <p class="tw-buys__eyebrow">{{ block.settings.name | split: ' ' | first }} {{ section.settings.took_home_label }}</p>
+
+            <ul class="tw-buys">
+              <li class="tw-buys__item">
+                <span class="tw-buys__frame">
+                  <img src="{% if block.settings.buy1_image %}{{ block.settings.buy1_image | image_url: width: 1200 }}{% else %}{{ block.settings.buy1_asset | asset_url }}{% endif %}" alt="{{ block.settings.buy1_name | escape }}" loading="lazy">
+                </span>
+                <span class="tw-buys__name">{{ block.settings.buy1_name }}</span>
+              </li>
+              <li class="tw-buys__item">
+                <span class="tw-buys__frame">
+                  <img src="{% if block.settings.buy2_image %}{{ block.settings.buy2_image | image_url: width: 1200 }}{% else %}{{ block.settings.buy2_asset | asset_url }}{% endif %}" alt="{{ block.settings.buy2_name | escape }}" loading="lazy">
+                </span>
+                <span class="tw-buys__name">{{ block.settings.buy2_name }}</span>
+              </li>
+            </ul>
+
+            <a class="tw-buys__link" href="{{ section.settings.picks_url }}">
+              {{ section.settings.picks_label }}
+            </a>
+          </div>
+        </div>
+      </article>
+      {%- endfor %}
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  var root = document.querySelector('.tw');
+  if (!root || root.__shrujanInit) return;
+  root.__shrujanInit = true;
+
+  var track = root.querySelector('.tw__grid');
+
+  // Scroll one full page (whatever number of cells currently fit).
+  function page(dir) {
+    if (!track) return;
+    track.scrollBy({ left: dir * track.clientWidth, behavior: 'smooth' });
+  }
+
+  var arrows = root.querySelectorAll('.carousel-arrows button');
+  if (arrows[0]) arrows[0].addEventListener('click', function () { page(-1); });
+  if (arrows[1]) arrows[1].addEventListener('click', function () { page(1); });
+})();
+</script>
+{% schema %}
+{
+  "name": "Testimonials",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Intro"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Loved & Worn"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "What our customers say"
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Intro copy",
+      "default": "Four thousand women, forty villages and one promise: cloth that is made slowly and kept for a lifetime."
+    },
+    {
+      "type": "header",
+      "content": "Carousel header"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "kind_title",
+      "label": "Big title",
+      "default": "Kind <em>Words.</em>"
+    },
+    {
+      "type": "text",
+      "id": "rating_count",
+      "label": "Rating count",
+      "default": "1,240 Reviews"
+    },
+    {
+      "type": "image_picker",
+      "id": "stack_img_1",
+      "label": "Stack image 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "stack_img_2",
+      "label": "Stack image 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "stack_img_3",
+      "label": "Stack image 3"
+    },
+    {
+      "type": "text",
+      "id": "loved_line_1",
+      "label": "Loved-by line 1",
+      "default": "Loved by 4,000+"
+    },
+    {
+      "type": "text",
+      "id": "loved_line_2",
+      "label": "Loved-by line 2",
+      "default": "women across India"
+    },
+    {
+      "type": "header",
+      "content": "Card backs"
+    },
+    {
+      "type": "text",
+      "id": "took_home_label",
+      "label": "Took-home text",
+      "info": "Shown after the customer's first name, e.g. \"Meera took home\".",
+      "default": "took home"
+    },
+    {
+      "type": "text",
+      "id": "picks_label",
+      "label": "Picks link label",
+      "default": "Shop her picks"
+    },
+    {
+      "type": "url",
+      "id": "picks_url",
+      "label": "Picks link",
+      "default": "/pages/shop-shrujan#catalogue"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Portrait"
+        },
+        {
+          "type": "text",
+          "id": "image_asset",
+          "label": "Portrait fallback asset",
+          "info": "Theme asset filename used when no portrait is picked.",
+          "default": "cat-c1.webp"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Meera Shah"
+        },
+        {
+          "type": "text",
+          "id": "place",
+          "label": "Place",
+          "default": "Mumbai"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Piece label",
+          "default": "Kora Silk Sari"
+        },
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote",
+          "info": "Quotation marks are added automatically.",
+          "default": "What stood out most was the attention to detail: the fall, the finish, the way the border sits. Five years on it has not lost a single stitch."
+        },
+        {
+          "type": "header",
+          "content": "Took home — item 1"
+        },
+        {
+          "type": "image_picker",
+          "id": "buy1_image",
+          "label": "Item 1 image"
+        },
+        {
+          "type": "text",
+          "id": "buy1_asset",
+          "label": "Item 1 fallback asset",
+          "default": "cat-c1.webp"
+        },
+        {
+          "type": "text",
+          "id": "buy1_name",
+          "label": "Item 1 name",
+          "default": "Kora Silk Sari"
+        },
+        {
+          "type": "header",
+          "content": "Took home — item 2"
+        },
+        {
+          "type": "image_picker",
+          "id": "buy2_image",
+          "label": "Item 2 image"
+        },
+        {
+          "type": "text",
+          "id": "buy2_asset",
+          "label": "Item 2 fallback asset",
+          "default": "frame-r1t4.webp"
+        },
+        {
+          "type": "text",
+          "id": "buy2_name",
+          "label": "Item 2 name",
+          "default": "Ivory Zari Blouse"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "image_asset": "cat-c1.webp",
+            "name": "Meera Shah",
+            "place": "Mumbai",
+            "label": "Kora Silk Sari",
+            "quote": "What stood out most was the attention to detail: the fall, the finish, the way the border sits. Five years on it has not lost a single stitch.",
+            "buy1_asset": "cat-c1.webp",
+            "buy1_name": "Kora Silk Sari",
+            "buy2_asset": "frame-r1t4.webp",
+            "buy2_name": "Ivory Zari Blouse"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "image_asset": "cat-c5.webp",
+            "name": "Ananya Iyer",
+            "place": "Bengaluru",
+            "label": "Chikankari Set",
+            "quote": "I wore mine to my sister’s mehendi and three people asked where it was from before dinner. It photographs even better than it looks.",
+            "buy1_asset": "look-b1.webp",
+            "buy1_name": "Chikankari Kurta Set",
+            "buy2_asset": "frame-r1t12.webp",
+            "buy2_name": "Chanderi Dupatta"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "image_asset": "frame-r5t25.webp",
+            "name": "Radhika Menon",
+            "place": "Kochi",
+            "label": "Zardozi Lehenga",
+            "quote": "Knowing the name of the woman who embroidered it changes how you wear it. You carry it with respect, not just with pride.",
+            "buy1_asset": "cta-sarree.webp",
+            "buy1_name": "Zardozi Lehenga",
+            "buy2_asset": "frame-r5t25.webp",
+            "buy2_name": "Crimson Silk Odhani"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "image_asset": "frame-r2t5.webp",
+            "name": "Sana Qureshi",
+            "place": "Hyderabad",
+            "label": "Phulkari Kurta",
+            "quote": "It arrived wrapped in mulmul with a handwritten note about the artisan. It felt like receiving heritage, not a parcel.",
+            "buy1_asset": "cat-c2.webp",
+            "buy1_name": "Phulkari Kurta",
+            "buy2_asset": "frame-r2t5.webp",
+            "buy2_name": "Bagh Phulkari Stole"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

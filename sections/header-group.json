@@ -1,0 +1,10 @@
+{
+  "name": "Header",
+  "type": "header",
+  "sections": {
+    "header": {
+      "type": "shrujan-header"
+    }
+  },
+  "order": ["header"]
+}

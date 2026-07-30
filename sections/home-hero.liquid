@@ -1,0 +1,358 @@
+<section class="hero" aria-label="{{ section.settings.title_l1 | strip_html | escape }} {{ section.settings.title_l2 | strip_html | downcase | escape }} {{ section.settings.title_l3 | strip_html | downcase | escape }}">
+  <a class="hero-cell hero-cell--model" href="{{ section.settings.shop_url | escape }}" data-hero="cell">
+    <img src="{% if section.settings.shop_img %}{{ section.settings.shop_img | image_url: width: 1200 }}{% else %}{{ 'hero-left.webp' | asset_url }}{% endif %}" alt="{{ section.settings.shop_alt | escape }}" fetchpriority="high">
+    <span class="hero-cell__label"><i class="hero-cell__dash" aria-hidden="true"></i><em>{{ section.settings.shop_em | escape }}</em>{{ section.settings.shop_label | escape }}<span class="hero-cell__sub">{{ section.settings.shop_sub | escape }}</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
+  </a>
+
+  <div class="hero-cell hero-cell--message" data-hero="cell">
+    <span class="hero-message__ornament" aria-hidden="true"><svg viewBox="0 0 64 64" width="58" height="58" fill="none" stroke="currentColor" stroke-width="1">
+      <ellipse cx="32" cy="14" rx="5.5" ry="12" transform="rotate(0 32 32)"></ellipse>
+      <ellipse cx="32" cy="14" rx="5.5" ry="12" transform="rotate(30 32 32)"></ellipse>
+      <ellipse cx="32" cy="14" rx="5.5" ry="12" transform="rotate(60 32 32)"></ellipse>
+      <ellipse cx="32" cy="14" rx="5.5" ry="12" transform="rotate(90 32 32)"></ellipse>
+      <ellipse cx="32" cy="14" rx="5.5" ry="12" transform="rotate(120 32 32)"></ellipse>
+      <ellipse cx="32" cy="14" rx="5.5" ry="12" transform="rotate(150 32 32)"></ellipse>
+      <ellipse cx="32" cy="14" rx="5.5" ry="12" transform="rotate(180 32 32)"></ellipse>
+      <ellipse cx="32" cy="14" rx="5.5" ry="12" transform="rotate(210 32 32)"></ellipse>
+      <ellipse cx="32" cy="14" rx="5.5" ry="12" transform="rotate(240 32 32)"></ellipse>
+      <ellipse cx="32" cy="14" rx="5.5" ry="12" transform="rotate(270 32 32)"></ellipse>
+      <ellipse cx="32" cy="14" rx="5.5" ry="12" transform="rotate(300 32 32)"></ellipse>
+      <ellipse cx="32" cy="14" rx="5.5" ry="12" transform="rotate(330 32 32)"></ellipse>
+      <circle cx="32" cy="32" r="5"></circle>
+    </svg></span>
+    <h1 class="hero-message__title"><span class="line"><span class="t-ink">{{ section.settings.title_l1 }}</span></span><span class="line"><span class="t-red">{{ section.settings.title_l2 }}</span></span><span class="line"><span class="t-red">{{ section.settings.title_l3 }}</span></span></h1>
+    <span class="hero-message__rule" data-hero="rule" aria-hidden="true"></span>
+    <p class="hero-message__copy" data-hero="copy">{{ section.settings.copy }}</p>
+    <a class="hero-message__cta" href="{{ section.settings.cta_url | escape }}" data-hero="cta">{{ section.settings.cta_label | escape }} <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
+  </div>
+
+  <a class="hero-cell hero-cell--season" href="{{ section.settings.season_url | escape }}" data-hero="cell">
+    <img src="{% if section.settings.season_img %}{{ section.settings.season_img | image_url: width: 1600 }}{% else %}{{ 'look-b2.webp' | asset_url }}{% endif %}" alt="{{ section.settings.season_alt | escape }}">
+    <span class="hero-cell__scrim" aria-hidden="true"></span>
+    <span class="hero-cell__label hero-cell__label--bottom"><em>{{ section.settings.season_em | escape }}</em>{{ section.settings.season_label | escape }}<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
+  </a>
+
+  <a class="hero-cell hero-cell--thread" href="{{ section.settings.thread_url | escape }}" data-hero="cell">
+    <img src="{% if section.settings.thread_img %}{{ section.settings.thread_img | image_url: width: 1600 }}{% else %}{{ 'craft-hero.webp' | asset_url }}{% endif %}" alt="{{ section.settings.thread_alt | escape }}">
+    <span class="hero-cell__scrim" aria-hidden="true"></span>
+    <span class="hero-cell__label hero-cell__label--bottom"><em>{{ section.settings.thread_em | escape }}</em>{{ section.settings.thread_label | escape }}<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
+  </a>
+
+  <a class="hero-cell hero-cell--story" href="{{ section.settings.story_url | escape }}" data-hero="cell">
+    <img src="{% if section.settings.story_img %}{{ section.settings.story_img | image_url: width: 1000 }}{% else %}{{ 'story-origin-2.webp' | asset_url }}{% endif %}" alt="" aria-hidden="true">
+    <span class="hero-cell__scrim hero-cell__scrim--story" aria-hidden="true"></span>
+    <p class="hero-story__title">{{ section.settings.story_t1 | escape }}{% if section.settings.story_t2 != blank %}<br>{{ section.settings.story_t2 | escape }}{% endif %}</p>
+    <p class="hero-story__copy">{{ section.settings.story_copy | escape }}</p>
+    <span class="hero-story__link">{{ section.settings.story_link | escape }} <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
+  </a>
+
+  <a class="hero-cell hero-cell--accessories" href="{{ section.settings.lldc_url | escape }}" data-hero="cell">
+    <img src="{% if section.settings.lldc_img %}{{ section.settings.lldc_img | image_url: width: 1600 }}{% else %}{{ 'craft-embroidery-poster.webp' | asset_url }}{% endif %}" alt="{{ section.settings.lldc_alt | escape }}">
+    <span class="hero-cell__scrim" aria-hidden="true"></span>
+    <span class="hero-cell__label hero-cell__label--bottom"><em>{{ section.settings.lldc_em | escape }}</em>{{ section.settings.lldc_l1 | escape }}{% if section.settings.lldc_l2 != blank %}<br>{{ section.settings.lldc_l2 | escape }}{% endif %}<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
+  </a>
+
+  <a class="hero-cell hero-cell--india" href="{{ section.settings.india_url | escape }}" data-hero="cell">
+    <span class="hero-india__map" aria-hidden="true"></span>
+    <span class="hero-cell__label hero-cell__label--bottom hero-cell__label--ink"><em>{{ section.settings.india_em | escape }}</em>{{ section.settings.india_label | escape }}<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
+  </a>
+</section>
+
+<script>
+(function () {
+  var root = document.querySelector('.hero');
+  if (!root || root.__shrujanInit) return;
+  root.__shrujanInit = true;
+
+  var mm = gsap.matchMedia(root);
+
+  mm.add('(prefers-reduced-motion: no-preference)', function () {
+    var tl = gsap.timeline({
+      defaults: { ease: 'power3.out', duration: 0.9 },
+    });
+
+    tl.fromTo(
+      '[data-hero="cell"]',
+      { opacity: 0, y: 26 },
+      { opacity: 1, y: 0, duration: 1, stagger: 0.1 },
+      0
+    )
+      .fromTo(
+        '.hero-message__title .line > span',
+        { yPercent: 110 },
+        { yPercent: 0, duration: 1, stagger: 0.12, ease: 'power4.out' },
+        0.35
+      )
+      .fromTo(
+        '[data-hero="rule"]',
+        { scaleX: 0, transformOrigin: 'left center' },
+        { scaleX: 1, duration: 0.6 },
+        0.8
+      )
+      .fromTo('[data-hero="copy"]', { opacity: 0, y: 16 }, { opacity: 1, y: 0 }, 0.9)
+      .fromTo('[data-hero="cta"]', { opacity: 0, y: 14 }, { opacity: 1, y: 0 }, 1.02);
+  });
+
+  mm.add('(prefers-reduced-motion: reduce)', function () {
+    gsap.set('[data-hero], .hero-message__title .line > span', { clearProps: 'all', opacity: 1 });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Home hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Shop Shrujan cell"
+    },
+    {
+      "type": "url",
+      "id": "shop_url",
+      "label": "Link",
+      "default": "/pages/shop-shrujan"
+    },
+    {
+      "type": "image_picker",
+      "id": "shop_img",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "shop_alt",
+      "label": "Image alt text",
+      "default": "Model in a rust-red ajrakh kurta with gold jewellery before an arched wall"
+    },
+    {
+      "type": "text",
+      "id": "shop_em",
+      "label": "Label lead-in",
+      "default": "Shop"
+    },
+    {
+      "type": "text",
+      "id": "shop_label",
+      "label": "Label",
+      "default": "Shrujan"
+    },
+    {
+      "type": "text",
+      "id": "shop_sub",
+      "label": "Sub line",
+      "default": "Saris, kurtas and dupattas, hand-embroidered by the women of Kutch."
+    },
+    {
+      "type": "header",
+      "content": "Centre message"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title_l1",
+      "label": "Title line 1",
+      "default": "Tradition,"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title_l2",
+      "label": "Title line 2",
+      "default": "Styled"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title_l3",
+      "label": "Title line 3",
+      "default": "Forward"
+    },
+    {
+      "type": "textarea",
+      "id": "copy",
+      "label": "Copy",
+      "default": "Where centuries-old craftsmanship meets contemporary design. Timeless pieces for today&rsquo;s tastemakers."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Shop the Collection"
+    },
+    {
+      "type": "text",
+      "id": "cta_url",
+      "label": "Button link (URL or #anchor)",
+      "default": "#categories"
+    },
+    {
+      "type": "header",
+      "content": "Studio Collection cell"
+    },
+    {
+      "type": "url",
+      "id": "season_url",
+      "label": "Link",
+      "default": "/pages/studio-collection"
+    },
+    {
+      "type": "image_picker",
+      "id": "season_img",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "season_alt",
+      "label": "Image alt text",
+      "default": "Model in a red hand-embroidered bridal lehenga in a studio setting"
+    },
+    {
+      "type": "text",
+      "id": "season_em",
+      "label": "Label lead-in",
+      "default": "Studio"
+    },
+    {
+      "type": "text",
+      "id": "season_label",
+      "label": "Label",
+      "default": "Collection"
+    },
+    {
+      "type": "header",
+      "content": "Craft traditions cell"
+    },
+    {
+      "type": "url",
+      "id": "thread_url",
+      "label": "Link",
+      "default": "/pages/video"
+    },
+    {
+      "type": "image_picker",
+      "id": "thread_img",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "thread_alt",
+      "label": "Image alt text",
+      "default": "Embroiderers of Kutch working together outside their village"
+    },
+    {
+      "type": "text",
+      "id": "thread_em",
+      "label": "Label lead-in",
+      "default": "Craft Traditions"
+    },
+    {
+      "type": "text",
+      "id": "thread_label",
+      "label": "Label",
+      "default": "of Kutch"
+    },
+    {
+      "type": "header",
+      "content": "Story cell"
+    },
+    {
+      "type": "url",
+      "id": "story_url",
+      "label": "Link",
+      "default": "/pages/the-shrujan-story"
+    },
+    {
+      "type": "image_picker",
+      "id": "story_img",
+      "label": "Background image"
+    },
+    {
+      "type": "text",
+      "id": "story_t1",
+      "label": "Title line 1",
+      "default": "Rooted in heritage."
+    },
+    {
+      "type": "text",
+      "id": "story_t2",
+      "label": "Title line 2",
+      "default": "Made for tomorrow."
+    },
+    {
+      "type": "text",
+      "id": "story_copy",
+      "label": "Copy",
+      "default": "Supporting artisans since 1969."
+    },
+    {
+      "type": "text",
+      "id": "story_link",
+      "label": "Link label",
+      "default": "The Shrujan Story"
+    },
+    {
+      "type": "header",
+      "content": "LLDC cell"
+    },
+    {
+      "type": "url",
+      "id": "lldc_url",
+      "label": "Link",
+      "default": "/pages/lldc"
+    },
+    {
+      "type": "image_picker",
+      "id": "lldc_img",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "lldc_alt",
+      "label": "Image alt text",
+      "default": "An artisan at work in the Living & Learning Design Centre studio"
+    },
+    {
+      "type": "text",
+      "id": "lldc_em",
+      "label": "Label lead-in",
+      "default": "LLDC"
+    },
+    {
+      "type": "text",
+      "id": "lldc_l1",
+      "label": "Label line 1",
+      "default": "Living & Learning"
+    },
+    {
+      "type": "text",
+      "id": "lldc_l2",
+      "label": "Label line 2",
+      "default": "Design Centre"
+    },
+    {
+      "type": "header",
+      "content": "Visit & Experience cell"
+    },
+    {
+      "type": "url",
+      "id": "india_url",
+      "label": "Link",
+      "default": "/pages/visit-experience"
+    },
+    {
+      "type": "text",
+      "id": "india_em",
+      "label": "Label lead-in",
+      "default": "Visit &"
+    },
+    {
+      "type": "text",
+      "id": "india_label",
+      "label": "Label",
+      "default": "Experience"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Home hero"
+    }
+  ]
+}
+{% endschema %}

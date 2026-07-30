@@ -14,6 +14,9 @@
     >
     <link rel="stylesheet" href="{{ 'shrujan-global.css' | asset_url }}">
     <link rel="stylesheet" href="{{ 'shrujan-pages.css' | asset_url }}">
+    {% comment %} Section/section-group wrapper divs must not affect layout —
+        the stylesheets were written for the unwrapped React DOM. {% endcomment %}
+    <style>.shopify-section{display:contents}</style>
     <script>window.SHRUJAN_ASSET_BASE = "{{ 'shrujan-core.js' | asset_url | split: 'shrujan-core.js' | first }}";</script>
     <script src="{{ 'gsap.min.js' | asset_url }}"></script>
     <script src="{{ 'ScrollTrigger.min.js' | asset_url }}"></script>
@@ -24,9 +27,9 @@
   </head>
   <body>
     <div id="root">
-      {% render 'shrujan-header' %}
+      {% sections 'header-group' %}
       <main>{{ content_for_layout }}</main>
-      {% render 'shrujan-footer' %}
+      {% sections 'footer-group' %}
     </div>
   </body>
 </html>

@@ -1,0 +1,158 @@
+<section class="section container" id="categories">
+  <div class="section-head section-head--center" data-reveal>
+    <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+    <h2 class="section-title">{{ section.settings.title }}</h2>
+    <a class="arrow-link" href="{{ section.settings.cta_link }}">{{ section.settings.cta_label }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
+  </div>
+
+  <div class="catbar" data-reveal-child>
+    {%- for block in section.blocks %}
+    <a class="catpanel" href="{{ block.settings.link }}"{{ block.shopify_attributes }}>
+      <img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1200 }}{% else %}{{ block.settings.img_asset | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
+      <span class="catpanel__scrim" aria-hidden="true"></span>
+      <span class="catpanel__index" aria-hidden="true">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
+      <span class="catpanel__spine" aria-hidden="true">{{ block.settings.name | escape }}</span>
+      <span class="catpanel__open"><span class="catpanel__name">{{ block.settings.name | escape }}</span><span class="catpanel__copy">{{ block.settings.copy }}</span><span class="catpanel__foot"><span class="catpanel__cta">{{ section.settings.explore_label }} <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span></span></span>
+    </a>
+    {%- endfor %}
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Category panels",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Explore the House"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Title",
+      "default": "What to wear"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Header link label",
+      "default": "View All"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Header link",
+      "default": "/pages/shop-shrujan"
+    },
+    {
+      "type": "text",
+      "id": "explore_label",
+      "label": "Panel button label",
+      "default": "Explore",
+      "info": "Shown on every panel."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "panel",
+      "name": "Category panel",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "img_asset",
+          "label": "Fallback image (theme asset filename)",
+          "default": "cat-c3.webp",
+          "info": "Used when no image is picked above."
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Image alt text",
+          "default": "Model in a maroon embroidered lehenga with a fitted bodice"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Category name",
+          "default": "Kanchli"
+        },
+        {
+          "type": "text",
+          "id": "copy",
+          "label": "Description",
+          "default": "The Kutchi bodice, cut and stitched the traditional way"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "default": "/pages/shop-shrujan?c=kanchli"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Category panels",
+      "blocks": [
+        {
+          "type": "panel",
+          "settings": {
+            "img_asset": "cat-c3.webp",
+            "alt": "Model in a maroon embroidered lehenga with a fitted bodice",
+            "name": "Kanchli",
+            "copy": "The Kutchi bodice, cut and stitched the traditional way",
+            "link": "/pages/shop-shrujan?c=kanchli"
+          }
+        },
+        {
+          "type": "panel",
+          "settings": {
+            "img_asset": "cat-c4.webp",
+            "alt": "Model in a maroon embroidered kurta with palazzo and dupatta",
+            "name": "Kurtas & Tops",
+            "copy": "Everyday silhouettes in naturally dyed handloom cloth",
+            "link": "/pages/shop-shrujan?c=kurtas-and-tops"
+          }
+        },
+        {
+          "type": "panel",
+          "settings": {
+            "img_asset": "cat-c1.webp",
+            "alt": "Model in a maroon silk drape with gold zari borders",
+            "name": "Dresses",
+            "copy": "Long, easy cuts in mulmul and handwoven cotton",
+            "link": "/pages/shop-shrujan?c=dresses"
+          }
+        },
+        {
+          "type": "panel",
+          "settings": {
+            "img_asset": "cat-c2.webp",
+            "alt": "Model in a handwoven maroon drape with a gold border",
+            "name": "Pants & Palazzos",
+            "copy": "Wide, soft legs in cotton and khadi",
+            "link": "/pages/shop-shrujan?c=pants-and-palazzos"
+          }
+        },
+        {
+          "type": "panel",
+          "settings": {
+            "img_asset": "cat-c5.webp",
+            "alt": "Model in an ivory kurta holding out a maroon embroidered dupatta",
+            "name": "Accessories",
+            "copy": "Dupattas, stoles and shawls finished with hand borders",
+            "link": "/pages/shop-shrujan?c=accessories"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

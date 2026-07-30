@@ -1,0 +1,10 @@
+{
+  "name": "Footer",
+  "type": "footer",
+  "sections": {
+    "footer": {
+      "type": "shrujan-footer"
+    }
+  },
+  "order": ["footer"]
+}

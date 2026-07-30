@@ -1,0 +1,293 @@
+<footer class="footer">
+  <span class="footer__weave" aria-hidden="true">
+    <span class="footer__mandala footer__mandala--left"></span>
+    <span class="footer__mandala footer__mandala--right"></span>
+  </span>
+
+  <div class="footer__inner">
+    <div class="ftop">
+      <div class="fletters" id="letters">
+        <p class="fletters__eyebrow">{{ section.settings.nl_eyebrow }}</p>
+        <h2 class="fletters__title">{{ section.settings.nl_title }}</h2>
+        <p class="fletters__copy">
+          {{ section.settings.nl_copy }}
+        </p>
+
+        <form class="fletters__form" data-success-text="{{ section.settings.nl_success | escape }}">
+          <input type="email" required placeholder="{{ section.settings.nl_placeholder | escape }}" aria-label="Email address">
+          <button type="submit">
+            {{ section.settings.nl_button }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
+          </button>
+        </form>
+      </div>
+
+      <div class="fbrand">
+        <span class="fbrand__mark" role="img" aria-label="Shrujan"></span>
+        <p class="fbrand__tag">
+          {{ section.settings.brand_tag_1 }}
+          <span>{{ section.settings.brand_tag_2 }}</span>
+        </p>
+
+        <div class="footer__socials">
+          <a class="footer__social" href="{{ section.settings.social_instagram | escape }}" aria-label="Instagram" target="_blank" rel="noreferrer noopener">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6">
+              <rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect>
+              <circle cx="12" cy="12" r="3.9"></circle>
+              <circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"></circle>
+            </svg>
+          </a>
+          <a class="footer__social" href="{{ section.settings.social_facebook | escape }}" aria-label="Facebook" target="_blank" rel="noreferrer noopener">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+              <path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.25-1.5 1.55-1.5h1.65V3.6c-.3 0-1.3-.1-2.45-.1-2.4 0-4.05 1.5-4.05 4.2v2.2H7.5V13h2.7v8Z"></path>
+            </svg>
+          </a>
+          <a class="footer__social" href="{{ section.settings.social_pinterest | escape }}" aria-label="Pinterest" target="_blank" rel="noreferrer noopener">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+              <path d="M12 3a9 9 0 0 0-3.3 17.36c-.08-.72-.15-1.83.03-2.62.16-.7 1.06-4.5 1.06-4.5s-.27-.54-.27-1.34c0-1.26.73-2.2 1.63-2.2.77 0 1.14.58 1.14 1.27 0 .78-.49 1.94-.75 3.02-.21.9.46 1.64 1.35 1.64 1.62 0 2.87-1.71 2.87-4.18 0-2.19-1.57-3.72-3.82-3.72-2.6 0-4.13 1.95-4.13 3.97 0 .79.3 1.63.68 2.09.08.09.09.17.06.26l-.25 1.02c-.4.17-.13.2-.3.12-1.11-.52-1.8-2.14-1.8-3.44 0-2.8 2.03-5.37 5.87-5.37 3.08 0 5.47 2.2 5.47 5.13 0 3.06-1.93 5.52-4.6 5.52-.9 0-1.75-.47-2.04-1.02l-.55 2.12c-.2.77-.74 1.73-1.1 2.32A9 9 0 1 0 12 3Z"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <nav class="fmap" aria-label="Footer">
+      <div class="fmap__col">
+        <p class="fmap__group">Explore</p>
+        <ul>
+          <li><a href="/pages/the-shrujan-story">The Shrujan Story</a></li>
+          <li><a href="/pages/the-shrujan-story#origins">Origins</a></li>
+          <li><a href="/pages/the-shrujan-story#values">Philosophy &amp; Values</a></li>
+          <li><a href="/pages/the-shrujan-story#people">The People of Shrujan</a></li>
+          <li><a href="/pages/the-shrujan-story#press">In the Media</a></li>
+        </ul>
+      </div>
+      <div class="fmap__col">
+        <p class="fmap__group">Shop</p>
+        <ul>
+          <li><a href="/pages/shop-shrujan">All of Shrujan</a></li>
+          <li><a href="/pages/shop-shrujan?c=hand-bags">Bags</a></li>
+          <li><a href="/pages/shop-shrujan?c=kanchli">Kanchli</a></li>
+          <li><a href="/pages/shop-shrujan?c=kurtas-and-tops">Kurtas &amp; Tops</a></li>
+          <li><a href="/pages/shop-shrujan?c=home-decor">Home Decor</a></li>
+          <li><a href="/pages/shop-shrujan?c=accessories">Accessories</a></li>
+        </ul>
+      </div>
+      <div class="fmap__col">
+        <p class="fmap__group">Studio</p>
+        <ul>
+          <li><a href="/pages/studio-collection">Studio Collection</a></li>
+          <li><a href="/pages/studio-heritage">Heritage</a></li>
+          <li><a href="/pages/studio-avinya">Avinya</a></li>
+          <li><a href="/pages/studio-gifting">Gifting &amp; Collaborations</a></li>
+        </ul>
+      </div>
+      <div class="fmap__col">
+        <p class="fmap__group">Visit &amp; Help</p>
+        <ul>
+          <li><a href="/pages/video">Craft Traditions of Kutch</a></li>
+          <li><a href="/pages/lldc">Living &amp; Learning Design Centre</a></li>
+          <li><a href="/pages/visit-experience">Visit &amp; Experience</a></li>
+          <li><a href="/#support">Frequently Asked</a></li>
+        </ul>
+      </div>
+
+      <div class="fmap__col">
+        <p class="fmap__group">Reach us</p>
+        <ul class="freach">
+          <li>
+            <span class="freach__label">Write to us</span>
+            <a href="mailto:{{ section.settings.contact_email | escape }}">{{ section.settings.contact_email }}</a>
+          </li>
+          <li>
+            <span class="freach__label">Call the studio</span>
+            <a href="tel:{{ section.settings.contact_phone_1 | remove: ' ' }}">{{ section.settings.contact_phone_1 }}</a>
+          </li>
+          <li>
+            <span class="freach__label"></span>
+            <a href="tel:{{ section.settings.contact_phone_2 | remove: ' ' }}">{{ section.settings.contact_phone_2 }}</a>
+          </li>
+          <li>
+            <span class="freach__label">Visit</span>
+            <a href="/pages/visit-experience">{{ section.settings.contact_address }}</a>
+          </li>
+          <li>
+            <span class="freach__label">Studio hours</span>
+            <span class="freach__value">{{ section.settings.contact_hours }}</span>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="footer__bottom">
+      <span>{{ section.settings.copyright }}</span>
+
+      <div class="footer__legal">
+        <a href="{{ section.settings.legal_1_url | escape }}" target="_blank" rel="noreferrer noopener">{{ section.settings.legal_1_label | escape }}</a>
+        <a href="{{ section.settings.legal_2_url | escape }}" target="_blank" rel="noreferrer noopener">{{ section.settings.legal_2_label | escape }}</a>
+      </div>
+    </div>
+  </div>
+</footer>
+{% schema %}
+{
+  "name": "Shrujan footer",
+  "enabled_on": {
+    "groups": [
+      "footer"
+    ]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Newsletter"
+    },
+    {
+      "type": "text",
+      "id": "nl_eyebrow",
+      "label": "Eyebrow",
+      "default": "Letters from the Loom"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "nl_title",
+      "label": "Title",
+      "default": "Stay close to the craft"
+    },
+    {
+      "type": "textarea",
+      "id": "nl_copy",
+      "label": "Copy",
+      "default": "New collections, artisan stories and early access to festive edits — once a month, written slowly."
+    },
+    {
+      "type": "text",
+      "id": "nl_placeholder",
+      "label": "Email placeholder",
+      "default": "Your email address"
+    },
+    {
+      "type": "text",
+      "id": "nl_button",
+      "label": "Button label",
+      "default": "Subscribe"
+    },
+    {
+      "type": "text",
+      "id": "nl_success",
+      "label": "Success message",
+      "default": "Shukriya. Your first letter is on its way."
+    },
+    {
+      "type": "header",
+      "content": "Brand"
+    },
+    {
+      "type": "text",
+      "id": "brand_tag_1",
+      "label": "Tagline line 1",
+      "default": "Heritage by Hand"
+    },
+    {
+      "type": "text",
+      "id": "brand_tag_2",
+      "label": "Tagline line 2",
+      "default": "Kutch, since 1969"
+    },
+    {
+      "type": "header",
+      "content": "Social links"
+    },
+    {
+      "type": "url",
+      "id": "social_instagram",
+      "label": "Instagram URL",
+      "default": "https://www.instagram.com/shrujanindia/"
+    },
+    {
+      "type": "url",
+      "id": "social_facebook",
+      "label": "Facebook URL",
+      "default": "https://www.facebook.com/shrujanindia"
+    },
+    {
+      "type": "url",
+      "id": "social_pinterest",
+      "label": "Pinterest URL",
+      "default": "https://www.pinterest.com/shrujancreations/"
+    },
+    {
+      "type": "header",
+      "content": "Reach us"
+    },
+    {
+      "type": "text",
+      "id": "contact_email",
+      "label": "Email address",
+      "default": "marketing@shrujan.com"
+    },
+    {
+      "type": "text",
+      "id": "contact_phone_1",
+      "label": "Phone 1",
+      "default": "+91 9099 974319"
+    },
+    {
+      "type": "text",
+      "id": "contact_phone_2",
+      "label": "Phone 2",
+      "default": "+91 90818 99882"
+    },
+    {
+      "type": "text",
+      "id": "contact_address",
+      "label": "Address line",
+      "default": "Bhujodi Road, Bhuj · Kutch"
+    },
+    {
+      "type": "text",
+      "id": "contact_hours",
+      "label": "Studio hours",
+      "default": "10 AM to 7 PM"
+    },
+    {
+      "type": "header",
+      "content": "Bottom bar"
+    },
+    {
+      "type": "text",
+      "id": "copyright",
+      "label": "Copyright line",
+      "default": "© 2026 Shrujan. All rights reserved."
+    },
+    {
+      "type": "text",
+      "id": "legal_1_label",
+      "label": "Legal link 1 label",
+      "default": "Privacy Policy"
+    },
+    {
+      "type": "url",
+      "id": "legal_1_url",
+      "label": "Legal link 1 URL",
+      "default": "https://shrujan.com/policies/privacy-policy"
+    },
+    {
+      "type": "text",
+      "id": "legal_2_label",
+      "label": "Legal link 2 label",
+      "default": "Terms & Conditions"
+    },
+    {
+      "type": "url",
+      "id": "legal_2_url",
+      "label": "Legal link 2 URL",
+      "default": "https://shrujan.com/policies/terms-of-service"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shrujan footer"
+    }
+  ]
+}
+{% endschema %}
