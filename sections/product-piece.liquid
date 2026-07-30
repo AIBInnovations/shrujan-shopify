@@ -23,14 +23,47 @@
   Gallery layout. The ≤720px stylesheet already lays the thumbnail rail out
   under the shot, so "below" simply asks for that arrangement at every width;
   and the pinned block is released by returning .pdp__media to static, which is
-  what it already becomes at ≤900px. Both are written only when the merchant
+  what it already becomes at ≤1080px. Both are written only when the merchant
   moves off the built design.
 {%- endcomment -%}
 {%- liquid
   assign cfg = section.settings
   assign root_sel = '#shopify-section-' | append: section.id
+
+  comment
+    Mobile group. Two different breakpoints already own the gallery, and neither
+    is invented here: 1080px is where the stylesheet stops pinning the block, and
+    720px is where it moves the thumbnail rail under the shot as a sideways strip
+    and drops the stage to min(64vh, 520px). So the phone controls are that same
+    720px tier — whether the strip is worth its room, and what the stage's height
+    should be, which also has to beat the taller height "below" publishes without
+    a query of its own. The four maker portraits and the review columns are real
+    grids that never step; the reviews stack at 720px, the portraits never do.
+
+    There is no phone switch for un-pinning: the stylesheet has already released
+    the block by 1080px, so a phone would never see it pinned.
+  endcomment
+  assign pdp_style = false
+  if cfg.gallery_thumbs != 'left' or cfg.gallery_sticky == false
+    assign pdp_style = true
+  endif
+  if cfg.gallery_thumbs_m != 'strip' or cfg.gallery_h_m != 0
+    assign pdp_style = true
+  endif
+  if cfg.faces_cols_m != 4 or cfg.reviews_cols_m != 1
+    assign pdp_style = true
+  endif
+  if cfg.show_reviews and cfg.show_reviews_m == false
+    assign pdp_style = true
+  endif
+  if cfg.show_rec and cfg.show_rec_m == false
+    assign pdp_style = true
+  endif
+  if cfg.show_other and cfg.show_other_m == false
+    assign pdp_style = true
+  endif
 -%}
-{%- if cfg.gallery_thumbs != 'left' or cfg.gallery_sticky == false -%}
+{%- if pdp_style -%}
   <style>
     {%- if cfg.gallery_thumbs == 'below' -%}
       {{ root_sel }} .pdp__media { grid-template-columns: minmax(0, 1fr); }
@@ -56,6 +89,40 @@
     {%- endif -%}
     {%- if cfg.gallery_sticky == false -%}
       {{ root_sel }} .pdp__media { position: static; }
+    {%- endif -%}
+
+    {%- comment -%}
+      Phone. Coming after the block above is what lets the stage height here beat
+      the un-mediated one "thumbnails below" writes.
+    {%- endcomment -%}
+    {%- if cfg.gallery_thumbs_m != 'strip' or cfg.gallery_h_m != 0 or cfg.faces_cols_m != 4 or cfg.reviews_cols_m != 1 -%}
+      @media (max-width: 720px) {
+        {%- if cfg.gallery_thumbs_m == 'hidden' -%}
+          {{ root_sel }} .pdp__rail { display: none; }
+        {%- endif -%}
+        {%- if cfg.gallery_h_m != 0 -%}
+          {{ root_sel }} .pdp__stage { height: {{ cfg.gallery_h_m }}px; }
+        {%- endif -%}
+        {%- if cfg.faces_cols_m != 4 -%}
+          {{ root_sel }} .pdp__faces { grid-template-columns: repeat({{ cfg.faces_cols_m }}, minmax(0, 1fr)); }
+        {%- endif -%}
+        {%- if cfg.reviews_cols_m != 1 -%}
+          {{ root_sel }} .reviews { grid-template-columns: repeat({{ cfg.reviews_cols_m }}, minmax(0, 1fr)); }
+        {%- endif -%}
+      }
+    {%- endif -%}
+    {%- if cfg.show_reviews_m == false or cfg.show_rec_m == false or cfg.show_other_m == false -%}
+      @media (max-width: 720px) {
+        {%- if cfg.show_reviews and cfg.show_reviews_m == false -%}
+          {{ root_sel }} .pdp-reviews { display: none; }
+        {%- endif -%}
+        {%- if cfg.show_rec and cfg.show_rec_m == false -%}
+          {{ root_sel }} .pdp-rec { display: none; }
+        {%- endif -%}
+        {%- if cfg.show_other and cfg.show_other_m == false -%}
+          {{ root_sel }} .pdp-other { display: none; }
+        {%- endif -%}
+      }
     {%- endif -%}
   </style>
 {%- endif -%}
