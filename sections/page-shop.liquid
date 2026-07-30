@@ -1,40 +1,109 @@
 {%- render 'section-design', section: section -%}
 {%- comment -%}
-  Layout + region controls for this page. Two rules keep them safe:
+  Shop Shrujan — the catalogue, rendered from real Shopify collections.
 
-   1. The scoped <style> below is written only when a value differs from the
-      built design, and each override is confined to the breakpoint band it
-      belongs to — an id-specificity rule would otherwise flatten the grid's
-      own 3 → 2 → 1 steps.
-   2. The catalogue grid, its cards and the sort order are rendered client-side
-      from window.SHRUJAN, so those controls travel as data-* attributes on the
-      section root and the inline script reads them with today's values as
-      fallbacks. Each attribute is appended only when the merchant has changed
-      it, so the default markup is byte-for-byte what it has always been.
+  Where the data comes from
+   · The medallion rail, the filter rail and the grid all read one list: the
+     `collection` blocks, in block order, so the built sequence survives and a
+     merchant can reorder, swap or drop a collection in the theme editor. A
+     store that has never configured a block falls back to every collection
+     that has products, so the section is never empty on a fresh install.
+   · Cards read the product: title, url, featured image, price, compare-at
+     price and availability. The four things Shopify has no native field for
+     come from editable metafields in the `shrujan` namespace — craft, badge,
+     swatches (occasion belongs to the home-page edit).
+   · Counts are `collection.all_products_count`, so they follow the admin.
+
+  What is still done in the browser, and only this
+   1. `?c=<handle>` — the link contract the home page and the header already
+      use. Liquid cannot read a query parameter on a page template, so every
+      card is rendered server-side carrying the handles of the collections it
+      belongs to, and the script hides the ones outside the selection. That is
+      the same job the rail did before, minus the catalogue in JS.
+   2. The sort menu is a listbox, so its pointer and keyboard behaviour is
+      scripted. The order itself is computed in Liquid from the theme setting,
+      so the page arrives sorted; picking another order re-lays the cards that
+      are already on the page.
+
+  Layout controls stay in a scoped <style>, written only when a value differs
+  from the built design — an id-specificity rule would otherwise flatten the
+  grid's own 3 → 2 → 1 steps.
 {%- endcomment -%}
 {%- liquid
   assign cfg = section.settings
   assign root_sel = '#shopify-section-' | append: section.id
 
-  assign shop_data = ''
-  if cfg.sort_default != 'featured'
-    assign shop_data = shop_data | append: ' data-sort="' | append: cfg.sort_default | append: '"'
+  comment
+    One list of collection handles, used three times below. Blocks first; every
+    collection that has products when a merchant has configured none.
+  endcomment
+  assign col_keys = ''
+  assign has_cols = false
+  for block in section.blocks
+    if block.type == 'collection'
+      assign block_col = block.settings.collection
+      if block_col != blank and block_col.all_products_count > 0
+        assign col_keys = col_keys | append: block_col.handle | append: ','
+        assign has_cols = true
+      endif
+    endif
+  endfor
+  unless has_cols
+    for shop_col in collections
+      if shop_col.all_products_count > 0
+        assign col_keys = col_keys | append: shop_col.handle | append: ','
+        assign has_cols = true
+      endif
+    endfor
+  endunless
+  assign col_keys = col_keys | split: ','
+
+  comment
+    The grid is every listed collection's products, in rail order — the order
+    the catalogue has always opened in — deduplicated, then ordered server-side
+    so the page needs no script to arrive sorted.
+  endcomment
+  assign grid_count = 0
+  if has_cols
+    for key in col_keys
+      assign key_col = collections[key]
+      if forloop.first
+        assign grid_products = key_col.products
+      else
+        assign grid_products = grid_products | concat: key_col.products
+      endif
+    endfor
+    assign grid_products = grid_products | uniq: 'id'
+
+    case cfg.sort_default
+      when 'price-asc'
+        assign grid_products = grid_products | sort: 'price'
+      when 'price-desc'
+        assign grid_products = grid_products | sort: 'price' | reverse
+      when 'name'
+        assign grid_products = grid_products | sort: 'title'
+    endcase
+
+    assign grid_count = grid_products.size
   endif
-  unless cfg.card_badge
-    assign shop_data = shop_data | append: ' data-card-badge="false"'
-  endunless
-  unless cfg.card_was
-    assign shop_data = shop_data | append: ' data-card-was="false"'
-  endunless
-  unless cfg.card_swatches
-    assign shop_data = shop_data | append: ' data-card-swatches="false"'
-  endunless
-  unless cfg.card_wish
-    assign shop_data = shop_data | append: ' data-card-wish="false"'
-  endunless
-  unless cfg.card_quick
-    assign shop_data = shop_data | append: ' data-card-quick="false"'
-  endunless
+
+  assign count_word = 'pieces'
+  if grid_count == 1
+    assign count_word = 'piece'
+  endif
+
+  comment
+    The sort orders this menu implements. The keys travel on the options as
+    data-sort so the script never has to carry a copy of the labels.
+  endcomment
+  assign sort_keys = 'featured,price-asc,price-desc,name' | split: ','
+  assign sort_labels = 'Featured~Price, low to high~Price, high to low~Name, A–Z' | split: '~'
+  assign sort_index = 0
+  for key in sort_keys
+    if key == cfg.sort_default
+      assign sort_index = forloop.index0
+    endif
+  endfor
 
   assign has_layout = false
   if cfg.grid_cols != 3 or cfg.grid_cols_m != 1 or cfg.show_rail == false
@@ -66,7 +135,7 @@
     {%- endif -%}
   </style>
 {%- endif -%}
-<div class="page"{{ shop_data }}>
+<div class="page">
   <!-- ---- hero banner ---- -->
   <section class="shop-banner" aria-label="The handcrafted edit">
     <div class="shop-banner__frame">
@@ -95,7 +164,7 @@
     </ul>
   </section>
 {%- endif %}
-{%- if section.settings.show_cats %}
+{%- if section.settings.show_cats and has_cols %}
 
   <!-- ---- categories as medallions ---- -->
   <section class="section container shop-cats" aria-label="Collections">
@@ -107,72 +176,28 @@
 
     <div class="shop-cats__wrap">
       <div class="shop-cats__rail" data-reveal-child>
-        <button type="button" class="medallion">
-          <span class="medallion__disc" style="--tint: var(--ivory-2)"><img src="{{ 'sj-black-pakko-hand-embroidered-kanchli-1.webp' | asset_url }}" alt="Model wearing the black pakko hand embroidered kanchli" loading="lazy"></span>
-          <span class="medallion__name">Kanchli</span>
-          <span class="medallion__sub">9 pieces</span>
+        {%- for key in col_keys %}
+        {%- liquid
+          assign med = collections[key]
+          assign med_img = med.image
+          unless med_img
+            assign med_img = med.products.first.featured_image
+          endunless
+          assign med_n = med.all_products_count
+          assign med_word = 'pieces'
+          if med_n == 1
+            assign med_word = 'piece'
+          endif
+        -%}
+        {%- if med.title != blank %}
+        <button type="button" class="medallion" data-c="{{ med.handle }}" data-title="{{ med.title | escape }}">
+          <span class="medallion__disc" style="--tint: {% cycle 'medallion': 'var(--ivory-2)', 'var(--gerua-100)', 'var(--mehendi-200)', 'var(--sand)' %}">{% if med_img %}<img src="{{ med_img | image_url: width: 640 }}" alt="{{ med_img.alt | default: med.title | escape }}" loading="lazy">{% else %}{{ 'collection-1' | placeholder_svg_tag: 'medallion__ph' }}{% endif %}</span>
+          <span class="medallion__name">{{ med.title | escape }}</span>
+          <span class="medallion__sub">{{ med_n }} {{ med_word }}</span>
           <span class="medallion__go" aria-hidden="true">Shop <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
         </button>
-        <button type="button" class="medallion">
-          <span class="medallion__disc" style="--tint: var(--gerua-100)"><img src="{{ 'sj-dupatta-copy-1.webp' | asset_url }}" alt="Dupatta, hand-embroidered in Kutch" loading="lazy"></span>
-          <span class="medallion__name">Accessories</span>
-          <span class="medallion__sub">9 pieces</span>
-          <span class="medallion__go" aria-hidden="true">Shop <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
-        </button>
-        <button type="button" class="medallion">
-          <span class="medallion__disc" style="--tint: var(--mehendi-200)"><img src="{{ 'sj-ahir-batwa-copy-4-1.webp' | asset_url }}" alt="Crossbody Bag, hand-embroidered in Kutch" loading="lazy"></span>
-          <span class="medallion__name">Crossbody &amp; Sling</span>
-          <span class="medallion__sub">9 pieces</span>
-          <span class="medallion__go" aria-hidden="true">Shop <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
-        </button>
-        <button type="button" class="medallion">
-          <span class="medallion__disc" style="--tint: var(--sand)"><img src="{{ 'sj-hand-bag-copy-23-1.webp' | asset_url }}" alt="Hand Bag, hand-embroidered in Kutch" loading="lazy"></span>
-          <span class="medallion__name">Hand Bags</span>
-          <span class="medallion__sub">9 pieces</span>
-          <span class="medallion__go" aria-hidden="true">Shop <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
-        </button>
-        <button type="button" class="medallion">
-          <span class="medallion__disc" style="--tint: var(--ivory-2)"><img src="{{ 'sj-handloom-weaving-cushion-cover-3-1.webp' | asset_url }}" alt="Cushion Cover, hand-embroidered in Kutch" loading="lazy"></span>
-          <span class="medallion__name">Home Decor</span>
-          <span class="medallion__sub">9 pieces</span>
-          <span class="medallion__go" aria-hidden="true">Shop <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
-        </button>
-        <button type="button" class="medallion">
-          <span class="medallion__disc" style="--tint: var(--gerua-100)"><img src="{{ 'sj-ahir-batwa-1.webp' | asset_url }}" alt="Potli Bag, hand-embroidered in Kutch" loading="lazy"></span>
-          <span class="medallion__name">Potlis &amp; Batwas</span>
-          <span class="medallion__sub">3 pieces</span>
-          <span class="medallion__go" aria-hidden="true">Shop <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
-        </button>
-        <button type="button" class="medallion">
-          <span class="medallion__disc" style="--tint: var(--mehendi-200)"><img src="{{ 'sj-jat-garasiya-mobile-pouch-1-1.webp' | asset_url }}" alt="Mobile Pouch, hand-embroidered in Kutch" loading="lazy"></span>
-          <span class="medallion__name">Pouches</span>
-          <span class="medallion__sub">9 pieces</span>
-          <span class="medallion__go" aria-hidden="true">Shop <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
-        </button>
-        <button type="button" class="medallion">
-          <span class="medallion__disc" style="--tint: var(--sand)"><img src="{{ 'sj-pakko-embroidered-divya-bag-1.webp' | asset_url }}" alt="Tote Bag, hand-embroidered in Kutch" loading="lazy"></span>
-          <span class="medallion__name">Tote Bags</span>
-          <span class="medallion__sub">3 pieces</span>
-          <span class="medallion__go" aria-hidden="true">Shop <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
-        </button>
-        <button type="button" class="medallion">
-          <span class="medallion__disc" style="--tint: var(--ivory-2)"><img src="{{ 'sj-hand-block-printed-dress-1.webp' | asset_url }}" alt="Hand Block Printed Dress, made in Kutch" loading="lazy"></span>
-          <span class="medallion__name">Dresses</span>
-          <span class="medallion__sub">6 pieces</span>
-          <span class="medallion__go" aria-hidden="true">Shop <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
-        </button>
-        <button type="button" class="medallion">
-          <span class="medallion__disc" style="--tint: var(--gerua-100)"><img src="{{ 'sj-ahir-hand-embroidered-halter-top-1.webp' | asset_url }}" alt="Ahir Hand Embroidered Halter Top, made in Kutch" loading="lazy"></span>
-          <span class="medallion__name">Kurtas &amp; Tops</span>
-          <span class="medallion__sub">9 pieces</span>
-          <span class="medallion__go" aria-hidden="true">Shop <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
-        </button>
-        <button type="button" class="medallion">
-          <span class="medallion__disc" style="--tint: var(--mehendi-200)"><img src="{{ 'sj-cotton-denim-pant-1.webp' | asset_url }}" alt="Cotton Denim Pant, made in Kutch" loading="lazy"></span>
-          <span class="medallion__name">Pants &amp; Palazzos</span>
-          <span class="medallion__sub">9 pieces</span>
-          <span class="medallion__go" aria-hidden="true">Shop <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
-        </button>
+        {%- endif %}
+        {%- endfor %}
       </div>
 
       <div class="carousel-arrows shop-cats__arrows">
@@ -189,18 +214,13 @@
     <aside class="shop-rail" data-reveal>
       <p class="shop-rail__title"><svg viewBox="0 0 32 32" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M16 2c1.3 4.6 3 7.4 5.2 8.8C23.4 12.2 26 13 30 13.4v.2c-4 .4-6.6 1.2-8.8 2.6C19 17.6 17.3 20.4 16 25c-1.3-4.6-3-7.4-5.2-8.8C8.6 14.8 6 14 2 13.6v-.2c4-.4 6.6-1.2 8.8-2.6C13 9.4 14.7 6.6 16 2Z"></path><circle cx="16" cy="28.5" r="1.6"></circle></svg> Browse by collection</p>
       <ul class="shop-rail__list">
-        <li><button type="button" class="shop-rail__item is-active" aria-pressed="true">Everything</button></li>
-        <li><button type="button" class="shop-rail__item" aria-pressed="false">Kanchli<span class="shop-rail__n">9</span></button></li>
-        <li><button type="button" class="shop-rail__item" aria-pressed="false">Accessories<span class="shop-rail__n">9</span></button></li>
-        <li><button type="button" class="shop-rail__item" aria-pressed="false">Crossbody &amp; Sling<span class="shop-rail__n">9</span></button></li>
-        <li><button type="button" class="shop-rail__item" aria-pressed="false">Hand Bags<span class="shop-rail__n">9</span></button></li>
-        <li><button type="button" class="shop-rail__item" aria-pressed="false">Home Decor<span class="shop-rail__n">9</span></button></li>
-        <li><button type="button" class="shop-rail__item" aria-pressed="false">Potlis &amp; Batwas<span class="shop-rail__n">3</span></button></li>
-        <li><button type="button" class="shop-rail__item" aria-pressed="false">Pouches<span class="shop-rail__n">9</span></button></li>
-        <li><button type="button" class="shop-rail__item" aria-pressed="false">Tote Bags<span class="shop-rail__n">3</span></button></li>
-        <li><button type="button" class="shop-rail__item" aria-pressed="false">Dresses<span class="shop-rail__n">6</span></button></li>
-        <li><button type="button" class="shop-rail__item" aria-pressed="false">Kurtas &amp; Tops<span class="shop-rail__n">9</span></button></li>
-        <li><button type="button" class="shop-rail__item" aria-pressed="false">Pants &amp; Palazzos<span class="shop-rail__n">9</span></button></li>
+        <li><button type="button" class="shop-rail__item is-active" aria-pressed="true" data-c="" data-title="Everything">Everything</button></li>
+        {%- for key in col_keys %}
+        {%- assign rail_col = collections[key] %}
+        {%- if rail_col.title != blank %}
+        <li><button type="button" class="shop-rail__item" aria-pressed="false" data-c="{{ rail_col.handle }}" data-title="{{ rail_col.title | escape }}">{{ rail_col.title | escape }}<span class="shop-rail__n">{{ rail_col.all_products_count }}</span></button></li>
+        {%- endif %}
+        {%- endfor %}
       </ul>
 
       <p class="shop-rail__note">Suf is counted from the reverse. Paako is worked from the front. Aabhla cages a mirror in thread. The stitch is the difference.</p>
@@ -209,22 +229,62 @@
 
     <div class="shop-main">
       <div class="shop-main__bar" data-reveal>
-        <p class="shop-main__count">84 pieces</p>
+        <p class="shop-main__count">{{ grid_count }} {{ count_word }}</p>
         <div class="shop-sort">
           <div class="sortmenu">
-            <button type="button" class="sortmenu__button" aria-haspopup="listbox" aria-expanded="false"><span class="sortmenu__label">Sort</span><span class="sortmenu__value">Featured</span><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9.5 6 6 6-6"></path></svg></button>
+            <button type="button" class="sortmenu__button" aria-haspopup="listbox" aria-expanded="false"><span class="sortmenu__label">Sort</span><span class="sortmenu__value">{{ sort_labels[sort_index] }}</span><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9.5 6 6 6-6"></path></svg></button>
 
             <ul class="sortmenu__list" role="listbox" aria-label="Sort by" tabindex="-1">
-              <li role="option" aria-selected="true" class="sortmenu__option is-selected is-cursor">Featured</li>
-              <li role="option" aria-selected="false" class="sortmenu__option">Price, low to high</li>
-              <li role="option" aria-selected="false" class="sortmenu__option">Price, high to low</li>
-              <li role="option" aria-selected="false" class="sortmenu__option">Name, A–Z</li>
+              {%- for key in sort_keys %}
+              <li role="option" aria-selected="{% if forloop.index0 == sort_index %}true{% else %}false{% endif %}" class="sortmenu__option{% if forloop.index0 == sort_index %} is-selected is-cursor{% endif %}" data-sort="{{ key }}">{{ sort_labels[forloop.index0] }}</li>
+              {%- endfor %}
             </ul>
           </div>
         </div>
       </div>
+{%- if grid_count > 0 %}
 
-      <div class="curated__grid shop-grid" data-reveal-child></div>
+      <div class="curated__grid shop-grid" data-reveal-child>
+        {%- for product in grid_products %}
+        {%- liquid
+          assign card_img = product.featured_image
+
+          comment
+            The badge is the merchant's own label, and a piece that cannot be
+            bought overrides it — nothing else may sit where "Sold out" belongs.
+          endcomment
+          assign card_badge = product.metafields.shrujan.badge.value
+          if product.available == false
+            assign card_badge = 'Sold out'
+          endif
+
+          assign card_craft = product.metafields.shrujan.craft.value
+          if card_craft == blank
+            assign card_craft = product.type
+          endif
+
+          assign card_swatches = product.metafields.shrujan.swatches.value
+        -%}
+        <a class="piece shop-piece" href="{{ product.url }}" data-c="{% for pc in product.collections %}{{ pc.handle }} {% endfor %}" data-price="{{ product.price }}">
+          <div class="piece__media" style="--tint: {% cycle 'piece': 'var(--ivory-2)', 'var(--gerua-100)', 'var(--mehendi-200)', 'var(--sand)' %}">{% if card_img %}<img src="{{ card_img | image_url: width: 900 }}" alt="{{ card_img.alt | default: product.title | escape }}" loading="lazy">{% else %}{{ 'product-1' | placeholder_svg_tag: 'piece__ph' }}{% endif %}{% if cfg.card_badge and card_badge != blank %}<span class="piece__badge">{{ card_badge | escape }}</span>{% endif %}{% if cfg.card_wish %}<button class="piece__wish" type="button" aria-label="Save {{ product.title | escape }} to wishlist"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19.8S4.5 15.3 4.5 9.9c0-2.6 2-4.4 4.2-4.4 1.5 0 2.7.8 3.3 2 .6-1.2 1.8-2 3.3-2 2.2 0 4.2 1.8 4.2 4.4 0 5.4-7.5 9.9-7.5 9.9Z"></path></svg></button>{% endif %}{% if cfg.card_quick %}<span class="piece__quick">Add to bag</span>{% endif %}</div>
+
+          <div class="piece__info">
+            <p class="piece__name">{{ product.title | escape }}</p>
+            {%- if card_craft != blank %}
+            <p class="piece__craft">{{ card_craft | escape }}</p>
+            {%- endif %}
+            <p class="piece__price">{{ product.price | money }}{% if cfg.card_was and product.compare_at_price > product.price %}<span>{{ product.compare_at_price | money }}</span>{% endif %}</p>
+            {%- if cfg.card_swatches and card_swatches != blank %}
+            <span class="piece__swatches" aria-hidden="true">{% for swatch in card_swatches %}<i style="background: {{ swatch }}"></i>{% endfor %}</span>
+            {%- endif %}
+          </div>
+        </a>
+        {%- endfor %}
+      </div>
+{%- else %}
+
+      <p class="shop-main__empty">Nothing online in this collection right now. <a href="mailto:marketing@shrujan.com?subject=Collection%20enquiry">Ask the studio</a>.</p>
+{%- endif %}
     </div>
   </section>
 {%- if section.settings.show_spotlight %}
@@ -287,121 +347,83 @@
 
 <script>
 (function () {
-  var root = document.querySelector('.shop-body');
-  if (!root || root.__shrujanInit) return;
-  root.__shrujanInit = true;
+  var root = document.getElementById('shopify-section-{{ section.id }}');
+  if (!root || root.__shrujanShop) return;
+  root.__shrujanShop = true;
 
-  var page = root.closest('.page') || document;
-  var SHRUJAN = window.SHRUJAN;
+  var body = root.querySelector('.shop-body');
+  if (!body) return;
 
-  /* ---- customizer controls: data-* on the section root, today's behaviour as
-     the fallback whenever the attribute is absent ---- */
-  function dataAttr(name) {
-    return page.getAttribute ? page.getAttribute('data-' + name) : null;
+  var countEl = body.querySelector('.shop-main__count');
+  var sortWrap = body.querySelector('.shop-sort');
+  var menu = body.querySelector('.sortmenu');
+  if (!countEl || !sortWrap || !menu) return;
+
+  function list(sel, from) {
+    return Array.prototype.slice.call((from || root).querySelectorAll(sel));
   }
-  function dataFlag(name, dflt) {
-    var v = dataAttr(name);
-    return v === null || v === '' ? dflt : v !== 'false';
-  }
-  var CARD = {
-    badge: dataFlag('card-badge', true),
-    was: dataFlag('card-was', true),
-    swatches: dataFlag('card-swatches', true),
-    wish: dataFlag('card-wish', true),
-    quick: dataFlag('card-quick', true)
-  };
 
-  /* Filter by COLLECTION, not craft — collection is what the live site
-     organises by, and every product carries a real one. */
-  var ALL = 'Everything';
-
-  var SORTS = [
-    { key: 'featured', label: 'Featured' },
-    { key: 'price-asc', label: 'Price, low to high' },
-    { key: 'price-desc', label: 'Price, high to low' },
-    { key: 'name', label: 'Name, A–Z' }
-  ];
-
-  /* '₹ 25,000' -> 25000, so the price sorts numerically rather than as text */
-  function priceValue(p) { return Number(String(p.price).replace(/[^0-9.]/g, '')) || 0; }
+  /* The catalogue itself is server-rendered. This only decides which of the
+     rendered cards are on show, and in what order. */
+  var ALL = '';
 
   /* a rotating tint, so grids carry colour of their own rather than reading as
-     rectangles on flat ivory */
+     rectangles on flat ivory. Re-applied whenever the shown run changes, so a
+     filtered grid starts the cycle again exactly as the built page does. */
   var TINTS = ['var(--ivory-2)', 'var(--gerua-100)', 'var(--mehendi-200)', 'var(--sand)'];
 
-  var collections = [ALL];
-  SHRUJAN.PIECES.forEach(function (p) {
-    if (p.collection && collections.indexOf(p.collection) === -1) collections.push(p.collection);
+  var catRail = root.querySelector('.shop-cats__rail');
+  var medallions = list('.shop-cats__rail .medallion');
+  var arrowBtns = root.querySelectorAll('.shop-cats__arrows button');
+  var railButtons = list('.shop-rail__item');
+  var shopMain = body.querySelector('.shop-main');
+  var grid = body.querySelector('.shop-grid');
+  var cards = grid ? list('.piece', grid) : [];
+  var painted = cards.slice(); /* the order Liquid rendered — "Featured" */
+  var clearBtn = null;
+  var active = ALL;
+
+  /* handle -> title for the count line, taken off whichever rail is on the
+     page rather than a copy of the collection list in script */
+  var titles = {};
+  railButtons.concat(medallions).forEach(function (el) {
+    var key = el.getAttribute('data-c');
+    if (key && !titles[key]) titles[key] = el.getAttribute('data-title') || key;
   });
 
-  /* the URL is the source of truth, so a header link lands on the right filter */
+  /* a card carries every collection it belongs to, space separated */
+  function inCollection(card, key) {
+    return (' ' + (card.getAttribute('data-c') || '') + ' ').indexOf(' ' + key + ' ') !== -1;
+  }
+
+  /* the URL is the source of truth, so a header or home-page link lands on the
+     right filter. An unknown key falls back to Everything. */
   function readActive() {
     var key = new URLSearchParams(location.search).get('c');
-    for (var i = 0; i < collections.length; i++) {
-      if (SHRUJAN.collectionKey(collections[i]) === key) return collections[i];
+    if (!key) return ALL;
+    for (var i = 0; i < cards.length; i++) {
+      if (inCollection(cards[i], key)) return key;
     }
     return ALL;
   }
 
-  var active = ALL;
-
-  /* the opening sort order, validated against the orders this menu implements
-     so an unknown value can never leave the listbox out of step with the grid */
-  var sort = 'featured';
-  var wantSort = dataAttr('sort');
-  for (var so = 0; so < SORTS.length; so++) if (SORTS[so].key === wantSort) sort = wantSort;
-
-  var catRail = page.querySelector('.shop-cats__rail');
-  var medallions = Array.prototype.slice.call(page.querySelectorAll('.shop-cats__rail .medallion'));
-  var arrowBtns = page.querySelectorAll('.shop-cats__arrows button');
-  var railButtons = Array.prototype.slice.call(root.querySelectorAll('.shop-rail__item'));
-  var countEl = root.querySelector('.shop-main__count');
-  var shopMain = root.querySelector('.shop-main');
-  var sortWrap = root.querySelector('.shop-sort');
-  var listEl = root.querySelector('.shop-grid');
-  var clearBtn = null;
-
-  var HEART_16 = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19.8S4.5 15.3 4.5 9.9c0-2.6 2-4.4 4.2-4.4 1.5 0 2.7.8 3.3 2 .6-1.2 1.8-2 3.3-2 2.2 0 4.2 1.8 4.2 4.4 0 5.4-7.5 9.9-7.5 9.9Z"></path></svg>';
-
-  function cardHtml(p, i) {
-    var html = '<a class="piece shop-piece" href="/products/' + SHRUJAN.productSlug(p) + '">';
-    html += '<div class="piece__media" style="--tint: ' + TINTS[i % TINTS.length] + '">';
-    html += '<img src="' + SHRUJAN.asset(p.img) + '" alt="' + p.alt + '" loading="lazy">';
-    if (CARD.badge && p.badge) html += '<span class="piece__badge">' + p.badge + '</span>';
-    if (CARD.wish) html += '<button class="piece__wish" type="button" aria-label="Save ' + p.name + ' to wishlist">' + HEART_16 + '</button>';
-    if (CARD.quick) html += '<span class="piece__quick">Add to bag</span>';
-    html += '</div>';
-    html += '<div class="piece__info">';
-    html += '<p class="piece__name">' + p.name + '</p>';
-    html += '<p class="piece__craft">' + p.craft + '</p>';
-    html += '<p class="piece__price">' + p.price + (CARD.was && p.was ? '<span>' + p.was + '</span>' : '') + '</p>';
-    if (CARD.swatches) {
-      var swatches = '';
-      p.swatches.forEach(function (c) { swatches += '<i style="background: ' + c + '"></i>'; });
-      html += '<span class="piece__swatches" aria-hidden="true">' + swatches + '</span>';
-    }
-    html += '</div>';
-    html += '</a>';
-    return html;
-  }
-
-  function shownList() {
-    var list = active === ALL
-      ? SHRUJAN.PIECES
-      : SHRUJAN.PIECES.filter(function (p) { return p.collection === active; });
-    if (sort === 'featured') return list;
-    var out = list.slice(); /* never sort the source array in place */
-    if (sort === 'price-asc') out.sort(function (a, b) { return priceValue(a) - priceValue(b); });
-    if (sort === 'price-desc') out.sort(function (a, b) { return priceValue(b) - priceValue(a); });
-    if (sort === 'name') out.sort(function (a, b) { return a.name.localeCompare(b.name); });
-    return out;
-  }
-
   function render() {
-    var shown = shownList();
+    var shown = 0;
 
+    cards.forEach(function (card) {
+      if (active === ALL || inCollection(card, active)) {
+        card.removeAttribute('hidden');
+        var media = card.querySelector('.piece__media');
+        if (media) media.style.setProperty('--tint', TINTS[shown % TINTS.length]);
+        shown++;
+      } else {
+        card.setAttribute('hidden', '');
+      }
+    });
+
+    var name = titles[active];
     countEl.textContent =
-      shown.length + ' ' + (shown.length === 1 ? 'piece' : 'pieces') + (active !== ALL ? ' in ' + active : '');
+      shown + ' ' + (shown === 1 ? 'piece' : 'pieces') + (active !== ALL && name ? ' in ' + name : '');
 
     if (active !== ALL) {
       if (!clearBtn) {
@@ -417,40 +439,23 @@
       clearBtn = null;
     }
 
-    railButtons.forEach(function (btn, i) {
-      var on = collections[i] === active;
+    railButtons.forEach(function (btn) {
+      var on = (btn.getAttribute('data-c') || '') === active;
       btn.classList.toggle('is-active', on);
       btn.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
-
-    if (shown.length === 0) {
-      var empty = document.createElement('p');
-      empty.className = 'shop-main__empty';
-      empty.innerHTML = 'Nothing online in this collection right now. <a href="mailto:marketing@shrujan.com?subject=Collection%20enquiry">Ask the studio</a>.';
-      listEl.parentNode.replaceChild(empty, listEl);
-      listEl = empty;
-    } else {
-      if (listEl.className.indexOf('shop-grid') === -1) {
-        var grid = document.createElement('div');
-        grid.className = 'curated__grid shop-grid';
-        grid.setAttribute('data-reveal-child', '');
-        listEl.parentNode.replaceChild(grid, listEl);
-        listEl = grid;
-      }
-      var html = '';
-      shown.forEach(function (p, i) { html += cardHtml(p, i); });
-      listEl.innerHTML = html;
-    }
   }
 
   /* the wish button sits inside the product link — its click must not navigate */
-  shopMain.addEventListener('click', function (e) {
-    var wish = e.target.closest ? e.target.closest('.piece__wish') : null;
-    if (wish) e.preventDefault();
-  });
+  if (shopMain) {
+    shopMain.addEventListener('click', function (e) {
+      var wish = e.target.closest ? e.target.closest('.piece__wish') : null;
+      if (wish) e.preventDefault();
+    });
+  }
 
-  /* setParams({ c }, { replace: true }) — and arriving on a filter should land
-     on the grid, not the masthead */
+  /* ?c= is the whole URL contract: replaceState, then re-filter. Arriving on a
+     filter should land on the grid, not the masthead. */
   function onParamsChange() {
     active = readActive();
     render();
@@ -461,24 +466,23 @@
   }
 
   function setActive(c) {
-    var search = c === ALL ? '' : '?c=' + SHRUJAN.collectionKey(c);
+    var search = c === ALL ? '' : '?c=' + encodeURIComponent(c);
     if (location.search === search) return;
     history.replaceState(null, '', location.pathname + search);
     onParamsChange();
   }
 
-  railButtons.forEach(function (btn, i) {
-    btn.addEventListener('click', function () { setActive(collections[i]); });
+  railButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () { setActive(btn.getAttribute('data-c') || ALL); });
   });
 
-  medallions.forEach(function (btn, i) {
-    btn.addEventListener('click', function () { setActive(collections[i + 1]); });
+  medallions.forEach(function (btn) {
+    btn.addEventListener('click', function () { setActive(btn.getAttribute('data-c') || ALL); });
   });
 
   function pageRail(dir) {
-    var rail = catRail;
-    if (!rail) return;
-    rail.scrollBy({ left: dir * rail.clientWidth * 0.8, behavior: 'smooth' });
+    if (!catRail) return;
+    catRail.scrollBy({ left: dir * catRail.clientWidth * 0.8, behavior: 'smooth' });
   }
   if (arrowBtns[0]) arrowBtns[0].addEventListener('click', function () { pageRail(-1); });
   if (arrowBtns[1]) arrowBtns[1].addEventListener('click', function () { pageRail(1); });
@@ -486,13 +490,21 @@
   /* SortMenu — a listbox built from scratch so it can be styled, with the
      keyboard behaviour a select gives you for free put back by hand: arrows
      to move, enter to pick, escape to close, and a click anywhere outside
-     to dismiss. */
-  var menu = root.querySelector('.sortmenu');
+     to dismiss. The orders themselves are Liquid's: the page arrives sorted,
+     and picking another one re-lays the cards already rendered. */
   var menuButton = menu.querySelector('.sortmenu__button');
   var menuValue = menu.querySelector('.sortmenu__value');
-  var optionEls = Array.prototype.slice.call(menu.querySelectorAll('.sortmenu__option'));
+  var optionEls = list('.sortmenu__option', menu);
+  var SORTS = optionEls.map(function (el) { return el.getAttribute('data-sort') || ''; });
   var open = false;
   var cursor = 0;
+
+  /* the opening order is whatever Liquid rendered — read it back off the
+     listbox so the menu and the grid can never disagree */
+  var sort = SORTS[0] || '';
+  optionEls.forEach(function (el, i) {
+    if (el.getAttribute('aria-selected') === 'true') sort = SORTS[i];
+  });
 
   function outside(e) {
     if (!menu.contains(e.target)) setOpen(false);
@@ -521,27 +533,40 @@
   }
 
   function selectedIndex() {
-    for (var i = 0; i < SORTS.length; i++) if (SORTS[i].key === sort) return i;
-    return 0;
-  }
-
-  function currentSort() {
-    for (var i = 0; i < SORTS.length; i++) if (SORTS[i].key === sort) return SORTS[i];
-    return SORTS[0];
+    var i = SORTS.indexOf(sort);
+    return i === -1 ? 0 : i;
   }
 
   function renderMenu() {
-    menuValue.textContent = currentSort().label;
     optionEls.forEach(function (el, i) {
-      var selected = SORTS[i].key === sort;
+      var selected = SORTS[i] === sort;
       el.classList.toggle('is-selected', selected);
       el.setAttribute('aria-selected', selected ? 'true' : 'false');
+      if (selected) menuValue.textContent = el.textContent;
     });
+  }
+
+  function cardName(card) {
+    var el = card.querySelector('.piece__name');
+    return el ? el.textContent : '';
+  }
+  function cardPrice(card) {
+    return Number(card.getAttribute('data-price')) || 0;
+  }
+
+  function applySort() {
+    if (!grid) return;
+    var out = painted.slice(); /* never reorder the rendered order in place */
+    if (sort === 'price-asc') out.sort(function (a, b) { return cardPrice(a) - cardPrice(b); });
+    if (sort === 'price-desc') out.sort(function (a, b) { return cardPrice(b) - cardPrice(a); });
+    if (sort === 'name') out.sort(function (a, b) { return cardName(a).localeCompare(cardName(b)); });
+    out.forEach(function (card) { grid.appendChild(card); });
   }
 
   function pick(key) {
     sort = key;
     renderMenu();
+    applySort();
     render();
     setOpen(false);
   }
@@ -568,7 +593,7 @@
       setCursor((cursor - 1 + SORTS.length) % SORTS.length);
     } else if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      pick(SORTS[cursor].key);
+      pick(SORTS[cursor]);
     } else if (e.key === 'Tab') {
       setOpen(false);
     }
@@ -576,14 +601,10 @@
 
   optionEls.forEach(function (el, i) {
     el.addEventListener('pointerenter', function () { setCursor(i); });
-    el.addEventListener('click', function () { pick(SORTS[i].key); });
+    el.addEventListener('click', function () { pick(SORTS[i]); });
   });
 
-  /* Bring the listbox in step with the opening sort order. With the theme
-     default this writes back exactly what the markup already says. */
-  renderMenu();
-
-  /* initial state from the URL (?c=), exactly as useSearchParams reads it on mount */
+  /* initial state from the URL (?c=), exactly as useSearchParams read it on mount */
   onParamsChange();
 })();
 </script>
@@ -624,6 +645,10 @@
     {
       "type": "header",
       "content": "Shop by collection"
+    },
+    {
+      "type": "paragraph",
+      "content": "Add a Collection block for every collection the medallion rail, the filter rail and the grid should carry — they follow the block order. With no Collection blocks the section falls back to every collection that has products."
     },
     {
       "type": "inline_richtext",
@@ -696,7 +721,7 @@
       "type": "select",
       "id": "sort_default",
       "label": "Default sort order",
-      "info": "The order the catalogue opens in. Shoppers can still change it from the Sort menu.",
+      "info": "The order the catalogue is rendered in. Shoppers can still change it from the Sort menu.",
       "default": "featured",
       "options": [
         {
@@ -760,18 +785,21 @@
       "type": "checkbox",
       "id": "card_badge",
       "label": "Show the badge",
+      "info": "The product’s shrujan.badge metafield, or “Sold out” when it is unavailable.",
       "default": true
     },
     {
       "type": "checkbox",
       "id": "card_was",
       "label": "Show the “was” price",
+      "info": "Shown whenever the product carries a compare-at price above its price.",
       "default": true
     },
     {
       "type": "checkbox",
       "id": "card_swatches",
       "label": "Show the colour swatches",
+      "info": "From the product’s shrujan.swatches metafield.",
       "default": true
     },
     {
@@ -897,6 +925,18 @@
     }
   ],
   "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection",
+          "info": "Its cover image, title and product count fill one medallion and one filter-rail row, and its products join the catalogue grid. A collection with nothing in it is skipped."
+        }
+      ]
+    },
     {
       "type": "assure",
       "name": "Assurance item",

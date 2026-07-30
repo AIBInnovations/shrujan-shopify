@@ -1,5 +1,25 @@
 {%- render 'section-design', section: section -%}
 {%- comment -%}
+  Product detail — the designed three-column page, rendered from the real
+  product on the server.
+
+  Everything the shopper reads about the piece is the merchant's own data: title,
+  price and compare-at from the selected variant, the gallery from product.media,
+  the description in the first accordion, and the four editable metafields in the
+  `shrujan` namespace (craft, badge, swatches — occasion has no slot in this
+  design). The rails are real collections.
+
+  What stays a section setting is the copy the design repeats on every piece and
+  that was never product data: the intro line, the "Made with" pills, the
+  care/shipping accordions, the ordering options, and the review panel (reviews
+  are blocks, so they stay editable).
+
+  Add to bag is a real POST to the cart, so the built cart page receives it. The
+  size row switches the posted variant when the product has real options; when it
+  has only Shopify's default variant the row is presentational and the default
+  variant is what gets added.
+{%- endcomment -%}
+{%- comment -%}
   Gallery layout. The ≤720px stylesheet already lays the thumbnail rail out
   under the shot, so "below" simply asks for that arrangement at every width;
   and the pinned block is released by returning .pdp__media to static, which is
@@ -39,252 +59,476 @@
     {%- endif -%}
   </style>
 {%- endif -%}
-<!-- Product detail — three columns. Resolved from the URL at runtime, so the
-     whole page is client-rendered from window.SHRUJAN into the shell below. -->
-<div class="page pdp-page"
-  data-copy="{{ section.settings.copy | escape }}"
-  data-mode1-title="{{ section.settings.mode1_title | escape }}"
-  data-mode1-note="{{ section.settings.mode1_note | escape }}"
-  data-mode2-title="{{ section.settings.mode2_title | escape }}"
-  data-mode2-note="{{ section.settings.mode2_note | escape }}"
-  data-mode2-price="{{ section.settings.mode2_price | escape }}"
-  data-reassure="{{ section.settings.reassure | escape }}"
-  data-review-note="{{ section.settings.review_note | escape }}"
-  data-show-sizes="{{ section.settings.show_sizes }}"
-  data-show-modes="{{ section.settings.show_modes }}"
-  data-show-details="{{ section.settings.show_details }}"
-  data-show-reviews="{{ section.settings.show_reviews }}"
-  data-show-rec="{{ section.settings.show_rec }}"
-  data-show-other="{{ section.settings.show_other }}"
-  data-card-swatches="{{ section.settings.card_swatches }}"></div>
+{%- liquid
+  comment
+    The piece itself, from Shopify. The variant the page quotes and adds is the
+    one Shopify has selected, or the first that can be bought.
+  endcomment
+  assign variant = product.selected_or_first_available_variant
+  if variant == blank
+    assign variant = product.variants.first
+  endif
+
+  assign craft = product.metafields.shrujan.craft.value
+  if craft == blank
+    assign craft = product.type
+  endif
+
+  assign badge = product.metafields.shrujan.badge.value
+  comment
+    Both badges live in the one corner the design drew, so "sold out" — the only
+    one a shopper must not miss — takes it when the piece cannot be bought.
+  endcomment
+  if product.available == false
+    assign badge = cfg.sold_out_label
+  endif
+
+  comment
+    The swatch discs the shrujan.swatches metafield feeds are a card affordance —
+    the designed buying column has no colour row, so the pieces on the rails below
+    are where a product's colours are drawn.
+  endcomment
+  assign has_was = false
+  if variant.compare_at_price > variant.price
+    assign has_was = true
+  endif
+
+  comment
+    The gallery is the image media in the order the merchant arranged it.
+  endcomment
+  assign shots = product.media | where: 'media_type', 'image'
+  assign shot_count = shots.size
+  if shot_count > cfg.gallery_max
+    assign shot_count = cfg.gallery_max
+  endif
+
+  comment
+    Sizes, real ones first: when the product carries the option, each button is a
+    variant and picking it changes what the form posts. Products with only
+    Shopify's default variant keep the built row, presentational, from the
+    setting.
+  endcomment
+  assign size_pos = 0
+  for opt in product.options_with_values
+    assign opt_name = opt.name | downcase | strip
+    if opt_name == 'size' or opt_name == 'sizes'
+      assign size_list = opt.values
+      assign size_pos = forloop.index
+      break
+    endif
+  endfor
+  if size_pos == 0 and product.has_only_default_variant == false
+    assign first_opt = product.options_with_values | first
+    assign size_list = first_opt.values
+    assign size_pos = 1
+  endif
+
+  assign from_variants = true
+  if size_pos == 0
+    assign from_variants = false
+    assign size_list = cfg.sizes | split: ','
+    assign current_size = cfg.sizes_default | strip
+  else
+    case size_pos
+      when 1
+        assign current_size = variant.option1
+      when 2
+        assign current_size = variant.option2
+      else
+        assign current_size = variant.option3
+    endcase
+  endif
+
+  assign spec_list = cfg.specs | strip | newline_to_br | split: '<br />'
+
+  comment
+    The star row is the rating rounded to whole stars; an unreadable rating keeps
+    the five the design was drawn with.
+  endcomment
+  assign star_n = cfg.rating | plus: 0 | round
+  if star_n < 1 or star_n > 5
+    assign star_n = 5
+  endif
+
+  assign shop_url = cfg.shop_link | default: '/pages/shop-shrujan'
+
+  comment
+    The same-hands rail is the product's own group: product.type carries the
+    collection name the catalogue was built from, so its handle addresses the
+    same rail the design showed. Anything unfamiliar falls back to everything.
+  endcomment
+  assign type_handle = product.type | handleize
+  assign rec_coll = collections[type_handle]
+  unless rec_coll.products.size > 0
+    assign rec_coll = collections['all']
+  endunless
+  comment
+    The lower rail must not repeat what the upper one just showed, so both walk
+    one `shown` list, delimited so `dupatta` cannot match `dupatta-copy`.
+  endcomment
+  assign shown = '|' | append: product.handle | append: '|'
+  assign rail_max = 5
+-%}
+{%- capture icon_star -%}<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.6L12 17.6 6.1 20.7l1.2-6.6L2.5 9.5l6.6-.9Z"></path></svg>{%- endcapture -%}
+{%- capture icon_arrow_15 -%}<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>{%- endcapture -%}
+{%- capture icon_arrow_16 -%}<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>{%- endcapture -%}
+{%- capture icon_plus -%}<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>{%- endcapture -%}
+{%- capture stars_rating -%}<span class="pdp__stars" aria-label="{{ star_n }} out of 5 stars">{% for i in (1..star_n) %}{{ icon_star }}{% endfor %}</span>{%- endcapture -%}
+{%- comment -%}
+  The four packaged portraits the "worn by" row was built with. An image picked
+  in the customizer replaces the one in its slot; the rest stay as designed.
+{%- endcomment -%}
+{%- assign face_files = 'cat-c1.webp,frame-r5t25.webp,cat-c5.webp,frame-r2t5.webp' | split: ',' -%}
+{%- if product != blank -%}
+  <div class="page pdp-page" data-cart-add="{{ routes.cart_add_url }}">
+    <div class="container pdp">
+      <div class="pdp__media">
+        <div class="pdp__rail" aria-label="Product images">
+          {%- for media in shots limit: shot_count -%}
+            <button type="button" class="pdp__thumb{% if forloop.first %} is-active{% endif %}" aria-label="View image {{ forloop.index }} of {{ shot_count }}"{% if forloop.first %} aria-current="true"{% endif %}>
+              <img src="{{ media.preview_image | image_url: width: 200 }}" alt="" loading="lazy">
+            </button>
+          {%- endfor -%}
+        </div>
+        <div class="pdp__stage">
+          {%- if shot_count > 0 -%}
+            {%- for media in shots limit: shot_count -%}
+              <figure class="pdp__shot{% if forloop.first %} is-active{% endif %}" aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}">
+                {%- if forloop.first -%}
+                  <img src="{{ media.preview_image | image_url: width: 1400 }}" alt="{{ media.preview_image.alt | default: product.title | escape }}" loading="eager" fetchpriority="high">
+                {%- else -%}
+                  <img src="{{ media.preview_image | image_url: width: 1400 }}" alt="" loading="lazy">
+                {%- endif -%}
+              </figure>
+            {%- endfor -%}
+          {%- else -%}
+            <figure class="pdp__shot is-active" aria-hidden="false">{{ 'product-1' | placeholder_svg_tag: 'piece__ph' }}</figure>
+          {%- endif -%}
+          {%- if badge != blank -%}
+            <span class="pdp__badge">{{ badge }}</span>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <div class="pdp__buy">
+        <div class="pdp__rating">{{ stars_rating }}<span>{{ cfg.rating }}</span><a href="#reviews">{{ cfg.review_count }} reviews</a></div>
+        <h1 class="pdp__name">{{ product.title }}</h1>
+        {%- if craft != blank -%}
+          <p class="pdp__craft">{{ craft }}</p>
+        {%- endif -%}
+        {%- comment -%}
+          A price line of its own only when the piece is marked down — the price
+          the design shows lives on the ordering option and the button, and a
+          struck-through was has nowhere to sit there.
+        {%- endcomment -%}
+        {%- if has_was -%}
+          <p class="pdp__price" data-pdp-was-line>{{ variant.price | money }}<s>{{ variant.compare_at_price | money }}</s></p>
+        {%- endif -%}
+        {%- if cfg.copy != blank -%}
+          <p class="pdp__copy">{{ cfg.copy }}</p>
+        {%- endif -%}
+
+        {%- if spec_list.size > 0 -%}
+          <div class="pdp__block">
+            <p class="pdp__label">Made with</p>
+            <ul class="pdp__specs">
+              {%- for spec in spec_list -%}
+                {%- assign spec_text = spec | strip -%}
+                {%- if spec_text != blank -%}
+                  <li>{{ spec_text }}</li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+
+        {%- if cfg.show_sizes and size_list.size > 0 -%}
+          <div class="pdp__block">
+            <div class="pdp__label-row">
+              <p class="pdp__label">Size</p>
+              <button type="button" class="pdp__size-guide">Size guide</button>
+            </div>
+            <div class="pdp__sizes" role="group" aria-label="Size">
+              {%- for sz in size_list -%}
+                {%- liquid
+                  assign size_label = sz | strip
+                  assign size_id = ''
+                  assign size_price = ''
+                  assign size_was = ''
+                  assign size_ok = false
+                  comment
+                    The variant a size adds is the first one carrying that value,
+                    preferring one that is actually in stock.
+                  endcomment
+                  if from_variants
+                    for v in product.variants
+                      case size_pos
+                        when 1
+                          assign v_val = v.option1
+                        when 2
+                          assign v_val = v.option2
+                        else
+                          assign v_val = v.option3
+                      endcase
+                      unless v_val == size_label
+                        continue
+                      endunless
+                      assign take = false
+                      if size_id == ''
+                        assign take = true
+                      elsif size_ok == false and v.available
+                        assign take = true
+                      endif
+                      if take
+                        assign size_id = v.id
+                        assign size_price = v.price | money
+                        assign size_was = ''
+                        if v.compare_at_price > v.price
+                          assign size_was = v.compare_at_price | money
+                        endif
+                        assign size_ok = v.available
+                      endif
+                    endfor
+                  endif
+                -%}
+                <button type="button" class="pdp__size{% if size_label == current_size %} is-active{% endif %}" aria-pressed="{% if size_label == current_size %}true{% else %}false{% endif %}"{% if size_id != '' %} data-variant="{{ size_id }}" data-price="{{ size_price | escape }}" data-was="{{ size_was | escape }}"{% endif %}{% if from_variants and size_ok == false %} disabled{% endif %}>{{ size_label }}</button>
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- if cfg.show_modes -%}
+          <div class="pdp__options" role="radiogroup" aria-label="How it is made">
+            <label class="pdp__option is-active"><input type="radio" name="pdp-mode" checked><span class="pdp__option-body"><span class="pdp__option-title">{{ cfg.mode1_title }}</span><span class="pdp__option-note">{{ cfg.mode1_note }}</span></span><span class="pdp__option-price">{{ variant.price | money }}</span></label>
+            <label class="pdp__option"><input type="radio" name="pdp-mode"><span class="pdp__option-body"><span class="pdp__option-title">{{ cfg.mode2_title }}</span><span class="pdp__option-note">{{ cfg.mode2_note }}</span></span><span class="pdp__option-price">{% if cfg.mode2_amount > 0 %}+ {{ cfg.mode2_amount | times: 100 | money }}{% endif %}</span></label>
+          </div>
+        {%- endif -%}
+
+        {%- comment -%}
+          The CTA row is the form, so the grid the design draws is untouched and
+          the bag is a plain POST — it works with the scripts blocked.
+        {%- endcomment -%}
+        <form class="pdp__cta" action="{{ routes.cart_add_url }}" method="post" accept-charset="UTF-8" novalidate>
+          <input type="hidden" name="id" value="{{ variant.id }}" data-pdp-variant>
+          <input type="hidden" name="quantity" value="1">
+          <input type="hidden" name="return_to" value="{{ routes.cart_url }}">
+          {%- if product.available -%}
+            <button type="submit" class="btn pdp__add" data-add-label="{{ cfg.add_label | escape }}">{{ cfg.add_label }} — {{ variant.price | money }}</button>
+          {%- else -%}
+            <button type="submit" class="btn pdp__add" data-add-label="{{ cfg.add_label | escape }}" disabled>{{ cfg.sold_out_label }}</button>
+          {%- endif -%}
+          <button type="button" class="pdp__wish" aria-label="Save to wishlist"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19.8S4.5 15.3 4.5 9.9c0-2.6 2-4.4 4.2-4.4 1.5 0 2.7.8 3.3 2 .6-1.2 1.8-2 3.3-2 2.2 0 4.2 1.8 4.2 4.4 0 5.4-7.5 9.9-7.5 9.9Z"></path></svg></button>
+        </form>
+        {%- if cfg.reassure != blank -%}
+          <p class="pdp__reassure"><svg viewBox="0 0 32 32" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M16 2c1.3 4.6 3 7.4 5.2 8.8C23.4 12.2 26 13 30 13.4v.2c-4 .4-6.6 1.2-8.8 2.6C19 17.6 17.3 20.4 16 25c-1.3-4.6-3-7.4-5.2-8.8C8.6 14.8 6 14 2 13.6v-.2c4-.4 6.6-1.2 8.8-2.6C13 9.4 14.7 6.6 16 2Z"></path><circle cx="16" cy="28.5" r="1.6"></circle></svg> {{ cfg.reassure }}</p>
+        {%- endif -%}
+
+        {%- if cfg.show_details -%}
+          <div class="pdp__details">
+            {%- assign d_rendered = 0 -%}
+            {%- assign fit_found = false -%}
+            {%- for d_i in (1..5) -%}
+              {%- liquid
+                assign d_rich = false
+                case forloop.index
+                  when 1
+                    assign d_title = cfg.detail1_title
+                    assign d_body = product.description
+                    assign d_rich = true
+                  when 2
+                    assign d_title = cfg.detail2_title
+                    assign d_body = cfg.detail2_body
+                  when 3
+                    assign d_title = cfg.detail3_title
+                    assign d_body = cfg.detail3_body
+                  when 4
+                    assign d_title = cfg.detail4_title
+                    assign d_body = cfg.detail4_body
+                  else
+                    assign d_title = cfg.detail5_title
+                    assign d_body = cfg.detail5_body
+                endcase
+              -%}
+              {%- if d_title == blank or d_body == blank -%}
+                {%- continue -%}
+              {%- endif -%}
+              {%- comment -%}
+                "Size guide" opens the fit panel rather than pointing at a page
+                that does not exist, and it finds it by its heading — so renaming
+                or reordering the panels cannot open the wrong one.
+              {%- endcomment -%}
+              {%- assign is_fit = false -%}
+              {%- assign d_title_low = d_title | downcase -%}
+              {%- if fit_found == false and d_title_low contains 'fit' -%}
+                {%- assign is_fit = true -%}
+                {%- assign fit_found = true -%}
+              {%- endif -%}
+              <div class="pdp__detail{% if d_rendered == 0 %} is-open{% endif %}"{% if is_fit %} data-pdp-fit{% endif %}>
+                <button type="button" class="pdp__detail-summary" aria-expanded="{% if d_rendered == 0 %}true{% else %}false{% endif %}" aria-controls="pdp-detail-{{ d_rendered }}">
+                  <span>{{ d_title }}</span>
+                  <span class="pdp__detail-icon" aria-hidden="true">{{ icon_plus }}</span>
+                </button>
+                <div class="pdp__detail-panel" id="pdp-detail-{{ d_rendered }}" role="region">
+                  <div class="pdp__detail-inner">
+                    {%- if d_rich and d_body contains '<' -%}
+                      {{ d_body }}
+                    {%- else -%}
+                      <p>{{ d_body }}</p>
+                    {%- endif -%}
+                  </div>
+                </div>
+              </div>
+              {%- assign d_rendered = d_rendered | plus: 1 -%}
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+        <div class="pdp__worn">
+          <div class="pdp__label-row"><p class="pdp__label">Worn by</p><a href="#reviews">All {{ cfg.review_count }} reviews</a></div>
+          <div class="pdp__faces">
+            {%- for face_file in face_files -%}
+              {%- assign face_key = 'face_' | append: forloop.index -%}
+              {%- assign face_image = cfg[face_key] -%}
+              {%- if face_image != blank -%}
+                <img src="{{ face_image | image_url: width: 160 }}" alt="" loading="lazy">
+              {%- else -%}
+                <img src="{{ face_file | asset_url }}" alt="" loading="lazy">
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+          {%- if cfg.quote != blank -%}
+            <blockquote class="pdp__quote">“{{ cfg.quote }}”<cite>{{ cfg.quote_cite }}</cite></blockquote>
+          {%- endif -%}
+        </div>
+
+        <a class="arrow-link pdp__back" href="{{ shop_url }}">Back to the catalogue {{ icon_arrow_15 }}</a>
+      </div>
+    </div>
+
+    {%- if cfg.show_reviews -%}
+      <section class="section container pdp-reviews" id="reviews">
+        <div class="section-head" data-reveal>
+          <div class="section-head__titles">
+            <p class="eyebrow">{{ cfg.review_count }} reviews</p>
+            <h2 class="section-title">What buyers <em>say</em></h2>
+          </div>
+          <a class="arrow-link" href="#write-review">Write a review {{ icon_arrow_16 }}</a>
+        </div>
+        <div class="reviews" data-reveal-child>
+          <aside class="review-add" id="write-review">
+            <p class="review-add__score">{{ cfg.rating }}</p>
+            {{ stars_rating }}
+            <p class="review-add__count">Based on {{ cfg.review_count }} reviews</p>
+            <button type="button" class="btn">Write a review</button>
+            {%- if cfg.review_note != blank -%}
+              <p class="review-add__note">{{ cfg.review_note }}</p>
+            {%- endif -%}
+          </aside>
+          {%- for block in section.blocks -%}
+            {%- if block.type != 'review' -%}
+              {%- continue -%}
+            {%- endif -%}
+            {%- liquid
+              assign r_stars = block.settings.stars
+              comment
+                Each card's portrait is the block's own image, or the packaged one
+                in that position — the row of four repeats for a fourth review.
+              endcomment
+              assign r_face_i = forloop.index0 | modulo: 4
+              assign r_face = face_files[r_face_i]
+            -%}
+            <article class="review"{% if block.shopify_attributes != blank %} {{ block.shopify_attributes }}{% endif %}><span class="pdp__stars" aria-label="{{ r_stars }} out of 5 stars">{% for i in (1..r_stars) %}{{ icon_star }}{% endfor %}</span>
+              <p class="review__body">{{ block.settings.body }}</p>
+              <div class="review__who">{% if block.settings.image != blank %}<img src="{{ block.settings.image | image_url: width: 120 }}" alt="" loading="lazy">{% else %}<img src="{{ r_face | asset_url }}" alt="" loading="lazy">{% endif %}<span><span class="review__name">{{ block.settings.name }}</span><span class="review__place">{{ block.settings.place }}</span></span></div>
+            </article>
+          {%- endfor -%}
+        </div>
+      </section>
+    {%- endif -%}
+
+    {%- if cfg.show_rec -%}
+      <section class="section container pdp-rec" aria-label="Recommended">
+        <div class="section-head" data-reveal>
+          <div class="section-head__titles">
+            <p class="eyebrow">You may also like</p>
+            <h2 class="section-title">More from the <em>same hands</em></h2>
+          </div>
+        </div>
+        <div class="curated__grid" data-reveal-child>
+          {%- assign rec_n = 0 -%}
+          {%- for p in rec_coll.products -%}
+            {%- assign p_key = '|' | append: p.handle | append: '|' -%}
+            {%- if shown contains p_key -%}
+              {%- continue -%}
+            {%- endif -%}
+            {%- render 'piece-card', product: p, show_swatches: cfg.card_swatches, quick_label: cfg.add_label, sold_out_label: cfg.sold_out_label -%}
+            {%- assign shown = shown | append: p.handle | append: '|' -%}
+            {%- assign rec_n = rec_n | plus: 1 -%}
+            {%- if rec_n >= rail_max -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </section>
+    {%- endif -%}
+
+    {%- if cfg.show_other -%}
+      <section class="section container pdp-other" aria-label="Other products">
+        <div class="section-head" data-reveal>
+          <div class="section-head__titles">
+            <p class="eyebrow">Elsewhere in the catalogue</p>
+            <h2 class="section-title">Other <em>pieces</em></h2>
+          </div>
+          <a class="arrow-link" href="{{ shop_url }}">Shop everything {{ icon_arrow_16 }}</a>
+        </div>
+        <div class="curated__grid" data-reveal-child>
+          {%- assign other_n = 0 -%}
+          {%- for p in collections['all'].products -%}
+            {%- assign p_key = '|' | append: p.handle | append: '|' -%}
+            {%- if shown contains p_key -%}
+              {%- continue -%}
+            {%- endif -%}
+            {%- render 'piece-card', product: p, show_swatches: cfg.card_swatches, quick_label: cfg.add_label, sold_out_label: cfg.sold_out_label -%}
+            {%- assign shown = shown | append: p.handle | append: '|' -%}
+            {%- assign other_n = other_n | plus: 1 -%}
+            {%- if other_n >= rail_max -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </section>
+    {%- endif -%}
+  </div>
+{%- endif -%}
 
 <script>
 (function () {
-  var root = document.querySelector('.pdp-page');
-  if (!root || root.__shrujanInit) return;
-  root.__shrujanInit = true;
+  var root = document.getElementById('shopify-section-{{ section.id }}');
+  if (!root || root.__pdpInit) return;
+  root.__pdpInit = true;
 
-  var S = window.SHRUJAN;
+  var page = root.querySelector('.pdp-page');
+  if (!page) return;
 
-  /* ---- customizer text: data attributes on the shell, theme copy as fallback ---- */
-  function txt(name, fallback) {
-    return root.getAttribute('data-' + name) || fallback;
-  }
-  var TEXT = {
-    copy: txt('copy', 'Counted and stitched by hand on naturally dyed handloom cloth, then cut and finished in our Bhuj atelier. Made to be worn often and kept for a long time.'),
-    mode1Title: txt('mode1-title', 'Ready to ship'),
-    mode1Note: txt('mode1-note', 'Leaves Bhuj in 48 hours'),
-    mode2Title: txt('mode2-title', 'Made to your measure'),
-    mode2Note: txt('mode2-note', 'Cut for you · 2–3 weeks'),
-    mode2Price: txt('mode2-price', '+ ₹ 1,200'),
-    reassure: txt('reassure', 'Free alterations for as long as you own it'),
-    reviewNote: txt('review-note', 'Bought this piece? Tell us how it wears — we send every review back to the woman who made it.')
-  };
-
-  /* ---- customizer regions: same shell attributes, every fallback is today's
-     value, so an absent attribute keeps the page exactly as built ---- */
-  function flag(name, fallback) {
-    var v = root.getAttribute('data-' + name);
-    return v === null || v === '' ? fallback : v !== 'false';
-  }
-  var SHOW = {
-    sizes: flag('show-sizes', true),
-    modes: flag('show-modes', true),
-    details: flag('show-details', true),
-    reviews: flag('show-reviews', true),
-    rec: flag('show-rec', true),
-    other: flag('show-other', true),
-    swatches: flag('card-swatches', true)
-  };
-
-  /* ---- resolve the piece: /products/<slug> from the path, ?slug= fallback ---- */
-  var m = location.pathname.match(/\/products\/([^\/?#]+)/);
-  var slug = m ? m[1] : new URLSearchParams(location.search).get('slug');
-
-  var piece = null;
-  for (var pi = 0; pi < S.PIECES.length; pi++) {
-    if (S.productSlug(S.PIECES[pi]) === slug) { piece = S.PIECES[pi]; break; }
-  }
-  if (!piece) piece = S.PIECES[0]; // no match falls back to the first piece, as the SPA does
-
-  var shots = S.galleryFor(piece.img, piece.gallery);
-
-  // same craft first, topped up with the rest of the catalogue
-  var pieceSlug = S.productSlug(piece);
-  var family = piece.craft.split('·')[0].trim().toLowerCase();
-  var rest = S.PIECES.filter(function (p) { return S.productSlug(p) !== pieceSlug; });
-  var sameCraft = rest.filter(function (p) { return p.craft.toLowerCase().includes(family); });
-  var alsoLike = sameCraft
-    .concat(rest.filter(function (p) { return !sameCraft.includes(p); }))
-    .slice(0, 5);
-
-  // the lower row must not repeat what the recommendation row already showed
-  var shown = new Set([pieceSlug].concat(alsoLike.map(S.productSlug)));
-  var others = S.PIECES.filter(function (p) { return !shown.has(S.productSlug(p)); }).slice(0, 5);
-
-  /* ---- icons ---- */
-  function lineIcon(size, paths) {
-    return '<svg viewBox="0 0 24 24" width="' + size + '" height="' + size + '" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' + paths + '</svg>';
-  }
-  function heartIcon(size) {
-    return lineIcon(size, '<path d="M12 19.8S4.5 15.3 4.5 9.9c0-2.6 2-4.4 4.2-4.4 1.5 0 2.7.8 3.3 2 .6-1.2 1.8-2 3.3-2 2.2 0 4.2 1.8 4.2 4.4 0 5.4-7.5 9.9-7.5 9.9Z"></path>');
-  }
-  function arrowIcon(size) {
-    return lineIcon(size, '<path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path>');
-  }
-  var plusIcon = lineIcon(16, '<path d="M12 5v14M5 12h14"></path>');
-  var phoolIcon = '<svg viewBox="0 0 32 32" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M16 2c1.3 4.6 3 7.4 5.2 8.8C23.4 12.2 26 13 30 13.4v.2c-4 .4-6.6 1.2-8.8 2.6C19 17.6 17.3 20.4 16 25c-1.3-4.6-3-7.4-5.2-8.8C8.6 14.8 6 14 2 13.6v-.2c4-.4 6.6-1.2 8.8-2.6C13 9.4 14.7 6.6 16 2Z"></path><circle cx="16" cy="28.5" r="1.6"></circle></svg>';
-
-  function stars(n) {
-    var star = '<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.6L12 17.6 6.1 20.7l1.2-6.6L2.5 9.5l6.6-.9Z"></path></svg>';
-    var out = '';
-    for (var i = 0; i < n; i++) out += star;
-    return '<span class="pdp__stars" aria-label="' + n + ' out of 5 stars">' + out + '</span>';
-  }
-
-  /* ---- the home page's product card, verbatim — same grid, same card ---- */
-  function cardHtml(p) {
-    var h = '<a class="piece" href="/products/' + S.productSlug(p) + '">';
-    h += '<div class="piece__media">';
-    h += '<img src="' + S.asset(p.img) + '" alt="' + p.alt + '" loading="lazy">';
-    if (p.badge) h += '<span class="piece__badge">' + p.badge + '</span>';
-    h += '<button class="piece__wish" type="button" aria-label="Save ' + p.name + ' to wishlist">' + heartIcon(16) + '</button>';
-    h += '<span class="piece__quick">Add to bag</span>';
-    h += '</div>';
-    h += '<div class="piece__info">';
-    h += '<p class="piece__name">' + p.name + '</p>';
-    h += '<p class="piece__craft">' + p.craft + '</p>';
-    h += '<p class="piece__price">' + p.price + (p.was ? '<span>' + p.was + '</span>' : '') + '</p>';
-    if (SHOW.swatches) {
-      h += '<span class="piece__swatches" aria-hidden="true">';
-      for (var i = 0; i < p.swatches.length; i++) h += '<i style="background: ' + p.swatches[i] + '"></i>';
-      h += '</span>';
-    }
-    h += '</div>';
-    h += '</a>';
-    return h;
-  }
-
-  /* ---- left: thumbnail rail ---- */
-  var railHtml = '';
-  shots.forEach(function (src, i) {
-    railHtml += '<button type="button" class="pdp__thumb' + (i === 0 ? ' is-active' : '') + '" aria-label="View image ' + (i + 1) + ' of ' + shots.length + '"' + (i === 0 ? ' aria-current="true"' : '') + '>';
-    railHtml += '<img src="' + S.asset(src) + '" alt="" loading="lazy">';
-    railHtml += '</button>';
-  });
-
-  /* ---- middle: the pinned shot ---- */
-  var stageHtml = '';
-  shots.forEach(function (src, i) {
-    stageHtml += '<figure class="pdp__shot' + (i === 0 ? ' is-active' : '') + '" aria-hidden="' + (i !== 0 ? 'true' : 'false') + '">';
-    stageHtml += '<img src="' + S.asset(src) + '"' + (i === 0 ? ' alt="' + piece.alt + '" loading="eager" fetchpriority="high"' : ' alt="" loading="lazy"') + '>';
-    stageHtml += '</figure>';
-  });
-  if (piece.badge) stageHtml += '<span class="pdp__badge">' + piece.badge + '</span>';
-
-  /* ---- right: the buying column ---- */
-  var buyHtml = '<div class="pdp__rating">' + stars(5) + '<span>5.0</span><a href="#reviews">126 reviews</a></div>';
-  buyHtml += '<h1 class="pdp__name">' + piece.name + '</h1>';
-  buyHtml += '<p class="pdp__craft">' + piece.craft + '</p>';
-  buyHtml += '<p class="pdp__copy">' + TEXT.copy + '</p>';
-
-  buyHtml += '<div class="pdp__block"><p class="pdp__label">Made with</p><ul class="pdp__specs">';
-  S.SPECS.forEach(function (sp) { buyHtml += '<li>' + sp + '</li>'; });
-  buyHtml += '</ul></div>';
-
-  if (SHOW.sizes) {
-    buyHtml += '<div class="pdp__block"><div class="pdp__label-row"><p class="pdp__label">Size</p><button type="button" class="pdp__size-guide">Size guide</button></div>';
-    buyHtml += '<div class="pdp__sizes" role="group" aria-label="Size">';
-    S.SIZES.forEach(function (sz) {
-      buyHtml += '<button type="button" class="pdp__size' + (sz === 'M' ? ' is-active' : '') + '" aria-pressed="' + (sz === 'M' ? 'true' : 'false') + '">' + sz + '</button>';
-    });
-    buyHtml += '</div></div>';
-  }
-
-  if (SHOW.modes) {
-    buyHtml += '<div class="pdp__options" role="radiogroup" aria-label="How it is made">';
-    buyHtml += '<label class="pdp__option is-active"><input type="radio" name="pdp-mode" checked><span class="pdp__option-body"><span class="pdp__option-title">' + TEXT.mode1Title + '</span><span class="pdp__option-note">' + TEXT.mode1Note + '</span></span><span class="pdp__option-price">' + piece.price + '</span></label>';
-    buyHtml += '<label class="pdp__option"><input type="radio" name="pdp-mode"><span class="pdp__option-body"><span class="pdp__option-title">' + TEXT.mode2Title + '</span><span class="pdp__option-note">' + TEXT.mode2Note + '</span></span><span class="pdp__option-price">' + TEXT.mode2Price + '</span></label>';
-    buyHtml += '</div>';
-  }
-
-  buyHtml += '<div class="pdp__cta"><button type="button" class="btn pdp__add">Add to bag — ' + piece.price + '</button><button type="button" class="pdp__wish" aria-label="Save to wishlist">' + heartIcon(17) + '</button></div>';
-  buyHtml += '<p class="pdp__reassure">' + phoolIcon + ' ' + TEXT.reassure + '</p>';
-
-  if (SHOW.details) {
-    buyHtml += '<div class="pdp__details">';
-    S.DETAILS.forEach(function (d, i) {
-      buyHtml += '<div class="pdp__detail' + (i === 0 ? ' is-open' : '') + '">';
-      buyHtml += '<button type="button" class="pdp__detail-summary" aria-expanded="' + (i === 0 ? 'true' : 'false') + '" aria-controls="pdp-detail-' + i + '">';
-      buyHtml += '<span>' + d.q + '</span>';
-      buyHtml += '<span class="pdp__detail-icon" aria-hidden="true">' + plusIcon + '</span>';
-      buyHtml += '</button>';
-      buyHtml += '<div class="pdp__detail-panel" id="pdp-detail-' + i + '" role="region"><div class="pdp__detail-inner"><p>' + d.a + '</p></div></div>';
-      buyHtml += '</div>';
-    });
-    buyHtml += '</div>';
-  }
-
-  buyHtml += '<div class="pdp__worn"><div class="pdp__label-row"><p class="pdp__label">Worn by</p><a href="#reviews">All 126 reviews</a></div><div class="pdp__faces">';
-  S.REVIEW_FACES.forEach(function (f) { buyHtml += '<img src="' + S.asset(f) + '" alt="" loading="lazy">'; });
-  buyHtml += '</div><blockquote class="pdp__quote">“Five years on it has not lost a single stitch.”<cite>Meera S. · Mumbai</cite></blockquote></div>';
-
-  buyHtml += '<a class="arrow-link pdp__back" href="/pages/shop-shrujan">Back to the catalogue ' + arrowIcon(15) + '</a>';
-
-  /* ---- reviews ---- */
-  var reviewsHtml = '';
-  if (SHOW.reviews) {
-    reviewsHtml = '<section class="section container pdp-reviews" id="reviews">';
-    reviewsHtml += '<div class="section-head" data-reveal><div class="section-head__titles"><p class="eyebrow">126 reviews</p><h2 class="section-title">What buyers <em>say</em></h2></div><a class="arrow-link" href="#write-review">Write a review ' + arrowIcon(16) + '</a></div>';
-    reviewsHtml += '<div class="reviews" data-reveal-child>';
-    reviewsHtml += '<aside class="review-add" id="write-review"><p class="review-add__score">5.0</p>' + stars(5) + '<p class="review-add__count">Based on 126 reviews</p><button type="button" class="btn">Write a review</button><p class="review-add__note">' + TEXT.reviewNote + '</p></aside>';
-    S.REVIEWS.forEach(function (r, i) {
-      reviewsHtml += '<article class="review">' + stars(r.stars);
-      reviewsHtml += '<p class="review__body">' + r.body + '</p>';
-      reviewsHtml += '<div class="review__who"><img src="' + S.asset(S.REVIEW_FACES[i % S.REVIEW_FACES.length]) + '" alt="" loading="lazy"><span><span class="review__name">' + r.name + '</span><span class="review__place">' + r.place + '</span></span></div>';
-      reviewsHtml += '</article>';
-    });
-    reviewsHtml += '</div></section>';
-  }
-
-  /* ---- recommendation ---- */
-  var recHtml = '';
-  if (SHOW.rec) {
-    recHtml = '<section class="section container pdp-rec" aria-label="Recommended">';
-    recHtml += '<div class="section-head" data-reveal><div class="section-head__titles"><p class="eyebrow">You may also like</p><h2 class="section-title">More from the <em>same hands</em></h2></div></div>';
-    recHtml += '<div class="curated__grid" data-reveal-child>';
-    alsoLike.forEach(function (p) { recHtml += cardHtml(p); });
-    recHtml += '</div></section>';
-  }
-
-  /* ---- the rest of the catalogue ---- */
-  var otherHtml = '';
-  if (SHOW.other) {
-    otherHtml = '<section class="section container pdp-other" aria-label="Other products">';
-    otherHtml += '<div class="section-head" data-reveal><div class="section-head__titles"><p class="eyebrow">Elsewhere in the catalogue</p><h2 class="section-title">Other <em>pieces</em></h2></div><a class="arrow-link" href="/pages/shop-shrujan">Shop everything ' + arrowIcon(16) + '</a></div>';
-    otherHtml += '<div class="curated__grid" data-reveal-child>';
-    others.forEach(function (p) { otherHtml += cardHtml(p); });
-    otherHtml += '</div></section>';
-  }
-
-  root.innerHTML =
-    '<div class="container pdp"><div class="pdp__media"><div class="pdp__rail" aria-label="Product images">' + railHtml + '</div><div class="pdp__stage">' + stageHtml + '</div></div><div class="pdp__buy">' + buyHtml + '</div></div>' +
-    reviewsHtml + recHtml + otherHtml;
-
-  /* ---- behavior ---- */
   var pdpEl = root.querySelector('.pdp');
   var detailsEl = root.querySelector('.pdp__details');
-  var thumbEls = Array.prototype.slice.call(root.querySelectorAll('.pdp__thumb'));
-  var shotEls = Array.prototype.slice.call(root.querySelectorAll('.pdp__shot'));
-  var sizeEls = Array.prototype.slice.call(root.querySelectorAll('.pdp__size'));
-  var optionEls = Array.prototype.slice.call(root.querySelectorAll('.pdp__option'));
-  var modeInputs = Array.prototype.slice.call(root.querySelectorAll('.pdp__option input'));
-  var detailEls = Array.prototype.slice.call(root.querySelectorAll('.pdp__detail'));
+  var list = function (sel) { return Array.prototype.slice.call(root.querySelectorAll(sel)); };
+
+  var thumbEls = list('.pdp__thumb');
+  var shotEls = list('.pdp__shot');
+  var sizeEls = list('.pdp__size');
+  var optionEls = list('.pdp__option');
+  var modeInputs = list('.pdp__option input');
+  var detailEls = list('.pdp__detail');
+
+  var variantInput = root.querySelector('[data-pdp-variant]');
+  var addBtn = root.querySelector('.pdp__add');
+  var wasLine = root.querySelector('[data-pdp-was-line]');
+  /* the ready-to-ship option is the first one, and carries the live price */
+  var modePriceEl = root.querySelector('.pdp__option .pdp__option-price');
 
   var active = 0;
-  var size = 'M';
-  var mode = 'ready';
-  var open = 0;
+  var open = 0; // the first panel is rendered open
 
   function setActive(i) {
     if (i === active) return;
@@ -308,51 +552,75 @@
     });
   }
 
+  function scrollTo(y) {
+    if (window.Shrujan) window.Shrujan.scrollToY(y); // through Lenis, or it fights the smooth scroller
+    else window.scrollTo(0, y);
+  }
+
   // Thumbnails scroll to that shot's band rather than setting state directly,
   // so scroll position stays the single source of truth for what is showing.
   function jumpTo(i) {
     var el = pdpEl;
-    if (!el) return;
+    if (!el || !shotEls.length) return;
     var travel = el.offsetHeight - window.innerHeight;
     if (travel <= 0) return;
-    var top = el.offsetTop + (travel * (i + 0.5)) / shots.length;
-    window.Shrujan.scrollToY(top); // through Lenis, or it fights the smooth scroller
+    scrollTo(el.offsetTop + (travel * (i + 0.5)) / shotEls.length);
   }
 
   thumbEls.forEach(function (t, i) {
     t.addEventListener('click', function () { jumpTo(i); });
   });
 
+  // A size is a variant when the product has real options — the button carries
+  // the id the form posts, and the price the page shows.
   sizeEls.forEach(function (btn) {
     btn.addEventListener('click', function () {
-      size = btn.textContent;
+      if (btn.disabled) return;
       sizeEls.forEach(function (b) {
-        var on = b.textContent === size;
+        var on = b === btn;
         b.classList.toggle('is-active', on);
         b.setAttribute('aria-pressed', on ? 'true' : 'false');
       });
+
+      var id = btn.getAttribute('data-variant');
+      if (id && variantInput) variantInput.value = id;
+
+      var price = btn.getAttribute('data-price');
+      if (!price) return;
+      if (modePriceEl) modePriceEl.textContent = price;
+      if (addBtn && !addBtn.disabled) {
+        addBtn.textContent = (addBtn.getAttribute('data-add-label') || '') + ' — ' + price;
+      }
+      if (wasLine) {
+        var was = btn.getAttribute('data-was');
+        wasLine.textContent = price;
+        if (was) {
+          var s = document.createElement('s');
+          s.textContent = was;
+          wasLine.appendChild(s);
+        }
+      }
     });
   });
 
   modeInputs.forEach(function (input, idx) {
     input.addEventListener('change', function () {
-      mode = idx === 0 ? 'ready' : 'measure';
       optionEls.forEach(function (l, j) { l.classList.toggle('is-active', j === idx); });
     });
   });
 
   // "Size guide" opens the fit panel rather than pointing at a page that does
-  // not exist. Found by label, so reordering DETAILS cannot silently open the
-  // wrong one.
+  // not exist. The panel is marked in the markup, so reordering the accordions
+  // cannot silently open the wrong one.
   var sizeGuideBtn = root.querySelector('.pdp__size-guide');
-  if (sizeGuideBtn) {
+  var fitEl = root.querySelector('[data-pdp-fit]');
+  if (sizeGuideBtn && fitEl) {
     sizeGuideBtn.addEventListener('click', function () {
-      var i = S.DETAILS.findIndex(function (d) { return d.q === 'Fabric & fit'; });
+      var i = detailEls.indexOf(fitEl);
       if (i < 0) return;
       open = i;
       applyOpen();
-      var el = detailsEl;
-      if (el) window.Shrujan.scrollToY(el.getBoundingClientRect().top + window.scrollY - 120);
+      if (detailsEl) scrollTo(detailsEl.getBoundingClientRect().top + window.scrollY - 120);
     });
   }
 
@@ -363,14 +631,37 @@
     });
   });
 
-  Array.prototype.forEach.call(root.querySelectorAll('.piece__wish'), function (b) {
-    b.addEventListener('click', function (e) { e.preventDefault(); });
+  // The rail cards' own two controls sit inside the product link, so neither
+  // may navigate: the heart is a wish, the label adds that piece to the bag.
+  root.addEventListener('click', function (e) {
+    var node = e.target.closest ? e.target : e.target.parentNode;
+    if (!node || !node.closest) return;
+
+    var wish = node.closest('.piece__wish');
+    if (wish) {
+      e.preventDefault();
+      return;
+    }
+
+    var quick = node.closest('.piece__quick');
+    var id = quick && quick.getAttribute('data-variant');
+    if (!id) return;
+    e.preventDefault();
+    var add = document.createElement('form');
+    add.method = 'post';
+    add.action = page.getAttribute('data-cart-add') || '/cart/add';
+    add.hidden = true;
+    add.innerHTML =
+      '<input type="hidden" name="id" value="' + id + '">' +
+      '<input type="hidden" name="quantity" value="1">';
+    document.body.appendChild(add);
+    add.submit();
   });
 
   // Scroll drives the gallery. The section is divided into as many bands as
   // there are shots, and progress through it picks the one on screen — so the
   // image changes only when you move, never on its own.
-  if (shots.length >= 2) {
+  if (shotEls.length >= 2) {
     var queued = false;
 
     var read = function () {
@@ -381,7 +672,7 @@
       var travel = r.height - window.innerHeight;
       if (travel <= 0) return;
       var progress = Math.min(1, Math.max(0, -r.top / travel));
-      setActive(Math.min(shots.length - 1, Math.floor(progress * shots.length)));
+      setActive(Math.min(shotEls.length - 1, Math.floor(progress * shotEls.length)));
     };
 
     var onScroll = function () {
@@ -394,45 +685,6 @@
     window.addEventListener('resize', onScroll);
     read();
   }
-
-  /* The central reveal system runs at DOMContentLoaded and never sees this
-     runtime-built DOM, so register the same reveals for the nodes above. */
-  var mm = gsap.matchMedia();
-
-  mm.add('(prefers-reduced-motion: no-preference)', function () {
-    gsap.utils.toArray(root.querySelectorAll('[data-reveal]')).forEach(function (el) {
-      gsap.fromTo(
-        el,
-        { opacity: 0, y: 28 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.85,
-          ease: 'power3.out',
-          scrollTrigger: { trigger: el, start: 'top 88%', once: true }
-        }
-      );
-    });
-
-    gsap.utils.toArray(root.querySelectorAll('[data-reveal-child]')).forEach(function (group) {
-      gsap.fromTo(
-        group.children,
-        { opacity: 0, y: 32 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: 'power3.out',
-          stagger: 0.09,
-          scrollTrigger: { trigger: group, start: 'top 86%', once: true }
-        }
-      );
-    });
-  });
-
-  mm.add('(prefers-reduced-motion: reduce)', function () {
-    gsap.set(root.querySelectorAll('[data-reveal], [data-reveal-child] > *'), { clearProps: 'all', opacity: 1 });
-  });
 })();
 </script>
 
@@ -442,17 +694,80 @@
   "settings": [
     {
       "type": "paragraph",
-      "content": "This page is client-rendered from the catalogue data (window.SHRUJAN) by URL slug — the product's name, price, images, sizes, specs, accordions and reviews are data-driven, not edited here. Only the static labels below are customizer-editable."
+      "content": "The piece itself comes from the product: its title, price, compare-at price, gallery, description (the first panel below) and the shrujan metafields — craft, badge and the colour swatches. Edit those on the product in the admin. The settings here are the copy the design repeats on every piece."
+    },
+    {
+      "type": "header",
+      "content": "Buying column"
     },
     {
       "type": "textarea",
       "id": "copy",
-      "label": "Product description",
+      "label": "Intro line",
+      "info": "Shown under the craft line, above the “Made with” pills. The product’s own description is the first detail panel.",
       "default": "Counted and stitched by hand on naturally dyed handloom cloth, then cut and finished in our Bhuj atelier. Made to be worn often and kept for a long time."
+    },
+    {
+      "type": "textarea",
+      "id": "specs",
+      "label": "“Made with” pills",
+      "info": "One per line.",
+      "default": "Hand-embroidered\nNaturally dyed\nHandloom cloth\nMade in Kutch"
+    },
+    {
+      "type": "text",
+      "id": "add_label",
+      "label": "Add-to-bag label",
+      "info": "The price follows it on the button. Also the label on the rail cards.",
+      "default": "Add to bag"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_label",
+      "label": "Sold-out label",
+      "info": "Replaces the badge on the shot and the price on the button when the piece cannot be bought.",
+      "default": "Sold out"
+    },
+    {
+      "type": "text",
+      "id": "reassure",
+      "label": "Free-alterations note",
+      "default": "Free alterations for as long as you own it"
+    },
+    {
+      "type": "header",
+      "content": "Size"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sizes",
+      "label": "Show the size picker",
+      "info": "Also hides the “Size guide” link that opens the fit panel. With it hidden, a product with sizes adds its first available one.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "sizes",
+      "label": "Sizes shown when the product has none",
+      "info": "Comma separated. A product with a real Size option ignores this and shows its own values, each adding that variant; this row is presentational.",
+      "default": "XS, S, M, L, XL, XXL"
+    },
+    {
+      "type": "text",
+      "id": "sizes_default",
+      "label": "Size marked as chosen",
+      "info": "Only for the presentational row above.",
+      "default": "M"
     },
     {
       "type": "header",
       "content": "Ordering options"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_modes",
+      "label": "Show the ready-to-ship / made-to-measure options",
+      "default": true
     },
     {
       "type": "text",
@@ -479,26 +794,77 @@
       "default": "Cut for you · 2–3 weeks"
     },
     {
-      "type": "text",
-      "id": "mode2_price",
+      "type": "number",
+      "id": "mode2_amount",
       "label": "Option 2 surcharge",
-      "default": "+ ₹ 1,200"
+      "info": "In your store’s currency, shown in the store’s money format. 0 leaves the price blank.",
+      "default": 1200
     },
     {
       "type": "header",
-      "content": "Notes"
+      "content": "Detail panels"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_details",
+      "label": "Show the detail accordions",
+      "default": true
     },
     {
       "type": "text",
-      "id": "reassure",
-      "label": "Free-alterations note",
-      "default": "Free alterations for as long as you own it"
+      "id": "detail1_title",
+      "label": "Panel 1 heading",
+      "info": "Its copy is the product’s own description, from the admin. The panel is left out when the product has none.",
+      "default": "The craft"
+    },
+    {
+      "type": "text",
+      "id": "detail2_title",
+      "label": "Panel 2 heading",
+      "info": "The panel whose heading mentions “fit” is the one “Size guide” opens.",
+      "default": "Fabric & fit"
     },
     {
       "type": "textarea",
-      "id": "review_note",
-      "label": "Write-a-review note",
-      "default": "Bought this piece? Tell us how it wears — we send every review back to the woman who made it."
+      "id": "detail2_body",
+      "label": "Panel 2 copy",
+      "default": "Handloom cotton with a soft, dry handle that softens further with every wash. Cut to drape generously rather than to cling. If you are between sizes, take the smaller one — these relax with wear."
+    },
+    {
+      "type": "text",
+      "id": "detail3_title",
+      "label": "Panel 3 heading",
+      "default": "How to care for it"
+    },
+    {
+      "type": "textarea",
+      "id": "detail3_body",
+      "label": "Panel 3 copy",
+      "default": "Cold hand wash, separately, for the first three washes. No wringing and no direct sun on the embroidered face. Natural dyes will shift very slightly in the first month and then hold — that settling is the dye, not a fault."
+    },
+    {
+      "type": "text",
+      "id": "detail4_title",
+      "label": "Panel 4 heading",
+      "default": "Shipping & returns"
+    },
+    {
+      "type": "textarea",
+      "id": "detail4_body",
+      "label": "Panel 4 copy",
+      "default": "Ready pieces leave Bhuj within 48 hours and arrive in 3–6 days across India, 8–14 days worldwide with duties settled at checkout. Returns and exchanges within 14 days on unworn pieces with tags intact."
+    },
+    {
+      "type": "text",
+      "id": "detail5_title",
+      "label": "Panel 5 heading",
+      "default": "The maker"
+    },
+    {
+      "type": "textarea",
+      "id": "detail5_body",
+      "label": "Panel 5 copy",
+      "default": "Every piece carries the name of the woman who embroidered it, and she is paid per piece, on time, directly. That arrangement was unusual when Shrujan began in 1969 and it still is."
     },
     {
       "type": "header",
@@ -529,56 +895,111 @@
       "default": true
     },
     {
-      "type": "header",
-      "content": "Buying column"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_sizes",
-      "label": "Show the size picker",
-      "info": "Also hides the “Size guide” link that opens the fit panel.",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_modes",
-      "label": "Show the ready-to-ship / made-to-measure options",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_details",
-      "label": "Show the detail accordions",
-      "default": true
+      "type": "range",
+      "id": "gallery_max",
+      "label": "Most images shown",
+      "info": "The product’s images, in the order they are arranged on the product.",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 5
     },
     {
       "type": "header",
-      "content": "Sections shown"
+      "content": "Reviews"
     },
     {
       "type": "checkbox",
       "id": "show_reviews",
       "label": "Show the review section",
-      "info": "The rating line above the product name stays; its “126 reviews” link simply has nothing to jump to.",
+      "info": "The rating line above the product name stays; its reviews link simply has nothing to jump to.",
       "default": true
+    },
+    {
+      "type": "text",
+      "id": "rating",
+      "label": "Rating",
+      "info": "The star row is this, rounded to whole stars.",
+      "default": "5.0"
+    },
+    {
+      "type": "text",
+      "id": "review_count",
+      "label": "Number of reviews",
+      "default": "126"
+    },
+    {
+      "type": "textarea",
+      "id": "review_note",
+      "label": "Write-a-review note",
+      "default": "Bought this piece? Tell us how it wears — we send every review back to the woman who made it."
+    },
+    {
+      "type": "textarea",
+      "id": "quote",
+      "label": "“Worn by” quote",
+      "default": "Five years on it has not lost a single stitch."
+    },
+    {
+      "type": "text",
+      "id": "quote_cite",
+      "label": "“Worn by” attribution",
+      "default": "Meera S. · Mumbai"
+    },
+    {
+      "type": "paragraph",
+      "content": "The four portraits in the “worn by” row. Leave a slot empty to keep the packaged photograph."
+    },
+    {
+      "type": "image_picker",
+      "id": "face_1",
+      "label": "Portrait 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "face_2",
+      "label": "Portrait 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "face_3",
+      "label": "Portrait 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "face_4",
+      "label": "Portrait 4"
+    },
+    {
+      "type": "header",
+      "content": "Rails below"
     },
     {
       "type": "checkbox",
       "id": "show_rec",
       "label": "Show the “more from the same hands” rail",
+      "info": "The collection whose handle matches the product’s type, minus this piece. Falls back to everything.",
       "default": true
     },
     {
       "type": "checkbox",
       "id": "show_other",
       "label": "Show the “other pieces” rail",
+      "info": "The rest of the catalogue, minus whatever the rail above already showed.",
       "default": true
     },
     {
       "type": "checkbox",
       "id": "card_swatches",
       "label": "Show colour swatches on the rail cards",
+      "info": "From each product’s shrujan.swatches metafield.",
       "default": true
+    },
+    {
+      "type": "url",
+      "id": "shop_link",
+      "label": "Catalogue link",
+      "info": "Used by “Back to the catalogue” and “Shop everything”. Defaults to /pages/shop-shrujan."
     },
     {
       "type": "header",
@@ -690,9 +1111,80 @@
       "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
     }
   ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "body",
+          "label": "Review",
+          "default": "The fall, the finish, the way the border sits. Five years on it has not lost a single stitch."
+        },
+        {
+          "type": "range",
+          "id": "stars",
+          "label": "Stars",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Meera S."
+        },
+        {
+          "type": "text",
+          "id": "place",
+          "label": "Place",
+          "default": "Mumbai"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Portrait",
+          "info": "Leave empty to use one of the packaged photographs."
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
   "presets": [
     {
-      "name": "Product piece"
+      "name": "Product piece",
+      "blocks": [
+        {
+          "type": "review",
+          "settings": {
+            "body": "The fall, the finish, the way the border sits. Five years on it has not lost a single stitch.",
+            "stars": 5,
+            "name": "Meera S.",
+            "place": "Mumbai"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "body": "Three people asked where it was from before dinner. It photographs even better than it looks.",
+            "stars": 5,
+            "name": "Ananya I.",
+            "place": "Bengaluru"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "body": "Ordered with three weeks to spare. It came early, altered to measure, and fit like it was drafted on me.",
+            "stars": 5,
+            "name": "Nisha B.",
+            "place": "Chandigarh"
+          }
+        }
+      ]
     }
   ]
 }

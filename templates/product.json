@@ -1,7 +1,41 @@
 {
   "sections": {
     "main": {
-      "type": "product-piece"
+      "type": "product-piece",
+      "blocks": {
+        "review-1": {
+          "type": "review",
+          "settings": {
+            "body": "The fall, the finish, the way the border sits. Five years on it has not lost a single stitch.",
+            "stars": 5,
+            "name": "Meera S.",
+            "place": "Mumbai"
+          }
+        },
+        "review-2": {
+          "type": "review",
+          "settings": {
+            "body": "Three people asked where it was from before dinner. It photographs even better than it looks.",
+            "stars": 5,
+            "name": "Ananya I.",
+            "place": "Bengaluru"
+          }
+        },
+        "review-3": {
+          "type": "review",
+          "settings": {
+            "body": "Ordered with three weeks to spare. It came early, altered to measure, and fit like it was drafted on me.",
+            "stars": 5,
+            "name": "Nisha B.",
+            "place": "Chandigarh"
+          }
+        }
+      },
+      "block_order": [
+        "review-1",
+        "review-2",
+        "review-3"
+      ]
     }
   },
   "order": [

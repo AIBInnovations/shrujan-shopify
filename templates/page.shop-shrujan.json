@@ -69,6 +69,72 @@
             "title": "It is repaired, not replaced",
             "copy": "Send it back whenever it needs work. Alterations and repairs are free for as long as you own it."
           }
+        },
+        "c1": {
+          "type": "collection",
+          "settings": {
+            "collection": "kanchli"
+          }
+        },
+        "c2": {
+          "type": "collection",
+          "settings": {
+            "collection": "accessories"
+          }
+        },
+        "c3": {
+          "type": "collection",
+          "settings": {
+            "collection": "crossbody-and-sling"
+          }
+        },
+        "c4": {
+          "type": "collection",
+          "settings": {
+            "collection": "hand-bags"
+          }
+        },
+        "c5": {
+          "type": "collection",
+          "settings": {
+            "collection": "home-decor"
+          }
+        },
+        "c6": {
+          "type": "collection",
+          "settings": {
+            "collection": "potlis-and-batwas"
+          }
+        },
+        "c7": {
+          "type": "collection",
+          "settings": {
+            "collection": "pouches"
+          }
+        },
+        "c8": {
+          "type": "collection",
+          "settings": {
+            "collection": "tote-bags"
+          }
+        },
+        "c9": {
+          "type": "collection",
+          "settings": {
+            "collection": "dresses"
+          }
+        },
+        "c10": {
+          "type": "collection",
+          "settings": {
+            "collection": "kurtas-and-tops"
+          }
+        },
+        "c11": {
+          "type": "collection",
+          "settings": {
+            "collection": "pants-and-palazzos"
+          }
         }
       },
       "block_order": [
@@ -79,7 +145,18 @@
         "b5",
         "b6",
         "b7",
-        "b8"
+        "b8",
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5",
+        "c6",
+        "c7",
+        "c8",
+        "c9",
+        "c10",
+        "c11"
       ]
     }
   },

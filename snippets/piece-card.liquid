@@ -1,0 +1,60 @@
+{%- comment -%}
+  The catalogue card, in the vocabulary the designed site draws it in:
+  .piece / .piece__media / .piece__info, with the badge, wishlist heart,
+  quick-add label, name, craft line, price (+ struck-through was) and the
+  colour swatches.
+
+  Every value is the real product's. The craft line is the `shrujan.craft`
+  metafield, falling back to the product type; the swatch discs are the
+  `shrujan.swatches` colour list; the badge is `shrujan.badge`, replaced by the
+  sold-out label when the piece cannot be bought.
+
+  Accepts: product (required), show_swatches, quick_label, sold_out_label.
+{%- endcomment -%}
+{%- liquid
+  assign card_craft = product.metafields.shrujan.craft.value
+  if card_craft == blank
+    assign card_craft = product.type
+  endif
+
+  assign card_badge = product.metafields.shrujan.badge.value
+  if product.available == false
+    assign card_badge = sold_out_label
+  endif
+
+  assign card_swatch_list = product.metafields.shrujan.swatches.value
+
+  assign card_was = false
+  if product.compare_at_price > product.price
+    assign card_was = true
+  endif
+-%}
+<a class="piece" href="{{ product.url }}">
+  <div class="piece__media">
+    {%- if product.featured_image -%}
+      <img src="{{ product.featured_image | image_url: width: 900 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy">
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag: 'piece__ph' }}
+    {%- endif -%}
+    {%- if card_badge != blank -%}
+      <span class="piece__badge">{{ card_badge }}</span>
+    {%- endif -%}
+    <button class="piece__wish" type="button" aria-label="Save {{ product.title | escape }} to wishlist"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19.8S4.5 15.3 4.5 9.9c0-2.6 2-4.4 4.2-4.4 1.5 0 2.7.8 3.3 2 .6-1.2 1.8-2 3.3-2 2.2 0 4.2 1.8 4.2 4.4 0 5.4-7.5 9.9-7.5 9.9Z"></path></svg></button>
+    {%- comment -%}
+      The label the design already carries, made to work: the variant travels on
+      the element and the rail's own script posts it to the cart. A piece that
+      cannot be bought keeps the label and simply opens, as it did before.
+    {%- endcomment -%}
+    <span class="piece__quick"{% if product.available %} data-variant="{{ product.selected_or_first_available_variant.id }}"{% endif %}>{{ quick_label | default: 'Add to bag' }}</span>
+  </div>
+  <div class="piece__info">
+    <p class="piece__name">{{ product.title }}</p>
+    {%- if card_craft != blank -%}
+      <p class="piece__craft">{{ card_craft }}</p>
+    {%- endif -%}
+    <p class="piece__price">{{ product.price | money }}{% if card_was %}<span>{{ product.compare_at_price | money }}</span>{% endif %}</p>
+    {%- if show_swatches and card_swatch_list.size > 0 -%}
+      <span class="piece__swatches" aria-hidden="true">{% for card_swatch in card_swatch_list limit: 5 %}<i style="background: {{ card_swatch }}"></i>{% endfor %}</span>
+    {%- endif -%}
+  </div>
+</a>
