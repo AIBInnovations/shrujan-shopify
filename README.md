@@ -67,14 +67,13 @@ After installing:
 
    (The React routes `/pages/studio-collection/heritage|avinya|gifting` became
    flat handles — Shopify page URLs cannot nest.)
-2. Product pages: `/products/<slug>` renders `templates/product.liquid`, which
-   draws everything client-side from `window.SHRUJAN` by the URL slug — the
-   same way the React page did. For those URLs to resolve, create products in
-   admin whose **handles equal the catalogue slugs** (the slug is
-   `piece.slug ?? slugify(piece.name)` from `website/src/data/`). Until a
-   handle exists Shopify returns its 404 (which renders the storefront, like
-   the React fallback). Prices/checkout stay display-only until you decide to
-   wire the catalogue to real Shopify products.
+2. Products: `/products/<handle>` renders `templates/product.json` from the real
+   Shopify product, so a product has to exist for its URL to resolve. On the
+   dev store all 84 catalogue pieces are already seeded — handle == the old
+   catalogue slug (`piece.slug ?? slugify(piece.name)` in `website/src/data/`)
+   — with prices, four images each, `product_type` set to the collection name,
+   and the four `shrujan` metafields. Editing any of it in admin changes the
+   storefront; see "Where the content lives" below.
 
 ## Customizing without code
 
@@ -119,6 +118,34 @@ Content lives in the sections too: repeating things (product cards, FAQs,
 testimonials, craft films, stops, journal shots) are **blocks** you can add,
 remove and reorder — numbering, alternating treatments and meters recompute
 from position.
+
+## Where the content lives
+
+| What | Edited in |
+|---|---|
+| Products: title, price, compare-at, images, availability | Shopify **Products** |
+| Craft line, Occasion, Badge, Colour swatches | the product's **Metafields** (namespace `shrujan`) |
+| Which collections the catalogue rail shows, and their order | the Shop section's **Collection blocks** |
+| Collection title, cover image, description | Shopify **Collections** |
+| Page copy, headings, images, toggles, layout | **Customize** (each section) |
+| Palette, fonts, widths, motion | **Customize → Theme settings** |
+
+The product page, the Shop catalogue grid and the home "edit" all render from
+the real product objects, so editing a product in admin changes the storefront.
+Nothing about a product is hard-coded in the theme any more —
+`assets/shrujan-catalogue.js` now only resolves the craft films' asset paths.
+
+Two Shopify behaviours worth knowing when working on this theme:
+
+- **Liquid `concat` silently no-ops on `collection.products`.** Building a
+  cross-collection union that way collapses to the first collection. The Shop
+  grid walks the collections with nested loops and an id ledger instead, which
+  also sidesteps the 50-item cap a single products loop carries.
+- **A rejected file fails quietly.** The GitHub sync log is vague; `PUT`ing the
+  file through the Admin API returns the actual validation error. Rules that
+  have bitten this theme: `theme_name` ≤ 25 characters, `url` settings may not
+  carry a default, range settings need at least three steps, and `gift_card`
+  must stay a `.liquid` template.
 
 ## Notes
 
