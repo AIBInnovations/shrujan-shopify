@@ -1,46 +1,69 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "home-hero": {
-      "type": "home-hero"
+      "type": "home-hero",
+      "settings": {}
     },
     "home-marquee": {
-      "type": "home-marquee"
+      "type": "home-marquee",
+      "settings": {}
     },
     "home-spotlight": {
-      "type": "home-spotlight"
+      "type": "home-spotlight",
+      "settings": {}
     },
     "home-bestsellers": {
-      "type": "home-bestsellers"
+      "type": "home-bestsellers",
+      "settings": {}
     },
     "home-categories": {
-      "type": "home-categories"
+      "type": "home-categories",
+      "settings": {}
     },
     "home-showcase": {
-      "type": "home-showcase"
+      "type": "home-showcase",
+      "settings": {}
     },
     "home-reels": {
-      "type": "home-reels"
+      "type": "home-reels",
+      "settings": {}
     },
     "home-house": {
-      "type": "home-house"
+      "type": "home-house",
+      "settings": {}
     },
     "home-craft-story": {
-      "type": "home-craft-story"
+      "type": "home-craft-story",
+      "settings": {}
     },
     "home-trousseau": {
-      "type": "home-trousseau"
+      "type": "home-trousseau",
+      "settings": {}
     },
     "home-testimonials": {
-      "type": "home-testimonials"
+      "type": "home-testimonials",
+      "settings": {}
     },
     "home-journal": {
-      "type": "home-journal"
+      "type": "home-journal",
+      "settings": {}
     },
     "home-faq": {
-      "type": "home-faq"
+      "type": "home-faq",
+      "settings": {}
     },
     "home-shop-cta": {
-      "type": "home-shop-cta"
+      "type": "home-shop-cta",
+      "settings": {}
     }
   },
   "order": [

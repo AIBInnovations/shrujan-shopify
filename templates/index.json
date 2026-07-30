@@ -1,46 +1,635 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "home-hero": {
-      "type": "home-hero"
+      "type": "home-hero",
+      "settings": {
+        "shop_url": "",
+        "shop_alt": "Model in a rust-red ajrakh kurta with gold jewellery before an arched wall",
+        "shop_em": "Shop",
+        "shop_label": "Shrujan",
+        "shop_sub": "Saris, kurtas and dupattas, hand-embroidered by the women of Kutch.",
+        "title_l1": "Tradition,",
+        "title_l2": "Styled",
+        "title_l3": "Forward",
+        "copy": "Where centuries-old craftsmanship meets contemporary design. Timeless pieces for today&rsquo;s tastemakers.",
+        "cta_label": "Shop the Collection",
+        "cta_url": "#categories",
+        "season_url": "",
+        "season_alt": "Model in a red hand-embroidered bridal lehenga in a studio setting",
+        "season_em": "Studio",
+        "season_label": "Collection",
+        "thread_url": "",
+        "thread_alt": "Embroiderers of Kutch working together outside their village",
+        "thread_em": "Craft Traditions",
+        "thread_label": "of Kutch",
+        "story_url": "",
+        "story_t1": "Rooted in heritage.",
+        "story_t2": "Made for tomorrow.",
+        "story_copy": "Supporting artisans since 1969.",
+        "story_link": "The Shrujan Story",
+        "lldc_url": "",
+        "lldc_alt": "An artisan at work in the Living & Learning Design Centre studio",
+        "lldc_em": "LLDC",
+        "lldc_l1": "Living & Learning",
+        "lldc_l2": "Design Centre",
+        "india_url": "",
+        "india_em": "Visit &",
+        "india_label": "Experience"
+      }
     },
     "home-marquee": {
-      "type": "home-marquee"
+      "type": "home-marquee",
+      "settings": {}
     },
     "home-spotlight": {
-      "type": "home-spotlight"
+      "type": "home-spotlight",
+      "settings": {
+        "eyebrow": "Heritage & Innovation",
+        "title_l1_a": "Heritage elegance",
+        "title_l1_b": "redefined",
+        "title_l2": "through living craft",
+        "copy": "Shrujan merges centuries-old embroidery with contemporary silhouettes, a refined and craft-driven wardrobe that aligns seamlessly with your life.",
+        "ghost_value": "100%",
+        "ghost_label": "Hand-embroidered",
+        "model_alt": "Model in a crimson mirror-work jacket draped with a hand-embroidered patola sari",
+        "stat1_value": "4,000+",
+        "stat1_label": "Artisan women behind every piece",
+        "stat2_value": "12",
+        "stat2_label": "Living craft traditions of Kutch",
+        "note": "Every piece signed by the hands that made it",
+        "stat3_value": "40",
+        "stat3_label": "Villages across the Kutch desert",
+        "outro": "Naturally dyed cloth, hand-embroidered over weeks and finished in our Bhuj atelier, made to be worn today and handed down tomorrow."
+      }
     },
     "home-bestsellers": {
-      "type": "home-bestsellers"
+      "type": "home-bestsellers",
+      "settings": {
+        "eyebrow": "Most Loved",
+        "title": "Bestsellers, ranked by <em>you</em>",
+        "legend": "Ordered by pieces taken home over the last six months.",
+        "sold_label": "taken home",
+        "more_label": "See the full ranking",
+        "more_link": ""
+      }
     },
     "home-categories": {
-      "type": "home-categories"
+      "type": "home-categories",
+      "blocks": {
+        "panel_fENrMj": {
+          "type": "panel",
+          "settings": {
+            "img_asset": "cat-c3.webp",
+            "alt": "Model in a maroon embroidered lehenga with a fitted bodice",
+            "name": "Kanchli",
+            "copy": "The Kutchi bodice, cut and stitched the traditional way",
+            "link": ""
+          }
+        },
+        "panel_zMbU79": {
+          "type": "panel",
+          "settings": {
+            "img_asset": "cat-c3.webp",
+            "alt": "Model in a maroon embroidered lehenga with a fitted bodice",
+            "name": "Kanchli",
+            "copy": "The Kutchi bodice, cut and stitched the traditional way",
+            "link": ""
+          }
+        },
+        "panel_H6YtFw": {
+          "type": "panel",
+          "settings": {
+            "img_asset": "cat-c3.webp",
+            "alt": "Model in a maroon embroidered lehenga with a fitted bodice",
+            "name": "Kanchli",
+            "copy": "The Kutchi bodice, cut and stitched the traditional way",
+            "link": ""
+          }
+        },
+        "panel_znyrkg": {
+          "type": "panel",
+          "settings": {
+            "img_asset": "cat-c3.webp",
+            "alt": "Model in a maroon embroidered lehenga with a fitted bodice",
+            "name": "Kanchli",
+            "copy": "The Kutchi bodice, cut and stitched the traditional way",
+            "link": ""
+          }
+        },
+        "panel_YBWXfc": {
+          "type": "panel",
+          "settings": {
+            "img_asset": "cat-c3.webp",
+            "alt": "Model in a maroon embroidered lehenga with a fitted bodice",
+            "name": "Kanchli",
+            "copy": "The Kutchi bodice, cut and stitched the traditional way",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "panel_fENrMj",
+        "panel_zMbU79",
+        "panel_H6YtFw",
+        "panel_znyrkg",
+        "panel_YBWXfc"
+      ],
+      "settings": {
+        "eyebrow": "Explore the House",
+        "title": "What to wear",
+        "cta_label": "View All",
+        "cta_link": "",
+        "explore_label": "Explore"
+      }
     },
     "home-showcase": {
-      "type": "home-showcase"
+      "type": "home-showcase",
+      "blocks": {
+        "seal_gBqjxN": {
+          "type": "seal",
+          "settings": {
+            "fallback": "top-right.webp",
+            "alt": "Close crop of mirror-work embroidery in crimson and gold threads",
+            "title": "Hand Embroidery",
+            "copy": "Every motif counted and stitched by hand. No machine ever touches the cloth."
+          }
+        },
+        "seal_3qwY4m": {
+          "type": "seal",
+          "settings": {
+            "fallback": "top-right.webp",
+            "alt": "Close crop of mirror-work embroidery in crimson and gold threads",
+            "title": "Hand Embroidery",
+            "copy": "Every motif counted and stitched by hand. No machine ever touches the cloth."
+          }
+        },
+        "seal_6RPDmn": {
+          "type": "seal",
+          "settings": {
+            "fallback": "top-right.webp",
+            "alt": "Close crop of mirror-work embroidery in crimson and gold threads",
+            "title": "Hand Embroidery",
+            "copy": "Every motif counted and stitched by hand. No machine ever touches the cloth."
+          }
+        },
+        "seal_RfLtQx": {
+          "type": "seal",
+          "settings": {
+            "fallback": "top-right.webp",
+            "alt": "Close crop of mirror-work embroidery in crimson and gold threads",
+            "title": "Hand Embroidery",
+            "copy": "Every motif counted and stitched by hand. No machine ever touches the cloth."
+          }
+        }
+      },
+      "block_order": [
+        "seal_gBqjxN",
+        "seal_3qwY4m",
+        "seal_6RPDmn",
+        "seal_RfLtQx"
+      ],
+      "settings": {
+        "eyebrow": "The future of heritage is here",
+        "title": "Craft that cares: <em>four promises</em> in every piece",
+        "copy": "Living embroidery, natural cloth and honest making, held to the same four standards since 1969.",
+        "more_label": "How we make it",
+        "more_link": "#craft"
+      }
     },
     "home-reels": {
-      "type": "home-reels"
+      "type": "home-reels",
+      "blocks": {
+        "reel_jRDL8x": {
+          "type": "reel",
+          "settings": {
+            "title": "Indigo mirror-work jacket",
+            "meta": "0:27",
+            "link": ""
+          }
+        },
+        "reel_EHX6dr": {
+          "type": "reel",
+          "settings": {
+            "title": "Indigo mirror-work jacket",
+            "meta": "0:27",
+            "link": ""
+          }
+        },
+        "reel_PtKLDz": {
+          "type": "reel",
+          "settings": {
+            "title": "Indigo mirror-work jacket",
+            "meta": "0:27",
+            "link": ""
+          }
+        },
+        "reel_WbpQNQ": {
+          "type": "reel",
+          "settings": {
+            "title": "Indigo mirror-work jacket",
+            "meta": "0:27",
+            "link": ""
+          }
+        },
+        "reel_8eMqHw": {
+          "type": "reel",
+          "settings": {
+            "title": "Indigo mirror-work jacket",
+            "meta": "0:27",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "reel_jRDL8x",
+        "reel_EHX6dr",
+        "reel_PtKLDz",
+        "reel_WbpQNQ",
+        "reel_8eMqHw"
+      ],
+      "settings": {
+        "eyebrow": "Shrujan in Motion",
+        "title_l1": "Watch the craft",
+        "title_l2": "come alive",
+        "seal_link": "",
+        "note": "Forty seconds inside the workshop: a needle counting threads, madder boiling, a sari taking its first drape."
+      }
     },
     "home-house": {
-      "type": "home-house"
+      "type": "home-house",
+      "blocks": {
+        "tile_Cn9Eee": {
+          "type": "tile",
+          "settings": {
+            "fallback": "sj-black-pakko-hand-embroidered-kanchli-1.webp",
+            "alt": "Model wearing the black pakko hand embroidered kanchli",
+            "name": "Kanchli",
+            "note": "The Kutchi bodice, cut and stitched the traditional way",
+            "link": ""
+          }
+        },
+        "tile_GhhNkp": {
+          "type": "tile",
+          "settings": {
+            "fallback": "sj-black-pakko-hand-embroidered-kanchli-1.webp",
+            "alt": "Model wearing the black pakko hand embroidered kanchli",
+            "name": "Kanchli",
+            "note": "The Kutchi bodice, cut and stitched the traditional way",
+            "link": ""
+          }
+        },
+        "tile_AEJehD": {
+          "type": "tile",
+          "settings": {
+            "fallback": "sj-black-pakko-hand-embroidered-kanchli-1.webp",
+            "alt": "Model wearing the black pakko hand embroidered kanchli",
+            "name": "Kanchli",
+            "note": "The Kutchi bodice, cut and stitched the traditional way",
+            "link": ""
+          }
+        },
+        "tile_dntyww": {
+          "type": "tile",
+          "settings": {
+            "fallback": "sj-black-pakko-hand-embroidered-kanchli-1.webp",
+            "alt": "Model wearing the black pakko hand embroidered kanchli",
+            "name": "Kanchli",
+            "note": "The Kutchi bodice, cut and stitched the traditional way",
+            "link": ""
+          }
+        },
+        "tile_GNBeUG": {
+          "type": "tile",
+          "settings": {
+            "fallback": "sj-black-pakko-hand-embroidered-kanchli-1.webp",
+            "alt": "Model wearing the black pakko hand embroidered kanchli",
+            "name": "Kanchli",
+            "note": "The Kutchi bodice, cut and stitched the traditional way",
+            "link": ""
+          }
+        },
+        "tile_4jbxRb": {
+          "type": "tile",
+          "settings": {
+            "fallback": "sj-black-pakko-hand-embroidered-kanchli-1.webp",
+            "alt": "Model wearing the black pakko hand embroidered kanchli",
+            "name": "Kanchli",
+            "note": "The Kutchi bodice, cut and stitched the traditional way",
+            "link": ""
+          }
+        },
+        "tile_twHXYk": {
+          "type": "tile",
+          "settings": {
+            "fallback": "sj-black-pakko-hand-embroidered-kanchli-1.webp",
+            "alt": "Model wearing the black pakko hand embroidered kanchli",
+            "name": "Kanchli",
+            "note": "The Kutchi bodice, cut and stitched the traditional way",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "tile_Cn9Eee",
+        "tile_GhhNkp",
+        "tile_AEJehD",
+        "tile_dntyww",
+        "tile_GNBeUG",
+        "tile_4jbxRb",
+        "tile_twHXYk"
+      ],
+      "settings": {
+        "eyebrow": "Everything Shrujan makes",
+        "title": "What Shrujan has <em>mastered</em>",
+        "copy": "The same counted stitches, worked into what you wear, what you carry and the cloth that dresses the house.",
+        "strip_label": "All bags"
+      }
     },
     "home-craft-story": {
-      "type": "home-craft-story"
+      "type": "home-craft-story",
+      "blocks": {
+        "shot_dYjJwj": {
+          "type": "shot",
+          "settings": {
+            "fallback": "bottom-left.webp",
+            "alt": "Master weaver working threads at his handloom",
+            "caption": "At the loom, Bhujodi"
+          }
+        },
+        "shot_Q987QF": {
+          "type": "shot",
+          "settings": {
+            "fallback": "bottom-left.webp",
+            "alt": "Master weaver working threads at his handloom",
+            "caption": "At the loom, Bhujodi"
+          }
+        }
+      },
+      "block_order": [
+        "shot_dYjJwj",
+        "shot_Q987QF"
+      ],
+      "settings": {
+        "eyebrow": "Our Craft",
+        "title_l1": "Every stitch carries",
+        "title_l2": "a signature",
+        "copy": "<p>Shrujan began in 1969 with Chanda Shroff, known as Kaki, who went to Kutch after a famine and found women whose embroidery was extraordinary and whose earnings were not. She turned that skill into a livelihood.</p><p>From her vision to the hands of thousands of women across Kutch, Shrujan has quietly safeguarded the region’s living craft traditions for over five decades, preserving the knowledge and the dignity behind it.</p>",
+        "link_label": "Explore the Craft",
+        "link": ""
+      }
     },
     "home-trousseau": {
-      "type": "home-trousseau"
+      "type": "home-trousseau",
+      "settings": {
+        "eyebrow": "Handpicked for you",
+        "title": "Curated pieces, chosen with care",
+        "intro": "Timeless silhouettes, handcrafted details, edited by our Bhuj studio for the moments that matter.",
+        "tab_1": "All",
+        "tab_2": "Bridal",
+        "tab_3": "Festive",
+        "tab_4": "Everyday",
+        "tab_5": "Gifting",
+        "more_label": "View the full edit",
+        "more_url": ""
+      }
     },
     "home-testimonials": {
-      "type": "home-testimonials"
+      "type": "home-testimonials",
+      "blocks": {
+        "testimonial_wFjJDn": {
+          "type": "testimonial",
+          "settings": {
+            "image_asset": "cat-c1.webp",
+            "name": "Meera Shah",
+            "place": "Mumbai",
+            "label": "Kora Silk Sari",
+            "quote": "What stood out most was the attention to detail: the fall, the finish, the way the border sits. Five years on it has not lost a single stitch.",
+            "buy1_asset": "cat-c1.webp",
+            "buy1_name": "Kora Silk Sari",
+            "buy2_asset": "frame-r1t4.webp",
+            "buy2_name": "Ivory Zari Blouse"
+          }
+        },
+        "testimonial_TiKxCU": {
+          "type": "testimonial",
+          "settings": {
+            "image_asset": "cat-c1.webp",
+            "name": "Meera Shah",
+            "place": "Mumbai",
+            "label": "Kora Silk Sari",
+            "quote": "What stood out most was the attention to detail: the fall, the finish, the way the border sits. Five years on it has not lost a single stitch.",
+            "buy1_asset": "cat-c1.webp",
+            "buy1_name": "Kora Silk Sari",
+            "buy2_asset": "frame-r1t4.webp",
+            "buy2_name": "Ivory Zari Blouse"
+          }
+        },
+        "testimonial_tahkBQ": {
+          "type": "testimonial",
+          "settings": {
+            "image_asset": "cat-c1.webp",
+            "name": "Meera Shah",
+            "place": "Mumbai",
+            "label": "Kora Silk Sari",
+            "quote": "What stood out most was the attention to detail: the fall, the finish, the way the border sits. Five years on it has not lost a single stitch.",
+            "buy1_asset": "cat-c1.webp",
+            "buy1_name": "Kora Silk Sari",
+            "buy2_asset": "frame-r1t4.webp",
+            "buy2_name": "Ivory Zari Blouse"
+          }
+        },
+        "testimonial_Hg6KwT": {
+          "type": "testimonial",
+          "settings": {
+            "image_asset": "cat-c1.webp",
+            "name": "Meera Shah",
+            "place": "Mumbai",
+            "label": "Kora Silk Sari",
+            "quote": "What stood out most was the attention to detail: the fall, the finish, the way the border sits. Five years on it has not lost a single stitch.",
+            "buy1_asset": "cat-c1.webp",
+            "buy1_name": "Kora Silk Sari",
+            "buy2_asset": "frame-r1t4.webp",
+            "buy2_name": "Ivory Zari Blouse"
+          }
+        },
+        "testimonial_EwwHbF": {
+          "type": "testimonial",
+          "settings": {
+            "image_asset": "cat-c1.webp",
+            "name": "Meera Shah",
+            "place": "Mumbai",
+            "label": "Kora Silk Sari",
+            "quote": "What stood out most was the attention to detail: the fall, the finish, the way the border sits. Five years on it has not lost a single stitch.",
+            "buy1_asset": "cat-c1.webp",
+            "buy1_name": "Kora Silk Sari",
+            "buy2_asset": "frame-r1t4.webp",
+            "buy2_name": "Ivory Zari Blouse"
+          }
+        },
+        "testimonial_fddTih": {
+          "type": "testimonial",
+          "settings": {
+            "image_asset": "cat-c1.webp",
+            "name": "Meera Shah",
+            "place": "Mumbai",
+            "label": "Kora Silk Sari",
+            "quote": "What stood out most was the attention to detail: the fall, the finish, the way the border sits. Five years on it has not lost a single stitch.",
+            "buy1_asset": "cat-c1.webp",
+            "buy1_name": "Kora Silk Sari",
+            "buy2_asset": "frame-r1t4.webp",
+            "buy2_name": "Ivory Zari Blouse"
+          }
+        },
+        "testimonial_dpVrT6": {
+          "type": "testimonial",
+          "settings": {
+            "image_asset": "cat-c1.webp",
+            "name": "Meera Shah",
+            "place": "Mumbai",
+            "label": "Kora Silk Sari",
+            "quote": "What stood out most was the attention to detail: the fall, the finish, the way the border sits. Five years on it has not lost a single stitch.",
+            "buy1_asset": "cat-c1.webp",
+            "buy1_name": "Kora Silk Sari",
+            "buy2_asset": "frame-r1t4.webp",
+            "buy2_name": "Ivory Zari Blouse"
+          }
+        },
+        "testimonial_CNL69f": {
+          "type": "testimonial",
+          "settings": {
+            "image_asset": "cat-c1.webp",
+            "name": "Meera Shah",
+            "place": "Mumbai",
+            "label": "Kora Silk Sari",
+            "quote": "What stood out most was the attention to detail: the fall, the finish, the way the border sits. Five years on it has not lost a single stitch.",
+            "buy1_asset": "cat-c1.webp",
+            "buy1_name": "Kora Silk Sari",
+            "buy2_asset": "frame-r1t4.webp",
+            "buy2_name": "Ivory Zari Blouse"
+          }
+        }
+      },
+      "block_order": [
+        "testimonial_wFjJDn",
+        "testimonial_TiKxCU",
+        "testimonial_tahkBQ",
+        "testimonial_Hg6KwT",
+        "testimonial_EwwHbF",
+        "testimonial_fddTih",
+        "testimonial_dpVrT6",
+        "testimonial_CNL69f"
+      ],
+      "settings": {
+        "eyebrow": "Loved & Worn",
+        "title": "What our customers say",
+        "intro": "Four thousand women, forty villages and one promise: cloth that is made slowly and kept for a lifetime.",
+        "kind_title": "Kind <em>Words.</em>",
+        "rating_count": "1,240 Reviews",
+        "loved_line_1": "Loved by 4,000+",
+        "loved_line_2": "women across India",
+        "took_home_label": "took home",
+        "picks_label": "Shop her picks",
+        "picks_url": ""
+      }
     },
     "home-journal": {
-      "type": "home-journal"
+      "type": "home-journal",
+      "settings": {
+        "eyebrow": "The Journal",
+        "title_line_1": "Stories from the loom,",
+        "title_line_2": "straight from the villages",
+        "feature_url": "",
+        "feature_alt": "Close crop of mirror-work embroidery in crimson and gold threads",
+        "feature_tag": "Craft Notes",
+        "feature_title": "5 Kutch embroidery styles and how to tell them apart",
+        "feature_excerpt": "Suf, Kharek, Paako, Rabari, Mutava. Each village stitches its own signature. A field guide to reading the motifs, mirrors and thread counts that set them apart.",
+        "feature_link_label": "Read the story",
+        "author_name": "Kanta Ben Rabari",
+        "author_role": "Master Artisan · Bhuj"
+      }
     },
     "home-faq": {
-      "type": "home-faq"
+      "type": "home-faq",
+      "blocks": {
+        "item_bzNDqY": {
+          "type": "item",
+          "settings": {
+            "question": "Are your pieces handcrafted?",
+            "answer": "Yes. Every garment is embroidered by artisan women across forty villages of Kutch. No machine embroidery, ever. Each piece carries the name of the hands that made it."
+          }
+        },
+        "item_6aBENY": {
+          "type": "item",
+          "settings": {
+            "question": "Are your pieces handcrafted?",
+            "answer": "Yes. Every garment is embroidered by artisan women across forty villages of Kutch. No machine embroidery, ever. Each piece carries the name of the hands that made it."
+          }
+        },
+        "item_aMCazB": {
+          "type": "item",
+          "settings": {
+            "question": "Are your pieces handcrafted?",
+            "answer": "Yes. Every garment is embroidered by artisan women across forty villages of Kutch. No machine embroidery, ever. Each piece carries the name of the hands that made it."
+          }
+        },
+        "item_9fEmT3": {
+          "type": "item",
+          "settings": {
+            "question": "Are your pieces handcrafted?",
+            "answer": "Yes. Every garment is embroidered by artisan women across forty villages of Kutch. No machine embroidery, ever. Each piece carries the name of the hands that made it."
+          }
+        },
+        "item_PQw449": {
+          "type": "item",
+          "settings": {
+            "question": "Are your pieces handcrafted?",
+            "answer": "Yes. Every garment is embroidered by artisan women across forty villages of Kutch. No machine embroidery, ever. Each piece carries the name of the hands that made it."
+          }
+        },
+        "item_JqG7BA": {
+          "type": "item",
+          "settings": {
+            "question": "Are your pieces handcrafted?",
+            "answer": "Yes. Every garment is embroidered by artisan women across forty villages of Kutch. No machine embroidery, ever. Each piece carries the name of the hands that made it."
+          }
+        }
+      },
+      "block_order": [
+        "item_bzNDqY",
+        "item_6aBENY",
+        "item_aMCazB",
+        "item_9fEmT3",
+        "item_PQw449",
+        "item_JqG7BA"
+      ],
+      "settings": {
+        "eyebrow": "Help & Support",
+        "title": "Everything you need to know",
+        "intro": "Thoughtful answers for a seamless shopping experience."
+      }
     },
     "home-shop-cta": {
-      "type": "home-shop-cta"
+      "type": "home-shop-cta",
+      "settings": {
+        "image_alt": "Model in a maroon silk sari with a gold zari border",
+        "eyebrow": "The Festive Edit",
+        "title_line_1": "Wear your",
+        "title_line_2": "<em>heritage</em> forward",
+        "copy": "Twenty new pieces from forty villages, hand-embroidered, naturally dyed, and signed by the women who made them.",
+        "cta_label": "Shop the collection",
+        "cta_url": "#categories",
+        "link_label": "Book a styling call",
+        "link_url": "#support"
+      }
     }
   },
   "order": [

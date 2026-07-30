@@ -1,46 +1,204 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "home-hero": {
-      "type": "home-hero"
+      "type": "home-hero",
+      "settings": {
+        "shop_url": "",
+        "shop_alt": "Model in a rust-red ajrakh kurta with gold jewellery before an arched wall",
+        "shop_em": "Shop",
+        "shop_label": "Shrujan",
+        "shop_sub": "Saris, kurtas and dupattas, hand-embroidered by the women of Kutch.",
+        "title_l1": "Tradition,",
+        "title_l2": "Styled",
+        "title_l3": "Forward",
+        "copy": "Where centuries-old craftsmanship meets contemporary design. Timeless pieces for today&rsquo;s tastemakers.",
+        "cta_label": "Shop the Collection",
+        "cta_url": "#categories",
+        "season_url": "",
+        "season_alt": "Model in a red hand-embroidered bridal lehenga in a studio setting",
+        "season_em": "Studio",
+        "season_label": "Collection",
+        "thread_url": "",
+        "thread_alt": "Embroiderers of Kutch working together outside their village",
+        "thread_em": "Craft Traditions",
+        "thread_label": "of Kutch",
+        "story_url": "",
+        "story_t1": "Rooted in heritage.",
+        "story_t2": "Made for tomorrow.",
+        "story_copy": "Supporting artisans since 1969.",
+        "story_link": "The Shrujan Story",
+        "lldc_url": "",
+        "lldc_alt": "An artisan at work in the Living & Learning Design Centre studio",
+        "lldc_em": "LLDC",
+        "lldc_l1": "Living & Learning",
+        "lldc_l2": "Design Centre",
+        "india_url": "",
+        "india_em": "Visit &",
+        "india_label": "Experience"
+      }
     },
     "home-marquee": {
-      "type": "home-marquee"
+      "type": "home-marquee",
+      "settings": {}
     },
     "home-spotlight": {
-      "type": "home-spotlight"
+      "type": "home-spotlight",
+      "settings": {
+        "eyebrow": "Heritage & Innovation",
+        "title_l1_a": "Heritage elegance",
+        "title_l1_b": "redefined",
+        "title_l2": "through living craft",
+        "copy": "Shrujan merges centuries-old embroidery with contemporary silhouettes, a refined and craft-driven wardrobe that aligns seamlessly with your life.",
+        "ghost_value": "100%",
+        "ghost_label": "Hand-embroidered",
+        "model_alt": "Model in a crimson mirror-work jacket draped with a hand-embroidered patola sari",
+        "stat1_value": "4,000+",
+        "stat1_label": "Artisan women behind every piece",
+        "stat2_value": "12",
+        "stat2_label": "Living craft traditions of Kutch",
+        "note": "Every piece signed by the hands that made it",
+        "stat3_value": "40",
+        "stat3_label": "Villages across the Kutch desert",
+        "outro": "Naturally dyed cloth, hand-embroidered over weeks and finished in our Bhuj atelier, made to be worn today and handed down tomorrow."
+      }
     },
     "home-bestsellers": {
-      "type": "home-bestsellers"
+      "type": "home-bestsellers",
+      "settings": {
+        "eyebrow": "Most Loved",
+        "title": "Bestsellers, ranked by <em>you</em>",
+        "legend": "Ordered by pieces taken home over the last six months.",
+        "sold_label": "taken home",
+        "more_label": "See the full ranking",
+        "more_link": ""
+      }
     },
     "home-categories": {
-      "type": "home-categories"
+      "type": "home-categories",
+      "settings": {
+        "eyebrow": "Explore the House",
+        "title": "What to wear",
+        "cta_label": "View All",
+        "cta_link": "",
+        "explore_label": "Explore"
+      }
     },
     "home-showcase": {
-      "type": "home-showcase"
+      "type": "home-showcase",
+      "settings": {
+        "eyebrow": "The future of heritage is here",
+        "title": "Craft that cares: <em>four promises</em> in every piece",
+        "copy": "Living embroidery, natural cloth and honest making, held to the same four standards since 1969.",
+        "more_label": "How we make it",
+        "more_link": "#craft"
+      }
     },
     "home-reels": {
-      "type": "home-reels"
+      "type": "home-reels",
+      "settings": {
+        "eyebrow": "Shrujan in Motion",
+        "title_l1": "Watch the craft",
+        "title_l2": "come alive",
+        "seal_link": "",
+        "note": "Forty seconds inside the workshop: a needle counting threads, madder boiling, a sari taking its first drape."
+      }
     },
     "home-house": {
-      "type": "home-house"
+      "type": "home-house",
+      "settings": {
+        "eyebrow": "Everything Shrujan makes",
+        "title": "What Shrujan has <em>mastered</em>",
+        "copy": "The same counted stitches, worked into what you wear, what you carry and the cloth that dresses the house.",
+        "strip_label": "All bags"
+      }
     },
     "home-craft-story": {
-      "type": "home-craft-story"
+      "type": "home-craft-story",
+      "settings": {
+        "eyebrow": "Our Craft",
+        "title_l1": "Every stitch carries",
+        "title_l2": "a signature",
+        "copy": "<p>Shrujan began in 1969 with Chanda Shroff, known as Kaki, who went to Kutch after a famine and found women whose embroidery was extraordinary and whose earnings were not. She turned that skill into a livelihood.</p><p>From her vision to the hands of thousands of women across Kutch, Shrujan has quietly safeguarded the region&rsquo;s living craft traditions for over five decades, preserving the knowledge and the dignity behind it.</p>",
+        "link_label": "Explore the Craft",
+        "link": ""
+      }
     },
     "home-trousseau": {
-      "type": "home-trousseau"
+      "type": "home-trousseau",
+      "settings": {
+        "eyebrow": "Handpicked for you",
+        "title": "Curated pieces, chosen with care",
+        "intro": "Timeless silhouettes, handcrafted details, edited by our Bhuj studio for the moments that matter.",
+        "tab_1": "All",
+        "tab_2": "Bridal",
+        "tab_3": "Festive",
+        "tab_4": "Everyday",
+        "tab_5": "Gifting",
+        "more_label": "View the full edit",
+        "more_url": ""
+      }
     },
     "home-testimonials": {
-      "type": "home-testimonials"
+      "type": "home-testimonials",
+      "settings": {
+        "eyebrow": "Loved & Worn",
+        "title": "What our customers say",
+        "intro": "Four thousand women, forty villages and one promise: cloth that is made slowly and kept for a lifetime.",
+        "kind_title": "Kind <em>Words.</em>",
+        "rating_count": "1,240 Reviews",
+        "loved_line_1": "Loved by 4,000+",
+        "loved_line_2": "women across India",
+        "took_home_label": "took home",
+        "picks_label": "Shop her picks",
+        "picks_url": ""
+      }
     },
     "home-journal": {
-      "type": "home-journal"
+      "type": "home-journal",
+      "settings": {
+        "eyebrow": "The Journal",
+        "title_line_1": "Stories from the loom,",
+        "title_line_2": "straight from the villages",
+        "feature_url": "",
+        "feature_alt": "Close crop of mirror-work embroidery in crimson and gold threads",
+        "feature_tag": "Craft Notes",
+        "feature_title": "5 Kutch embroidery styles and how to tell them apart",
+        "feature_excerpt": "Suf, Kharek, Paako, Rabari, Mutava. Each village stitches its own signature. A field guide to reading the motifs, mirrors and thread counts that set them apart.",
+        "feature_link_label": "Read the story",
+        "author_name": "Kanta Ben Rabari",
+        "author_role": "Master Artisan · Bhuj"
+      }
     },
     "home-faq": {
-      "type": "home-faq"
+      "type": "home-faq",
+      "settings": {
+        "eyebrow": "Help & Support",
+        "title": "Everything you need to know",
+        "intro": "Thoughtful answers for a seamless shopping experience."
+      }
     },
     "home-shop-cta": {
-      "type": "home-shop-cta"
+      "type": "home-shop-cta",
+      "settings": {
+        "image_alt": "Model in a maroon silk sari with a gold zari border",
+        "eyebrow": "The Festive Edit",
+        "title_line_1": "Wear your",
+        "title_line_2": "<em>heritage</em> forward",
+        "copy": "Twenty new pieces from forty villages, hand-embroidered, naturally dyed, and signed by the women who made them.",
+        "cta_label": "Shop the collection",
+        "cta_url": "#categories",
+        "link_label": "Book a styling call",
+        "link_url": "#support"
+      }
     }
   },
   "order": [
