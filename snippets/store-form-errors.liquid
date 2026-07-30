@@ -1,0 +1,26 @@
+{%- comment -%}
+  Shopify form errors, rendered the theme's way.
+
+  Every customer/comment/password form on the store pages renders this one
+  snippet so the treatment (and the wording Shopify itself returns) is
+  identical everywhere. Two shapes come back from Shopify:
+
+    'form'        — a whole-form message, already a sentence
+    a field name  — a per-field message, which reads properly only once the
+                    translated field name is put in front of it
+
+  Usage: {% render 'store-form-errors', form: form %}
+{%- endcomment -%}
+{%- if form.errors -%}
+  <ul class="store-errors" role="alert" tabindex="-1">
+    {%- for field in form.errors -%}
+      <li>
+        {%- if field == 'form' -%}
+          {{ form.errors.messages[field] }}
+        {%- else -%}
+          {{ form.errors.translated_fields[field] | capitalize }} {{ form.errors.messages[field] }}
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ul>
+{%- endif -%}

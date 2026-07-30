@@ -1,0 +1,1561 @@
+/* ============================================================
+   Store pages — collection, collections index, search, cart,
+   blog, article, account, 404, password, gift card.
+
+   The two migrated stylesheets (shrujan-global.css, shrujan-pages.css)
+   are verbatim copies of the designed site and stay untouched. Anything
+   these commerce pages need beyond the existing vocabulary lives here,
+   built from the same tokens so it reads as one system.
+   ============================================================ */
+
+/* ---- shared page masthead for commerce pages ---------------- */
+.store-head {
+  padding-block: clamp(48px, 5vw, 96px) clamp(20px, 2vw, 36px);
+}
+
+.store-head__eyebrow {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gerua);
+}
+
+.store-head__title {
+  margin-top: 12px;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(38px, calc(28px + 2.6vw), 76px);
+  line-height: 1.04;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.store-head__title em {
+  font-style: italic;
+  color: var(--gerua);
+}
+
+.store-head__lede {
+  margin-top: 16px;
+  max-width: 62ch;
+  font-family: var(--font-sans);
+  font-size: clamp(15px, calc(14px + 0.2vw), 17px);
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+.store-head__count {
+  margin-top: 18px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* the merchant's own collection description — rich text, so it can arrive as
+   several paragraphs and a list */
+.store-head__rte :is(p, ul, ol) + :is(p, ul, ol) { margin-top: 0.8em; }
+.store-head__rte ul,
+.store-head__rte ol { padding-left: 1.2em; list-style: disc; }
+.store-head__rte ol { list-style: decimal; }
+.store-head__rte a { color: var(--gerua); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---- product grid ------------------------------------------- */
+.store-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--store-cols, 4), minmax(0, 1fr));
+  gap: clamp(14px, 1.4vw, 26px);
+  padding-bottom: var(--section-gap);
+}
+
+@media (max-width: 900px) {
+  .store-grid { grid-template-columns: repeat(var(--store-cols-t, 3), minmax(0, 1fr)); }
+}
+
+@media (max-width: 600px) {
+  .store-grid { grid-template-columns: repeat(var(--store-cols-m, 2), minmax(0, 1fr)); }
+}
+
+/* the pager brings its own generous padding, so the grid gives its own back
+   whenever one follows */
+.store-grid--tight { padding-bottom: 0; }
+
+/* Shopify's placeholder illustration, sized like the photo it stands in for */
+.piece__ph {
+  width: 100%;
+  height: 100%;
+  background: var(--ivory-2);
+  fill: var(--hairline-strong);
+}
+
+/* A colour option holds names, not hex — a name CSS does not know drops the
+   inline declaration, and this is what the disc falls back to. */
+.store-grid .piece__swatches i { background: var(--sand); }
+
+/* ---- toolbar (sort, count, filters) ------------------------- */
+.store-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-block: 18px;
+  border-block: 1px solid var(--hairline);
+  margin-bottom: clamp(22px, 2.4vw, 40px);
+}
+
+.store-bar__group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.store-bar__label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.store-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 15px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color var(--dur-quick) var(--ease), color var(--dur-quick) var(--ease);
+}
+
+.store-chip:hover { border-color: var(--hairline-strong); }
+.store-chip.is-active { border-color: var(--gerua); color: var(--gerua); }
+
+.store-select {
+  padding: 8px 14px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--ink);
+}
+
+/* ---- empty state ------------------------------------------- */
+.store-empty {
+  padding-block: clamp(56px, 6vw, 120px);
+  text-align: center;
+}
+
+.store-empty__title {
+  font-family: var(--font-serif);
+  font-size: clamp(26px, 2.4vw, 40px);
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.store-empty__copy {
+  margin-top: 12px;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: var(--ink-soft);
+}
+
+/* ---- pagination -------------------------------------------- */
+.store-pager {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding-block: clamp(24px, 3vw, 56px);
+}
+
+.store-pager a,
+.store-pager span {
+  min-width: 38px;
+  padding: 9px 12px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.store-pager span[aria-current] { border-color: var(--gerua); color: var(--gerua); }
+
+/* ---- collections index ------------------------------------- */
+.store-cols {
+  display: grid;
+  grid-template-columns: repeat(var(--collections-cols, 3), minmax(0, 1fr));
+  gap: clamp(16px, 1.8vw, 32px);
+  padding-bottom: var(--section-gap);
+}
+
+@media (max-width: 900px) { .store-cols { grid-template-columns: repeat(var(--collections-cols-t, 2), minmax(0, 1fr)); } }
+@media (max-width: 600px) { .store-cols { grid-template-columns: repeat(var(--collections-cols-m, 1), minmax(0, 1fr)); } }
+
+.store-col-card {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.store-col-card__media {
+  display: block;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+}
+
+.store-col-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--dur) var(--ease);
+}
+
+.store-col-card:hover .store-col-card__media img { transform: scale(1.03); }
+
+.store-col-card__body {
+  padding: 18px 20px 22px;
+}
+
+.store-col-card__name {
+  font-family: var(--font-serif);
+  font-size: clamp(20px, 1.6vw, 28px);
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.store-col-card__meta {
+  margin-top: 6px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* the medallion's "Shop →", borrowed for the index card so the whole plate
+   answers to the hover rather than the image alone */
+.store-col-card__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 12px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gerua);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity var(--dur-quick) var(--ease), transform var(--dur-quick) var(--ease);
+}
+
+.store-col-card:hover .store-col-card__go,
+.store-col-card:focus-visible .store-col-card__go {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.store-col-card__ph {
+  width: 100%;
+  height: 100%;
+  background: var(--ivory-2);
+  fill: var(--hairline-strong);
+}
+
+/* ---- cart --------------------------------------------------- */
+.cart-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: clamp(24px, 3vw, 64px);
+  padding-bottom: var(--section-gap);
+  align-items: start;
+}
+
+@media (max-width: 900px) { .cart-layout { grid-template-columns: 1fr; } }
+
+.cart-line {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  padding-block: 20px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.cart-line__media {
+  width: 96px;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.cart-line__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.cart-line__name {
+  font-family: var(--font-serif);
+  font-size: clamp(17px, 1.3vw, 22px);
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.cart-line__meta,
+.cart-line__price {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.cart-line__price { color: var(--ink); }
+
+.cart-aside {
+  position: sticky;
+  top: calc(var(--header-h, 96px) + 20px);
+  padding: 26px 24px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.cart-aside__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--ink-soft);
+  padding-block: 8px;
+}
+
+.cart-aside__total {
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--hairline);
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-serif);
+  font-size: clamp(20px, 1.6vw, 26px);
+  color: var(--ink);
+}
+
+/* ---- editorial (blog, article) ------------------------------ */
+.store-article {
+  max-width: 78ch;
+  margin-inline: auto;
+  padding-bottom: var(--section-gap);
+  font-family: var(--font-sans);
+  font-size: clamp(15px, calc(14px + 0.25vw), 18px);
+  line-height: 1.8;
+  color: var(--ink-soft);
+}
+
+.store-article :is(h2, h3) {
+  margin-top: 1.6em;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.store-article p { margin-top: 1.1em; }
+.store-article img { max-width: 100%; height: auto; border-radius: var(--radius); }
+
+/* ---- forms (account, password, search) ---------------------- */
+.store-form {
+  display: grid;
+  gap: 14px;
+  max-width: 460px;
+  padding-bottom: var(--section-gap);
+}
+
+.store-form label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.store-form input,
+.store-form textarea {
+  width: 100%;
+  padding: 13px 15px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: var(--ink);
+}
+
+.store-form input:focus,
+.store-form textarea:focus {
+  outline: none;
+  border-color: var(--gerua);
+}
+
+.store-btn {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 13px 26px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--gerua);
+  color: var(--cream);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--dur-quick) var(--ease);
+}
+
+.store-btn:hover { background: var(--gerua-600); }
+
+.store-btn--quiet {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--hairline-strong);
+}
+
+.store-note {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.store-note a { color: var(--gerua); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ============================================================
+   SEARCH — masthead form, grouped results, non-product results
+   ============================================================ */
+
+/* the eight-point flourish the rest of the theme opens a block with */
+.store-head__mark {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--gerua);
+  margin-bottom: 16px;
+}
+
+.store-head__mark i {
+  display: block;
+  width: clamp(28px, 4vw, 64px);
+  height: 1px;
+  background: linear-gradient(90deg, var(--hairline-strong), transparent);
+}
+
+/* the search box is the point of the page, so it runs wider than the
+   account-form default and puts its button on the same line */
+.store-form--search {
+  max-width: 620px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  margin-top: clamp(22px, 2.4vw, 34px);
+  padding-bottom: 0;
+}
+
+.store-form--search label { grid-column: 1 / -1; }
+.store-form--search input[type='search'] { padding-block: 15px; }
+.store-form--search .store-btn { padding-block: 15px; }
+
+/* the type= and prefix inputs are grid children too — kept out of the tracks */
+.store-form--search input[type='hidden'] { display: none; }
+
+@media (max-width: 520px) {
+  .store-form--search { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* suggested terms — its own row rather than the shared `.store-chips` rail,
+   because it carries a lead-in label and sits under the search box */
+.store-suggest {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.store-suggest__label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-right: 4px;
+}
+
+/* the tinted plate the catalogue cards sit on, carried over to search */
+.store-piece .piece__media { background: var(--tint, var(--ivory-2)); }
+
+/* Results arrive in up to two groups (pieces, then pages and journal). The grid
+   and the read list each carry their own bottom gap for the pages that use them
+   alone, so inside a group that gap is handed back: the space between groups is
+   the group's own margin, and the run-out under the last group is only needed
+   when no pager follows to provide it. */
+.store-group + .store-group { margin-top: clamp(34px, 3.6vw, 64px); }
+.store-group .store-grid,
+.store-group .store-reads { padding-bottom: 0; }
+.store-group:last-child { padding-bottom: var(--section-gap); }
+
+/* a group heading only appears when the results are mixed */
+.store-group__title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: clamp(18px, 1.8vw, 28px);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.store-group__title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--hairline);
+}
+
+/* ---- pages and journal entries ------------------------------ */
+.store-reads {
+  display: grid;
+  gap: 2px;
+  padding-bottom: var(--section-gap);
+}
+
+.store-read {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr) auto;
+  gap: 20px;
+  align-items: center;
+  padding: 18px 20px;
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+  transition: background var(--dur-quick) var(--ease);
+}
+
+.store-read:hover { background: var(--sand); }
+.store-read--flat { grid-template-columns: minmax(0, 1fr) auto; }
+
+.store-read__media {
+  width: 88px;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--ivory);
+}
+
+.store-read__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* the row's parts are spans, because the whole row is one link — the grid
+   blockifies its own children, but the three stacked lines inside the body have
+   to be told, or their margins would be dropped as inline boxes */
+.store-read__kind,
+.store-read__title,
+.store-read__excerpt { display: block; }
+
+.store-read__kind {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gerua);
+}
+
+.store-read__title {
+  margin-top: 6px;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(19px, calc(18px + 0.26vw), 25px);
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.store-read__excerpt {
+  margin-top: 6px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+.store-read__go {
+  color: var(--gerua);
+  transition: transform var(--dur-quick) var(--ease);
+}
+
+.store-read:hover .store-read__go { transform: translateX(5px); }
+
+@media (max-width: 600px) {
+  .store-read,
+  .store-read--flat { grid-template-columns: minmax(0, 1fr); }
+  .store-read__media { display: none; }
+  .store-read__go { display: none; }
+}
+
+/* ---- empty / no-results ------------------------------------- */
+.store-empty__actions {
+  margin-top: clamp(22px, 2.4vw, 34px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* ============================================================
+   CART — line items, quantity, order summary
+   ============================================================ */
+
+/* the form is the grid; its first column has to be allowed to shrink or a long
+   piece name would push the summary off the track */
+.cart-body { min-width: 0; }
+
+.cart-lines {
+  border-top: 1px solid var(--hairline);
+}
+
+.cart-line__media { display: block; }
+
+.cart-line__body { min-width: 0; }
+
+/* the name is a link to the piece, so it needs the block box and the hover
+   the card names elsewhere have */
+.cart-line__name {
+  display: block;
+  transition: color var(--dur-quick) var(--ease);
+}
+
+.cart-line__name:hover { color: var(--gerua-600); }
+
+.cart-line__meta { margin-top: 4px; }
+
+.cart-line__price { margin-top: 8px; }
+
+.cart-line__price s {
+  margin-left: 8px;
+  color: var(--ink-soft);
+}
+
+.cart-line__discount {
+  margin-top: 4px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--gerua);
+}
+
+.cart-line__qty {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.cart-qty {
+  width: 78px;
+  padding: 9px 10px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  text-align: center;
+  color: var(--ink);
+}
+
+.cart-qty:focus { outline: none; border-color: var(--gerua); }
+
+.cart-line__remove {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: color var(--dur-quick) var(--ease);
+}
+
+.cart-line__remove:hover { color: var(--gerua); }
+
+.cart-line__total {
+  align-self: start;
+  padding-top: 2px;
+  font-family: var(--font-sans);
+  font-size: clamp(15px, calc(14.6px + 0.1vw), 17px);
+  font-weight: 500;
+  color: var(--ink);
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* the pre-discount line total, set under the amount actually charged */
+.cart-line__total s {
+  display: block;
+  margin-top: 3px;
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 600px) {
+  .cart-line { grid-template-columns: 72px minmax(0, 1fr); }
+  .cart-line__media { width: 72px; }
+  .cart-line__total { grid-column: 2; text-align: left; }
+}
+
+.cart-lines__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-block: 22px;
+}
+
+.cart-note {
+  display: grid;
+  gap: 10px;
+  padding-block: 4px 8px;
+}
+
+.cart-note label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.cart-note textarea {
+  width: 100%;
+  padding: 13px 15px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink);
+  resize: vertical;
+}
+
+.cart-note textarea:focus { outline: none; border-color: var(--gerua); }
+
+.cart-aside__title {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--hairline);
+  margin-bottom: 6px;
+}
+
+.cart-aside__row--discount { color: var(--gerua); }
+
+.cart-aside__tax { margin-top: 12px; }
+
+.cart-aside__checkout {
+  margin-top: 18px;
+  width: 100%;
+  justify-content: center;
+  justify-self: stretch;
+}
+
+.cart-aside__notes {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--hairline);
+  display: grid;
+  gap: 8px;
+}
+
+.cart-aside__notes li {
+  display: flex;
+  gap: 9px;
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.cart-aside__notes li::before {
+  content: '';
+  flex: none;
+  width: 5px;
+  height: 5px;
+  margin-top: 7px;
+  border-radius: 50%;
+  background: var(--gerua-300);
+}
+
+/* ============================================================
+   JOURNAL INDEX, ARTICLE, UTILITY PAGES (404, password, gift
+   card) and the customer account templates.
+
+   Same tokens, same rhythm. Where the home page already owns a
+   treatment — the journal card, the pills, the buttons — these
+   pages borrow it rather than restate it; only what the commerce
+   templates genuinely add is written below.
+   ============================================================ */
+
+/* ---- journal index ------------------------------------------ */
+.store-journal {
+  display: grid;
+  grid-template-columns: repeat(var(--posts-cols, 3), minmax(0, 1fr));
+  gap: clamp(30px, 3.2vw, 58px) clamp(16px, 1.8vw, 30px);
+  padding-bottom: var(--section-gap);
+}
+
+@media (max-width: 900px) { .store-journal { --posts-cols: 2; } }
+@media (max-width: 600px) { .store-journal { --posts-cols: 1; } }
+
+/* with a pager under it the grid hands the page gap over, so the two do not
+   stack their spacing into one enormous band */
+.store-journal--paged { padding-bottom: clamp(10px, 1vw, 18px); }
+
+/* The card *is* the home page's journal card — media crop, hover scale, pill
+   and arrow all inherit. An index entry carries a date, an excerpt and a
+   byline under it, so that block reads left-aligned like a tearsheet rather
+   than centred, and its own grid keeps the spacing honest whichever of the
+   parts the merchant has switched off. */
+.store-post__body {
+  margin-top: 16px;
+  display: grid;
+  gap: 9px;
+  justify-items: start;
+}
+
+.store-post .journal-card__title {
+  margin-top: 0;
+  text-align: left;
+}
+
+.store-post__meta {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+  font-family: var(--font-sans);
+  font-size: clamp(11px, calc(10.6px + 0.09vw), 13px);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.store-post__dot { color: var(--gerua-300); }
+
+.store-post__excerpt {
+  font-size: clamp(15px, calc(14.6px + 0.09vw), 17px);
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+.store-post__byline {
+  font-family: var(--font-sans);
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  color: var(--ink-soft);
+}
+
+.store-post__byline strong {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+/* ---- chip filter rail --------------------------------------- */
+.store-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px 16px;
+  flex-wrap: wrap;
+  padding-block: 4px clamp(22px, 2.4vw, 38px);
+}
+
+.store-filter__label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.store-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+/* ---- article ------------------------------------------------- */
+.store-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  transition: color var(--dur-quick) var(--ease);
+}
+
+.store-back:hover { color: var(--gerua); }
+.store-back svg { transition: transform var(--dur-quick) var(--ease); }
+.store-back:hover svg { transform: translateX(-4px); }
+
+.store-meta {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  font-family: var(--font-sans);
+  font-size: clamp(11px, calc(10.6px + 0.09vw), 13px);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.store-meta__dot { color: var(--gerua-300); }
+
+.store-article__media {
+  max-width: 1100px;
+  margin: 0 auto clamp(30px, 3.4vw, 62px);
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.store-article__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+
+/* Rich text from the article editor: the reset strips list markers and link
+   underlines site-wide, so long-form copy has to put them back. */
+.store-article :is(ul, ol) {
+  margin-top: 1.1em;
+  padding-left: 1.3em;
+  list-style: revert;
+}
+
+.store-article li { margin-top: 0.4em; }
+
+.store-article a {
+  color: var(--gerua);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.store-article blockquote {
+  margin: 1.6em 0;
+  padding-left: clamp(16px, 1.6vw, 26px);
+  border-left: 2px solid var(--gerua-300);
+  font-family: var(--font-serif);
+  font-size: clamp(22px, calc(19.5px + 0.64vw), 36px);
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+.store-article figure { margin-top: 1.6em; }
+
+.store-article figcaption {
+  margin-top: 10px;
+  font-size: clamp(11px, calc(10.6px + 0.09vw), 13px);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.store-article hr {
+  margin: 2em 0;
+  border: 0;
+  border-top: 1px solid var(--hairline);
+}
+
+.store-article table {
+  width: 100%;
+  margin-top: 1.4em;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.store-article :is(th, td) {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--hairline);
+  text-align: left;
+}
+
+/* the article rail: share row, next/previous, comments all sit on the
+   measure the prose already sets, so the column never breaks */
+.store-rail {
+  max-width: 78ch;
+  margin-inline: auto;
+}
+
+/* With a share row, an article pager or comments under it the prose hands the
+   page gap over to the foot, so the two do not stack into one dead band. */
+.store-article--tight { padding-bottom: clamp(16px, 1.8vw, 30px); }
+.store-article__foot { padding-bottom: var(--section-gap); }
+
+.store-share {
+  display: flex;
+  align-items: center;
+  gap: 12px 18px;
+  flex-wrap: wrap;
+  padding-block: clamp(20px, 2.2vw, 34px);
+  border-top: 1px solid var(--hairline);
+}
+
+.store-share__label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.store-share__links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.store-share__link {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--hairline);
+  border-radius: 50%;
+  color: var(--ink);
+  transition: border-color var(--dur-quick) var(--ease), color var(--dur-quick) var(--ease);
+}
+
+.store-share__link:hover { border-color: var(--gerua); color: var(--gerua); }
+
+.store-postnav {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(14px, 1.6vw, 26px);
+  padding-block: clamp(22px, 2.4vw, 38px);
+  border-top: 1px solid var(--hairline);
+}
+
+@media (max-width: 600px) { .store-postnav { grid-template-columns: 1fr; } }
+
+.store-postnav__item {
+  display: block;
+  padding: clamp(16px, 1.8vw, 24px);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  transition: border-color var(--dur-quick) var(--ease);
+}
+
+.store-postnav__item:hover { border-color: var(--hairline-strong); }
+.store-postnav__item--next { text-align: right; }
+
+.store-postnav__label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gerua);
+}
+
+.store-postnav__title {
+  margin-top: 8px;
+  font-family: var(--font-serif);
+  font-size: clamp(17px, calc(16.1px + 0.23vw), 22px);
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+/* ---- comments ----------------------------------------------- */
+.store-comments { padding-block: clamp(22px, 2.4vw, 40px); border-top: 1px solid var(--hairline); }
+
+.store-comments__title {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(24px, 2vw, 34px);
+  color: var(--ink);
+}
+
+.store-comments__title--form { margin-top: clamp(22px, 2.4vw, 34px); }
+
+/* the article's own tag row, under the meta line */
+.store-head .store-chips { margin-top: 18px; }
+
+.store-comment {
+  padding-block: clamp(18px, 1.8vw, 26px);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.store-comment__meta {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+  font-family: var(--font-sans);
+  font-size: clamp(11px, calc(10.6px + 0.09vw), 13px);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.store-comment__meta strong { color: var(--ink); font-weight: 500; }
+
+.store-comment__body {
+  margin-top: 10px;
+  color: var(--ink-soft);
+  line-height: 1.75;
+}
+
+/* ---- forms: errors, notices, fields ------------------------- */
+.store-errors,
+.store-success {
+  display: grid;
+  gap: 5px;
+  padding: 13px 16px;
+  border: 1px solid var(--gerua);
+  border-left-width: 3px;
+  border-radius: var(--radius);
+  background: rgba(178, 49, 39, 0.06);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--gerua-600);
+}
+
+.store-success {
+  border-color: var(--gold);
+  background: rgba(185, 145, 85, 0.1);
+  color: var(--ink);
+}
+
+.store-errors li { list-style: none; }
+
+.store-form--center {
+  margin-inline: auto;
+  padding-bottom: 0;
+  justify-items: stretch;
+  text-align: left;
+  width: 100%;
+}
+
+.store-form--wide { max-width: none; }
+
+.store-form__row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.store-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+@media (max-width: 600px) { .store-fields { grid-template-columns: 1fr; } }
+
+.store-field { display: grid; gap: 6px; }
+.store-field--wide { grid-column: 1 / -1; }
+
+.store-form select {
+  width: 100%;
+  padding: 13px 15px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  color: var(--ink);
+}
+
+.store-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-soft);
+}
+
+.store-check input { width: auto; }
+
+/* ---- panels, two-up layouts, tables ------------------------- */
+.store-duo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 400px);
+  gap: clamp(24px, 3vw, 64px);
+  align-items: start;
+  padding-bottom: var(--section-gap);
+}
+
+@media (max-width: 900px) { .store-duo { grid-template-columns: 1fr; } }
+
+.store-stack { display: grid; gap: clamp(18px, 2vw, 30px); }
+
+/* a stack that is the whole page body, so it owes the footer a page gap */
+.store-stack--page { padding-bottom: var(--section-gap); }
+
+.store-panel {
+  padding: clamp(20px, 2.2vw, 34px);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.store-panel__title {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(20px, 1.6vw, 28px);
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.store-panel__copy {
+  margin-top: 10px;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+.store-panel .store-form {
+  margin-top: 18px;
+  max-width: none;
+  padding-bottom: 0;
+}
+
+.store-section-title {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(24px, 2vw, 36px);
+  color: var(--ink);
+  margin-bottom: clamp(14px, 1.6vw, 22px);
+}
+
+.store-scroll { overflow-x: auto; }
+
+.store-table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  font-family: var(--font-sans);
+  font-size: 14px;
+}
+
+.store-table th {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--hairline-strong);
+  text-align: left;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.store-table td {
+  padding: 16px 14px;
+  border-bottom: 1px solid var(--hairline);
+  vertical-align: middle;
+  color: var(--ink-soft);
+}
+
+.store-table :is(th, td):first-child { padding-left: 0; }
+
+.store-table :is(th, td):last-child {
+  padding-right: 0;
+  text-align: right;
+}
+
+/* both of these are spans or links inside a cell, so the stack only reads as a
+   stack once they are told to be blocks */
+.store-table__name {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: clamp(17px, calc(16.1px + 0.23vw), 22px);
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.store-table__name:hover { color: var(--gerua); }
+
+.store-table__sub {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.store-table__sub a { color: var(--gerua); text-decoration: underline; text-underline-offset: 3px; }
+
+.store-line {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.store-line__media {
+  display: block;
+  flex: 0 0 auto;
+  width: 68px;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.store-line__media img { width: 100%; height: 100%; object-fit: cover; }
+
+.store-totals {
+  display: grid;
+  gap: 8px;
+  max-width: 380px;
+  margin-left: auto;
+  padding-top: clamp(18px, 2vw, 26px);
+}
+
+.store-totals__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.store-totals__row--grand {
+  margin-top: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--hairline-strong);
+  font-family: var(--font-serif);
+  font-size: clamp(20px, 1.6vw, 26px);
+  color: var(--ink);
+}
+
+/* ---- addresses ---------------------------------------------- */
+.store-addresses {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: clamp(16px, 1.8vw, 28px);
+}
+
+.store-address__lines {
+  margin-top: 12px;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--ink-soft);
+}
+
+.store-address__lines p { margin: 0; }
+
+.store-address__actions {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+/* Edit and Delete sit side by side until the disclosure opens, at which point
+   the form claims the row and the delete button wraps under it — flex-basis
+   alone, no script. */
+.store-address__actions .store-reveal[open] { flex: 1 1 100%; }
+
+/* a disclosure that looks like the quiet button, so "edit" and "add" read as
+   one control set with the rest of the form furniture */
+.store-reveal > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 13px 26px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius-pill);
+  list-style: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  transition: border-color var(--dur-quick) var(--ease), color var(--dur-quick) var(--ease);
+}
+
+.store-reveal > summary::-webkit-details-marker { display: none; }
+.store-reveal > summary:hover { border-color: var(--gerua); color: var(--gerua); }
+.store-reveal[open] > summary { margin-bottom: 18px; }
+
+/* ---- utility pages: 404, password, gift card ---------------- */
+.store-gate {
+  display: grid;
+  place-items: center;
+  min-height: 58vh;
+  padding-block: clamp(48px, 5.5vw, 110px) var(--section-gap);
+  text-align: center;
+}
+
+.store-gate__inner {
+  display: grid;
+  justify-items: center;
+  gap: clamp(14px, 1.6vw, 22px);
+  width: 100%;
+  max-width: 620px;
+}
+
+.store-gate__mark {
+  width: clamp(150px, 16vw, 240px);
+  height: auto;
+}
+
+.store-gate__title {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(36px, calc(27px + 2.6vw), 72px);
+  line-height: 1.06;
+  color: var(--ink);
+}
+
+.store-gate__title em { font-style: italic; color: var(--gerua); }
+
+.store-gate__copy {
+  max-width: 52ch;
+  font-family: var(--font-sans);
+  font-size: clamp(15px, calc(14px + 0.2vw), 17px);
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+.store-actions {
+  display: flex;
+  gap: clamp(12px, 1.4vw, 20px);
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 6px;
+}
+
+.store-gate .store-form__row { justify-content: center; }
+.store-gate .store-form__row input { flex: 1 1 220px; }
+
+/* the sign-up panel under a gate keeps the centred column */
+.store-gate .store-panel {
+  width: 100%;
+  max-width: 540px;
+  margin-top: 8px;
+  text-align: center;
+}
+
+.store-gate .store-panel .store-form { justify-items: center; }
+
+/* ---- gift card ---------------------------------------------- */
+.store-gift {
+  display: grid;
+  justify-items: center;
+  gap: clamp(14px, 1.6vw, 22px);
+  width: 100%;
+  padding: clamp(26px, 3vw, 46px);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+}
+
+.store-gift__label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.store-gift__value {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(52px, 7vw, 104px);
+  line-height: 0.95;
+  color: var(--gerua);
+}
+
+.store-gift__was {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+}
+
+.store-gift__code {
+  padding: 13px 22px;
+  border: 1px dashed var(--hairline-strong);
+  border-radius: var(--radius);
+  background: var(--ivory);
+  font-family: var(--font-sans);
+  font-size: clamp(16px, 1.3vw, 21px);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink);
+  word-break: break-all;
+}
+
+.store-gift__qr {
+  display: grid;
+  place-items: center;
+  padding: 12px;
+  border-radius: var(--radius);
+  background: #fff;
+}
+
+.store-gift__qr :is(img, canvas) { display: block; }
+
+@media print {
+  .site-header,
+  .footer,
+  .store-gift__actions { display: none !important; }
+
+  .store-gate { min-height: 0; padding-block: 0; }
+  .store-gift { border-color: #ccc; background: #fff; }
+}

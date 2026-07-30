@@ -26,6 +26,8 @@
     <link href="https://fonts.googleapis.com/css2?{{ font_families }}&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ 'shrujan-global.css' | asset_url }}">
     <link rel="stylesheet" href="{{ 'shrujan-pages.css' | asset_url }}">
+    {%- comment -%} commerce pages (collection, cart, search, blog, account) {%- endcomment -%}
+    <link rel="stylesheet" href="{{ 'shrujan-store.css' | asset_url }}">
     {% comment %} Section/section-group wrapper divs must not affect layout —
         the stylesheets were written for the unwrapped React DOM. {% endcomment %}
     <style>.shopify-section{display:contents}</style>

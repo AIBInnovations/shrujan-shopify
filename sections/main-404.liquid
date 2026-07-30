@@ -1,0 +1,257 @@
+{%- render 'section-design', section: section -%}
+{%- comment -%}
+  404 — a designed dead end rather than the home page in disguise.
+
+  The template used to re-render every home section (the React catch-all did
+  the same), which meant a mistyped URL answered with a full storefront and no
+  sign that anything had gone wrong. This gives the visitor the three things
+  that actually help: a search box, the catalogue, and the story.
+{%- endcomment -%}
+{%- liquid
+  assign cfg = section.settings
+-%}
+<section class="container store-gate">
+  <div class="store-gate__inner" data-reveal>
+    {%- if cfg.show_image %}
+    <img class="store-gate__mark" src="{% if cfg.image %}{{ cfg.image | image_url: width: 600 }}{% else %}{{ 'mandala-knot.webp' | asset_url }}{% endif %}" alt="" aria-hidden="true" loading="lazy">
+    {%- endif %}
+
+    {%- if cfg.eyebrow != blank %}
+    <p class="store-head__eyebrow">{{ cfg.eyebrow }}</p>
+    {%- endif %}
+    <h1 class="store-gate__title">{{ cfg.heading }}</h1>
+    {%- if cfg.copy != blank %}
+    <p class="store-gate__copy">{{ cfg.copy }}</p>
+    {%- endif %}
+
+    {%- if cfg.show_search %}
+    <form class="store-form store-form--center" action="{{ routes.search_url }}" method="get" role="search">
+      <label class="sr-only" for="Search404">{{ cfg.search_label }}</label>
+      <input type="hidden" name="options[prefix]" value="last">
+      <div class="store-form__row">
+        <input type="search" id="Search404" name="q" value="{{ search.terms | escape }}" placeholder="{{ cfg.search_placeholder | escape }}">
+        <button type="submit" class="store-btn">{{ cfg.search_button }}</button>
+      </div>
+    </form>
+    {%- endif %}
+
+    {%- if cfg.show_links %}
+    <div class="store-actions">
+      <a class="btn" href="{{ cfg.link1_url | default: '/pages/shop-shrujan' }}">{{ cfg.link1_label }}</a>
+      <a class="btn btn--ghost" href="{{ cfg.link2_url | default: '/pages/the-shrujan-story' }}">{{ cfg.link2_label }}</a>
+    </div>
+    {%- endif %}
+  </div>
+</section>
+{% schema %}
+{
+  "name": "404 page",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Message"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Error 404"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "info": "Wrap a word in <em> to set it in italic gerua.",
+      "default": "This thread runs <em>nowhere</em>"
+    },
+    {
+      "type": "textarea",
+      "id": "copy",
+      "label": "Copy",
+      "default": "The page you asked for has been moved, renamed, or never existed. Search for a piece below, or start again from the catalogue."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "label": "Show the ornament",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Ornament image",
+      "info": "Falls back to the theme’s mandala knot."
+    },
+    {
+      "type": "header",
+      "content": "Search"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show the search box",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "search_label",
+      "label": "Search field label",
+      "info": "Read out by screen readers.",
+      "default": "Search the store"
+    },
+    {
+      "type": "text",
+      "id": "search_placeholder",
+      "label": "Search placeholder",
+      "default": "Kanchli, dupatta, tote…"
+    },
+    {
+      "type": "text",
+      "id": "search_button",
+      "label": "Search button",
+      "default": "Search"
+    },
+    {
+      "type": "header",
+      "content": "Links"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_links",
+      "label": "Show the links",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "link1_label",
+      "label": "First link label",
+      "default": "Shop the catalogue"
+    },
+    {
+      "type": "url",
+      "id": "link1_url",
+      "label": "First link"
+    },
+    {
+      "type": "text",
+      "id": "link2_label",
+      "label": "Second link label",
+      "default": "Read our story"
+    },
+    {
+      "type": "url",
+      "id": "link2_url",
+      "label": "Second link"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "select",
+      "id": "sec_width",
+      "label": "Section width",
+      "info": "Theme default keeps the shared page rail.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow"
+        },
+        {
+          "value": "wide",
+          "label": "Wide"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top",
+      "label": "Extra top spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom",
+      "label": "Extra bottom spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top_m",
+      "label": "Extra top spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom_m",
+      "label": "Extra bottom spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "sec_bg",
+      "label": "Background",
+      "info": "Leave empty to keep the section’s own background."
+    },
+    {
+      "type": "color",
+      "id": "sec_text",
+      "label": "Text colour"
+    },
+    {
+      "type": "color",
+      "id": "sec_accent",
+      "label": "Accent colour"
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_animate",
+      "label": "Animate on scroll",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_mobile",
+      "label": "Hide on mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_desktop",
+      "label": "Hide on desktop",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css",
+      "label": "Custom CSS",
+      "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    }
+  ]
+}
+{% endschema %}

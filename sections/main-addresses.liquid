@@ -1,0 +1,378 @@
+{%- render 'section-design', section: section -%}
+{%- comment -%}
+  Addresses — add, edit and delete, all through `{% form 'customer_address' %}`.
+
+  Add and edit are `<details>` disclosures rather than JavaScript panels, so
+  they work with scripts blocked; the add form opens itself for a customer who
+  has no address yet. Delete is a plain POST with `_method=delete` — exactly
+  the request Shopify's own helper builds — so it also works without JS, with
+  the confirmation added on top when JS is available.
+{%- endcomment -%}
+{%- liquid
+  assign cfg = section.settings
+-%}
+<header class="store-head container" data-reveal>
+  {%- if cfg.eyebrow != blank %}
+  <p class="store-head__eyebrow">{{ cfg.eyebrow }}</p>
+  {%- endif %}
+  <h1 class="store-head__title">{{ cfg.heading }}</h1>
+  {%- if cfg.lede != blank %}
+  <p class="store-head__lede">{{ cfg.lede }}</p>
+  {%- endif %}
+  <p class="store-note"><a href="{{ routes.account_url }}">{{ cfg.back_label }}</a></p>
+</header>
+
+<div class="container store-stack store-stack--page" data-reveal>
+  <details class="store-reveal" {% if customer.addresses_count == 0 %}open{% endif %}>
+    <summary>{{ cfg.new_title }}</summary>
+    {%- form 'customer_address', customer.new_address %}
+      {%- render 'store-form-errors', form: form -%}
+      <div class="store-form store-form--wide">
+        {%- render 'store-address-fields', form: form, cfg: cfg, prefix: 'NewAddress' -%}
+        <button type="submit" class="store-btn">{{ cfg.new_submit }}</button>
+      </div>
+    {%- endform %}
+  </details>
+
+  {%- if customer.addresses_count > 0 %}
+  <div class="store-addresses">
+    {%- for address in customer.addresses %}
+    <div class="store-panel">
+      {%- if address.id == customer.default_address.id %}
+      <span class="journal-pill">{{ cfg.default_badge }}</span>
+      {%- endif %}
+      <div class="store-address__lines">{{ address | format_address }}</div>
+
+      <div class="store-address__actions">
+        <details class="store-reveal">
+          <summary>{{ cfg.edit_label }}</summary>
+          {%- form 'customer_address', address %}
+            {%- render 'store-form-errors', form: form -%}
+            <div class="store-form store-form--wide">
+              {%- render 'store-address-fields', form: form, cfg: cfg, prefix: address.id -%}
+              <button type="submit" class="store-btn">{{ cfg.update_label }}</button>
+            </div>
+          {%- endform %}
+        </details>
+
+        <form method="post" action="{{ address.url }}">
+          <input type="hidden" name="_method" value="delete">
+          <button type="submit" class="store-btn store-btn--quiet" data-confirm="{{ cfg.delete_confirm | escape }}">{{ cfg.delete_label }}</button>
+        </form>
+      </div>
+    </div>
+    {%- endfor %}
+  </div>
+  {%- endif %}
+</div>
+
+<script>
+(function () {
+  /* ---- delete: confirm before the POST goes out ---- */
+  document.querySelectorAll('[data-confirm]').forEach(function (button) {
+    button.addEventListener('click', function (event) {
+      if (!window.confirm(button.getAttribute('data-confirm'))) event.preventDefault();
+    });
+  });
+
+  /* ---- country → province, read off Shopify's own option data ----
+     `all_country_option_tags` hangs each country's provinces on its option as
+     JSON, so the second select can be built from the first with no vendor
+     script. A country with no provinces hides the field instead of offering an
+     empty menu. */
+  document.querySelectorAll('[data-address-country]').forEach(function (country) {
+    var scope = country.closest('form');
+    if (!scope) return;
+    var province = scope.querySelector('[data-address-province]');
+    var field = province ? province.closest('.store-field') : null;
+    if (!province || !field) return;
+
+    function fill() {
+      var option = country.options[country.selectedIndex];
+      var list = [];
+      try { list = JSON.parse(option.getAttribute('data-provinces') || '[]'); } catch (e) { list = []; }
+
+      province.innerHTML = '';
+      if (!list.length) {
+        field.hidden = true;
+        return;
+      }
+      field.hidden = false;
+
+      var wanted = province.getAttribute('data-default');
+      list.forEach(function (pair) {
+        var opt = document.createElement('option');
+        opt.value = pair[0];
+        opt.textContent = pair[1];
+        if (pair[0] === wanted) opt.selected = true;
+        province.appendChild(opt);
+      });
+    }
+
+    var preset = country.getAttribute('data-default');
+    if (preset) country.value = preset;
+    fill();
+    country.addEventListener('change', fill);
+  });
+})();
+</script>
+{% schema %}
+{
+  "name": "Addresses",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Masthead"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Your account"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Your addresses"
+    },
+    {
+      "type": "textarea",
+      "id": "lede",
+      "label": "Introduction",
+      "default": "Where your pieces should travel. Keep one as the default and checkout will fill itself in."
+    },
+    {
+      "type": "text",
+      "id": "back_label",
+      "label": "Back link label",
+      "default": "Back to your account"
+    },
+    {
+      "type": "header",
+      "content": "Buttons"
+    },
+    {
+      "type": "text",
+      "id": "new_title",
+      "label": "Add disclosure label",
+      "default": "Add a new address"
+    },
+    {
+      "type": "text",
+      "id": "new_submit",
+      "label": "Add button",
+      "default": "Save address"
+    },
+    {
+      "type": "text",
+      "id": "edit_label",
+      "label": "Edit disclosure label",
+      "default": "Edit"
+    },
+    {
+      "type": "text",
+      "id": "update_label",
+      "label": "Update button",
+      "default": "Save changes"
+    },
+    {
+      "type": "text",
+      "id": "delete_label",
+      "label": "Delete button",
+      "default": "Delete"
+    },
+    {
+      "type": "text",
+      "id": "delete_confirm",
+      "label": "Delete confirmation",
+      "default": "Delete this address?"
+    },
+    {
+      "type": "text",
+      "id": "default_badge",
+      "label": "Default address badge",
+      "default": "Default"
+    },
+    {
+      "type": "text",
+      "id": "default_label",
+      "label": "Default address checkbox",
+      "default": "Use this as my default address"
+    },
+    {
+      "type": "header",
+      "content": "Field labels"
+    },
+    {
+      "type": "text",
+      "id": "l_first",
+      "label": "First name",
+      "default": "First name"
+    },
+    {
+      "type": "text",
+      "id": "l_last",
+      "label": "Last name",
+      "default": "Last name"
+    },
+    {
+      "type": "text",
+      "id": "l_company",
+      "label": "Company",
+      "default": "Company (optional)"
+    },
+    {
+      "type": "text",
+      "id": "l_address1",
+      "label": "Address",
+      "default": "Address"
+    },
+    {
+      "type": "text",
+      "id": "l_address2",
+      "label": "Apartment, suite",
+      "default": "Apartment, suite (optional)"
+    },
+    {
+      "type": "text",
+      "id": "l_city",
+      "label": "City",
+      "default": "City"
+    },
+    {
+      "type": "text",
+      "id": "l_zip",
+      "label": "Postal code",
+      "default": "PIN / postal code"
+    },
+    {
+      "type": "text",
+      "id": "l_country",
+      "label": "Country",
+      "default": "Country / region"
+    },
+    {
+      "type": "text",
+      "id": "l_province",
+      "label": "State",
+      "default": "State / province"
+    },
+    {
+      "type": "text",
+      "id": "l_phone",
+      "label": "Phone",
+      "default": "Phone"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "select",
+      "id": "sec_width",
+      "label": "Section width",
+      "info": "Theme default keeps the shared page rail.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow"
+        },
+        {
+          "value": "wide",
+          "label": "Wide"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top",
+      "label": "Extra top spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom",
+      "label": "Extra bottom spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top_m",
+      "label": "Extra top spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom_m",
+      "label": "Extra bottom spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "sec_bg",
+      "label": "Background",
+      "info": "Leave empty to keep the section’s own background."
+    },
+    {
+      "type": "color",
+      "id": "sec_text",
+      "label": "Text colour"
+    },
+    {
+      "type": "color",
+      "id": "sec_accent",
+      "label": "Accent colour"
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_animate",
+      "label": "Animate on scroll",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_mobile",
+      "label": "Hide on mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_desktop",
+      "label": "Hide on desktop",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css",
+      "label": "Custom CSS",
+      "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    }
+  ]
+}
+{% endschema %}

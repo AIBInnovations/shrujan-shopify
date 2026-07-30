@@ -1,0 +1,227 @@
+{%- render 'section-design', section: section -%}
+{%- comment -%}
+  Account activation — the page an invited customer reaches from their email.
+
+  `{% form 'activate_customer_password' %}` gives two submits: the plain one
+  sets the password and activates the account, and the one named `decline`
+  tells Shopify the invitation is refused. Both are real submit buttons, so the
+  page needs no JavaScript at all.
+{%- endcomment -%}
+{%- liquid
+  assign cfg = section.settings
+-%}
+<header class="store-head container" data-reveal>
+  {%- if cfg.eyebrow != blank %}
+  <p class="store-head__eyebrow">{{ cfg.eyebrow }}</p>
+  {%- endif %}
+  <h1 class="store-head__title">{{ cfg.heading }}</h1>
+  {%- if cfg.lede != blank %}
+  <p class="store-head__lede">{{ cfg.lede }}</p>
+  {%- endif %}
+</header>
+
+<div class="container" data-reveal>
+  {%- form 'activate_customer_password' %}
+    {%- render 'store-form-errors', form: form -%}
+    <div class="store-form">
+      <div class="store-field">
+        <label for="ActivatePassword">{{ cfg.password_label }}</label>
+        <input type="password" id="ActivatePassword" name="customer[password]" autocomplete="new-password" required>
+      </div>
+      <div class="store-field">
+        <label for="ActivatePasswordConfirm">{{ cfg.confirm_label }}</label>
+        <input type="password" id="ActivatePasswordConfirm" name="customer[password_confirmation]" autocomplete="new-password" required>
+      </div>
+      <button type="submit" class="store-btn">{{ cfg.submit_label }}</button>
+
+      {%- if cfg.show_decline %}
+      {%- if cfg.decline_note != blank %}
+      <p class="store-note">{{ cfg.decline_note }}</p>
+      {%- endif %}
+      <button type="submit" name="decline" class="store-btn store-btn--quiet">{{ cfg.decline_label }}</button>
+      {%- endif %}
+    </div>
+  {%- endform %}
+</div>
+{% schema %}
+{
+  "name": "Activate account",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Masthead"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Your account"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Activate your account"
+    },
+    {
+      "type": "textarea",
+      "id": "lede",
+      "label": "Introduction",
+      "default": "Choose a password and the account is yours. Everything you have ordered from us will be waiting inside."
+    },
+    {
+      "type": "header",
+      "content": "Form"
+    },
+    {
+      "type": "text",
+      "id": "password_label",
+      "label": "Password label",
+      "default": "Password"
+    },
+    {
+      "type": "text",
+      "id": "confirm_label",
+      "label": "Confirm password label",
+      "default": "Confirm password"
+    },
+    {
+      "type": "text",
+      "id": "submit_label",
+      "label": "Activate button",
+      "default": "Activate account"
+    },
+    {
+      "type": "header",
+      "content": "Declining"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_decline",
+      "label": "Show the decline button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "decline_note",
+      "label": "Decline note",
+      "default": "Not expecting this invitation?"
+    },
+    {
+      "type": "text",
+      "id": "decline_label",
+      "label": "Decline button",
+      "default": "Decline invitation"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "select",
+      "id": "sec_width",
+      "label": "Section width",
+      "info": "Theme default keeps the shared page rail.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow"
+        },
+        {
+          "value": "wide",
+          "label": "Wide"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top",
+      "label": "Extra top spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom",
+      "label": "Extra bottom spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top_m",
+      "label": "Extra top spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom_m",
+      "label": "Extra bottom spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "sec_bg",
+      "label": "Background",
+      "info": "Leave empty to keep the section’s own background."
+    },
+    {
+      "type": "color",
+      "id": "sec_text",
+      "label": "Text colour"
+    },
+    {
+      "type": "color",
+      "id": "sec_accent",
+      "label": "Accent colour"
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_animate",
+      "label": "Animate on scroll",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_mobile",
+      "label": "Hide on mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_desktop",
+      "label": "Hide on desktop",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css",
+      "label": "Custom CSS",
+      "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,473 @@
+{%- render 'section-design', section: section -%}
+{%- comment -%}
+  The bag, rendered from the real `cart` object and posted to Shopify's own
+  endpoints — there is no JavaScript on this page at all.
+
+  How the mutations work:
+
+   * One `<form action="/cart" method="post">` wraps both the line items and the
+     summary. Every quantity field is `updates[<line item key>]`, so whichever
+     submit button is pressed, Shopify reads the whole set and writes it to the
+     cart first.
+   * `name="update"` therefore saves the quantities and returns to /cart, and
+     `name="checkout"` saves them and continues to checkout. A shopper who
+     retypes a quantity and goes straight to Checkout still gets the quantity
+     they typed — no "update your bag first" trap.
+   * A quantity of 0 removes the line. The Remove link is the same operation
+     without the round trip through the form: /cart/change?line=N&quantity=0,
+     where N is the line's 1-based position, which is what `forloop.index` is.
+{%- endcomment -%}
+{%- liquid
+  assign cfg = section.settings
+  assign shop_url = cfg.continue_link | default: '/pages/shop-shrujan'
+-%}
+<div class="page">
+  <section class="container store-head" data-reveal>
+    <span class="store-head__mark" aria-hidden="true"><svg viewBox="0 0 32 32" width="14" height="14" fill="currentColor"><path d="M16 2c1.3 4.6 3 7.4 5.2 8.8C23.4 12.2 26 13 30 13.4v.2c-4 .4-6.6 1.2-8.8 2.6C19 17.6 17.3 20.4 16 25c-1.3-4.6-3-7.4-5.2-8.8C8.6 14.8 6 14 2 13.6v-.2c4-.4 6.6-1.2 8.8-2.6C13 9.4 14.7 6.6 16 2Z"></path><circle cx="16" cy="28.5" r="1.6"></circle></svg><i></i></span>
+
+    <p class="store-head__eyebrow">{{ cfg.eyebrow }}</p>
+    <h1 class="store-head__title">{{ cfg.heading }}</h1>
+    {%- if cfg.lede != blank %}
+    <p class="store-head__lede">{{ cfg.lede }}</p>
+    {%- endif %}
+    {%- if cart.item_count > 0 %}
+    <p class="store-head__count">{{ cart.item_count }}{% if cart.item_count == 1 %} {{ cfg.count_one }}{% else %} {{ cfg.count_many }}{% endif %}</p>
+    {%- endif %}
+  </section>
+
+{%- if cart.item_count == 0 %}
+  <section class="container store-empty" aria-label="{{ cfg.empty_heading | escape }}">
+    <p class="store-empty__title">{{ cfg.empty_heading }}</p>
+    <p class="store-empty__copy">{{ cfg.empty_copy }}</p>
+    <div class="store-empty__actions">
+      <a class="btn btn--ghost" href="{{ shop_url }}">
+        {{ cfg.empty_label }}
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
+      </a>
+    </div>
+  </section>
+{%- else %}
+  <form action="/cart" method="post" id="cart" accept-charset="UTF-8" novalidate class="container cart-layout">
+    <div class="cart-body">
+      <div class="cart-lines" data-reveal>
+        {%- for item in cart.items %}
+        <div class="cart-line">
+          <a class="cart-line__media" href="{{ item.url }}" tabindex="-1" aria-hidden="true">
+            {%- if item.image %}
+            <img src="{{ item.image | image_url: width: 260 }}" alt="{{ item.image.alt | default: item.product.title | escape }}" loading="lazy">
+            {%- else %}
+            {{ 'product-1' | placeholder_svg_tag: 'piece__ph' }}
+            {%- endif %}
+          </a>
+
+          <div class="cart-line__body">
+            <a class="cart-line__name" href="{{ item.url }}">{{ item.product.title | escape }}</a>
+
+            {%- if cfg.show_vendor and item.product.vendor != blank %}
+            <p class="cart-line__meta">{{ item.product.vendor }}</p>
+            {%- endif %}
+
+            {%- if cfg.show_options %}
+              {%- unless item.product.has_only_default_variant %}
+            <p class="cart-line__meta">{% for opt in item.options_with_values %}{{ opt.name }}: {{ opt.value }}{% unless forloop.last %} · {% endunless %}{% endfor %}</p>
+              {%- endunless %}
+              {%- if item.selling_plan_allocation %}
+            <p class="cart-line__meta">{{ item.selling_plan_allocation.selling_plan.name }}</p>
+              {%- endif %}
+              {%- comment -%}
+                Line item properties a shopper filled in (a monogram, a gift
+                note). Keys beginning with an underscore are the app-private
+                ones and are never shown.
+              {%- endcomment -%}
+              {%- for prop in item.properties %}
+                {%- assign prop_key = prop.first | slice: 0, 1 %}
+                {%- if prop.last != blank and prop_key != '_' %}
+            <p class="cart-line__meta">{{ prop.first }}: {{ prop.last }}</p>
+                {%- endif %}
+              {%- endfor %}
+            {%- endif %}
+
+            {%- if cfg.show_unit_price %}
+            <p class="cart-line__price">{{ item.final_price | money }} {{ cfg.unit_suffix }}{% if item.original_price != item.final_price %}<s>{{ item.original_price | money }}</s>{% endif %}</p>
+            {%- endif %}
+
+            {%- for alloc in item.line_level_discount_allocations %}
+            <p class="cart-line__discount">{{ alloc.discount_application.title }} · −{{ alloc.amount | money }}</p>
+            {%- endfor %}
+
+            <div class="cart-line__qty">
+              <label class="sr-only" for="cart-qty-{{ forloop.index }}">{{ cfg.qty_label }}: {{ item.product.title | escape }}</label>
+              <input
+                class="cart-qty"
+                id="cart-qty-{{ forloop.index }}"
+                type="number"
+                name="updates[{{ item.key }}]"
+                value="{{ item.quantity }}"
+                min="0"
+                step="1"
+                inputmode="numeric"
+                autocomplete="off"
+              >
+              <a class="cart-line__remove" href="/cart/change?line={{ forloop.index }}&amp;quantity=0">{{ cfg.remove_label }}</a>
+            </div>
+          </div>
+
+          <p class="cart-line__total">{{ item.final_line_price | money }}{% if item.original_line_price != item.final_line_price %}<s>{{ item.original_line_price | money }}</s>{% endif %}</p>
+        </div>
+        {%- endfor %}
+      </div>
+
+      <div class="cart-lines__foot">
+        <button type="submit" name="update" class="store-btn store-btn--quiet">{{ cfg.update_label }}</button>
+        <p class="store-note"><a href="{{ shop_url }}">{{ cfg.continue_label }}</a></p>
+      </div>
+
+      {%- if cfg.show_note %}
+      <div class="cart-note">
+        <label for="cart-note">{{ cfg.note_label }}</label>
+        <textarea id="cart-note" name="note" rows="3" placeholder="{{ cfg.note_placeholder | escape }}">{{ cart.note | escape }}</textarea>
+      </div>
+      {%- endif %}
+    </div>
+
+    <aside class="cart-aside" aria-label="{{ cfg.summary_title | escape }}">
+      <p class="cart-aside__title">{{ cfg.summary_title }}</p>
+
+      <div class="cart-aside__row">
+        <span>{{ cfg.subtotal_label }}</span>
+        <span>{{ cart.items_subtotal_price | money }}</span>
+      </div>
+
+      {%- for discount in cart.cart_level_discount_applications %}
+      <div class="cart-aside__row cart-aside__row--discount">
+        <span>{{ discount.title }}</span>
+        <span>−{{ discount.total_allocated_amount | money }}</span>
+      </div>
+      {%- endfor %}
+
+      <div class="cart-aside__total">
+        <span>{{ cfg.total_label }}</span>
+        <span>{{ cart.total_price | money }}</span>
+      </div>
+
+      {%- if cfg.tax_note != blank %}
+      <p class="store-note cart-aside__tax">{{ cfg.tax_note }}</p>
+      {%- endif %}
+
+      <button type="submit" name="checkout" class="store-btn cart-aside__checkout">{{ cfg.checkout_label }}</button>
+
+      {%- if section.blocks.size > 0 %}
+      <ul class="cart-aside__notes">
+        {%- for block in section.blocks %}
+        <li {{ block.shopify_attributes }}>{{ block.settings.text }}</li>
+        {%- endfor %}
+      </ul>
+      {%- endif %}
+    </aside>
+  </form>
+{%- endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Cart",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Masthead"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Your bag"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "The <em>bag</em>"
+    },
+    {
+      "type": "textarea",
+      "id": "lede",
+      "label": "Lede",
+      "default": "Every piece here was worked by hand in Kutch. Alterations and repairs are free for as long as you own it."
+    },
+    {
+      "type": "text",
+      "id": "count_one",
+      "label": "Count label (one piece)",
+      "default": "piece in the bag"
+    },
+    {
+      "type": "text",
+      "id": "count_many",
+      "label": "Count label (several pieces)",
+      "default": "pieces in the bag"
+    },
+    {
+      "type": "header",
+      "content": "Line items"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show the vendor",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_options",
+      "label": "Show variant options and personalisations",
+      "info": "Size, colour, any note a shopper filled in on the product page.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_unit_price",
+      "label": "Show the price per piece",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "unit_suffix",
+      "label": "Price-per-piece suffix",
+      "default": "each"
+    },
+    {
+      "type": "text",
+      "id": "qty_label",
+      "label": "Quantity field label",
+      "info": "Read out by screen readers, followed by the name of the piece.",
+      "default": "Quantity"
+    },
+    {
+      "type": "text",
+      "id": "remove_label",
+      "label": "Remove link label",
+      "default": "Remove"
+    },
+    {
+      "type": "text",
+      "id": "update_label",
+      "label": "Update button label",
+      "default": "Update bag"
+    },
+    {
+      "type": "text",
+      "id": "continue_label",
+      "label": "Continue-shopping label",
+      "default": "Continue shopping"
+    },
+    {
+      "type": "url",
+      "id": "continue_link",
+      "label": "Continue-shopping link",
+      "info": "Also used by the empty-bag state. Defaults to the Shop Shrujan page."
+    },
+    {
+      "type": "header",
+      "content": "Order note"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_note",
+      "label": "Show the order-note field",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "note_label",
+      "label": "Order-note label",
+      "default": "A note for the studio"
+    },
+    {
+      "type": "text",
+      "id": "note_placeholder",
+      "label": "Order-note placeholder",
+      "default": "Gift wrapping, a message on the card, a measurement to check…"
+    },
+    {
+      "type": "header",
+      "content": "Order summary"
+    },
+    {
+      "type": "text",
+      "id": "summary_title",
+      "label": "Summary heading",
+      "default": "Order summary"
+    },
+    {
+      "type": "text",
+      "id": "subtotal_label",
+      "label": "Subtotal label",
+      "default": "Subtotal"
+    },
+    {
+      "type": "text",
+      "id": "total_label",
+      "label": "Total label",
+      "default": "Estimated total"
+    },
+    {
+      "type": "textarea",
+      "id": "tax_note",
+      "label": "Taxes and shipping note",
+      "default": "Taxes and shipping are worked out at checkout. Orders leave the Bhuj atelier within 48 hours."
+    },
+    {
+      "type": "text",
+      "id": "checkout_label",
+      "label": "Checkout button label",
+      "default": "Checkout"
+    },
+    {
+      "type": "header",
+      "content": "Empty bag"
+    },
+    {
+      "type": "text",
+      "id": "empty_heading",
+      "label": "Heading",
+      "default": "Nothing in the bag yet"
+    },
+    {
+      "type": "textarea",
+      "id": "empty_copy",
+      "label": "Copy",
+      "default": "Eighty-four pieces are online right now, each one signed by the woman who embroidered it."
+    },
+    {
+      "type": "text",
+      "id": "empty_label",
+      "label": "Catalogue link label",
+      "default": "Browse the catalogue"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "select",
+      "id": "sec_width",
+      "label": "Section width",
+      "info": "Theme default keeps the shared page rail.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow"
+        },
+        {
+          "value": "wide",
+          "label": "Wide"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top",
+      "label": "Extra top spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom",
+      "label": "Extra bottom spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top_m",
+      "label": "Extra top spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom_m",
+      "label": "Extra bottom spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "sec_bg",
+      "label": "Background",
+      "info": "Leave empty to keep the section’s own background."
+    },
+    {
+      "type": "color",
+      "id": "sec_text",
+      "label": "Text colour"
+    },
+    {
+      "type": "color",
+      "id": "sec_accent",
+      "label": "Accent colour"
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_animate",
+      "label": "Animate on scroll",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_mobile",
+      "label": "Hide on mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_desktop",
+      "label": "Hide on desktop",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css",
+      "label": "Custom CSS",
+      "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "assurance",
+      "name": "Reassurance line",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Free alterations and repairs, for as long as you own the piece."
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

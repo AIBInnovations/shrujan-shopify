@@ -1,0 +1,35 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-cart",
+      "blocks": {
+        "a1": {
+          "type": "assurance",
+          "settings": {
+            "text": "Free alterations and repairs, for as long as you own the piece."
+          }
+        },
+        "a2": {
+          "type": "assurance",
+          "settings": {
+            "text": "Ships within 48 hours from the Bhuj atelier."
+          }
+        },
+        "a3": {
+          "type": "assurance",
+          "settings": {
+            "text": "Every piece carries the name of the woman who embroidered it."
+          }
+        }
+      },
+      "block_order": [
+        "a1",
+        "a2",
+        "a3"
+      ]
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

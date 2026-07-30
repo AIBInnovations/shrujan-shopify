@@ -1,0 +1,423 @@
+{%- render 'section-design', section: section -%}
+{%- comment -%}
+  Blog index — the home page's journal vocabulary, driven by real articles.
+
+  The card is `.journal-card` verbatim (media crop, hover scale, pill, arrow),
+  with a `.store-post__body` under it for the parts an index entry adds: date,
+  excerpt and byline. Column overrides are published as a custom property
+  inside the same query the stylesheet uses for that tier, so changing the
+  desktop count leaves the mobile stack alone.
+{%- endcomment -%}
+{%- liquid
+  assign cfg = section.settings
+  assign sel = '#shopify-section-' | append: section.id
+-%}
+{%- if cfg.cols != 3 or cfg.cols_m != 1 -%}
+  <style>
+    {%- if cfg.cols != 3 -%}
+      @media (min-width: 901px) {
+        {{ sel }} .store-journal { --posts-cols: {{ cfg.cols }}; }
+      }
+    {%- endif -%}
+    {%- if cfg.cols_m != 1 -%}
+      @media (max-width: 600px) {
+        {{ sel }} .store-journal { --posts-cols: {{ cfg.cols_m }}; }
+      }
+    {%- endif -%}
+  </style>
+{%- endif -%}
+
+<header class="store-head container" data-reveal>
+  {%- if cfg.eyebrow != blank %}
+  <p class="store-head__eyebrow">{{ cfg.eyebrow }}</p>
+  {%- endif %}
+  {%- comment -%}
+    Cleared, the heading falls back to the blog's own title — so a second blog
+    added later is titled correctly without touching the customizer.
+  {%- endcomment -%}
+  <h1 class="store-head__title">{{ cfg.heading | default: blog.title }}</h1>
+  {%- if cfg.lede != blank %}
+  <p class="store-head__lede">{{ cfg.lede }}</p>
+  {%- endif %}
+</header>
+
+{%- if cfg.show_filter and blog.all_tags.size > 0 %}
+<div class="container store-filter" data-reveal>
+  <p class="store-filter__label">{{ cfg.filter_label }}</p>
+  <div class="store-chips">
+    <a class="store-chip{% if current_tags == blank %} is-active{% endif %}" href="{{ blog.url }}">{{ cfg.filter_all_label }}</a>
+    {%- for tag in blog.all_tags %}
+    <a class="store-chip{% if current_tags contains tag %} is-active{% endif %}" href="{{ blog.url }}/tagged/{{ tag | handleize }}">{{ tag }}</a>
+    {%- endfor %}
+  </div>
+</div>
+{%- endif %}
+
+{%- paginate blog.articles by cfg.per_page %}
+  {%- if blog.articles.size > 0 %}
+<div class="container">
+  <div class="store-journal{% if paginate.pages > 1 %} store-journal--paged{% endif %}" data-reveal-child>
+    {%- for article in blog.articles %}
+    <a class="journal-card store-post" href="{{ article.url }}">
+      {%- if cfg.show_image %}
+      <div class="journal-card__media">
+        <img src="{% if article.image %}{{ article.image | image_url: width: 1200 }}{% else %}{% cycle 'fallbacks': 'journal-1.webp', 'journal-5.webp', 'journal-8.webp', 'journal-11.webp' | asset_url %}{% endif %}" alt="{{ article.image.alt | default: article.title | escape }}" loading="lazy">
+        {%- if cfg.show_tag and article.tags.size > 0 %}<span class="journal-pill">{{ article.tags.first }}</span>{% endif %}
+        <span class="journal-card__arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
+        </span>
+      </div>
+      {%- endif %}
+
+      <div class="store-post__body">
+        {%- if cfg.show_date %}
+        <p class="store-post__meta">
+          <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: cfg.date_format }}</time>
+          {%- if article.tags.size > 0 and cfg.show_tag == false %}<span class="store-post__dot" aria-hidden="true">&#8226;</span>{{ article.tags.first }}{% endif %}
+        </p>
+        {%- endif %}
+
+        <h2 class="journal-card__title">{{ article.title }}</h2>
+
+        {%- if cfg.show_excerpt %}
+        <p class="store-post__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 26 }}</p>
+        {%- endif %}
+
+        {%- if cfg.show_author and article.author != blank %}
+        <p class="store-post__byline">{{ cfg.author_prefix }} <strong>{{ article.author }}</strong></p>
+        {%- endif %}
+      </div>
+    </a>
+    {%- endfor %}
+  </div>
+</div>
+
+    {%- if paginate.pages > 1 %}
+<nav class="container store-pager" role="navigation" aria-label="{{ cfg.pager_label | escape }}">
+  {%- if paginate.previous.is_link %}<a href="{{ paginate.previous.url }}" rel="prev" aria-label="{{ cfg.pager_previous | escape }}">&#8592;</a>{% endif %}
+  {%- for part in paginate.parts %}
+    {%- if part.is_link %}
+  <a href="{{ part.url }}" aria-label="Page {{ part.title }}">{{ part.title }}</a>
+    {%- elsif part.title == paginate.current_page %}
+  <span aria-current="page">{{ part.title }}</span>
+    {%- else %}
+  <span>{{ part.title }}</span>
+    {%- endif %}
+  {%- endfor %}
+  {%- if paginate.next.is_link %}<a href="{{ paginate.next.url }}" rel="next" aria-label="{{ cfg.pager_next | escape }}">&#8594;</a>{% endif %}
+</nav>
+    {%- endif %}
+  {%- else %}
+<div class="container store-empty" data-reveal>
+  <h2 class="store-empty__title">{{ cfg.empty_title }}</h2>
+  <p class="store-empty__copy">{{ cfg.empty_copy }}</p>
+  <div class="store-actions">
+    <a class="btn btn--ghost" href="{{ cfg.empty_url | default: '/pages/the-shrujan-story' }}">{{ cfg.empty_link_label }}</a>
+  </div>
+</div>
+  {%- endif %}
+{%- endpaginate %}
+{% schema %}
+{
+  "name": "Blog",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Masthead"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "The Journal"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "info": "Leave empty to use the blog’s own title.",
+      "default": "Stories from the loom"
+    },
+    {
+      "type": "textarea",
+      "id": "lede",
+      "label": "Introduction",
+      "default": "Field notes from forty villages of Kutch — the stitches, the women who carry them, and the cloth they leave behind."
+    },
+    {
+      "type": "header",
+      "content": "Articles"
+    },
+    {
+      "type": "range",
+      "id": "per_page",
+      "label": "Articles per page",
+      "min": 3,
+      "max": 24,
+      "step": 3,
+      "default": 9
+    },
+    {
+      "type": "range",
+      "id": "cols",
+      "label": "Cards per row (desktop)",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 3,
+      "info": "Applies above 900px."
+    },
+    {
+      "type": "range",
+      "id": "cols_m",
+      "label": "Cards per row (mobile)",
+      "min": 1,
+      "max": 2,
+      "step": 1,
+      "default": 1,
+      "info": "Applies below 600px."
+    },
+    {
+      "type": "select",
+      "id": "date_format",
+      "label": "Date format",
+      "default": "abbreviated_date",
+      "options": [
+        {
+          "value": "abbreviated_date",
+          "label": "5 Aug 2026"
+        },
+        {
+          "value": "date",
+          "label": "August 5, 2026"
+        },
+        {
+          "value": "month_day_year",
+          "label": "08/05/2026"
+        },
+        {
+          "value": "basic",
+          "label": "05/08/2026"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "label": "Show featured image",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tag",
+      "label": "Show tag pill on the image",
+      "default": true,
+      "info": "With this off the first tag moves next to the date."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "Show date",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "label": "Show excerpt",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show author",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "author_prefix",
+      "label": "Byline prefix",
+      "default": "Written by"
+    },
+    {
+      "type": "header",
+      "content": "Tag filter"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_filter",
+      "label": "Show the tag filter",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "filter_label",
+      "label": "Filter label",
+      "default": "Browse by"
+    },
+    {
+      "type": "text",
+      "id": "filter_all_label",
+      "label": "“All” chip label",
+      "default": "All stories"
+    },
+    {
+      "type": "header",
+      "content": "Pagination"
+    },
+    {
+      "type": "text",
+      "id": "pager_label",
+      "label": "Pagination landmark label",
+      "default": "Journal pages"
+    },
+    {
+      "type": "text",
+      "id": "pager_previous",
+      "label": "Previous page label",
+      "default": "Previous page"
+    },
+    {
+      "type": "text",
+      "id": "pager_next",
+      "label": "Next page label",
+      "default": "Next page"
+    },
+    {
+      "type": "header",
+      "content": "Empty state"
+    },
+    {
+      "type": "text",
+      "id": "empty_title",
+      "label": "Title",
+      "default": "No stories here yet"
+    },
+    {
+      "type": "textarea",
+      "id": "empty_copy",
+      "label": "Copy",
+      "default": "The first field notes are still being written in Bhuj. In the meantime, the story of the house is worth an hour."
+    },
+    {
+      "type": "text",
+      "id": "empty_link_label",
+      "label": "Link label",
+      "default": "Read the Shrujan story"
+    },
+    {
+      "type": "url",
+      "id": "empty_url",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "select",
+      "id": "sec_width",
+      "label": "Section width",
+      "info": "Theme default keeps the shared page rail.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow"
+        },
+        {
+          "value": "wide",
+          "label": "Wide"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top",
+      "label": "Extra top spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom",
+      "label": "Extra bottom spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top_m",
+      "label": "Extra top spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom_m",
+      "label": "Extra bottom spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "sec_bg",
+      "label": "Background",
+      "info": "Leave empty to keep the section’s own background."
+    },
+    {
+      "type": "color",
+      "id": "sec_text",
+      "label": "Text colour"
+    },
+    {
+      "type": "color",
+      "id": "sec_accent",
+      "label": "Accent colour"
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_animate",
+      "label": "Animate on scroll",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_mobile",
+      "label": "Hide on mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_desktop",
+      "label": "Hide on desktop",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css",
+      "label": "Custom CSS",
+      "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    }
+  ]
+}
+{% endschema %}

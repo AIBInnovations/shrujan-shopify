@@ -1,0 +1,359 @@
+{%- render 'section-design', section: section -%}
+{%- comment -%}
+  Gift card — the page the recipient lands on from their email.
+
+  Everything is read off the real `gift_card` object: the live balance, the
+  code through `format_code` (which groups it into readable blocks), the expiry
+  when one is set, and the scannable identifier for use in the Bhuj store. The
+  QR is drawn by Shopify's own hosted qrcode.js; if it fails to load the empty
+  frame removes itself rather than sitting there blank.
+{%- endcomment -%}
+{%- liquid
+  assign cfg = section.settings
+-%}
+<section class="container store-gate">
+  <div class="store-gate__inner" data-reveal>
+    {%- if cfg.eyebrow != blank %}
+    <p class="store-head__eyebrow">{{ cfg.eyebrow }}</p>
+    {%- endif %}
+    <h1 class="store-gate__title">{{ cfg.heading }}</h1>
+    {%- if cfg.copy != blank %}
+    <p class="store-gate__copy">{{ cfg.copy }}</p>
+    {%- endif %}
+
+    <div class="store-gift">
+      <p class="store-gift__label">{{ cfg.balance_label }}</p>
+      <p class="store-gift__value">{{ gift_card.balance | money }}</p>
+      {%- if cfg.show_initial and gift_card.balance != gift_card.initial_value %}
+      <p class="store-gift__was">{{ cfg.initial_label }} {{ gift_card.initial_value | money }}</p>
+      {%- endif %}
+
+      {%- if gift_card.enabled == false %}
+      <p class="store-errors">{{ cfg.disabled_note }}</p>
+      {%- elsif gift_card.expired %}
+      <p class="store-errors">{{ cfg.expired_note }}</p>
+      {%- endif %}
+
+      <p class="store-gift__label">{{ cfg.code_label }}</p>
+      <p class="store-gift__code">{{ gift_card.code | format_code }}</p>
+      {%- if cfg.code_note != blank %}
+      <p class="store-note">{{ cfg.code_note }}</p>
+      {%- endif %}
+
+      {%- if cfg.show_qr %}
+      <div class="store-gift__qr" data-qr="{{ gift_card.qr_identifier }}"></div>
+      {%- if cfg.qr_note != blank %}
+      <p class="store-gift__label">{{ cfg.qr_note }}</p>
+      {%- endif %}
+      {%- endif %}
+
+      {%- if gift_card.expires_on and gift_card.expired == false %}
+      <p class="store-note">{{ cfg.expiry_label }} {{ gift_card.expires_on | date: format: cfg.date_format }}</p>
+      {%- endif %}
+    </div>
+
+    <div class="store-actions store-gift__actions">
+      <a class="btn" href="{{ cfg.cta_url | default: '/pages/shop-shrujan' }}">{{ cfg.cta_label }}</a>
+      {%- if cfg.show_print %}
+      <button type="button" class="btn btn--ghost" data-gift-print>{{ cfg.print_label }}</button>
+      {%- endif %}
+    </div>
+  </div>
+</section>
+
+{%- if cfg.show_qr %}
+<script src="{{ 'vendor/qrcode.js' | shopify_asset_url }}" defer></script>
+{%- endif %}
+<script>
+(function () {
+  var host = document.querySelector('[data-qr]');
+  var printer = document.querySelector('[data-gift-print]');
+
+  if (printer) {
+    printer.addEventListener('click', function () { window.print(); });
+  }
+
+  if (!host) return;
+
+  /* qrcode.js is loaded with `defer`, so it is only guaranteed to be there by
+     the load event. If it never arrives the frame takes itself away. */
+  function draw() {
+    if (typeof QRCode === 'undefined' || !host.getAttribute('data-qr')) {
+      host.remove();
+      return;
+    }
+    new QRCode(host, {
+      text: host.getAttribute('data-qr'),
+      width: 148,
+      height: 148,
+      colorDark: '#2b1d19',
+      colorLight: '#ffffff'
+    });
+  }
+
+  if (document.readyState === 'complete') draw();
+  else window.addEventListener('load', draw);
+})();
+</script>
+{% schema %}
+{
+  "name": "Gift card",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Message"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "A gift from Shrujan"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "info": "Wrap a word in <em> to set it in italic gerua.",
+      "default": "Someone chose <em>handwork</em> for you"
+    },
+    {
+      "type": "textarea",
+      "id": "copy",
+      "label": "Copy",
+      "default": "Spend it on anything in the store. Every piece is embroidered by hand by the artisan women of Kutch, and each one carries her name."
+    },
+    {
+      "type": "header",
+      "content": "Value"
+    },
+    {
+      "type": "text",
+      "id": "balance_label",
+      "label": "Balance label",
+      "default": "Balance remaining"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_initial",
+      "label": "Show the original value once partly spent",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "initial_label",
+      "label": "Original value label",
+      "default": "Issued for"
+    },
+    {
+      "type": "header",
+      "content": "Code"
+    },
+    {
+      "type": "text",
+      "id": "code_label",
+      "label": "Code label",
+      "default": "Gift card code"
+    },
+    {
+      "type": "text",
+      "id": "code_note",
+      "label": "Code note",
+      "default": "Enter this at checkout, or show the code in our Bhuj store."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_qr",
+      "label": "Show the QR code",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "qr_note",
+      "label": "QR note",
+      "default": "Scan in store"
+    },
+    {
+      "type": "header",
+      "content": "Expiry & status"
+    },
+    {
+      "type": "text",
+      "id": "expiry_label",
+      "label": "Expiry label",
+      "default": "Valid until"
+    },
+    {
+      "type": "select",
+      "id": "date_format",
+      "label": "Date format",
+      "default": "abbreviated_date",
+      "options": [
+        {
+          "value": "abbreviated_date",
+          "label": "5 Aug 2026"
+        },
+        {
+          "value": "date",
+          "label": "August 5, 2026"
+        },
+        {
+          "value": "month_day_year",
+          "label": "08/05/2026"
+        },
+        {
+          "value": "basic",
+          "label": "05/08/2026"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "expired_note",
+      "label": "Expired message",
+      "default": "This gift card has expired. Write to us and we will see what can be done."
+    },
+    {
+      "type": "text",
+      "id": "disabled_note",
+      "label": "Disabled message",
+      "default": "This gift card is no longer active."
+    },
+    {
+      "type": "header",
+      "content": "Actions"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Shop button",
+      "default": "Shop the catalogue"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Shop link"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_print",
+      "label": "Show the print button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "print_label",
+      "label": "Print button",
+      "default": "Print this card"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "select",
+      "id": "sec_width",
+      "label": "Section width",
+      "info": "Theme default keeps the shared page rail.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow"
+        },
+        {
+          "value": "wide",
+          "label": "Wide"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top",
+      "label": "Extra top spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom",
+      "label": "Extra bottom spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top_m",
+      "label": "Extra top spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom_m",
+      "label": "Extra bottom spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "sec_bg",
+      "label": "Background",
+      "info": "Leave empty to keep the section’s own background."
+    },
+    {
+      "type": "color",
+      "id": "sec_text",
+      "label": "Text colour"
+    },
+    {
+      "type": "color",
+      "id": "sec_accent",
+      "label": "Accent colour"
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_animate",
+      "label": "Animate on scroll",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_mobile",
+      "label": "Hide on mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_desktop",
+      "label": "Hide on desktop",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css",
+      "label": "Custom CSS",
+      "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    }
+  ]
+}
+{% endschema %}

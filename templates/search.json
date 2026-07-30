@@ -1,0 +1,49 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-search",
+      "blocks": {
+        "t1": {
+          "type": "term",
+          "settings": {
+            "term": "Kanchli"
+          }
+        },
+        "t2": {
+          "type": "term",
+          "settings": {
+            "term": "Ajrakh"
+          }
+        },
+        "t3": {
+          "type": "term",
+          "settings": {
+            "term": "Potli"
+          }
+        },
+        "t4": {
+          "type": "term",
+          "settings": {
+            "term": "Cushion cover"
+          }
+        },
+        "t5": {
+          "type": "term",
+          "settings": {
+            "term": "Dupatta"
+          }
+        }
+      },
+      "block_order": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5"
+      ]
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

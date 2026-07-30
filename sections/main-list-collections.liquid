@@ -1,0 +1,436 @@
+{%- render 'section-design', section: section -%}
+{%- comment -%}
+  Collections index — every collection the merchant has published, drawn from the
+  `collections` global rather than a hand-written list, so a new collection shows
+  up here the moment it exists.
+
+  Ordering is done in Liquid with the `sort` filter, which is why the choices are
+  title and product count in both directions; "Shopify’s own order" hands the
+  array back untouched (Shopify returns collections alphabetically by title).
+
+  A collection with no image of its own borrows the first product’s picture, and
+  falls back to a placeholder only when the collection is genuinely empty.
+
+  The grid is not paginated, so it draws the whole catalogue in one pass — worth
+  knowing that Liquid stops iterating the `collections` global at 50, which is
+  the point at which this would need a paginate tag.
+{%- endcomment -%}
+{%- liquid
+  assign cfg = section.settings
+
+  case cfg.order
+    when 'title_asc'
+      assign list = collections | sort: 'title'
+    when 'title_desc'
+      assign list = collections | sort: 'title' | reverse
+    when 'count_desc'
+      assign list = collections | sort: 'all_products_count' | reverse
+    when 'count_asc'
+      assign list = collections | sort: 'all_products_count'
+    else
+      assign list = collections
+  endcase
+
+  comment
+    How many cards will actually be drawn — the empty state has to know before
+    the grid is opened.
+  endcomment
+  assign shown = list.size
+  if cfg.hide_empty
+    assign shown = 0
+    for col in list
+      if col.all_products_count > 0
+        assign shown = shown | plus: 1
+      endif
+    endfor
+  endif
+
+  assign sel = '#shopify-section-' | append: section.id
+  assign has_layout = false
+  if cfg.cols != 3 or cfg.cols_t != 2 or cfg.cols_m != 1 or cfg.ratio != 'default'
+    assign has_layout = true
+  endif
+-%}
+{%- if has_layout -%}
+  <style>
+    {%- comment -%}
+      The grid in shrujan-store.css reads these three properties at its three
+      breakpoints, and custom properties inherit through
+      `.shopify-section { display: contents }` — so the section root is enough.
+    {%- endcomment -%}
+    {%- if cfg.cols != 3 or cfg.cols_t != 2 or cfg.cols_m != 1 -%}
+      {{ sel }} {
+        --collections-cols: {{ cfg.cols }};
+        --collections-cols-t: {{ cfg.cols_t }};
+        --collections-cols-m: {{ cfg.cols_m }};
+      }
+    {%- endif -%}
+    {%- if cfg.ratio != 'default' -%}
+      {{ sel }} .store-col-card__media { aspect-ratio: {{ cfg.ratio }}; }
+    {%- endif -%}
+  </style>
+{%- endif -%}
+<div class="page">
+  <header class="container store-head" data-reveal>
+    {%- if cfg.eyebrow != blank -%}
+      <p class="store-head__eyebrow">{{ cfg.eyebrow }}</p>
+    {%- endif -%}
+    <h1 class="store-head__title">{{ cfg.heading }}</h1>
+    {%- if cfg.lede != blank -%}
+      <p class="store-head__lede">{{ cfg.lede }}</p>
+    {%- endif -%}
+  </header>
+
+  <div class="container">
+    {%- if shown > 0 -%}
+      <div class="store-cols" data-reveal-child>
+        {%- for col in list -%}
+          {%- if cfg.hide_empty and col.all_products_count == 0 -%}
+            {%- continue -%}
+          {%- endif -%}
+          {%- liquid
+            comment
+              The collection's own image first, then the one Shopify derives for
+              it, then the first product's photo — products are only touched when
+              the two cheap routes come back empty.
+            endcomment
+            assign col_image = col.image
+            if col_image == blank
+              assign col_image = col.featured_image
+            endif
+            if col_image == blank
+              assign col_image = col.products.first.featured_image
+            endif
+
+            assign col_count = col.all_products_count
+            assign count_word = cfg.count_plural
+            if col_count == 1
+              assign count_word = cfg.count_singular
+            endif
+          -%}
+          <a class="store-col-card" href="{{ col.url }}">
+            <div class="store-col-card__media">
+              {%- if col_image -%}
+                <img src="{{ col_image | image_url: width: 900 }}" alt="{{ col_image.alt | default: col.title | escape }}" loading="lazy">
+              {%- else -%}
+                {{ 'collection-1' | placeholder_svg_tag: 'store-col-card__ph' }}
+              {%- endif -%}
+            </div>
+            <div class="store-col-card__body">
+              <p class="store-col-card__name">{{ col.title }}</p>
+              {%- if cfg.show_count -%}
+                <p class="store-col-card__meta">{{ col_count }} {{ count_word }}</p>
+              {%- endif -%}
+              <span class="store-col-card__go" aria-hidden="true">{{ cfg.card_link_label }}
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
+              </span>
+            </div>
+          </a>
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <div class="store-empty" data-reveal>
+        <h2 class="store-empty__title">{{ cfg.empty_title }}</h2>
+        <p class="store-empty__copy">{{ cfg.empty_copy }}</p>
+        <div class="store-empty__actions">
+          <a class="store-btn" href="{{ cfg.empty_link | default: '/collections/all' }}">{{ cfg.empty_link_label }}
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
+          </a>
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collections list",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Masthead"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Catalogue"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "All collections"
+    },
+    {
+      "type": "textarea",
+      "id": "lede",
+      "label": "Intro copy",
+      "default": "From the Kutchi bodice to the cloth for your walls — each collection worked in the craft it has always been made in."
+    },
+    {
+      "type": "header",
+      "content": "Grid"
+    },
+    {
+      "type": "select",
+      "id": "order",
+      "label": "Order",
+      "info": "Shopify’s own order lists collections alphabetically by title.",
+      "default": "shopify",
+      "options": [
+        {
+          "value": "shopify",
+          "label": "Shopify’s own order"
+        },
+        {
+          "value": "title_asc",
+          "label": "Title, A–Z"
+        },
+        {
+          "value": "title_desc",
+          "label": "Title, Z–A"
+        },
+        {
+          "value": "count_desc",
+          "label": "Most products first"
+        },
+        {
+          "value": "count_asc",
+          "label": "Fewest products first"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "cols",
+      "label": "Collections per row (desktop)",
+      "info": "Applies above 900px.",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "cols_t",
+      "label": "Collections per row (tablet)",
+      "info": "Applies between 601 and 900px.",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "cols_m",
+      "label": "Collections per row (mobile)",
+      "info": "Applies below 601px.",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "select",
+      "id": "ratio",
+      "label": "Image shape",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default (4:5 portrait)"
+        },
+        {
+          "value": "1 / 1",
+          "label": "Square"
+        },
+        {
+          "value": "3 / 4",
+          "label": "Portrait, tall"
+        },
+        {
+          "value": "4 / 3",
+          "label": "Landscape"
+        },
+        {
+          "value": "16 / 9",
+          "label": "Wide"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_empty",
+      "label": "Hide collections with no products",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Collection card"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_count",
+      "label": "Show the product count",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "count_singular",
+      "label": "Count word (one product)",
+      "default": "piece"
+    },
+    {
+      "type": "text",
+      "id": "count_plural",
+      "label": "Count word (several products)",
+      "default": "pieces"
+    },
+    {
+      "type": "text",
+      "id": "card_link_label",
+      "label": "Card link label",
+      "default": "Shop"
+    },
+    {
+      "type": "header",
+      "content": "When there are no collections"
+    },
+    {
+      "type": "text",
+      "id": "empty_title",
+      "label": "Heading",
+      "default": "No collections yet"
+    },
+    {
+      "type": "textarea",
+      "id": "empty_copy",
+      "label": "Copy",
+      "default": "The catalogue is being arranged. In the meantime, everything online sits in one place."
+    },
+    {
+      "type": "text",
+      "id": "empty_link_label",
+      "label": "Button label",
+      "default": "Shop everything"
+    },
+    {
+      "type": "url",
+      "id": "empty_link",
+      "label": "Button link",
+      "info": "Defaults to /collections/all."
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "select",
+      "id": "sec_width",
+      "label": "Section width",
+      "info": "Theme default keeps the shared page rail.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow"
+        },
+        {
+          "value": "wide",
+          "label": "Wide"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top",
+      "label": "Extra top spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom",
+      "label": "Extra bottom spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top_m",
+      "label": "Extra top spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom_m",
+      "label": "Extra bottom spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "sec_bg",
+      "label": "Background",
+      "info": "Leave empty to keep the section’s own background."
+    },
+    {
+      "type": "color",
+      "id": "sec_text",
+      "label": "Text colour"
+    },
+    {
+      "type": "color",
+      "id": "sec_accent",
+      "label": "Accent colour"
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_animate",
+      "label": "Animate on scroll",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_mobile",
+      "label": "Hide on mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_desktop",
+      "label": "Hide on desktop",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css",
+      "label": "Custom CSS",
+      "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    }
+  ]
+}
+{% endschema %}

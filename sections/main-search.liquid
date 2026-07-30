@@ -1,0 +1,786 @@
+{%- render 'section-design', section: section -%}
+{%- comment -%}
+  Search results, rendered from the real `search` object — no client-side data.
+
+  Three things are worth knowing before editing:
+
+   1. Shopify's search can return products, pages and articles in one result
+      set, so the list is walked twice: products go into the catalogue's own
+      `.piece` card inside `.store-grid`, and pages/articles get the quieter
+      `.store-read` row. Group headings only appear when the set is genuinely
+      mixed, so a products-only search still reads as one clean grid.
+   2. The `type=` hidden input is what actually narrows the search, and the same
+      value is written into every suggested-term link so a chip searches exactly
+      what the form does. `paginate.parts` carries the whole query string, so
+      page 2 keeps the type as well.
+   3. Column counts travel as custom properties on the section root. `.store-grid`
+      already reads `--store-cols` / `--store-cols-t` / `--store-cols-m` with the
+      built defaults as its fallbacks, so the rule is only written when a
+      merchant has moved off them.
+{%- endcomment -%}
+{%- liquid
+  assign cfg = section.settings
+  assign sel = '#shopify-section-' | append: section.id
+
+  assign search_types = 'product'
+  if cfg.search_types == 'all'
+    assign search_types = 'product,page,article'
+  endif
+
+  comment
+    The same options the form posts, pre-encoded, so a suggested-term chip is a
+    GET of exactly what pressing Search would have sent. Built in two steps
+    because url_encode has to touch the value alone, not the separators.
+  endcomment
+  assign types_enc = search_types | url_encode
+  assign search_qs = '&amp;type=' | append: types_enc | append: '&amp;options%5Bprefix%5D=last'
+  if cfg.unavailable != 'last'
+    assign search_qs = search_qs | append: '&amp;options%5Bunavailable_products%5D=' | append: cfg.unavailable
+  endif
+
+  assign browse_url = cfg.browse_link | default: '/pages/shop-shrujan'
+
+  assign has_cols = false
+  if cfg.grid_cols != 4 or cfg.grid_cols_t != 3 or cfg.grid_cols_m != 2
+    assign has_cols = true
+  endif
+-%}
+{%- if has_cols -%}
+  <style>
+    {{ sel }} {
+      --store-cols: {{ cfg.grid_cols }};
+      --store-cols-t: {{ cfg.grid_cols_t }};
+      --store-cols-m: {{ cfg.grid_cols_m }};
+    }
+  </style>
+{%- endif -%}
+<div class="page">
+  <section class="container store-head" data-reveal>
+    <span class="store-head__mark" aria-hidden="true"><svg viewBox="0 0 32 32" width="14" height="14" fill="currentColor"><path d="M16 2c1.3 4.6 3 7.4 5.2 8.8C23.4 12.2 26 13 30 13.4v.2c-4 .4-6.6 1.2-8.8 2.6C19 17.6 17.3 20.4 16 25c-1.3-4.6-3-7.4-5.2-8.8C8.6 14.8 6 14 2 13.6v-.2c4-.4 6.6-1.2 8.8-2.6C13 9.4 14.7 6.6 16 2Z"></path><circle cx="16" cy="28.5" r="1.6"></circle></svg><i></i></span>
+
+    <p class="store-head__eyebrow">{{ cfg.eyebrow }}</p>
+    <h1 class="store-head__title">{{ cfg.heading }}</h1>
+    {%- if cfg.lede != blank %}
+    <p class="store-head__lede">{{ cfg.lede }}</p>
+    {%- endif %}
+
+    <form class="store-form store-form--search" action="/search" method="get" role="search">
+      <label for="store-search-{{ section.id }}">{{ cfg.field_label }}</label>
+      {%- comment -%}
+        `type` is what limits the search to products or opens it up to the
+        journal and the standing pages; `options[prefix]=last` lets a shopper
+        find "kanchli" by typing "kanch".
+      {%- endcomment -%}
+      <input type="hidden" name="type" value="{{ search_types }}">
+      <input type="hidden" name="options[prefix]" value="last">
+      {%- if cfg.unavailable != 'last' %}
+      <input type="hidden" name="options[unavailable_products]" value="{{ cfg.unavailable }}">
+      {%- endif %}
+      <input
+        type="search"
+        id="store-search-{{ section.id }}"
+        name="q"
+        value="{{ search.terms | escape }}"
+        placeholder="{{ cfg.field_placeholder | escape }}"
+        autocomplete="off"
+      >
+      <button type="submit" class="store-btn">
+        {{ cfg.submit_label }}
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4.5 4.5"></path></svg>
+      </button>
+    </form>
+
+    {%- if section.blocks.size > 0 %}
+    <div class="store-suggest">
+      <span class="store-suggest__label">{{ cfg.suggest_label }}</span>
+      {%- for block in section.blocks %}
+        {%- if block.settings.term != blank %}
+      <a
+        class="store-chip{% if search.terms == block.settings.term %} is-active{% endif %}"
+        href="/search?q={{ block.settings.term | url_encode }}{{ search_qs }}"
+        {{ block.shopify_attributes }}
+      >{{ block.settings.term }}</a>
+        {%- endif %}
+      {%- endfor %}
+    </div>
+    {%- endif %}
+  </section>
+
+{%- if search.performed %}
+  {%- paginate search.results by cfg.per_page %}
+    {%- liquid
+      assign product_n = 0
+      assign read_n = 0
+      for item in search.results
+        if item.object_type == 'product'
+          assign product_n = product_n | plus: 1
+        else
+          assign read_n = read_n | plus: 1
+        endif
+      endfor
+      assign mixed = false
+      if product_n > 0 and read_n > 0
+        assign mixed = true
+      endif
+    -%}
+    <section class="container" aria-label="{{ cfg.results_region | escape }}">
+      <p class="store-head__count" role="status">
+        {{ search.results_count }}
+        {%- if search.results_count == 1 %} {{ cfg.count_one }}{% else %} {{ cfg.count_many }}{% endif %}
+        {%- comment -%}
+          search.terms is whatever arrived in the query string, so it is escaped
+          everywhere it is printed, not only in the input's value.
+        {%- endcomment -%}
+        {%- if search.terms != blank %} “{{ search.terms | escape }}”{% endif %}
+      </p>
+
+      {%- if search.results_count == 0 %}
+      <div class="store-empty">
+        <p class="store-empty__title">{{ cfg.empty_heading }}</p>
+        <p class="store-empty__copy">{{ cfg.empty_copy }}</p>
+        <div class="store-empty__actions">
+          <a class="btn btn--ghost" href="{{ browse_url }}">
+            {{ cfg.browse_label }}
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
+          </a>
+        </div>
+      </div>
+      {%- else %}
+        {%- if product_n > 0 %}
+      <div class="store-group">
+          {%- if mixed %}
+        <h2 class="store-group__title">{{ cfg.group_products }}</h2>
+          {%- endif %}
+        <div class="store-grid" data-reveal-child>
+          {%- for item in search.results %}
+            {%- if item.object_type == 'product' %}
+          <a class="piece store-piece" href="{{ item.url }}" style="--tint: {% cycle 'tint': 'var(--ivory-2)', 'var(--gerua-100)', 'var(--mehendi-200)', 'var(--sand)' %}">
+            <div class="piece__media">
+              {%- if item.featured_image %}
+              <img
+                src="{{ item.featured_image | image_url: width: 700 }}"
+                srcset="{{ item.featured_image | image_url: width: 420 }} 420w, {{ item.featured_image | image_url: width: 700 }} 700w, {{ item.featured_image | image_url: width: 1040 }} 1040w"
+                sizes="(max-width: 600px) 48vw, (max-width: 900px) 32vw, 24vw"
+                alt="{{ item.featured_image.alt | default: item.title | escape }}"
+                loading="lazy"
+              >
+              {%- else %}
+              {{ 'product-1' | placeholder_svg_tag: 'piece__ph' }}
+              {%- endif %}
+              {%- if cfg.card_badge %}
+                {%- unless item.available %}
+              <span class="piece__badge">{{ cfg.badge_sold }}</span>
+                {%- else %}
+                  {%- if item.compare_at_price > item.price %}
+              <span class="piece__badge">{{ cfg.badge_sale }}</span>
+                  {%- endif %}
+                {%- endunless %}
+              {%- endif %}
+              {%- if cfg.card_wish %}
+              <button class="piece__wish" type="button" aria-pressed="false" aria-label="{{ cfg.wish_label | escape }}: {{ item.title | escape }}"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19.8S4.5 15.3 4.5 9.9c0-2.6 2-4.4 4.2-4.4 1.5 0 2.7.8 3.3 2 .6-1.2 1.8-2 3.3-2 2.2 0 4.2 1.8 4.2 4.4 0 5.4-7.5 9.9-7.5 9.9Z"></path></svg></button>
+              {%- endif %}
+              {%- if cfg.card_quick %}
+              <span class="piece__quick">{{ cfg.quick_label }}</span>
+              {%- endif %}
+            </div>
+            <div class="piece__info">
+              <p class="piece__name">{{ item.title | escape }}</p>
+              {%- if cfg.card_meta == 'type' and item.type != blank %}
+              <p class="piece__craft">{{ item.type }}</p>
+              {%- elsif cfg.card_meta == 'vendor' and item.vendor != blank %}
+              <p class="piece__craft">{{ item.vendor }}</p>
+              {%- endif %}
+              <p class="piece__price">
+                {%- if item.price_varies %}{{ cfg.price_from }} {% endif %}{{ item.price | money }}
+                {%- if cfg.card_was and item.compare_at_price > item.price %}<span>{{ item.compare_at_price | money }}</span>{% endif %}
+              </p>
+              {%- if cfg.card_swatches %}
+                {%- for opt in item.options_with_values %}
+                  {%- assign opt_key = opt.name | downcase %}
+                  {%- if opt_key == 'color' or opt_key == 'colour' %}
+              <span class="piece__swatches" aria-hidden="true">
+                    {%- for value in opt.values limit: 5 %}
+                <i style="background: {% if value.swatch.color %}{{ value.swatch.color }}{% else %}{{ value | downcase | replace: ' ', '' | escape }}{% endif %}"></i>
+                    {%- endfor %}
+              </span>
+                  {%- endif %}
+                {%- endfor %}
+              {%- endif %}
+            </div>
+          </a>
+            {%- endif %}
+          {%- endfor %}
+        </div>
+      </div>
+        {%- endif %}
+
+        {%- if read_n > 0 %}
+      <div class="store-group">
+          {%- if mixed %}
+        <h2 class="store-group__title">{{ cfg.group_reads }}</h2>
+          {%- endif %}
+        <div class="store-reads" data-reveal-child>
+          {%- for item in search.results %}
+            {%- unless item.object_type == 'product' %}
+              {%- liquid
+                assign is_article = false
+                if item.object_type == 'article'
+                  assign is_article = true
+                endif
+                if is_article
+                  assign kind = cfg.kind_article
+                  assign body = item.excerpt_or_content
+                else
+                  assign kind = cfg.kind_page
+                  assign body = item.content
+                endif
+              -%}
+          <a class="store-read{% unless is_article and item.image %} store-read--flat{% endunless %}" href="{{ item.url }}">
+              {%- if is_article and item.image %}
+            <span class="store-read__media"><img src="{{ item.image | image_url: width: 260 }}" alt="{{ item.image.alt | default: item.title | escape }}" loading="lazy"></span>
+              {%- endif %}
+            <span class="store-read__body">
+              <span class="store-read__kind">{{ kind }}</span>
+              <span class="store-read__title">{{ item.title | escape }}</span>
+              {%- if cfg.show_excerpt and body != blank %}
+              <span class="store-read__excerpt">{{ body | strip_html | truncatewords: 26 }}</span>
+              {%- endif %}
+            </span>
+            <span class="store-read__go" aria-hidden="true"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
+          </a>
+            {%- endunless %}
+          {%- endfor %}
+        </div>
+      </div>
+        {%- endif %}
+
+        {%- if paginate.pages > 1 %}
+      <nav class="store-pager" aria-label="{{ cfg.pager_label | escape }}">
+          {%- if paginate.previous %}
+        <a href="{{ paginate.previous.url }}" aria-label="{{ cfg.prev_label | escape }}">‹</a>
+          {%- endif %}
+          {%- for part in paginate.parts %}
+            {%- if part.is_link %}
+        <a href="{{ part.url }}" aria-label="{{ cfg.page_label | escape }} {{ part.title }}">{{ part.title }}</a>
+            {%- elsif part.title == paginate.current_page %}
+        <span aria-current="page">{{ part.title }}</span>
+            {%- else %}
+        <span>{{ part.title }}</span>
+            {%- endif %}
+          {%- endfor %}
+          {%- if paginate.next %}
+        <a href="{{ paginate.next.url }}" aria-label="{{ cfg.next_label | escape }}">›</a>
+          {%- endif %}
+      </nav>
+        {%- endif %}
+      {%- endif %}
+    </section>
+  {%- endpaginate %}
+{%- else %}
+  <section class="container store-empty" aria-label="{{ cfg.prompt_heading | escape }}">
+    <p class="store-empty__title">{{ cfg.prompt_heading }}</p>
+    <p class="store-empty__copy">{{ cfg.prompt_copy }}</p>
+    <div class="store-empty__actions">
+      <a class="btn btn--ghost" href="{{ browse_url }}">
+        {{ cfg.browse_label }}
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
+      </a>
+    </div>
+  </section>
+{%- endif %}
+</div>
+{%- if cfg.card_wish %}
+<script>
+(function () {
+  /* The wish button sits inside the product link, so its click must not
+     navigate. One delegated listener on the section covers every card,
+     including the ones a later page of results brings in. */
+  var root = document.getElementById('shopify-section-{{ section.id }}');
+  if (!root || root.__shrujanSearchInit) return;
+  root.__shrujanSearchInit = true;
+
+  root.addEventListener('click', function (e) {
+    var wish = e.target.closest ? e.target.closest('.piece__wish') : null;
+    if (!wish) return;
+    e.preventDefault();
+    var on = wish.getAttribute('aria-pressed') !== 'true';
+    wish.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+})();
+</script>
+{%- endif %}
+
+{% schema %}
+{
+  "name": "Search results",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Masthead"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Search"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Find your <em>piece</em>"
+    },
+    {
+      "type": "textarea",
+      "id": "lede",
+      "label": "Lede",
+      "default": "Search by craft, collection or the name of a piece — Suf, Paako, kanchli, potli. Partial words are enough."
+    },
+    {
+      "type": "header",
+      "content": "Search form"
+    },
+    {
+      "type": "text",
+      "id": "field_label",
+      "label": "Field label",
+      "default": "What are you looking for?"
+    },
+    {
+      "type": "text",
+      "id": "field_placeholder",
+      "label": "Field placeholder",
+      "default": "Kanchli, Ajrakh, potli…"
+    },
+    {
+      "type": "text",
+      "id": "submit_label",
+      "label": "Button label",
+      "default": "Search"
+    },
+    {
+      "type": "select",
+      "id": "search_types",
+      "label": "What to search",
+      "info": "Sets the type= parameter Shopify searches on.",
+      "default": "all",
+      "options": [
+        {
+          "value": "products",
+          "label": "Products only"
+        },
+        {
+          "value": "all",
+          "label": "Products, pages and articles"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "unavailable",
+      "label": "Sold-out products",
+      "default": "last",
+      "options": [
+        {
+          "value": "last",
+          "label": "Show last"
+        },
+        {
+          "value": "show",
+          "label": "Show in order"
+        },
+        {
+          "value": "hide",
+          "label": "Hide"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "suggest_label",
+      "label": "Suggested terms label",
+      "default": "Try",
+      "info": "Shown before the suggested-term chips. Add or remove chips as blocks."
+    },
+    {
+      "type": "header",
+      "content": "Results"
+    },
+    {
+      "type": "range",
+      "id": "per_page",
+      "label": "Results per page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "text",
+      "id": "count_one",
+      "label": "Count label (one result)",
+      "default": "result for"
+    },
+    {
+      "type": "text",
+      "id": "count_many",
+      "label": "Count label (several results)",
+      "default": "results for"
+    },
+    {
+      "type": "text",
+      "id": "group_products",
+      "label": "Products group heading",
+      "info": "Only shown when a search returns products alongside pages or articles.",
+      "default": "Pieces"
+    },
+    {
+      "type": "text",
+      "id": "group_reads",
+      "label": "Pages group heading",
+      "default": "Pages & journal"
+    },
+    {
+      "type": "text",
+      "id": "kind_page",
+      "label": "Page result label",
+      "default": "Page"
+    },
+    {
+      "type": "text",
+      "id": "kind_article",
+      "label": "Article result label",
+      "default": "Journal"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "label": "Show an excerpt on page and article results",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "results_region",
+      "label": "Results region label",
+      "info": "Read out by screen readers, not shown on screen.",
+      "default": "Search results"
+    },
+    {
+      "type": "header",
+      "content": "Grid"
+    },
+    {
+      "type": "range",
+      "id": "grid_cols",
+      "label": "Products per row (desktop)",
+      "info": "Applies above 900px.",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "grid_cols_t",
+      "label": "Products per row (tablet)",
+      "info": "Applies between 600 and 900px.",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "grid_cols_m",
+      "label": "Products per row (mobile)",
+      "info": "Applies below 600px.",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Product card"
+    },
+    {
+      "type": "select",
+      "id": "card_meta",
+      "label": "Line under the name",
+      "default": "type",
+      "options": [
+        {
+          "value": "none",
+          "label": "Nothing"
+        },
+        {
+          "value": "type",
+          "label": "Product type"
+        },
+        {
+          "value": "vendor",
+          "label": "Vendor"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "card_badge",
+      "label": "Show the badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge_sold",
+      "label": "Sold-out badge",
+      "default": "Sold out"
+    },
+    {
+      "type": "text",
+      "id": "badge_sale",
+      "label": "Reduced badge",
+      "default": "Reduced"
+    },
+    {
+      "type": "checkbox",
+      "id": "card_was",
+      "label": "Show the “was” price",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "price_from",
+      "label": "Price prefix when a piece has several prices",
+      "default": "From"
+    },
+    {
+      "type": "checkbox",
+      "id": "card_swatches",
+      "label": "Show the colour swatches",
+      "info": "Read from the product’s Colour option.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "card_wish",
+      "label": "Show the wishlist button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "wish_label",
+      "label": "Wishlist button label",
+      "info": "Read out by screen readers, followed by the name of the piece.",
+      "default": "Save to wishlist"
+    },
+    {
+      "type": "checkbox",
+      "id": "card_quick",
+      "label": "Show the hover label",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "quick_label",
+      "label": "Hover label",
+      "default": "View piece"
+    },
+    {
+      "type": "header",
+      "content": "No results"
+    },
+    {
+      "type": "text",
+      "id": "empty_heading",
+      "label": "Heading",
+      "default": "Nothing came back"
+    },
+    {
+      "type": "textarea",
+      "id": "empty_copy",
+      "label": "Copy",
+      "default": "Try a shorter word, a craft name, or browse the whole catalogue — eighty-four pieces, every one worked by hand."
+    },
+    {
+      "type": "text",
+      "id": "browse_label",
+      "label": "Catalogue link label",
+      "default": "Browse the catalogue"
+    },
+    {
+      "type": "url",
+      "id": "browse_link",
+      "label": "Catalogue link",
+      "info": "Defaults to the Shop Shrujan page."
+    },
+    {
+      "type": "header",
+      "content": "Before a search is made"
+    },
+    {
+      "type": "text",
+      "id": "prompt_heading",
+      "label": "Heading",
+      "default": "Start with a word"
+    },
+    {
+      "type": "textarea",
+      "id": "prompt_copy",
+      "label": "Copy",
+      "default": "A craft, a collection or a colour. Or take the long way round and walk the whole catalogue."
+    },
+    {
+      "type": "header",
+      "content": "Pagination"
+    },
+    {
+      "type": "text",
+      "id": "pager_label",
+      "label": "Pagination region label",
+      "default": "Search results pages"
+    },
+    {
+      "type": "text",
+      "id": "page_label",
+      "label": "Page link label",
+      "default": "Page"
+    },
+    {
+      "type": "text",
+      "id": "prev_label",
+      "label": "Previous page label",
+      "default": "Previous page"
+    },
+    {
+      "type": "text",
+      "id": "next_label",
+      "label": "Next page label",
+      "default": "Next page"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "select",
+      "id": "sec_width",
+      "label": "Section width",
+      "info": "Theme default keeps the shared page rail.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow"
+        },
+        {
+          "value": "wide",
+          "label": "Wide"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top",
+      "label": "Extra top spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom",
+      "label": "Extra bottom spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top_m",
+      "label": "Extra top spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom_m",
+      "label": "Extra bottom spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "sec_bg",
+      "label": "Background",
+      "info": "Leave empty to keep the section’s own background."
+    },
+    {
+      "type": "color",
+      "id": "sec_text",
+      "label": "Text colour"
+    },
+    {
+      "type": "color",
+      "id": "sec_accent",
+      "label": "Accent colour"
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_animate",
+      "label": "Animate on scroll",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_mobile",
+      "label": "Hide on mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_desktop",
+      "label": "Hide on desktop",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css",
+      "label": "Custom CSS",
+      "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "term",
+      "name": "Suggested term",
+      "settings": [
+        {
+          "type": "text",
+          "id": "term",
+          "label": "Term",
+          "default": "Kanchli"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,66 @@
+{%- comment -%}
+  The customer address fields, once.
+
+  Rendered twice on the addresses page — for `customer.new_address` and again
+  for every saved address — so the two can never drift apart. The country list
+  is Shopify's own `all_country_option_tags`, which carries each country's
+  provinces on the option itself; the section's script reads them from there,
+  which is what keeps the province field honest without a vendor library.
+
+  Usage: {% render 'store-address-fields', form: form, cfg: section.settings, prefix: 'New' %}
+{%- endcomment -%}
+<div class="store-fields">
+  <div class="store-field">
+    <label for="{{ prefix }}FirstName">{{ cfg.l_first }}</label>
+    <input type="text" id="{{ prefix }}FirstName" name="address[first_name]" value="{{ form.first_name }}" autocomplete="given-name">
+  </div>
+  <div class="store-field">
+    <label for="{{ prefix }}LastName">{{ cfg.l_last }}</label>
+    <input type="text" id="{{ prefix }}LastName" name="address[last_name]" value="{{ form.last_name }}" autocomplete="family-name">
+  </div>
+
+  <div class="store-field store-field--wide">
+    <label for="{{ prefix }}Company">{{ cfg.l_company }}</label>
+    <input type="text" id="{{ prefix }}Company" name="address[company]" value="{{ form.company }}" autocomplete="organization">
+  </div>
+
+  <div class="store-field store-field--wide">
+    <label for="{{ prefix }}Address1">{{ cfg.l_address1 }}</label>
+    <input type="text" id="{{ prefix }}Address1" name="address[address1]" value="{{ form.address1 }}" autocomplete="address-line1">
+  </div>
+
+  <div class="store-field store-field--wide">
+    <label for="{{ prefix }}Address2">{{ cfg.l_address2 }}</label>
+    <input type="text" id="{{ prefix }}Address2" name="address[address2]" value="{{ form.address2 }}" autocomplete="address-line2">
+  </div>
+
+  <div class="store-field">
+    <label for="{{ prefix }}City">{{ cfg.l_city }}</label>
+    <input type="text" id="{{ prefix }}City" name="address[city]" value="{{ form.city }}" autocomplete="address-level2">
+  </div>
+  <div class="store-field">
+    <label for="{{ prefix }}Zip">{{ cfg.l_zip }}</label>
+    <input type="text" id="{{ prefix }}Zip" name="address[zip]" value="{{ form.zip }}" autocomplete="postal-code" autocapitalize="characters">
+  </div>
+
+  <div class="store-field">
+    <label for="{{ prefix }}Country">{{ cfg.l_country }}</label>
+    <select id="{{ prefix }}Country" name="address[country]" data-address-country data-default="{{ form.country }}" autocomplete="country">
+      {{ all_country_option_tags }}
+    </select>
+  </div>
+  <div class="store-field">
+    <label for="{{ prefix }}Province">{{ cfg.l_province }}</label>
+    <select id="{{ prefix }}Province" name="address[province]" data-address-province data-default="{{ form.province }}" autocomplete="address-level1"></select>
+  </div>
+
+  <div class="store-field store-field--wide">
+    <label for="{{ prefix }}Phone">{{ cfg.l_phone }}</label>
+    <input type="tel" id="{{ prefix }}Phone" name="address[phone]" value="{{ form.phone }}" autocomplete="tel">
+  </div>
+
+  <label class="store-check store-field--wide" for="{{ prefix }}Default">
+    <input type="checkbox" id="{{ prefix }}Default" name="address[default]" value="true"{% if form.default? %} checked{% endif %}>
+    {{ cfg.default_label }}
+  </label>
+</div>

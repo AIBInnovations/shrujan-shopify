@@ -1,0 +1,373 @@
+{%- render 'section-design', section: section -%}
+{%- comment -%}
+  Account overview — real orders, real default address.
+
+  `customer.orders` is paginated, so an old customer with two hundred orders
+  gets pages rather than a truncated list, and each row links to Shopify's own
+  order page for that customer (`order.customer_url`).
+{%- endcomment -%}
+{%- liquid
+  assign cfg = section.settings
+-%}
+<header class="store-head container" data-reveal>
+  {%- if cfg.eyebrow != blank %}
+  <p class="store-head__eyebrow">{{ cfg.eyebrow }}</p>
+  {%- endif %}
+  <h1 class="store-head__title">{{ cfg.heading }}</h1>
+  {%- if cfg.lede != blank %}
+  <p class="store-head__lede">{{ cfg.lede }}</p>
+  {%- endif %}
+</header>
+
+<div class="container store-duo" data-reveal>
+  <div>
+    <h2 class="store-section-title">{{ cfg.orders_title }}</h2>
+
+    {%- paginate customer.orders by cfg.per_page %}
+      {%- if customer.orders.size > 0 %}
+    <div class="store-scroll">
+      <table class="store-table">
+        <thead>
+          <tr>
+            <th scope="col">{{ cfg.col_order }}</th>
+            <th scope="col">{{ cfg.col_date }}</th>
+            <th scope="col">{{ cfg.col_payment }}</th>
+            <th scope="col">{{ cfg.col_fulfillment }}</th>
+            <th scope="col">{{ cfg.col_total }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%- for order in customer.orders %}
+          <tr>
+            <td><a class="store-table__name" href="{{ order.customer_url }}">{{ order.name }}</a></td>
+            <td>{{ order.created_at | date: format: cfg.date_format }}</td>
+            <td>{{ order.financial_status_label }}</td>
+            <td>{{ order.fulfillment_status_label }}</td>
+            <td>{{ order.total_price | money }}</td>
+          </tr>
+          {%- endfor %}
+        </tbody>
+      </table>
+    </div>
+
+        {%- if paginate.pages > 1 %}
+    <nav class="store-pager" role="navigation" aria-label="{{ cfg.orders_title | escape }}">
+      {%- if paginate.previous.is_link %}<a href="{{ paginate.previous.url }}" rel="prev">&#8592;</a>{% endif %}
+      {%- for part in paginate.parts %}
+        {%- if part.is_link %}
+      <a href="{{ part.url }}">{{ part.title }}</a>
+        {%- elsif part.title == paginate.current_page %}
+      <span aria-current="page">{{ part.title }}</span>
+        {%- else %}
+      <span>{{ part.title }}</span>
+        {%- endif %}
+      {%- endfor %}
+      {%- if paginate.next.is_link %}<a href="{{ paginate.next.url }}" rel="next">&#8594;</a>{% endif %}
+    </nav>
+        {%- endif %}
+      {%- else %}
+    <div class="store-panel">
+      <p class="store-panel__title">{{ cfg.empty_title }}</p>
+      <p class="store-panel__copy">{{ cfg.empty_copy }}</p>
+      <div class="store-address__actions">
+        <a class="store-btn" href="{{ cfg.empty_cta_url | default: '/pages/shop-shrujan' }}">{{ cfg.empty_cta_label }}</a>
+      </div>
+    </div>
+      {%- endif %}
+    {%- endpaginate %}
+  </div>
+
+  <div class="store-stack">
+    <div class="store-panel">
+      <p class="store-panel__title">{{ cfg.address_title }}</p>
+      {%- if customer.default_address %}
+      <div class="store-address__lines">{{ customer.default_address | format_address }}</div>
+      {%- else %}
+      <p class="store-panel__copy">{{ cfg.no_address_note }}</p>
+      {%- endif %}
+      <div class="store-address__actions">
+        <a class="store-btn store-btn--quiet" href="{{ routes.account_addresses_url }}">{{ cfg.address_manage_label }}</a>
+      </div>
+    </div>
+
+    <div class="store-panel">
+      <p class="store-panel__title">{{ cfg.details_title }}</p>
+      <p class="store-panel__copy">{{ customer.name }}<br>{{ customer.email }}</p>
+      <div class="store-address__actions">
+        <a class="store-btn store-btn--quiet" href="{{ routes.account_logout_url }}">{{ cfg.logout_label }}</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Account",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Masthead"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Your account"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Your account"
+    },
+    {
+      "type": "textarea",
+      "id": "lede",
+      "label": "Introduction",
+      "default": "Orders, addresses and everything being stitched for you, in one place."
+    },
+    {
+      "type": "header",
+      "content": "Orders"
+    },
+    {
+      "type": "text",
+      "id": "orders_title",
+      "label": "Orders heading",
+      "default": "Order history"
+    },
+    {
+      "type": "range",
+      "id": "per_page",
+      "label": "Orders per page",
+      "min": 5,
+      "max": 50,
+      "step": 5,
+      "default": 20
+    },
+    {
+      "type": "select",
+      "id": "date_format",
+      "label": "Date format",
+      "default": "abbreviated_date",
+      "options": [
+        {
+          "value": "abbreviated_date",
+          "label": "5 Aug 2026"
+        },
+        {
+          "value": "date",
+          "label": "August 5, 2026"
+        },
+        {
+          "value": "month_day_year",
+          "label": "08/05/2026"
+        },
+        {
+          "value": "basic",
+          "label": "05/08/2026"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "col_order",
+      "label": "Column: order",
+      "default": "Order"
+    },
+    {
+      "type": "text",
+      "id": "col_date",
+      "label": "Column: date",
+      "default": "Placed"
+    },
+    {
+      "type": "text",
+      "id": "col_payment",
+      "label": "Column: payment",
+      "default": "Payment"
+    },
+    {
+      "type": "text",
+      "id": "col_fulfillment",
+      "label": "Column: fulfilment",
+      "default": "Status"
+    },
+    {
+      "type": "text",
+      "id": "col_total",
+      "label": "Column: total",
+      "default": "Total"
+    },
+    {
+      "type": "header",
+      "content": "No orders yet"
+    },
+    {
+      "type": "text",
+      "id": "empty_title",
+      "label": "Title",
+      "default": "Nothing here yet"
+    },
+    {
+      "type": "textarea",
+      "id": "empty_copy",
+      "label": "Copy",
+      "default": "Your first order will appear here the moment it is placed, with the name of the woman who made it."
+    },
+    {
+      "type": "text",
+      "id": "empty_cta_label",
+      "label": "Button label",
+      "default": "Start with the catalogue"
+    },
+    {
+      "type": "url",
+      "id": "empty_cta_url",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Side panels"
+    },
+    {
+      "type": "text",
+      "id": "address_title",
+      "label": "Address heading",
+      "default": "Default address"
+    },
+    {
+      "type": "text",
+      "id": "no_address_note",
+      "label": "No address note",
+      "default": "You have not saved an address yet."
+    },
+    {
+      "type": "text",
+      "id": "address_manage_label",
+      "label": "Address button",
+      "default": "Manage addresses"
+    },
+    {
+      "type": "text",
+      "id": "details_title",
+      "label": "Details heading",
+      "default": "Signed in as"
+    },
+    {
+      "type": "text",
+      "id": "logout_label",
+      "label": "Sign-out button",
+      "default": "Sign out"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "select",
+      "id": "sec_width",
+      "label": "Section width",
+      "info": "Theme default keeps the shared page rail.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow"
+        },
+        {
+          "value": "wide",
+          "label": "Wide"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top",
+      "label": "Extra top spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom",
+      "label": "Extra bottom spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top_m",
+      "label": "Extra top spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom_m",
+      "label": "Extra bottom spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "sec_bg",
+      "label": "Background",
+      "info": "Leave empty to keep the section’s own background."
+    },
+    {
+      "type": "color",
+      "id": "sec_text",
+      "label": "Text colour"
+    },
+    {
+      "type": "color",
+      "id": "sec_accent",
+      "label": "Accent colour"
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_animate",
+      "label": "Animate on scroll",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_mobile",
+      "label": "Hide on mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_desktop",
+      "label": "Hide on desktop",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css",
+      "label": "Custom CSS",
+      "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    }
+  ]
+}
+{% endschema %}

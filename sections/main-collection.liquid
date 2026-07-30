@@ -1,0 +1,715 @@
+{%- render 'section-design', section: section -%}
+{%- comment -%}
+  Collection page — the designed catalogue, rendered from the real collection.
+
+  Shop Shrujan (sections/page-shop.liquid) builds its grid client-side from
+  window.SHRUJAN. This page uses the same card vocabulary (.piece, .piece__media,
+  .piece__info, badge / price / was / swatches / wish / quick) but every value
+  comes from the Shopify objects, so it works for any collection a merchant
+  creates: real sorting through `collection.sort_options`, real filters through
+  `collection.filters`, real pagination through the paginate tag.
+
+  Layout controls are published as custom properties on the section root — the
+  grid in shrujan-store.css already reads --store-cols / -t / -m — and are only
+  written when a merchant moves off the built design, so the default output is
+  the hand-built page.
+{%- endcomment -%}
+{%- liquid
+  assign cfg = section.settings
+  assign sel = '#shopify-section-' | append: section.id
+
+  assign head_title = cfg.heading | default: collection.title
+
+  assign count = collection.products_count
+  assign count_word = cfg.count_plural
+  if count == 1
+    assign count_word = cfg.count_singular
+  endif
+
+  assign sort_by = collection.sort_by | default: collection.default_sort_by
+
+  comment
+    A filter is "engaged" when any list/boolean value is active or a price range
+    has been narrowed — that is what turns the clear-all links on.
+  endcomment
+  assign filters_active = false
+  for filter in collection.filters
+    if filter.type == 'price_range'
+      if filter.min_value.value != blank or filter.max_value.value != blank
+        assign filters_active = true
+      endif
+    else
+      if filter.active_values.size > 0
+        assign filters_active = true
+      endif
+    endif
+  endfor
+
+  assign show_filters = false
+  if cfg.show_bar and cfg.show_filters and collection.filters.size > 0
+    assign show_filters = true
+  endif
+  assign show_sort = false
+  if cfg.show_bar and cfg.show_sort and collection.sort_options.size > 0
+    assign show_sort = true
+  endif
+
+  assign has_layout = false
+  if cfg.cols != 4 or cfg.cols_t != 3 or cfg.cols_m != 2 or cfg.ratio != 'default'
+    assign has_layout = true
+  endif
+-%}
+{%- if has_layout -%}
+  <style>
+    {%- comment -%}
+      Custom properties inherit through `.shopify-section { display: contents }`,
+      so publishing them on the section root is enough — the grid rule and each
+      of its breakpoints already read them.
+    {%- endcomment -%}
+    {%- if cfg.cols != 4 or cfg.cols_t != 3 or cfg.cols_m != 2 -%}
+      {{ sel }} {
+        --store-cols: {{ cfg.cols }};
+        --store-cols-t: {{ cfg.cols_t }};
+        --store-cols-m: {{ cfg.cols_m }};
+      }
+    {%- endif -%}
+    {%- if cfg.ratio != 'default' -%}
+      {{ sel }} .piece__media { aspect-ratio: {{ cfg.ratio }}; }
+    {%- endif -%}
+  </style>
+{%- endif -%}
+<div class="page">
+  <header class="container store-head" data-reveal>
+    {%- if cfg.eyebrow != blank -%}
+      <p class="store-head__eyebrow">{{ cfg.eyebrow }}</p>
+    {%- endif -%}
+    <h1 class="store-head__title">{{ head_title }}</h1>
+    {%- if cfg.lede != blank -%}
+      <p class="store-head__lede">{{ cfg.lede }}</p>
+    {%- endif -%}
+    {%- if cfg.show_description and collection.description != blank -%}
+      <div class="store-head__lede store-head__rte">{{ collection.description }}</div>
+    {%- endif -%}
+    {%- if cfg.show_count -%}
+      <p class="store-head__count">{{ count }} {{ count_word }}</p>
+    {%- endif -%}
+  </header>
+
+  {%- paginate collection.products by section.settings.per_page -%}
+  <div class="container">
+    {%- if show_filters or show_sort -%}
+      <div class="store-bar" data-reveal>
+        {%- if show_filters -%}
+          <div class="store-bar__group">
+            <span class="store-bar__label">{{ cfg.filters_label }}</span>
+            {%- for filter in collection.filters -%}
+              {%- if filter.type == 'list' or filter.type == 'boolean' -%}
+                {%- for value in filter.values -%}
+                  {%- if value.count > 0 or value.active -%}
+                    <a class="store-chip{% if value.active %} is-active{% endif %}" href="{% if value.active %}{{ value.url_to_remove }}{% else %}{{ value.url_to_add }}{% endif %}" rel="nofollow">{{ value.label }}{% if cfg.show_filter_counts %} <span>{{ value.count }}</span>{% endif %}</a>
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
+            {%- endfor -%}
+            {%- if filters_active -%}
+              <a class="store-chip" href="{{ collection.url }}" rel="nofollow">{{ cfg.filters_clear_label }}</a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+
+        {%- if show_sort -%}
+          <form class="store-bar__group" method="get" action="{{ collection.url }}" data-store-sort>
+            {%- comment -%}
+              Sorting is a plain GET, so the active filters have to travel with
+              it or picking an order would silently drop them. `page` is left
+              behind on purpose — a new order starts at page one.
+            {%- endcomment -%}
+            {%- for filter in collection.filters -%}
+              {%- if filter.type == 'price_range' -%}
+                {%- if filter.min_value.value != blank -%}
+                  <input type="hidden" name="{{ filter.min_value.param_name }}" value="{{ filter.min_value.value }}">
+                {%- endif -%}
+                {%- if filter.max_value.value != blank -%}
+                  <input type="hidden" name="{{ filter.max_value.param_name }}" value="{{ filter.max_value.value }}">
+                {%- endif -%}
+              {%- else -%}
+                {%- for value in filter.active_values -%}
+                  <input type="hidden" name="{{ value.param_name }}" value="{{ value.value }}">
+                {%- endfor -%}
+              {%- endif -%}
+            {%- endfor -%}
+            <label class="store-bar__label" for="store-sort-{{ section.id }}">{{ cfg.sort_label }}</label>
+            <select class="store-select" name="sort_by" id="store-sort-{{ section.id }}">
+              {%- for option in collection.sort_options -%}
+                <option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name }}</option>
+              {%- endfor -%}
+            </select>
+            <noscript><button type="submit" class="store-btn store-btn--quiet">{{ cfg.sort_apply_label }}</button></noscript>
+          </form>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if collection.products.size > 0 -%}
+      <div class="store-grid{% if paginate.pages > 1 %} store-grid--tight{% endif %}" data-reveal-child>
+        {%- for product in collection.products -%}
+          {%- liquid
+            assign card_meta = ''
+            if cfg.card_meta == 'type'
+              assign card_meta = product.type
+            elsif cfg.card_meta == 'vendor'
+              assign card_meta = product.vendor
+            endif
+
+            comment
+              Swatches only when the product really carries a colour option —
+              the row is omitted entirely otherwise rather than left empty.
+            endcomment
+            assign swatch_values = ''
+            if cfg.card_swatches
+              for opt in product.options_with_values
+                assign opt_name = opt.name | downcase | strip
+                if opt_name == 'color' or opt_name == 'colour'
+                  assign swatch_values = opt.values | join: '~'
+                endif
+              endfor
+            endif
+          -%}
+          <a class="piece shop-piece" href="{{ product.url | within: collection }}" style="--tint: {% cycle 'tint': 'var(--ivory-2)', 'var(--gerua-100)', 'var(--mehendi-200)', 'var(--sand)' %}">
+            <div class="piece__media">
+              {%- if product.featured_image -%}
+                <img src="{{ product.featured_image | image_url: width: 900 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy">
+              {%- else -%}
+                {{ 'product-1' | placeholder_svg_tag: 'piece__ph' }}
+              {%- endif -%}
+              {%- if cfg.card_badge and product.available == false -%}
+                <span class="piece__badge">{{ cfg.sold_out_label }}</span>
+              {%- endif -%}
+              {%- if cfg.card_wish -%}
+                <button class="piece__wish" type="button" aria-pressed="false" aria-label="{{ cfg.wish_label }}: {{ product.title | escape }}"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19.8S4.5 15.3 4.5 9.9c0-2.6 2-4.4 4.2-4.4 1.5 0 2.7.8 3.3 2 .6-1.2 1.8-2 3.3-2 2.2 0 4.2 1.8 4.2 4.4 0 5.4-7.5 9.9-7.5 9.9Z"></path></svg></button>
+              {%- endif -%}
+              {%- if cfg.card_quick and product.available -%}
+                <span class="piece__quick" data-variant="{{ product.selected_or_first_available_variant.id }}">{{ cfg.quick_label }}</span>
+              {%- endif -%}
+            </div>
+
+            <div class="piece__info">
+              <p class="piece__name">{{ product.title }}</p>
+              {%- if card_meta != blank -%}
+                <p class="piece__craft">{{ card_meta }}</p>
+              {%- endif -%}
+              <p class="piece__price">{{ product.price | money }}{% if cfg.card_was and product.compare_at_price > product.price %}<span>{{ product.compare_at_price | money }}</span>{% endif %}</p>
+              {%- if swatch_values != blank -%}
+                <span class="piece__swatches" aria-hidden="true">
+                  {%- assign swatches = swatch_values | split: '~' -%}
+                  {%- for swatch in swatches limit: 5 -%}
+                    <i style="background: {{ swatch | downcase | strip | replace: ' ', '' }}"></i>
+                  {%- endfor -%}
+                </span>
+              {%- endif -%}
+            </div>
+          </a>
+        {%- endfor -%}
+      </div>
+
+      {%- if paginate.pages > 1 -%}
+        <nav class="store-pager" aria-label="{{ cfg.pager_label }}">
+          {%- if paginate.previous -%}
+            <a href="{{ paginate.previous.url }}" rel="prev" aria-label="{{ cfg.pager_prev }}">&#8249;</a>
+          {%- endif -%}
+          {%- comment -%}
+            A non-link part is either the page being viewed or the ellipsis the
+            pager inserts between runs. `append: ''` puts both sides of the test
+            on the same footing — the part title is a string and current_page is
+            a number, so a bare `==` would never match and the ellipsis would end
+            up marked as the current page.
+          {%- endcomment -%}
+          {%- assign current_page = paginate.current_page | append: '' -%}
+          {%- for part in paginate.parts -%}
+            {%- if part.is_link -%}
+              <a href="{{ part.url }}">{{ part.title }}</a>
+            {%- else -%}
+              {%- assign part_title = part.title | append: '' -%}
+              <span{% if part_title == current_page %} aria-current="page"{% endif %}>{{ part.title }}</span>
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if paginate.next -%}
+            <a href="{{ paginate.next.url }}" rel="next" aria-label="{{ cfg.pager_next }}">&#8250;</a>
+          {%- endif -%}
+        </nav>
+      {%- endif -%}
+    {%- else -%}
+      <div class="store-empty" data-reveal>
+        <h2 class="store-empty__title">{{ cfg.empty_title }}</h2>
+        <p class="store-empty__copy">{{ cfg.empty_copy }}</p>
+        <div class="store-empty__actions">
+          {%- if filters_active -%}
+            <a class="store-btn store-btn--quiet" href="{{ collection.url }}" rel="nofollow">{{ cfg.filters_clear_label }}</a>
+          {%- endif -%}
+          <a class="store-btn" href="{{ cfg.empty_link | default: '/collections/all' }}">{{ cfg.empty_link_label }}
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
+          </a>
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+  {%- endpaginate -%}
+</div>
+
+<script>
+(function () {
+  var root = document.getElementById('shopify-section-{{ section.id }}');
+  if (!root || root.__storeCollection) return;
+  root.__storeCollection = true;
+
+  /* The sort menu is a real form, so it already works without JS — this only
+     saves the shopper the extra "Apply" press. */
+  var form = root.querySelector('[data-store-sort]');
+  var select = form ? form.querySelector('select') : null;
+  if (select) select.addEventListener('change', function () { form.submit(); });
+
+  root.addEventListener('click', function (e) {
+    var target = e.target.closest ? e.target : e.target.parentNode;
+    if (!target || !target.closest) return;
+
+    /* Both controls sit inside the product link, so their click must not
+       navigate to the product page. */
+    var wish = target.closest('.piece__wish');
+    if (wish) {
+      e.preventDefault();
+      wish.setAttribute('aria-pressed', wish.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+      return;
+    }
+
+    var quick = target.closest('.piece__quick');
+    var variant = quick && quick.getAttribute('data-variant');
+    if (!variant) return;
+    e.preventDefault();
+    var add = document.createElement('form');
+    add.method = 'post';
+    add.action = '{{ routes.cart_add_url }}';
+    add.hidden = true;
+    add.innerHTML =
+      '<input type="hidden" name="id" value="' + variant + '">' +
+      '<input type="hidden" name="quantity" value="1">';
+    document.body.appendChild(add);
+    add.submit();
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Collection",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Masthead"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "info": "Leave empty to use the collection’s own title."
+    },
+    {
+      "type": "textarea",
+      "id": "lede",
+      "label": "Intro copy",
+      "info": "Shown above the collection description. Leave empty to show only the description."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show the collection description",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_count",
+      "label": "Show the product count",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "count_singular",
+      "label": "Count word (one product)",
+      "default": "piece"
+    },
+    {
+      "type": "text",
+      "id": "count_plural",
+      "label": "Count word (several products)",
+      "default": "pieces"
+    },
+    {
+      "type": "header",
+      "content": "Toolbar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_bar",
+      "label": "Show the toolbar",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sort",
+      "label": "Show sorting",
+      "info": "Uses the sort orders Shopify offers for this collection.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "sort_label",
+      "label": "Sort label",
+      "default": "Sort"
+    },
+    {
+      "type": "text",
+      "id": "sort_apply_label",
+      "label": "Sort button label",
+      "info": "Only seen by shoppers with JavaScript switched off.",
+      "default": "Apply"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_filters",
+      "label": "Show filters",
+      "info": "Filters come from Shopify’s Search & Discovery app. Nothing is shown until the merchant creates some.",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "filters_label",
+      "label": "Filters label",
+      "default": "Filter"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_filter_counts",
+      "label": "Show the number of products on each filter",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "filters_clear_label",
+      "label": "Clear filters label",
+      "default": "Clear all"
+    },
+    {
+      "type": "header",
+      "content": "Grid"
+    },
+    {
+      "type": "range",
+      "id": "per_page",
+      "label": "Products per page",
+      "min": 4,
+      "max": 48,
+      "step": 4,
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "cols",
+      "label": "Products per row (desktop)",
+      "info": "Applies above 900px.",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "cols_t",
+      "label": "Products per row (tablet)",
+      "info": "Applies between 601 and 900px.",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "cols_m",
+      "label": "Products per row (mobile)",
+      "info": "Applies below 601px.",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "select",
+      "id": "ratio",
+      "label": "Image shape",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default (3:4 portrait)"
+        },
+        {
+          "value": "1 / 1",
+          "label": "Square"
+        },
+        {
+          "value": "4 / 5",
+          "label": "Portrait, soft"
+        },
+        {
+          "value": "2 / 3",
+          "label": "Portrait, tall"
+        },
+        {
+          "value": "4 / 3",
+          "label": "Landscape"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Product card"
+    },
+    {
+      "type": "select",
+      "id": "card_meta",
+      "label": "Line under the title",
+      "default": "type",
+      "options": [
+        {
+          "value": "type",
+          "label": "Product type"
+        },
+        {
+          "value": "vendor",
+          "label": "Vendor"
+        },
+        {
+          "value": "none",
+          "label": "Nothing"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "card_badge",
+      "label": "Show the sold-out badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "sold_out_label",
+      "label": "Sold-out badge text",
+      "default": "Sold out"
+    },
+    {
+      "type": "checkbox",
+      "id": "card_was",
+      "label": "Show the “was” price",
+      "info": "Shown when the product carries a compare-at price.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "card_swatches",
+      "label": "Show the colour swatches",
+      "info": "Shown only for products with a Colour option.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "card_wish",
+      "label": "Show the wishlist button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "wish_label",
+      "label": "Wishlist button label",
+      "info": "Read out by screen readers, followed by the product name.",
+      "default": "Save to wishlist"
+    },
+    {
+      "type": "checkbox",
+      "id": "card_quick",
+      "label": "Show the quick-add label",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "quick_label",
+      "label": "Quick-add label",
+      "default": "Add to bag"
+    },
+    {
+      "type": "header",
+      "content": "Pagination"
+    },
+    {
+      "type": "text",
+      "id": "pager_label",
+      "label": "Pagination label",
+      "info": "Read out by screen readers.",
+      "default": "Pagination"
+    },
+    {
+      "type": "text",
+      "id": "pager_prev",
+      "label": "Previous page label",
+      "default": "Previous page"
+    },
+    {
+      "type": "text",
+      "id": "pager_next",
+      "label": "Next page label",
+      "default": "Next page"
+    },
+    {
+      "type": "header",
+      "content": "When nothing is in stock"
+    },
+    {
+      "type": "text",
+      "id": "empty_title",
+      "label": "Heading",
+      "default": "Nothing online here right now"
+    },
+    {
+      "type": "textarea",
+      "id": "empty_copy",
+      "label": "Copy",
+      "default": "Every piece is made by hand, so a collection empties from time to time. Write to the studio and we will tell you what is on the frame."
+    },
+    {
+      "type": "text",
+      "id": "empty_link_label",
+      "label": "Button label",
+      "default": "Continue shopping"
+    },
+    {
+      "type": "url",
+      "id": "empty_link",
+      "label": "Button link",
+      "info": "Defaults to /collections/all."
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "select",
+      "id": "sec_width",
+      "label": "Section width",
+      "info": "Theme default keeps the shared page rail.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow"
+        },
+        {
+          "value": "wide",
+          "label": "Wide"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top",
+      "label": "Extra top spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom",
+      "label": "Extra bottom spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top_m",
+      "label": "Extra top spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom_m",
+      "label": "Extra bottom spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "sec_bg",
+      "label": "Background",
+      "info": "Leave empty to keep the section’s own background."
+    },
+    {
+      "type": "color",
+      "id": "sec_text",
+      "label": "Text colour"
+    },
+    {
+      "type": "color",
+      "id": "sec_accent",
+      "label": "Accent colour"
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_animate",
+      "label": "Animate on scroll",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_mobile",
+      "label": "Hide on mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_desktop",
+      "label": "Hide on desktop",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css",
+      "label": "Custom CSS",
+      "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,451 @@
+{%- render 'section-design', section: section -%}
+{%- comment -%}
+  Article — the editorial page the journal cards lead into.
+
+  Everything below the prose (share row, next/previous, comments) sits on the
+  same 78ch measure `.store-article` sets, so the column reads as one piece;
+  the prose gives its page gap to that foot whenever any of it renders.
+{%- endcomment -%}
+{%- liquid
+  assign cfg = section.settings
+  assign comments_on = false
+  if cfg.show_comments and blog.comments_enabled?
+    assign comments_on = true
+  endif
+  assign has_nav = false
+  if cfg.show_nav
+    if blog.previous_article or blog.next_article
+      assign has_nav = true
+    endif
+  endif
+  assign has_foot = false
+  if cfg.show_share or comments_on or has_nav
+    assign has_foot = true
+  endif
+-%}
+
+<article>
+  <header class="store-head container" data-reveal>
+    <a class="store-back" href="{{ blog.url }}">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H5"></path><path d="m10.5 6.5-5.5 5.5 5.5 5.5"></path></svg>
+      {{ cfg.back_label }}
+    </a>
+    {%- if cfg.eyebrow != blank %}
+    <p class="store-head__eyebrow">{{ cfg.eyebrow }}</p>
+    {%- endif %}
+    <h1 class="store-head__title">{{ article.title }}</h1>
+
+    {%- if cfg.show_date or cfg.show_author %}
+    <p class="store-meta">
+      {%- if cfg.show_date %}
+      <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: cfg.date_format }}</time>
+      {%- endif %}
+      {%- if cfg.show_date and cfg.show_author and article.author != blank %}<span class="store-meta__dot" aria-hidden="true">&#8226;</span>{% endif %}
+      {%- if cfg.show_author and article.author != blank %}{{ cfg.author_prefix }} {{ article.author }}{% endif %}
+      {%- if comments_on and article.comments_count > 0 %}<span class="store-meta__dot" aria-hidden="true">&#8226;</span><a href="#comments">{{ article.comments_count }} {{ cfg.comments_title }}</a>{% endif %}
+    </p>
+    {%- endif %}
+
+    {%- if cfg.show_tags and article.tags.size > 0 %}
+    <div class="store-chips">
+      {%- for tag in article.tags %}
+      <a class="store-chip" href="{{ blog.url }}/tagged/{{ tag | handleize }}">{{ tag }}</a>
+      {%- endfor %}
+    </div>
+    {%- endif %}
+  </header>
+
+  {%- if cfg.show_image and article.image %}
+  <div class="container" data-reveal>
+    <div class="store-article__media">
+      <img src="{{ article.image | image_url: width: 2000 }}" alt="{{ article.image.alt | default: article.title | escape }}" width="{{ article.image.width }}" height="{{ article.image.height }}">
+    </div>
+  </div>
+  {%- endif %}
+
+  <div class="container">
+    <div class="store-article{% if has_foot %} store-article--tight{% endif %}" data-reveal>
+      {{ article.content }}
+    </div>
+  </div>
+
+  {%- if has_foot %}
+  <div class="container store-article__foot">
+    {%- if cfg.show_share %}
+    {%- assign share_url = shop.url | append: article.url -%}
+    {%- assign share_title = article.title | url_encode -%}
+    <div class="store-rail store-share">
+      <p class="store-share__label">{{ cfg.share_label }}</p>
+      <div class="store-share__links">
+        <a class="store-share__link" href="https://www.facebook.com/sharer.php?u={{ share_url | url_encode }}" target="_blank" rel="noreferrer noopener" aria-label="Share on Facebook">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.25-1.5 1.55-1.5h1.65V3.6c-.3 0-1.3-.1-2.45-.1-2.4 0-4.05 1.5-4.05 4.2v2.2H7.5V13h2.7v8Z"></path></svg>
+        </a>
+        <a class="store-share__link" href="https://www.pinterest.com/pin/create/button/?url={{ share_url | url_encode }}&amp;description={{ share_title }}" target="_blank" rel="noreferrer noopener" aria-label="Save to Pinterest">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 3a9 9 0 0 0-3.3 17.36c-.08-.72-.15-1.83.03-2.62.16-.7 1.06-4.5 1.06-4.5s-.27-.54-.27-1.34c0-1.26.73-2.2 1.63-2.2.77 0 1.14.58 1.14 1.27 0 .78-.49 1.94-.75 3.02-.21.9.46 1.64 1.35 1.64 1.62 0 2.87-1.71 2.87-4.18 0-2.19-1.57-3.72-3.82-3.72-2.6 0-4.13 1.95-4.13 3.97 0 .79.3 1.63.68 2.09.08.09.09.17.06.26l-.25 1.02c-.4.17-.13.2-.3.12-1.11-.52-1.8-2.14-1.8-3.44 0-2.8 2.03-5.37 5.87-5.37 3.08 0 5.47 2.2 5.47 5.13 0 3.06-1.93 5.52-4.6 5.52-.9 0-1.75-.47-2.04-1.02l-.55 2.12c-.2.77-.74 1.73-1.1 2.32A9 9 0 1 0 12 3Z"></path></svg>
+        </a>
+        <a class="store-share__link" href="https://api.whatsapp.com/send?text={{ share_title }}%20{{ share_url | url_encode }}" target="_blank" rel="noreferrer noopener" aria-label="Share on WhatsApp">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 2.9a9 9 0 0 0-7.7 13.7L3 21.6l5.1-1.3A9 9 0 1 0 12 2.9Zm0 1.7a7.3 7.3 0 0 1 6.2 11.2 7.3 7.3 0 0 1-9.7 2.4l-.4-.2-3 .8.8-2.9-.2-.4A7.3 7.3 0 0 1 12 4.6Zm-3.1 3.6c-.2 0-.5.1-.7.3-.3.3-.7.9-.7 1.7 0 .9.6 1.9 1.8 3.1 1.2 1.2 2.5 2 3.7 2.1.7.1 1.3-.1 1.7-.4.3-.2.5-.6.5-1v-.6l-1.6-.7-.6.7c-.1.2-.3.2-.5.1a5.6 5.6 0 0 1-2.6-2.5c-.1-.2 0-.4.1-.5l.6-.6-.7-1.6h-1Z"></path></svg>
+        </a>
+        <a class="store-share__link" href="mailto:?subject={{ article.title | url_encode }}&amp;body={{ share_url | url_encode }}" aria-label="Share by email">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2"></rect><path d="m4 7 8 6 8-6"></path></svg>
+        </a>
+      </div>
+    </div>
+    {%- endif %}
+
+    {%- if has_nav %}
+    <nav class="store-rail store-postnav" aria-label="{{ cfg.nav_label | escape }}">
+      {%- if blog.previous_article %}
+      <a class="store-postnav__item" href="{{ blog.previous_article.url }}" rel="prev">
+        <p class="store-postnav__label">{{ cfg.nav_prev_label }}</p>
+        <p class="store-postnav__title">{{ blog.previous_article.title }}</p>
+      </a>
+      {%- endif %}
+      {%- if blog.next_article %}
+      <a class="store-postnav__item store-postnav__item--next" href="{{ blog.next_article.url }}" rel="next">
+        <p class="store-postnav__label">{{ cfg.nav_next_label }}</p>
+        <p class="store-postnav__title">{{ blog.next_article.title }}</p>
+      </a>
+      {%- endif %}
+    </nav>
+    {%- endif %}
+
+    {%- if comments_on %}
+    <section class="store-rail store-comments" id="comments">
+      {%- if article.comments_count > 0 %}
+      <h2 class="store-comments__title">{{ cfg.comments_title }} ({{ article.comments_count }})</h2>
+      <div>
+        {%- for comment in article.comments %}
+        <article class="store-comment" id="comment-{{ comment.id }}">
+          <p class="store-comment__meta">
+            <strong>{{ comment.author }}</strong>
+            <span class="store-meta__dot" aria-hidden="true">&#8226;</span>
+            <time datetime="{{ comment.created_at | date: '%Y-%m-%d' }}">{{ comment.created_at | date: format: cfg.date_format }}</time>
+          </p>
+          <div class="store-comment__body">{{ comment.content }}</div>
+        </article>
+        {%- endfor %}
+      </div>
+      {%- endif %}
+
+      <h3 class="store-comments__title store-comments__title--form">{{ cfg.comment_form_title }}</h3>
+      {%- form 'new_comment', article %}
+        {%- render 'store-form-errors', form: form -%}
+        {%- if form.posted_successfully? %}
+        <p class="store-success">{% if blog.moderated? %}{{ cfg.comment_moderated_note }}{% else %}{{ cfg.comment_success }}{% endif %}</p>
+        {%- endif %}
+        <div class="store-form store-form--wide">
+          <div class="store-fields">
+            <div class="store-field">
+              <label for="CommentAuthor">{{ cfg.comment_name_label }}</label>
+              <input type="text" id="CommentAuthor" name="comment[author]" value="{{ form.author }}" autocomplete="name" required>
+            </div>
+            <div class="store-field">
+              <label for="CommentEmail">{{ cfg.comment_email_label }}</label>
+              <input type="email" id="CommentEmail" name="comment[email]" value="{{ form.email }}" autocomplete="email" required>
+            </div>
+          </div>
+          <div class="store-field">
+            <label for="CommentBody">{{ cfg.comment_body_label }}</label>
+            <textarea id="CommentBody" name="comment[body]" rows="6" required>{{ form.body }}</textarea>
+          </div>
+          {%- if blog.moderated? %}
+          <p class="store-note">{{ cfg.comment_moderated_note }}</p>
+          {%- endif %}
+          <button type="submit" class="store-btn">{{ cfg.comment_button }}</button>
+        </div>
+      {%- endform %}
+    </section>
+    {%- endif %}
+  </div>
+  {%- endif %}
+</article>
+{% schema %}
+{
+  "name": "Article",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Masthead"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "The Journal"
+    },
+    {
+      "type": "text",
+      "id": "back_label",
+      "label": "Back link label",
+      "default": "All stories"
+    },
+    {
+      "type": "select",
+      "id": "date_format",
+      "label": "Date format",
+      "default": "abbreviated_date",
+      "options": [
+        {
+          "value": "abbreviated_date",
+          "label": "5 Aug 2026"
+        },
+        {
+          "value": "date",
+          "label": "August 5, 2026"
+        },
+        {
+          "value": "month_day_year",
+          "label": "08/05/2026"
+        },
+        {
+          "value": "basic",
+          "label": "05/08/2026"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "Show date",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show author",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "author_prefix",
+      "label": "Byline prefix",
+      "default": "Written by"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tags",
+      "label": "Show tags",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "label": "Show featured image",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Share"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_share",
+      "label": "Show share links",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "share_label",
+      "label": "Share label",
+      "default": "Share this story"
+    },
+    {
+      "type": "header",
+      "content": "Next & previous"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_nav",
+      "label": "Show next and previous article",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "nav_label",
+      "label": "Landmark label",
+      "default": "More from the journal"
+    },
+    {
+      "type": "text",
+      "id": "nav_prev_label",
+      "label": "Previous label",
+      "default": "Previous story"
+    },
+    {
+      "type": "text",
+      "id": "nav_next_label",
+      "label": "Next label",
+      "default": "Next story"
+    },
+    {
+      "type": "header",
+      "content": "Comments"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_comments",
+      "label": "Show comments",
+      "default": true,
+      "info": "Only appears when comments are enabled for the blog in Shopify admin."
+    },
+    {
+      "type": "text",
+      "id": "comments_title",
+      "label": "Comments heading",
+      "default": "Comments"
+    },
+    {
+      "type": "text",
+      "id": "comment_form_title",
+      "label": "Form heading",
+      "default": "Leave a note"
+    },
+    {
+      "type": "text",
+      "id": "comment_name_label",
+      "label": "Name label",
+      "default": "Your name"
+    },
+    {
+      "type": "text",
+      "id": "comment_email_label",
+      "label": "Email label",
+      "default": "Email address"
+    },
+    {
+      "type": "text",
+      "id": "comment_body_label",
+      "label": "Comment label",
+      "default": "Your note"
+    },
+    {
+      "type": "text",
+      "id": "comment_button",
+      "label": "Submit button",
+      "default": "Post note"
+    },
+    {
+      "type": "textarea",
+      "id": "comment_success",
+      "label": "Posted message",
+      "default": "Thank you — your note is now on the page."
+    },
+    {
+      "type": "textarea",
+      "id": "comment_moderated_note",
+      "label": "Moderation note",
+      "default": "Notes are read before they appear, so yours may take a day to show."
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "select",
+      "id": "sec_width",
+      "label": "Section width",
+      "info": "Theme default keeps the shared page rail.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow"
+        },
+        {
+          "value": "wide",
+          "label": "Wide"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top",
+      "label": "Extra top spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom",
+      "label": "Extra bottom spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top_m",
+      "label": "Extra top spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom_m",
+      "label": "Extra bottom spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "sec_bg",
+      "label": "Background",
+      "info": "Leave empty to keep the section’s own background."
+    },
+    {
+      "type": "color",
+      "id": "sec_text",
+      "label": "Text colour"
+    },
+    {
+      "type": "color",
+      "id": "sec_accent",
+      "label": "Accent colour"
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_animate",
+      "label": "Animate on scroll",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_mobile",
+      "label": "Hide on mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_desktop",
+      "label": "Hide on desktop",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css",
+      "label": "Custom CSS",
+      "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    }
+  ]
+}
+{% endschema %}

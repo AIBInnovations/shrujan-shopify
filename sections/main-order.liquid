@@ -1,0 +1,411 @@
+{%- render 'section-design', section: section -%}
+{%- comment -%}
+  A single order, read straight off the `order` object: the line items with
+  their fulfilment and tracking, every total Shopify actually charged
+  (discounts, shipping methods and tax lines are looped rather than assumed),
+  and the two addresses through `format_address` so they read correctly in
+  whichever country they belong to.
+{%- endcomment -%}
+{%- liquid
+  assign cfg = section.settings
+-%}
+<header class="store-head container" data-reveal>
+  {%- if cfg.eyebrow != blank %}
+  <p class="store-head__eyebrow">{{ cfg.eyebrow }}</p>
+  {%- endif %}
+  <h1 class="store-head__title">{{ cfg.title_prefix }} {{ order.name }}</h1>
+
+  <p class="store-meta">
+    <time datetime="{{ order.created_at | date: '%Y-%m-%d' }}">{{ order.created_at | date: format: cfg.date_format }}</time>
+    <span class="store-meta__dot" aria-hidden="true">&#8226;</span>
+    {{ cfg.payment_label }} {{ order.financial_status_label }}
+    <span class="store-meta__dot" aria-hidden="true">&#8226;</span>
+    {{ cfg.fulfillment_label }} {{ order.fulfillment_status_label }}
+  </p>
+
+  {%- if order.cancelled %}
+  <p class="store-errors">{{ cfg.cancelled_label }} {{ order.cancelled_at | date: format: cfg.date_format }}{% if order.cancel_reason_label != blank %} — {{ order.cancel_reason_label }}{% endif %}</p>
+  {%- endif %}
+
+  <p class="store-note"><a href="{{ routes.account_url }}">{{ cfg.back_label }}</a></p>
+</header>
+
+<div class="container store-stack store-stack--page" data-reveal>
+  <div>
+    <h2 class="store-section-title">{{ cfg.items_title }}</h2>
+    <div class="store-scroll">
+      <table class="store-table">
+        <thead>
+          <tr>
+            <th scope="col">{{ cfg.col_product }}</th>
+            <th scope="col">{{ cfg.col_price }}</th>
+            <th scope="col">{{ cfg.col_qty }}</th>
+            <th scope="col">{{ cfg.col_total }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%- for line_item in order.line_items %}
+          <tr>
+            <td>
+              <div class="store-line">
+                {%- if line_item.image %}
+                <span class="store-line__media">
+                  <img src="{{ line_item.image | image_url: width: 200 }}" alt="{{ line_item.title | escape }}" loading="lazy">
+                </span>
+                {%- endif %}
+                <span>
+                  {%- if line_item.product.url != blank %}
+                  <a class="store-table__name" href="{{ line_item.product.url }}">{{ line_item.product.title | default: line_item.title }}</a>
+                  {%- else %}
+                  <span class="store-table__name">{{ line_item.title }}</span>
+                  {%- endif %}
+                  {%- if line_item.variant.title != blank and line_item.variant.title != 'Default Title' %}
+                  <span class="store-table__sub">{{ line_item.variant.title }}</span>
+                  {%- endif %}
+                  {%- if line_item.sku != blank %}
+                  <span class="store-table__sub">{{ line_item.sku }}</span>
+                  {%- endif %}
+                  {%- if cfg.show_tracking and line_item.fulfillment %}
+                  <span class="store-table__sub">
+                    {{ cfg.tracking_label }}
+                    {%- if line_item.fulfillment.tracking_url %}
+                    <a href="{{ line_item.fulfillment.tracking_url }}" target="_blank" rel="noreferrer noopener">{{ line_item.fulfillment.tracking_number | default: line_item.fulfillment.tracking_company }}</a>
+                    {%- else %}
+                    {{ line_item.fulfillment.tracking_number | default: line_item.fulfillment.tracking_company }}
+                    {%- endif %}
+                  </span>
+                  {%- endif %}
+                </span>
+              </div>
+            </td>
+            <td>{{ line_item.original_price | money }}</td>
+            <td>{{ line_item.quantity }}</td>
+            <td>{{ line_item.final_line_price | money }}</td>
+          </tr>
+          {%- endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="store-totals">
+      <div class="store-totals__row">
+        <span>{{ cfg.subtotal_label }}</span>
+        <span>{{ order.line_items_subtotal_price | money }}</span>
+      </div>
+      {%- for discount in order.cart_level_discount_applications %}
+      <div class="store-totals__row">
+        <span>{{ cfg.discount_label }} {{ discount.title }}</span>
+        <span>&minus;{{ discount.total_allocated_amount | money }}</span>
+      </div>
+      {%- endfor %}
+      {%- for method in order.shipping_methods %}
+      <div class="store-totals__row">
+        <span>{{ cfg.shipping_label }} {{ method.title }}</span>
+        <span>{{ method.price | money }}</span>
+      </div>
+      {%- endfor %}
+      {%- for tax_line in order.tax_lines %}
+      <div class="store-totals__row">
+        <span>{{ cfg.tax_label }} {{ tax_line.title }}</span>
+        <span>{{ tax_line.price | money }}</span>
+      </div>
+      {%- endfor %}
+      <div class="store-totals__row store-totals__row--grand">
+        <span>{{ cfg.total_label }}</span>
+        <span>{{ order.total_price | money }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="store-addresses">
+    {%- if order.shipping_address %}
+    <div class="store-panel">
+      <p class="store-panel__title">{{ cfg.ship_title }}</p>
+      <div class="store-address__lines">{{ order.shipping_address | format_address }}</div>
+    </div>
+    {%- endif %}
+    {%- if order.billing_address %}
+    <div class="store-panel">
+      <p class="store-panel__title">{{ cfg.bill_title }}</p>
+      <div class="store-address__lines">{{ order.billing_address | format_address }}</div>
+    </div>
+    {%- endif %}
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Order",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Masthead"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Your account"
+    },
+    {
+      "type": "text",
+      "id": "title_prefix",
+      "label": "Heading prefix",
+      "info": "The order number is added after this.",
+      "default": "Order"
+    },
+    {
+      "type": "select",
+      "id": "date_format",
+      "label": "Date format",
+      "default": "abbreviated_date",
+      "options": [
+        {
+          "value": "abbreviated_date",
+          "label": "5 Aug 2026"
+        },
+        {
+          "value": "date",
+          "label": "August 5, 2026"
+        },
+        {
+          "value": "month_day_year",
+          "label": "08/05/2026"
+        },
+        {
+          "value": "basic",
+          "label": "05/08/2026"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "payment_label",
+      "label": "Payment prefix",
+      "default": "Payment:"
+    },
+    {
+      "type": "text",
+      "id": "fulfillment_label",
+      "label": "Fulfilment prefix",
+      "default": "Status:"
+    },
+    {
+      "type": "text",
+      "id": "cancelled_label",
+      "label": "Cancelled prefix",
+      "default": "This order was cancelled on"
+    },
+    {
+      "type": "text",
+      "id": "back_label",
+      "label": "Back link label",
+      "default": "Back to your account"
+    },
+    {
+      "type": "header",
+      "content": "Line items"
+    },
+    {
+      "type": "text",
+      "id": "items_title",
+      "label": "Items heading",
+      "default": "What you ordered"
+    },
+    {
+      "type": "text",
+      "id": "col_product",
+      "label": "Column: product",
+      "default": "Piece"
+    },
+    {
+      "type": "text",
+      "id": "col_price",
+      "label": "Column: price",
+      "default": "Price"
+    },
+    {
+      "type": "text",
+      "id": "col_qty",
+      "label": "Column: quantity",
+      "default": "Qty"
+    },
+    {
+      "type": "text",
+      "id": "col_total",
+      "label": "Column: total",
+      "default": "Total"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tracking",
+      "label": "Show tracking on fulfilled items",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "tracking_label",
+      "label": "Tracking prefix",
+      "default": "Tracking:"
+    },
+    {
+      "type": "header",
+      "content": "Totals"
+    },
+    {
+      "type": "text",
+      "id": "subtotal_label",
+      "label": "Subtotal",
+      "default": "Subtotal"
+    },
+    {
+      "type": "text",
+      "id": "discount_label",
+      "label": "Discount prefix",
+      "default": "Discount"
+    },
+    {
+      "type": "text",
+      "id": "shipping_label",
+      "label": "Shipping prefix",
+      "default": "Shipping"
+    },
+    {
+      "type": "text",
+      "id": "tax_label",
+      "label": "Tax prefix",
+      "default": "Tax"
+    },
+    {
+      "type": "text",
+      "id": "total_label",
+      "label": "Total",
+      "default": "Total paid"
+    },
+    {
+      "type": "header",
+      "content": "Addresses"
+    },
+    {
+      "type": "text",
+      "id": "ship_title",
+      "label": "Shipping heading",
+      "default": "Shipping address"
+    },
+    {
+      "type": "text",
+      "id": "bill_title",
+      "label": "Billing heading",
+      "default": "Billing address"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "select",
+      "id": "sec_width",
+      "label": "Section width",
+      "info": "Theme default keeps the shared page rail.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow"
+        },
+        {
+          "value": "wide",
+          "label": "Wide"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top",
+      "label": "Extra top spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom",
+      "label": "Extra bottom spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top_m",
+      "label": "Extra top spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom_m",
+      "label": "Extra bottom spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "sec_bg",
+      "label": "Background",
+      "info": "Leave empty to keep the section’s own background."
+    },
+    {
+      "type": "color",
+      "id": "sec_text",
+      "label": "Text colour"
+    },
+    {
+      "type": "color",
+      "id": "sec_accent",
+      "label": "Accent colour"
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_animate",
+      "label": "Animate on scroll",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_mobile",
+      "label": "Hide on mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_desktop",
+      "label": "Hide on desktop",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css",
+      "label": "Custom CSS",
+      "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    }
+  ]
+}
+{% endschema %}
