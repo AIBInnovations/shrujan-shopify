@@ -110,7 +110,7 @@
   </div>
 
   <div class="curated__more" data-reveal>
-    <a class="btn btn--ghost" href="{{ section.settings.more_url }}">
+    <a class="btn btn--ghost" href="{{ section.settings.more_url | default: '/pages/shop-shrujan#catalogue' }}">
       {{ section.settings.more_label }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
     </a>
   </div>
@@ -271,8 +271,7 @@
     {
       "type": "url",
       "id": "more_url",
-      "label": "Button link",
-      "default": "/pages/shop-shrujan#catalogue"
+      "label": "Button link"
     }
   ],
   "blocks": [

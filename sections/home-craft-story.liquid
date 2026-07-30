@@ -13,7 +13,7 @@
         {{ section.settings.copy }}
       </div>
 
-      <a class="arrow-link craft__link" href="{{ section.settings.link }}" data-reveal>
+      <a class="arrow-link craft__link" href="{{ section.settings.link | default: '/pages/video' }}" data-reveal>
         {{ section.settings.link_label | escape }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
       </a>
     </div>
@@ -79,8 +79,7 @@
     {
       "type": "url",
       "id": "link",
-      "label": "Link",
-      "default": "/pages/video"
+      "label": "Link"
     }
   ],
   "blocks": [

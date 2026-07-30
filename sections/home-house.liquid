@@ -12,7 +12,7 @@
   <div class="house__grid">
     {%- assign tiles = section.blocks | where: 'type', 'tile' -%}
     {%- for block in tiles %}
-    <a class="house-tile" href="{{ block.settings.link }}" {{ block.shopify_attributes }}>
+    <a class="house-tile" href="{{ block.settings.link | default: '/pages/shop-shrujan?c=kanchli' }}" {{ block.shopify_attributes }}>
       <img src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 1200 }}{% else %}{{ block.settings.fallback | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
       <span class="house-tile__scrim" aria-hidden="true"></span>
       <span class="house-tile__body">
@@ -32,7 +32,7 @@
       {%- assign strip_links = section.blocks | where: 'type', 'strip_link' -%}
       {%- for block in strip_links %}
       <li {{ block.shopify_attributes }}>
-        <a href="{{ block.settings.link }}">
+        <a href="{{ block.settings.link | default: '/pages/shop-shrujan?c=potlis-and-batwas' }}">
           {{ block.settings.label | escape }} <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
         </a>
       </li>
@@ -108,8 +108,7 @@
         {
           "type": "url",
           "id": "link",
-          "label": "Link",
-          "default": "/pages/shop-shrujan?c=kanchli"
+          "label": "Link"
         }
       ]
     },
@@ -126,8 +125,7 @@
         {
           "type": "url",
           "id": "link",
-          "label": "Link",
-          "default": "/pages/shop-shrujan?c=potlis-and-batwas"
+          "label": "Link"
         }
       ]
     }

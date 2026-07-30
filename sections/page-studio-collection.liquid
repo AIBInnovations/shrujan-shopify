@@ -27,7 +27,7 @@
       {%- if block.type == 'strand' -%}
       {%- assign strand_i = strand_i | plus: 1 %}
       <li {{ block.shopify_attributes }}>
-        <a class="strand-card" href="{{ block.settings.link }}">
+        <a class="strand-card" href="{{ block.settings.link | default: '/pages/studio-heritage' }}">
           <span class="strand-card__media">
             <img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1200 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}" alt="{{ block.settings.image_alt | escape }}" loading="lazy">
           </span>
@@ -70,7 +70,7 @@
           {%- endfor %}
         </ul>
 
-        <a class="arrow-link studio-row__link" href="{{ block.settings.link | escape }}">{{ block.settings.link_label | escape }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
+        <a class="arrow-link studio-row__link" href="{{ block.settings.link | default: '/pages/studio-heritage' | escape }}">{{ block.settings.link_label | escape }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
       </div>
     </article>
     {%- endif -%}
@@ -155,8 +155,7 @@
         {
           "type": "url",
           "id": "link",
-          "label": "Link",
-          "default": "/pages/studio-heritage"
+          "label": "Link"
         },
         {
           "type": "image_picker",

@@ -223,7 +223,7 @@
   </div>
 
   <div class="curated__more" data-reveal>
-    <a class="btn btn--ghost" href="{{ section.settings.cta_url }}">{{ section.settings.cta_label | escape }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
+    <a class="btn btn--ghost" href="{{ section.settings.cta_url | default: '/pages/lldc' }}">{{ section.settings.cta_label | escape }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
   </div>
 </section>
 
@@ -610,8 +610,7 @@
     {
       "type": "url",
       "id": "cta_url",
-      "label": "Footer link URL",
-      "default": "/pages/lldc"
+      "label": "Footer link URL"
     }
   ],
   "blocks": [

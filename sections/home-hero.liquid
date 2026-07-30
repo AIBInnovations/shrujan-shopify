@@ -1,5 +1,5 @@
 <section class="hero" aria-label="{{ section.settings.title_l1 | strip_html | escape }} {{ section.settings.title_l2 | strip_html | downcase | escape }} {{ section.settings.title_l3 | strip_html | downcase | escape }}">
-  <a class="hero-cell hero-cell--model" href="{{ section.settings.shop_url | escape }}" data-hero="cell">
+  <a class="hero-cell hero-cell--model" href="{{ section.settings.shop_url | default: '/pages/shop-shrujan' | escape }}" data-hero="cell">
     <img src="{% if section.settings.shop_img %}{{ section.settings.shop_img | image_url: width: 1200 }}{% else %}{{ 'hero-left.webp' | asset_url }}{% endif %}" alt="{{ section.settings.shop_alt | escape }}" fetchpriority="high">
     <span class="hero-cell__label"><i class="hero-cell__dash" aria-hidden="true"></i><em>{{ section.settings.shop_em | escape }}</em>{{ section.settings.shop_label | escape }}<span class="hero-cell__sub">{{ section.settings.shop_sub | escape }}</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
   </a>
@@ -26,19 +26,19 @@
     <a class="hero-message__cta" href="{{ section.settings.cta_url | escape }}" data-hero="cta">{{ section.settings.cta_label | escape }} <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
   </div>
 
-  <a class="hero-cell hero-cell--season" href="{{ section.settings.season_url | escape }}" data-hero="cell">
+  <a class="hero-cell hero-cell--season" href="{{ section.settings.season_url | default: '/pages/studio-collection' | escape }}" data-hero="cell">
     <img src="{% if section.settings.season_img %}{{ section.settings.season_img | image_url: width: 1600 }}{% else %}{{ 'look-b2.webp' | asset_url }}{% endif %}" alt="{{ section.settings.season_alt | escape }}">
     <span class="hero-cell__scrim" aria-hidden="true"></span>
     <span class="hero-cell__label hero-cell__label--bottom"><em>{{ section.settings.season_em | escape }}</em>{{ section.settings.season_label | escape }}<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
   </a>
 
-  <a class="hero-cell hero-cell--thread" href="{{ section.settings.thread_url | escape }}" data-hero="cell">
+  <a class="hero-cell hero-cell--thread" href="{{ section.settings.thread_url | default: '/pages/video' | escape }}" data-hero="cell">
     <img src="{% if section.settings.thread_img %}{{ section.settings.thread_img | image_url: width: 1600 }}{% else %}{{ 'craft-hero.webp' | asset_url }}{% endif %}" alt="{{ section.settings.thread_alt | escape }}">
     <span class="hero-cell__scrim" aria-hidden="true"></span>
     <span class="hero-cell__label hero-cell__label--bottom"><em>{{ section.settings.thread_em | escape }}</em>{{ section.settings.thread_label | escape }}<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
   </a>
 
-  <a class="hero-cell hero-cell--story" href="{{ section.settings.story_url | escape }}" data-hero="cell">
+  <a class="hero-cell hero-cell--story" href="{{ section.settings.story_url | default: '/pages/the-shrujan-story' | escape }}" data-hero="cell">
     <img src="{% if section.settings.story_img %}{{ section.settings.story_img | image_url: width: 1000 }}{% else %}{{ 'story-origin-2.webp' | asset_url }}{% endif %}" alt="" aria-hidden="true">
     <span class="hero-cell__scrim hero-cell__scrim--story" aria-hidden="true"></span>
     <p class="hero-story__title">{{ section.settings.story_t1 | escape }}{% if section.settings.story_t2 != blank %}<br>{{ section.settings.story_t2 | escape }}{% endif %}</p>
@@ -46,13 +46,13 @@
     <span class="hero-story__link">{{ section.settings.story_link | escape }} <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
   </a>
 
-  <a class="hero-cell hero-cell--accessories" href="{{ section.settings.lldc_url | escape }}" data-hero="cell">
+  <a class="hero-cell hero-cell--accessories" href="{{ section.settings.lldc_url | default: '/pages/lldc' | escape }}" data-hero="cell">
     <img src="{% if section.settings.lldc_img %}{{ section.settings.lldc_img | image_url: width: 1600 }}{% else %}{{ 'craft-embroidery-poster.webp' | asset_url }}{% endif %}" alt="{{ section.settings.lldc_alt | escape }}">
     <span class="hero-cell__scrim" aria-hidden="true"></span>
     <span class="hero-cell__label hero-cell__label--bottom"><em>{{ section.settings.lldc_em | escape }}</em>{{ section.settings.lldc_l1 | escape }}{% if section.settings.lldc_l2 != blank %}<br>{{ section.settings.lldc_l2 | escape }}{% endif %}<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
   </a>
 
-  <a class="hero-cell hero-cell--india" href="{{ section.settings.india_url | escape }}" data-hero="cell">
+  <a class="hero-cell hero-cell--india" href="{{ section.settings.india_url | default: '/pages/visit-experience' | escape }}" data-hero="cell">
     <span class="hero-india__map" aria-hidden="true"></span>
     <span class="hero-cell__label hero-cell__label--bottom hero-cell__label--ink"><em>{{ section.settings.india_em | escape }}</em>{{ section.settings.india_label | escape }}<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
   </a>
@@ -110,8 +110,7 @@
     {
       "type": "url",
       "id": "shop_url",
-      "label": "Link",
-      "default": "/pages/shop-shrujan"
+      "label": "Link"
     },
     {
       "type": "image_picker",
@@ -189,8 +188,7 @@
     {
       "type": "url",
       "id": "season_url",
-      "label": "Link",
-      "default": "/pages/studio-collection"
+      "label": "Link"
     },
     {
       "type": "image_picker",
@@ -222,8 +220,7 @@
     {
       "type": "url",
       "id": "thread_url",
-      "label": "Link",
-      "default": "/pages/video"
+      "label": "Link"
     },
     {
       "type": "image_picker",
@@ -255,8 +252,7 @@
     {
       "type": "url",
       "id": "story_url",
-      "label": "Link",
-      "default": "/pages/the-shrujan-story"
+      "label": "Link"
     },
     {
       "type": "image_picker",
@@ -294,8 +290,7 @@
     {
       "type": "url",
       "id": "lldc_url",
-      "label": "Link",
-      "default": "/pages/lldc"
+      "label": "Link"
     },
     {
       "type": "image_picker",
@@ -333,8 +328,7 @@
     {
       "type": "url",
       "id": "india_url",
-      "label": "Link",
-      "default": "/pages/visit-experience"
+      "label": "Link"
     },
     {
       "type": "text",

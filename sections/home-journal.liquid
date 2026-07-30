@@ -8,7 +8,7 @@
     </h2>
   </div>
 
-  <a class="journal-feature" href="{{ section.settings.feature_url }}" data-reveal>
+  <a class="journal-feature" href="{{ section.settings.feature_url | default: '/pages/the-shrujan-story#journal' }}" data-reveal>
     <div class="journal-feature__media">
       <img src="{% if section.settings.feature_img %}{{ section.settings.feature_img | image_url: width: 1600 }}{% else %}{{ 'top-right.webp' | asset_url }}{% endif %}" alt="{{ section.settings.feature_alt | escape }}" loading="lazy">
     </div>
@@ -36,7 +36,7 @@
 
   <div class="journal-grid" data-reveal-child>
     {%- for block in section.blocks %}
-    <a class="journal-card" href="{{ block.settings.url }}" {{ block.shopify_attributes }}>
+    <a class="journal-card" href="{{ block.settings.url | default: '/pages/the-shrujan-story#journal' }}" {{ block.shopify_attributes }}>
       <div class="journal-card__media">
         <img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1600 }}{% else %}{{ block.settings.image_asset | asset_url }}{% endif %}" alt="{{ block.settings.image_alt | escape }}" loading="lazy">
         <span class="journal-pill">{{ block.settings.pill }}</span>
@@ -82,8 +82,7 @@
     {
       "type": "url",
       "id": "feature_url",
-      "label": "Link",
-      "default": "/pages/the-shrujan-story#journal"
+      "label": "Link"
     },
     {
       "type": "image_picker",
@@ -150,8 +149,7 @@
         {
           "type": "url",
           "id": "url",
-          "label": "Link",
-          "default": "/pages/the-shrujan-story#journal"
+          "label": "Link"
         },
         {
           "type": "image_picker",

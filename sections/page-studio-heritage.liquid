@@ -24,7 +24,7 @@
       <ol class="strands__list">
 {%- for block in strand_blocks %}
         <li {{ block.shopify_attributes }}>
-          <a href="{{ block.settings.link }}" class="strands__link{% if block.settings.current %} is-active{% endif %}"{% if block.settings.current %} aria-current="page"{% endif %}>
+          <a href="{{ block.settings.link | default: '/pages/studio-heritage' }}" class="strands__link{% if block.settings.current %} is-active{% endif %}"{% if block.settings.current %} aria-current="page"{% endif %}>
             <span class="strands__no">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
             <span class="strands__label">{{ block.settings.label | escape }}</span>
           </a>
@@ -350,8 +350,7 @@
         {
           "type": "url",
           "id": "link",
-          "label": "Link",
-          "default": "/pages/studio-heritage"
+          "label": "Link"
         },
         {
           "type": "checkbox",

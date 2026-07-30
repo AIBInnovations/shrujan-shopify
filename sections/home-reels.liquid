@@ -12,7 +12,7 @@
 
       <a
         class="reels__seal-link"
-        href="{{ section.settings.seal_link }}"
+        href="{{ section.settings.seal_link | default: 'https://www.instagram.com/shrujanindia/reels/' }}"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Watch Shrujan reels on Instagram"
@@ -47,7 +47,7 @@
   <div class="reels__rail-wrap">
     <div class="reels__rail" data-reveal-child>
       {%- for block in section.blocks %}
-      <a class="reel" href="{{ block.settings.link }}" target="_blank" rel="noopener noreferrer" {{ block.shopify_attributes }}>
+      <a class="reel" href="{{ block.settings.link | default: 'https://www.instagram.com/shrujanindia/reels/' }}" target="_blank" rel="noopener noreferrer" {{ block.shopify_attributes }}>
         <div class="reel__media">
           <video src="{{ 'reel-' | append: forloop.index | append: '.mp4' | asset_url }}" poster="{{ 'reel-' | append: forloop.index | append: '-poster.jpg' | asset_url }}" muted loop playsinline preload="none" aria-label="{{ block.settings.title | escape }}"></video>
           <span class="reel__scrim" aria-hidden="true"></span>
@@ -124,8 +124,7 @@
     {
       "type": "url",
       "id": "seal_link",
-      "label": "Rotating seal link",
-      "default": "https://www.instagram.com/shrujanindia/reels/"
+      "label": "Rotating seal link"
     },
     {
       "type": "textarea",
@@ -158,8 +157,7 @@
         {
           "type": "url",
           "id": "link",
-          "label": "Link",
-          "default": "https://www.instagram.com/shrujanindia/reels/"
+          "label": "Link"
         }
       ]
     }

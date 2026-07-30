@@ -86,7 +86,7 @@
               </li>
             </ul>
 
-            <a class="tw-buys__link" href="{{ section.settings.picks_url }}">
+            <a class="tw-buys__link" href="{{ section.settings.picks_url | default: '/pages/shop-shrujan#catalogue' }}">
               {{ section.settings.picks_label }}
             </a>
           </div>
@@ -205,8 +205,7 @@
     {
       "type": "url",
       "id": "picks_url",
-      "label": "Picks link",
-      "default": "/pages/shop-shrujan#catalogue"
+      "label": "Picks link"
     }
   ],
   "blocks": [
