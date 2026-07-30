@@ -1,0 +1,99 @@
+{
+  "type": "page-studio-collection",
+  "blocks": {
+    "b1": {
+      "type": "strand",
+      "settings": {
+        "link": "/pages/studio-heritage",
+        "asset": "frame-r2t24.webp",
+        "image_alt": "Densely hand-embroidered heritage textile in crimson and gold",
+        "name": "Heritage",
+        "copy": "Heirloom textiles made to be collected, preserved and passed on.",
+        "cta_label": "Open"
+      }
+    },
+    "b2": {
+      "type": "strand",
+      "settings": {
+        "link": "/pages/studio-avinya",
+        "asset": "story-origin-3.webp",
+        "image_alt": "Craftswomen of Kutch working together on embroidery",
+        "name": "Avinya",
+        "copy": "Artisans in teams of two and three, co-creating original work.",
+        "cta_label": "Open"
+      }
+    },
+    "b3": {
+      "type": "strand",
+      "settings": {
+        "link": "/pages/studio-gifting",
+        "asset": "sj-jat-garasiya-party-bag-1.webp",
+        "image_alt": "Hand-embroidered Jat Garasiya party bag",
+        "name": "Gifting &amp; Collaborations",
+        "copy": "Handcrafted gifts and custom commissions, for organisations and occasions.",
+        "cta_label": "Open"
+      }
+    },
+    "b4": {
+      "type": "row",
+      "settings": {
+        "asset": "sj-black-pakko-hand-embroidered-kanchli-1.webp",
+        "image_alt": "Model in a dark embroidered kanchli with a black silk drape",
+        "craft": "Aabhla · Kutch",
+        "name": "The Kanchli, reworked",
+        "copy": "The Kutchi bodice cut for a modern silhouette, the mirror-work kept exactly as it has always been stitched. Sixty hours on the frame before a single seam is closed.",
+        "facts": "Hand-embroidered\n60 hours\nEdition of 24",
+        "link_label": "Enquire about this piece",
+        "link": "mailto:marketing@shrujan.com?subject=Studio%20enquiry%20%E2%80%94%20The%20Kanchli%2C%20reworked"
+      }
+    },
+    "b5": {
+      "type": "row",
+      "settings": {
+        "asset": "sj-dupatta-copy-2-1.webp",
+        "image_alt": "Blue and orange bandhani dupatta over an ivory kurta",
+        "craft": "Bandhani · Kutch",
+        "name": "Bandhani, tied by hand",
+        "copy": "Thousands of points tied one at a time before the cloth ever meets dye. The pattern only reveals itself when the knots come loose — no two lengths finish alike.",
+        "facts": "Natural dye\n3 weeks\nEdition of 18",
+        "link_label": "Enquire about this piece",
+        "link": "mailto:marketing@shrujan.com?subject=Studio%20enquiry%20%E2%80%94%20Bandhani%2C%20tied%20by%20hand"
+      }
+    },
+    "b6": {
+      "type": "row",
+      "settings": {
+        "asset": "sj-green-hand-woven-top-1.webp",
+        "image_alt": "Model in a green embroidered shirt",
+        "craft": "Suf · Kutch",
+        "name": "Suf, counted from the reverse",
+        "copy": "Suf is worked from the back of the cloth, counted thread by thread, with no pattern ever drawn. The embroiderer holds the whole geometry in her head.",
+        "facts": "Counted thread\nNo pattern drawn\nEdition of 12",
+        "link_label": "Enquire about this piece",
+        "link": "mailto:marketing@shrujan.com?subject=Studio%20enquiry%20%E2%80%94%20Suf%2C%20counted%20from%20the%20reverse"
+      }
+    },
+    "b7": {
+      "type": "row",
+      "settings": {
+        "asset": "sj-shawl-copy-3-1.webp",
+        "image_alt": "Pink and grey handwoven stole",
+        "craft": "Handloom · Bhujodi",
+        "name": "Handloom, woven in Bhujodi",
+        "copy": "Woven on pit looms a few kilometres from the atelier, in wool and cotton spun for the desert winter. It softens with every wash rather than fading.",
+        "facts": "Pit loom\nWool & cotton\nEdition of 30",
+        "link_label": "Enquire about this piece",
+        "link": "mailto:marketing@shrujan.com?subject=Studio%20enquiry%20%E2%80%94%20Handloom%2C%20woven%20in%20Bhujodi"
+      }
+    }
+  },
+  "block_order": [
+    "b1",
+    "b2",
+    "b3",
+    "b4",
+    "b5",
+    "b6",
+    "b7"
+  ]
+}

@@ -1,0 +1,190 @@
+{
+  "type": "home-bestsellers",
+  "blocks": {
+    "b1": {
+      "type": "product",
+      "settings": {
+        "img_asset": "sj-black-pakko-hand-embroidered-kanchli-1.webp",
+        "alt": "Model wearing the black pakko hand embroidered kanchli",
+        "name": "Black Pakko Hand Embroidered Kanchli",
+        "craft": "Pakko · Kutch",
+        "price": "₹ 25,000",
+        "sold": 412,
+        "note": "Reordered by 6 in 10 buyers",
+        "swatches": "#241f1f, #c7a56a, #f2ede0",
+        "link": "/products/kanchli-copy"
+      }
+    },
+    "b2": {
+      "type": "product",
+      "settings": {
+        "img_asset": "sj-green-hand-woven-top-1.webp",
+        "alt": "Green Hand woven Top, made in Kutch",
+        "name": "Green Hand woven Top",
+        "craft": "Handloom · Bhujodi",
+        "price": "₹ 7,040",
+        "was_price": "₹ 8,800",
+        "sold": 368,
+        "note": "Handwoven, then cut in the atelier",
+        "swatches": "#2f6b52, #c7a56a, #f2ede0",
+        "link": "/products/green-hand-woven-top"
+      }
+    },
+    "b3": {
+      "type": "product",
+      "settings": {
+        "img_asset": "sj-pakko-embroidered-divya-bag-1.webp",
+        "alt": "Tote Bag, hand-embroidered in Kutch",
+        "name": "Tote Bag",
+        "craft": "Kutchi hand-embroidery",
+        "price": "₹ 6,800",
+        "sold": 344,
+        "note": "Our most gifted piece",
+        "swatches": "#8d2f26, #c7a56a, #f2ede0",
+        "link": "/products/pakko-embroidered-divya-bag"
+      }
+    },
+    "b4": {
+      "type": "product",
+      "settings": {
+        "img_asset": "sj-ijari-mashroo-pant-1.webp",
+        "alt": "Ijari Mashroo Pant, made in Kutch",
+        "name": "Ijari Mashroo Pant",
+        "craft": "Kutchi hand-embroidery",
+        "price": "₹ 8,800",
+        "was_price": "₹ 11,000",
+        "sold": 291,
+        "note": "Mashroo silk, woven in Bhuj",
+        "swatches": "#8d2f26, #c7a56a, #f2ede0",
+        "link": "/products/mashroo-pant"
+      }
+    },
+    "b5": {
+      "type": "product",
+      "settings": {
+        "img_asset": "sj-shawl-copy-3-1.webp",
+        "alt": "Shawl, hand-embroidered in Kutch",
+        "name": "Shawl",
+        "craft": "Kutchi hand-embroidery",
+        "price": "₹ 22,000",
+        "sold": 268,
+        "note": "Warm enough for a desert winter",
+        "swatches": "#8d2f26, #c7a56a, #f2ede0",
+        "link": "/products/shawl-copy-3"
+      }
+    },
+    "b6": {
+      "type": "product",
+      "settings": {
+        "img_asset": "sj-khadi-hand-woven-dress-1.webp",
+        "alt": "Khadi Hand woven Dress, made in Kutch",
+        "name": "Khadi Hand woven Dress",
+        "craft": "Khadi handloom · Kutch",
+        "price": "₹ 5,950",
+        "was_price": "₹ 8,500",
+        "sold": 233,
+        "note": "Khadi, and it softens with every wash",
+        "swatches": "#c9b79c, #c7a56a, #f2ede0",
+        "link": "/products/dress-copy-3"
+      }
+    },
+    "b7": {
+      "type": "product",
+      "settings": {
+        "img_asset": "sj-jat-garasiya-kunathiya-bag-1-1.webp",
+        "alt": "Crossbody Bag, hand-embroidered in Kutch",
+        "name": "Crossbody Bag",
+        "craft": "Kutchi hand-embroidery",
+        "price": "₹ 6,000",
+        "sold": 214,
+        "note": "Jat Garasiya work, counted thread",
+        "swatches": "#8d2f26, #c7a56a, #f2ede0",
+        "link": "/products/jat-garasiya-kunathiya-bag-1"
+      }
+    },
+    "b8": {
+      "type": "product",
+      "settings": {
+        "img_asset": "sj-purple-hand-embroidered-kanchli-1.webp",
+        "alt": "Model wearing the purple hand embroidered kanchli",
+        "name": "Purple Hand Embroidered Kanchli",
+        "craft": "Kutchi hand-embroidery",
+        "price": "₹ 28,000",
+        "sold": 196,
+        "note": "Three weeks of hand embroidery",
+        "swatches": "#5b3f6b, #c7a56a, #f2ede0",
+        "link": "/products/beige-hand-embroidered-kanchli-copy"
+      }
+    },
+    "b9": {
+      "type": "product",
+      "settings": {
+        "img_asset": "sj-jat-garasiya-hand-embroidered-cushion-cover-1.webp",
+        "alt": "Cushion Cover, hand-embroidered in Kutch",
+        "name": "Cushion Cover",
+        "craft": "Kutchi hand-embroidery",
+        "price": "₹ 3,600",
+        "sold": 181,
+        "note": "The easiest way to start",
+        "swatches": "#8d2f26, #c7a56a, #f2ede0",
+        "link": "/products/jat-garasiya-hand-embroidered-cushion-cover"
+      }
+    },
+    "b10": {
+      "type": "product",
+      "settings": {
+        "img_asset": "sj-ahir-batwa-1.webp",
+        "alt": "Potli Bag, hand-embroidered in Kutch",
+        "name": "Potli Bag",
+        "craft": "Kutchi hand-embroidery",
+        "price": "₹ 3,500",
+        "sold": 167,
+        "note": "Ahir stitch, sells out every festive season",
+        "swatches": "#8d2f26, #c7a56a, #f2ede0",
+        "link": "/products/ahir-batwa"
+      }
+    },
+    "b11": {
+      "type": "product",
+      "settings": {
+        "img_asset": "sj-hand-bag-copy-23-1.webp",
+        "alt": "Hand Bag, hand-embroidered in Kutch",
+        "name": "Hand Bag",
+        "craft": "Kutchi hand-embroidery",
+        "price": "₹ 3,500",
+        "sold": 152,
+        "note": "Carried daily by half the studio",
+        "swatches": "#8d2f26, #c7a56a, #f2ede0",
+        "link": "/products/hand-bag-copy-23"
+      }
+    },
+    "b12": {
+      "type": "product",
+      "settings": {
+        "img_asset": "sj-jat-garasiya-mobile-pouch-1-1.webp",
+        "alt": "Mobile Pouch, hand-embroidered in Kutch",
+        "name": "Mobile Pouch",
+        "craft": "Kutchi hand-embroidery",
+        "price": "₹ 1,200",
+        "sold": 138,
+        "note": "The one people buy in threes",
+        "swatches": "#8d2f26, #c7a56a, #f2ede0",
+        "link": "/products/jat-garasiya-mobile-pouch-1"
+      }
+    }
+  },
+  "block_order": [
+    "b1",
+    "b2",
+    "b3",
+    "b4",
+    "b5",
+    "b6",
+    "b7",
+    "b8",
+    "b9",
+    "b10",
+    "b11",
+    "b12"
+  ]
+}

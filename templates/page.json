@@ -80,7 +80,6 @@
             "name": "Black Pakko Hand Embroidered Kanchli",
             "craft": "Pakko · Kutch",
             "price": "₹ 25,000",
-            "was_price": "",
             "sold": 412,
             "note": "Reordered by 6 in 10 buyers",
             "swatches": "#241f1f, #c7a56a, #f2ede0",
@@ -110,7 +109,6 @@
             "name": "Tote Bag",
             "craft": "Kutchi hand-embroidery",
             "price": "₹ 6,800",
-            "was_price": "",
             "sold": 344,
             "note": "Our most gifted piece",
             "swatches": "#8d2f26, #c7a56a, #f2ede0",
@@ -131,13 +129,134 @@
             "swatches": "#8d2f26, #c7a56a, #f2ede0",
             "link": "/products/mashroo-pant"
           }
+        },
+        "b5": {
+          "type": "product",
+          "settings": {
+            "img_asset": "sj-shawl-copy-3-1.webp",
+            "alt": "Shawl, hand-embroidered in Kutch",
+            "name": "Shawl",
+            "craft": "Kutchi hand-embroidery",
+            "price": "₹ 22,000",
+            "sold": 268,
+            "note": "Warm enough for a desert winter",
+            "swatches": "#8d2f26, #c7a56a, #f2ede0",
+            "link": "/products/shawl-copy-3"
+          }
+        },
+        "b6": {
+          "type": "product",
+          "settings": {
+            "img_asset": "sj-khadi-hand-woven-dress-1.webp",
+            "alt": "Khadi Hand woven Dress, made in Kutch",
+            "name": "Khadi Hand woven Dress",
+            "craft": "Khadi handloom · Kutch",
+            "price": "₹ 5,950",
+            "was_price": "₹ 8,500",
+            "sold": 233,
+            "note": "Khadi, and it softens with every wash",
+            "swatches": "#c9b79c, #c7a56a, #f2ede0",
+            "link": "/products/dress-copy-3"
+          }
+        },
+        "b7": {
+          "type": "product",
+          "settings": {
+            "img_asset": "sj-jat-garasiya-kunathiya-bag-1-1.webp",
+            "alt": "Crossbody Bag, hand-embroidered in Kutch",
+            "name": "Crossbody Bag",
+            "craft": "Kutchi hand-embroidery",
+            "price": "₹ 6,000",
+            "sold": 214,
+            "note": "Jat Garasiya work, counted thread",
+            "swatches": "#8d2f26, #c7a56a, #f2ede0",
+            "link": "/products/jat-garasiya-kunathiya-bag-1"
+          }
+        },
+        "b8": {
+          "type": "product",
+          "settings": {
+            "img_asset": "sj-purple-hand-embroidered-kanchli-1.webp",
+            "alt": "Model wearing the purple hand embroidered kanchli",
+            "name": "Purple Hand Embroidered Kanchli",
+            "craft": "Kutchi hand-embroidery",
+            "price": "₹ 28,000",
+            "sold": 196,
+            "note": "Three weeks of hand embroidery",
+            "swatches": "#5b3f6b, #c7a56a, #f2ede0",
+            "link": "/products/beige-hand-embroidered-kanchli-copy"
+          }
+        },
+        "b9": {
+          "type": "product",
+          "settings": {
+            "img_asset": "sj-jat-garasiya-hand-embroidered-cushion-cover-1.webp",
+            "alt": "Cushion Cover, hand-embroidered in Kutch",
+            "name": "Cushion Cover",
+            "craft": "Kutchi hand-embroidery",
+            "price": "₹ 3,600",
+            "sold": 181,
+            "note": "The easiest way to start",
+            "swatches": "#8d2f26, #c7a56a, #f2ede0",
+            "link": "/products/jat-garasiya-hand-embroidered-cushion-cover"
+          }
+        },
+        "b10": {
+          "type": "product",
+          "settings": {
+            "img_asset": "sj-ahir-batwa-1.webp",
+            "alt": "Potli Bag, hand-embroidered in Kutch",
+            "name": "Potli Bag",
+            "craft": "Kutchi hand-embroidery",
+            "price": "₹ 3,500",
+            "sold": 167,
+            "note": "Ahir stitch, sells out every festive season",
+            "swatches": "#8d2f26, #c7a56a, #f2ede0",
+            "link": "/products/ahir-batwa"
+          }
+        },
+        "b11": {
+          "type": "product",
+          "settings": {
+            "img_asset": "sj-hand-bag-copy-23-1.webp",
+            "alt": "Hand Bag, hand-embroidered in Kutch",
+            "name": "Hand Bag",
+            "craft": "Kutchi hand-embroidery",
+            "price": "₹ 3,500",
+            "sold": 152,
+            "note": "Carried daily by half the studio",
+            "swatches": "#8d2f26, #c7a56a, #f2ede0",
+            "link": "/products/hand-bag-copy-23"
+          }
+        },
+        "b12": {
+          "type": "product",
+          "settings": {
+            "img_asset": "sj-jat-garasiya-mobile-pouch-1-1.webp",
+            "alt": "Mobile Pouch, hand-embroidered in Kutch",
+            "name": "Mobile Pouch",
+            "craft": "Kutchi hand-embroidery",
+            "price": "₹ 1,200",
+            "sold": 138,
+            "note": "The one people buy in threes",
+            "swatches": "#8d2f26, #c7a56a, #f2ede0",
+            "link": "/products/jat-garasiya-mobile-pouch-1"
+          }
         }
       },
       "block_order": [
         "b1",
         "b2",
         "b3",
-        "b4"
+        "b4",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "b9",
+        "b10",
+        "b11",
+        "b12"
       ]
     },
     "home-categories": {
@@ -579,13 +698,133 @@
             "buy2_asset": "frame-r2t5.webp",
             "buy2_name": "Bagh Phulkari Stole"
           }
+        },
+        "b5": {
+          "type": "testimonial",
+          "settings": {
+            "image_asset": "cat-c2.webp",
+            "name": "Kavya Nair",
+            "place": "Chennai",
+            "label": "Indigo Mulmul Sari",
+            "quote": "The indigo has softened beautifully with every wash instead of fading. It drapes better in year three than it did on day one.",
+            "buy1_asset": "look-b2.webp",
+            "buy1_name": "Indigo Mulmul Sari",
+            "buy2_asset": "frame-r2t14.webp",
+            "buy2_name": "Ajrakh Print Blouse"
+          }
+        },
+        "b6": {
+          "type": "testimonial",
+          "settings": {
+            "image_asset": "frame-r3t16.webp",
+            "name": "Nisha Bhatia",
+            "place": "Chandigarh",
+            "label": "Zari Jacket Set",
+            "quote": "I ordered for my engagement with three weeks to spare. It came early, altered exactly to measure, and fit like it was drafted on me.",
+            "buy1_asset": "frame-r3t16.webp",
+            "buy1_name": "Zari Jacket Set",
+            "buy2_asset": "cat-c4.webp",
+            "buy2_name": "Tissue Silk Sharara"
+          }
+        },
+        "b7": {
+          "type": "testimonial",
+          "settings": {
+            "image_asset": "cat-c4.webp",
+            "name": "Divya Reddy",
+            "place": "Hyderabad",
+            "label": "Organza Dupatta",
+            "quote": "Weightless, but the embroidery still has body. I have worn it over three different outfits and it lifts every one of them.",
+            "buy1_asset": "frame-r3t26.webp",
+            "buy1_name": "Organza Suf Dupatta",
+            "buy2_asset": "look-b3.webp",
+            "buy2_name": "Chanderi Anarkali"
+          }
+        },
+        "b8": {
+          "type": "testimonial",
+          "settings": {
+            "image_asset": "cta-band.webp",
+            "name": "Farah Sheikh",
+            "place": "Lucknow",
+            "label": "Bridal Trousseau",
+            "quote": "Two years in the making and worth every month. My mother cried when she saw the mirror work on the dupatta.",
+            "buy1_asset": "hero-right.webp",
+            "buy1_name": "Mirror-Work Bridal Set",
+            "buy2_asset": "frame-r5t15.webp",
+            "buy2_name": "Gota Patti Dupatta"
+          }
+        },
+        "b9": {
+          "type": "testimonial",
+          "settings": {
+            "image_asset": "frame-r1t20.webp",
+            "name": "Tara Deshpande",
+            "place": "Pune",
+            "label": "Banarasi Silk Sari",
+            "quote": "I have bought silk at four times this price that did not come close. The zari is real and it shows in the light.",
+            "buy1_asset": "frame-r1t20.webp",
+            "buy1_name": "Banarasi Silk Sari",
+            "buy2_asset": "hero-bottom-2.webp",
+            "buy2_name": "Katan Silk Blouse"
+          }
+        },
+        "b10": {
+          "type": "testimonial",
+          "settings": {
+            "image_asset": "cat-c3.webp",
+            "name": "Ishita Ghosh",
+            "place": "Kolkata",
+            "label": "Kantha Stole",
+            "quote": "Every running stitch is slightly different, which is exactly the point. Nothing about it looks machine-made.",
+            "buy1_asset": "cat-c3.webp",
+            "buy1_name": "Kantha Silk Stole",
+            "buy2_asset": "frame-r3t6.webp",
+            "buy2_name": "Tussar Kantha Sari"
+          }
+        },
+        "b11": {
+          "type": "testimonial",
+          "settings": {
+            "image_asset": "frame-r3t26.webp",
+            "name": "Aditi Rao",
+            "place": "Bengaluru",
+            "label": "Suf Embroidered Kurta",
+            "quote": "The customer care team sent me photographs from the workshop while it was being stitched. That is not something you forget.",
+            "buy1_asset": "frame-r2t24.webp",
+            "buy1_name": "Suf Embroidered Kurta",
+            "buy2_asset": "top-right.webp",
+            "buy2_name": "Kutchi Cotton Palazzo"
+          }
+        },
+        "b12": {
+          "type": "testimonial",
+          "settings": {
+            "image_asset": "frame-r5t5.webp",
+            "name": "Rhea Kapoor",
+            "place": "Delhi",
+            "label": "Ajrakh Kurta Set",
+            "quote": "It has become my default for every festive lunch. Comfortable enough to sit through a long meal, sharp enough for photographs.",
+            "buy1_asset": "frame-r5t5.webp",
+            "buy1_name": "Ajrakh Kurta Set",
+            "buy2_asset": "cat-c5.webp",
+            "buy2_name": "Indigo Cotton Stole"
+          }
         }
       },
       "block_order": [
         "b1",
         "b2",
         "b3",
-        "b4"
+        "b4",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "b9",
+        "b10",
+        "b11",
+        "b12"
       ]
     },
     "home-journal": {

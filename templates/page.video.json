@@ -3,7 +3,7 @@
     "main": {
       "type": "page-craft-traditions",
       "blocks": {
-        "b1": {
+        "embroidery": {
           "type": "craft",
           "settings": {
             "name": "Embroidery",
@@ -21,7 +21,7 @@
             "more": "It was in the late 1960s that a fundamental shift took place in the role of embroidery. In addition to being practised as a personal craft, it also became, for the first time, a means of livelihood for women. Shrujan has been instrumental in this transformation. It has created a market for embroidered products and has provided the embroiderers with a platform to showcase their work and earn a sustainable income."
           }
         },
-        "b2": {
+        "ajrakh": {
           "type": "craft",
           "settings": {
             "name": "Ajrakh block print",
@@ -39,7 +39,7 @@
             "more": "Shrujan supports Ajrakh in various ways: it collaborates with this craft sector to expand the Ajrakh design language; promotes its craftspeople not only as skilled technicians but also as creative artists; and provides resources and opportunities to gifted young designers so that they can explore their love of Ajrakh to their hearts' content."
           }
         },
-        "b3": {
+        "discharge": {
           "type": "craft",
           "settings": {
             "name": "Steam discharge block print",
@@ -57,7 +57,7 @@
             "more": "As the paste dries on the fabric, the design is barely visible and this is just one of the reasons that make discharge printing a challenging process.\nAfter the paste has completely dried, the fabric is carefully rolled up and steamed. The heat and moisture from the steam takes away or discharges the fabric colour and, at the same time, adds another colour onto the stamped design.\nMany unpredictable factors such as atmospheric humidity impact this printing technique. The printer himself does not know what the design will actually look like, till the roll of fabric is finally opened up. This uncertainty, this element of surprise, is what makes discharge printing so exciting and challenging."
           }
         },
-        "b4": {
+        "weaving": {
           "type": "craft",
           "settings": {
             "name": "Kutch weaving",
@@ -75,7 +75,7 @@
             "more": ""
           }
         },
-        "b5": {
+        "pottery": {
           "type": "craft",
           "settings": {
             "name": "Pottery",
@@ -93,7 +93,7 @@
             "more": "The role of pottery however began to decline when the centre of sea trade shifted from Kutch to Bombay. It also lost its domestic importance when modernization came to Kutch and a variety of mass-produced materials became easily available.\nWith no local or international markets, only a few families were willing to practice pottery. They focused primarily on creating water carriers. However, a few master potters such as Buddhachhacha Kumbhar continued creating large size animal forms.\nChanda Shroff decided to work with Buddhachhacha’s son and grandson. She wanted Kutch terracotta pottery to regain its stature as one of the renowned crafts of Kutch.\nShe studied the intricacies of the craft and elevated the quality of its every aspect. She inspired and motivated Usmaan Ganni, Buddhachhacha’s grandson, to take up the family craft, and even try his hand at new forms.\nUsmaan is now a sought-after potter who works from Shrujan’s Design Studio. He paints his terracotta creations and has developed an ingenious technique to stone polish them so that they look like glazed pottery.\nSlowly, terracotta pottery is gaining popularity. More and more potters are shaping traditional as well as contemporary forms. The most popular product however, is still the gowmukh water jug that Chanda Shroff had designed more than a decade ago."
           }
         },
-        "b6": {
+        "tie-dye": {
           "type": "craft",
           "settings": {
             "name": "Tie-dye",
@@ -113,12 +113,12 @@
         }
       },
       "block_order": [
-        "b1",
-        "b2",
-        "b3",
-        "b4",
-        "b5",
-        "b6"
+        "embroidery",
+        "ajrakh",
+        "discharge",
+        "weaving",
+        "pottery",
+        "tie-dye"
       ]
     }
   },
