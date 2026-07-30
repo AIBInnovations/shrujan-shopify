@@ -20,13 +20,45 @@
   unless cfg.show_enquiry
     assign offer_href = 'mailto:' | append: cfg.email
   endunless
+
+  comment
+    Mobile group. The stages grid and the ways rows both step at 900px, the rows
+    with the alternating order reset that a stacking control keys on. The
+    masthead photograph is the outlier: it is a 21:9 letterbox with no responsive
+    shape at all, so on a phone it is a band barely taller than the type.
+  endcomment
+  assign gf_style = false
+  if cfg.step_cols != 2 or cfg.step_cols_m != 1
+    assign gf_style = true
+  endif
+  if cfg.row_order_m != 'image' or cfg.hero_ratio_m != 'default'
+    assign gf_style = true
+  endif
 -%}
-{%- if cfg.step_cols != 2 -%}
+{%- if gf_style -%}
   <style>
-    {{ root_sel }} { --step-cols: {{ cfg.step_cols }}; }
-    @media (min-width: 901px) {
-      {{ root_sel }} .steps { grid-template-columns: repeat(var(--step-cols), minmax(0, 1fr)); }
-    }
+    {%- if cfg.step_cols != 2 -%}
+      {{ root_sel }} { --step-cols: {{ cfg.step_cols }}; }
+      @media (min-width: 901px) {
+        {{ root_sel }} .steps { grid-template-columns: repeat(var(--step-cols), minmax(0, 1fr)); }
+      }
+    {%- endif -%}
+    {%- if cfg.step_cols_m != 1 or cfg.row_order_m != 'image' -%}
+      @media (max-width: 900px) {
+        {%- if cfg.step_cols_m != 1 -%}
+          {{ root_sel }} .steps { grid-template-columns: repeat({{ cfg.step_cols_m }}, minmax(0, 1fr)); }
+        {%- endif -%}
+        {%- if cfg.row_order_m != 'image' -%}
+          {{ root_sel }} .studio-row__media { order: 2; }
+          {{ root_sel }} .studio-row__body { order: 1; }
+        {%- endif -%}
+      }
+    {%- endif -%}
+    {%- if cfg.hero_ratio_m != 'default' -%}
+      @media (max-width: 720px) {
+        {{ root_sel }} .page-hero__media { aspect-ratio: {{ cfg.hero_ratio_m }}; }
+      }
+    {%- endif -%}
   </style>
 {%- endif -%}
 {%- assign strand_blocks = section.blocks | where: 'type', 'strand' -%}
@@ -458,6 +490,66 @@
       "max": 4,
       "step": 1,
       "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "step_cols_m",
+      "label": "Stage columns",
+      "info": "900px and under, where the stages of an order stack one per row.",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "select",
+      "id": "row_order_m",
+      "label": "Ways row stacking order",
+      "info": "900px and under, where each way's photograph and text stack. The theme leads every stacked row with its photograph, whichever side it sits on for desktop.",
+      "default": "image",
+      "options": [
+        {
+          "value": "image",
+          "label": "Photograph first"
+        },
+        {
+          "value": "body",
+          "label": "Text first"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "hero_ratio_m",
+      "label": "Masthead photograph shape",
+      "info": "720px and under. The masthead is a 21:9 letterbox at every width otherwise, which is a very shallow band on a phone.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default (21:9)"
+        },
+        {
+          "value": "16/9",
+          "label": "Wide (16:9)"
+        },
+        {
+          "value": "3/2",
+          "label": "Landscape (3:2)"
+        },
+        {
+          "value": "4/3",
+          "label": "Landscape (4:3)"
+        },
+        {
+          "value": "1/1",
+          "label": "Square (1:1)"
+        }
+      ]
     },
     {
       "type": "header",

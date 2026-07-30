@@ -472,6 +472,65 @@
     },
     {
       "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "mark_cols_m",
+      "label": "Hallmark columns",
+      "info": "620px and under, where the hallmarks stack one per row. Between 620 and 1100px the theme shows two.",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "arch_cols_m",
+      "label": "Archive photograph columns",
+      "info": "720px and under, where the archive grid stacks. It goes straight from three across to one, with no step in between.",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "select",
+      "id": "arch_ratio_m",
+      "label": "Archive photograph shape",
+      "info": "720px and under. It holds 4:5 at every width otherwise, which is very tall once the grid is one column.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default (4:5)"
+        },
+        {
+          "value": "1/1",
+          "label": "Square (1:1)"
+        },
+        {
+          "value": "4/3",
+          "label": "Landscape (4:3)"
+        },
+        {
+          "value": "16/9",
+          "label": "Wide (16:9)"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "stat_cols_m",
+      "label": "Figure columns",
+      "info": "900px and under, where the figures row falls to two across and stops. At one column the hairlines move from the side to the top of each row.",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "header",
       "content": "Design"
     },
     {
