@@ -14,6 +14,19 @@
   if r.show_seal == false or r.rail_snap == false
     assign r_style = true
   endif
+  comment
+    Mobile group. The rail is a flex scroller whose card count lives in the flex
+    basis rather than in a grid: five across, and below 720px a fixed
+    min of 76vw and 300px so the next reel always peeks. A phone count rewrites
+    that same basis, gap included, which is why it is opt-in rather than
+    carrying a whole number as its default.
+  endcomment
+  if r.reels_cols_m != 'default' or r.reels_ratio_m != 'default'
+    assign r_style = true
+  endif
+  if r.show_seal and r.reels_show_seal_m == false
+    assign r_style = true
+  endif
 -%}
 
 {%- if r_style -%}
@@ -29,6 +42,20 @@
     {%- endif -%}
     {%- if r.rail_snap == false -%}
       {{ rsel }} .reels__rail { scroll-snap-type: none; }
+    {%- endif -%}
+
+    {%- if r.reels_cols_m != 'default' or r.reels_ratio_m != 'default' or r.reels_show_seal_m == false -%}
+      @media (max-width: 720px) {
+        {%- if r.reels_cols_m != 'default' -%}
+          {{ rsel }} .reel { flex: 0 0 calc((100% - ({{ r.reels_cols_m }} - 1) * var(--reel-gap)) / {{ r.reels_cols_m }}); }
+        {%- endif -%}
+        {%- if r.reels_ratio_m != 'default' -%}
+          {{ rsel }} .reel__media { aspect-ratio: {{ r.reels_ratio_m }}; }
+        {%- endif -%}
+        {%- if r.show_seal and r.reels_show_seal_m == false -%}
+          {{ rsel }} .reels__seal-link { display: none; }
+        {%- endif -%}
+      }
     {%- endif -%}
   </style>
 {%- endif -%}
@@ -211,6 +238,67 @@
     },
     {
       "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "select",
+      "id": "reels_cols_m",
+      "label": "Reels across",
+      "info": "720px and under. Theme default is one card at 76% of the screen, so the edge of the next reel shows and the rail reads as swipeable.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default (one, with a peek)"
+        },
+        {
+          "value": "1",
+          "label": "One, full width"
+        },
+        {
+          "value": "2",
+          "label": "Two"
+        },
+        {
+          "value": "3",
+          "label": "Three"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "reels_ratio_m",
+      "label": "Reel shape",
+      "info": "The vertical film frame. It holds 9:16 at every width otherwise.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default (9:16, vertical)"
+        },
+        {
+          "value": "3/4",
+          "label": "Portrait (3:4)"
+        },
+        {
+          "value": "4/5",
+          "label": "Portrait (4:5)"
+        },
+        {
+          "value": "1/1",
+          "label": "Square (1:1)"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "reels_show_seal_m",
+      "label": "Show the rotating seal",
+      "info": "Off retires the seal on a phone, where it sits in its own row above the rail. Only applies while the seal is switched on for every size.",
+      "default": true
+    },
+    {
+      "type": "header",
       "content": "Design"
     },
     {
@@ -317,6 +405,69 @@
       "id": "sec_custom_css",
       "label": "Custom CSS",
       "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "header",
+      "content": "Design — mobile"
+    },
+    {
+      "type": "select",
+      "id": "sec_width_m",
+      "label": "Section width on mobile",
+      "info": "Only below 768px. Edge-to-edge removes the side gutter entirely.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow (wider gutters)"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        },
+        {
+          "value": "edge",
+          "label": "Edge to edge"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sec_align_m",
+      "label": "Text alignment on mobile",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Leave as designed"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css_m",
+      "label": "Custom CSS (mobile only)",
+      "info": "Wrapped in a max-width: 767px media query for this section."
     }
   ],
   "blocks": [

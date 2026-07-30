@@ -2,18 +2,52 @@
 {%- liquid
   assign cfg = section.settings
   assign sel = '#shopify-section-' | append: section.id
+
+  comment
+    Mobile group. The bento has no ratio box — its row height comes from the
+    grid's own template rows, which the theme swaps for a per-tile min-height
+    once the tiles stack (260px at 900px, 230px at 600px). 230px is therefore
+    what a phone height control keys on. The corner arrow and the small note are
+    markup switches already, so the phone versions only have work to do while
+    the tile is still rendering them.
+  endcomment
+  assign h_style = false
+  if cfg.house_cols_m != 2 or cfg.house_tile_h_m != 230
+    assign h_style = true
+  endif
+  if cfg.house_show_arrow and cfg.house_show_arrow_m == false
+    assign h_style = true
+  endif
+  if cfg.house_show_note and cfg.house_show_note_m == false
+    assign h_style = true
+  endif
 -%}
-{%- if cfg.house_cols_m != 2 -%}
+{%- if h_style -%}
   <style>
-    {%- comment -%}
-      Below 900px the theme already resets every tile's explicit grid placement
-      (`grid-column: auto !important`), so a plain column count lands cleanly
-      there. Above it the bento is hand-placed tile by tile and has no column
-      count to change.
-    {%- endcomment -%}
-    @media (max-width: 900px) {
-      {{ sel }} .house__grid { grid-template-columns: repeat({{ cfg.house_cols_m }}, minmax(0, 1fr)); }
-    }
+    {%- if cfg.house_cols_m != 2 -%}
+      {%- comment -%}
+        Below 900px the theme already resets every tile's explicit grid placement
+        (`grid-column: auto !important`), so a plain column count lands cleanly
+        there. Above it the bento is hand-placed tile by tile and has no column
+        count to change.
+      {%- endcomment -%}
+      @media (max-width: 900px) {
+        {{ sel }} .house__grid { grid-template-columns: repeat({{ cfg.house_cols_m }}, minmax(0, 1fr)); }
+      }
+    {%- endif -%}
+    {%- if cfg.house_tile_h_m != 230 or cfg.house_show_arrow_m == false or cfg.house_show_note_m == false -%}
+      @media (max-width: 600px) {
+        {%- if cfg.house_tile_h_m != 230 -%}
+          {{ sel }} .house-tile { min-height: {{ cfg.house_tile_h_m }}px; }
+        {%- endif -%}
+        {%- if cfg.house_show_arrow and cfg.house_show_arrow_m == false -%}
+          {{ sel }} .house-tile__arrow { display: none; }
+        {%- endif -%}
+        {%- if cfg.house_show_note and cfg.house_show_note_m == false -%}
+          {{ sel }} .house-tile__note { display: none; }
+        {%- endif -%}
+      }
+    {%- endif -%}
   </style>
 {%- endif -%}
 <section class="section container house" id="house">
@@ -137,6 +171,34 @@
     },
     {
       "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "house_tile_h_m",
+      "label": "Shortest a tile may get",
+      "info": "600px and under. The bento has no fixed image shape — this is the tile height the crop fills, which is what governs how long the section runs on a phone.",
+      "min": 140,
+      "max": 420,
+      "step": 10,
+      "unit": "px",
+      "default": 230
+    },
+    {
+      "type": "checkbox",
+      "id": "house_show_arrow_m",
+      "label": "Show the corner arrow",
+      "info": "It only appears on hover, which a phone has none of. Only applies while the arrow is switched on for every size.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "house_show_note_m",
+      "label": "Show the tile note",
+      "default": true
+    },
+    {
+      "type": "header",
       "content": "Design"
     },
     {
@@ -243,6 +305,69 @@
       "id": "sec_custom_css",
       "label": "Custom CSS",
       "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "header",
+      "content": "Design — mobile"
+    },
+    {
+      "type": "select",
+      "id": "sec_width_m",
+      "label": "Section width on mobile",
+      "info": "Only below 768px. Edge-to-edge removes the side gutter entirely.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow (wider gutters)"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        },
+        {
+          "value": "edge",
+          "label": "Edge to edge"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sec_align_m",
+      "label": "Text alignment on mobile",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Leave as designed"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css_m",
+      "label": "Custom CSS (mobile only)",
+      "info": "Wrapped in a max-width: 767px media query for this section."
     }
   ],
   "blocks": [

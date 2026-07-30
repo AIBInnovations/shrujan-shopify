@@ -1,5 +1,43 @@
 {%- render 'section-design', section: section -%}
-{%- assign cfg = section.settings -%}
+{%- liquid
+  assign cfg = section.settings
+  assign sel = '#shopify-section-' | append: section.id
+
+  comment
+    Mobile group. There is no grid here to give a column count to: the bar is a
+    flex row of panels that the stylesheet turns into a flex column at 900px, so
+    what actually governs a phone is each panel's height — a clamp at 900px and
+    a second, taller one at 600px. A single height replaces both, which is why
+    the control is opt-in at 0 rather than carrying one of the two clamps as its
+    default. The numeral and the scrim are markup switches already, so the phone
+    versions only apply while the panel is still rendering them.
+  endcomment
+  assign cat_style = false
+  if cfg.cat_panel_h_m != 0
+    assign cat_style = true
+  endif
+  if cfg.cat_show_index and cfg.cat_show_index_m == false
+    assign cat_style = true
+  endif
+  if cfg.cat_show_scrim and cfg.cat_show_scrim_m == false
+    assign cat_style = true
+  endif
+-%}
+{%- if cat_style -%}
+  <style>
+    @media (max-width: 720px) {
+      {%- if cfg.cat_panel_h_m != 0 -%}
+        {{ sel }} .catpanel { height: {{ cfg.cat_panel_h_m }}px; }
+      {%- endif -%}
+      {%- if cfg.cat_show_index and cfg.cat_show_index_m == false -%}
+        {{ sel }} .catpanel__index { display: none; }
+      {%- endif -%}
+      {%- if cfg.cat_show_scrim and cfg.cat_show_scrim_m == false -%}
+        {{ sel }} .catpanel__scrim { display: none; }
+      {%- endif -%}
+    }
+  </style>
+{%- endif -%}
 <section class="section container" id="categories">
   <div class="section-head section-head--center" data-reveal>
     <p class="eyebrow">{{ section.settings.eyebrow }}</p>
@@ -89,6 +127,35 @@
       "label": "Show image scrim",
       "default": true,
       "info": "The dark wash the panel text sits against. Turning it off can leave text hard to read on pale photographs."
+    },
+    {
+      "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "cat_panel_h_m",
+      "label": "Panel height",
+      "info": "720px and under, where the panels are stacked. 0 leaves the theme's two fluid steps in charge (roughly 150–210px, then 168–220px under 600px).",
+      "min": 0,
+      "max": 360,
+      "step": 10,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "cat_show_index_m",
+      "label": "Show the numeral",
+      "info": "Only applies while the numeral is switched on for every size.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "cat_show_scrim_m",
+      "label": "Show the image scrim",
+      "info": "The dark wash the panel text sits against — turning it off can leave text hard to read on pale photographs.",
+      "default": true
     },
     {
       "type": "header",
@@ -198,6 +265,69 @@
       "id": "sec_custom_css",
       "label": "Custom CSS",
       "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "header",
+      "content": "Design — mobile"
+    },
+    {
+      "type": "select",
+      "id": "sec_width_m",
+      "label": "Section width on mobile",
+      "info": "Only below 768px. Edge-to-edge removes the side gutter entirely.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow (wider gutters)"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        },
+        {
+          "value": "edge",
+          "label": "Edge to edge"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sec_align_m",
+      "label": "Text alignment on mobile",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Leave as designed"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css_m",
+      "label": "Custom CSS (mobile only)",
+      "info": "Wrapped in a max-width: 767px media query for this section."
     }
   ],
   "blocks": [

@@ -6,6 +6,19 @@
   if cfg.jr_cols != 3 or cfg.jr_cols_m != 1 or cfg.jr_ratio != 'default'
     assign has_layout = true
   endif
+  comment
+    Mobile group. `jr_ratio` above is written without a query because it is meant
+    to hold at every width, so the phone shape has to come after it inside the
+    900px query to win. The feature photograph has no ratio box on purpose — the
+    stylesheet gives it a min-height floor instead (a comment there explains
+    why), so the phone control is that floor, opt-in at 0.
+  endcomment
+  if cfg.jr_ratio_m != 'default' or cfg.jr_feature_h_m != 0
+    assign has_layout = true
+  endif
+  if cfg.jr_show_tags and cfg.jr_show_tags_m == false
+    assign has_layout = true
+  endif
 -%}
 {%- if has_layout -%}
   <style>
@@ -25,6 +38,26 @@
     {%- endif -%}
     {%- if cfg.jr_ratio != 'default' -%}
       {{ sel }} .journal-card__media { aspect-ratio: {{ cfg.jr_ratio }}; }
+    {%- endif -%}
+
+    {%- comment -%}
+      Phone. 900px is the same tier `jr_cols_m` uses, and coming after the rule
+      above is what lets a phone shape override an all-widths one.
+    {%- endcomment -%}
+    {%- if cfg.jr_ratio_m != 'default' or cfg.jr_show_tags_m == false -%}
+      @media (max-width: 900px) {
+        {%- if cfg.jr_ratio_m != 'default' -%}
+          {{ sel }} .journal-card__media { aspect-ratio: {{ cfg.jr_ratio_m }}; }
+        {%- endif -%}
+        {%- if cfg.jr_show_tags and cfg.jr_show_tags_m == false -%}
+          {{ sel }} .journal-pill { display: none; }
+        {%- endif -%}
+      }
+    {%- endif -%}
+    {%- if cfg.jr_feature_h_m != 0 -%}
+      @media (max-width: 720px) {
+        {{ sel }} .journal-feature__media { min-height: {{ cfg.jr_feature_h_m }}px; }
+      }
     {%- endif -%}
   </style>
 {%- endif -%}
@@ -252,6 +285,57 @@
     },
     {
       "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "select",
+      "id": "jr_ratio_m",
+      "label": "Card image shape",
+      "info": "900px and under — the same tier the mobile column count above uses. Overrides the all-widths shape when both are set.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default (4:3)"
+        },
+        {
+          "value": "1/1",
+          "label": "Square (1:1)"
+        },
+        {
+          "value": "3/2",
+          "label": "Landscape (3:2)"
+        },
+        {
+          "value": "16/9",
+          "label": "Wide (16:9)"
+        },
+        {
+          "value": "4/5",
+          "label": "Portrait (4:5)"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "jr_feature_h_m",
+      "label": "Feature photograph height",
+      "info": "720px and under. The lead photograph is a min-height floor rather than a fixed shape, so its text can never be crowded out. 0 leaves the theme's floor in charge (200–280px).",
+      "min": 0,
+      "max": 480,
+      "step": 10,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "jr_show_tags_m",
+      "label": "Show the category pills",
+      "info": "Only applies while the pills are switched on for every size.",
+      "default": true
+    },
+    {
+      "type": "header",
       "content": "Design"
     },
     {
@@ -358,6 +442,69 @@
       "id": "sec_custom_css",
       "label": "Custom CSS",
       "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "header",
+      "content": "Design — mobile"
+    },
+    {
+      "type": "select",
+      "id": "sec_width_m",
+      "label": "Section width on mobile",
+      "info": "Only below 768px. Edge-to-edge removes the side gutter entirely.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow (wider gutters)"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        },
+        {
+          "value": "edge",
+          "label": "Edge to edge"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sec_align_m",
+      "label": "Text alignment on mobile",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Leave as designed"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css_m",
+      "label": "Custom CSS (mobile only)",
+      "info": "Wrapped in a max-width: 767px media query for this section."
     }
   ],
   "blocks": [

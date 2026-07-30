@@ -2,15 +2,44 @@
 {%- liquid
   assign cfg = section.settings
   assign sel = '#shopify-section-' | append: section.id
+
+  comment
+    Mobile group. The two grids step on different breakpoints in the stylesheet
+    on different breakpoints: the gallery goes two-up to one at 600px, the stat
+    row four-up to two at 900px. So each override sits inside its own query
+    rather than one shared phone width. The stat row is hairline-separated, and
+    the theme's reflow at 900px is tuned for two columns, so a single column
+    repeats what the theme does for the promises row at its narrowest step.
+  endcomment
+  assign cs_style = false
+  if cfg.cs_align == 'center' or cfg.cs_cols_m != 1 or cfg.cs_stat_cols_m != 2
+    assign cs_style = true
+  endif
 -%}
-{%- if cfg.cs_align == 'center' -%}
+{%- if cs_style -%}
   <style>
-    {%- comment -%}
-      Only the two heading lines move. The body copy keeps its 46ch measure and
-      its left edge, which is what makes the column readable.
-    {%- endcomment -%}
-    {{ sel }} .craft__body > .eyebrow,
-    {{ sel }} .craft__body > .section-title { text-align: center; }
+    {%- if cfg.cs_align == 'center' -%}
+      {%- comment -%}
+        Only the two heading lines move. The body copy keeps its 46ch measure and
+        its left edge, which is what makes the column readable.
+      {%- endcomment -%}
+      {{ sel }} .craft__body > .eyebrow,
+      {{ sel }} .craft__body > .section-title { text-align: center; }
+    {%- endif -%}
+    {%- if cfg.cs_cols_m != 1 -%}
+      @media (max-width: 600px) {
+        {{ sel }} .craft__gallery { grid-template-columns: repeat({{ cfg.cs_cols_m }}, minmax(0, 1fr)); }
+      }
+    {%- endif -%}
+    {%- if cfg.cs_stat_cols_m != 2 -%}
+      @media (max-width: 900px) {
+        {{ sel }} .craft__stats { grid-template-columns: repeat({{ cfg.cs_stat_cols_m }}, minmax(0, 1fr)); }
+        {%- if cfg.cs_stat_cols_m == 1 -%}
+          {{ sel }} .craft__stats .stat { border-left: 0; }
+          {{ sel }} .craft__stats .stat + .stat { border-top: 1px solid var(--hairline); }
+        {%- endif -%}
+      }
+    {%- endif -%}
   </style>
 {%- endif -%}
 <section class="section container" id="craft">
@@ -142,6 +171,30 @@
     },
     {
       "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "cs_cols_m",
+      "label": "Gallery columns",
+      "info": "600px and under, where the theme stacks the two shots into one column.",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "cs_stat_cols_m",
+      "label": "Statistic columns",
+      "info": "900px and under, where the four statistics fall to two across. At one column the hairlines move from the side to the top of each row.",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "header",
       "content": "Design"
     },
     {
@@ -248,6 +301,69 @@
       "id": "sec_custom_css",
       "label": "Custom CSS",
       "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "header",
+      "content": "Design — mobile"
+    },
+    {
+      "type": "select",
+      "id": "sec_width_m",
+      "label": "Section width on mobile",
+      "info": "Only below 768px. Edge-to-edge removes the side gutter entirely.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow (wider gutters)"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        },
+        {
+          "value": "edge",
+          "label": "Edge to edge"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sec_align_m",
+      "label": "Text alignment on mobile",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Leave as designed"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css_m",
+      "label": "Custom CSS (mobile only)",
+      "info": "Wrapped in a max-width: 767px media query for this section."
     }
   ],
   "blocks": [

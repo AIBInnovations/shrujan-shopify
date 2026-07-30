@@ -31,6 +31,12 @@
   if s.sec_animate == false or s.sec_custom_css != blank
     assign has_style = true
   endif
+  comment
+    Mobile-only controls. Same rule as the rest: a default emits nothing.
+  endcomment
+  if s.sec_width_m != 'default' or s.sec_align_m != 'default' or s.sec_custom_css_m != blank
+    assign has_style = true
+  endif
 -%}
 
 {%- if has_style -%}
@@ -75,6 +81,21 @@
       {%- endif -%}
       {%- if s.sec_hide_mobile -%}
         {{ sel }} { display: none !important; }
+      {%- endif -%}
+
+      {%- comment -%} phone-only width, alignment and CSS {%- endcomment -%}
+      {%- if s.sec_width_m == 'full' -%}
+        {{ sel }} { --page-max: 100%; --gutter: 14px; }
+      {%- elsif s.sec_width_m == 'narrow' -%}
+        {{ sel }} { --gutter: clamp(28px, 9vw, 56px); }
+      {%- elsif s.sec_width_m == 'edge' -%}
+        {{ sel }} { --gutter: 0px; }
+      {%- endif -%}
+      {%- if s.sec_align_m != 'default' -%}
+        {{ sel }} > * { text-align: {{ s.sec_align_m }}; }
+      {%- endif -%}
+      {%- if s.sec_custom_css_m != blank -%}
+        {{ sel }} { {{ s.sec_custom_css_m }} }
       {%- endif -%}
     }
     {%- if s.sec_hide_desktop -%}

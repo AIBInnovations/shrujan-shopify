@@ -20,6 +20,35 @@
   assign pos_story = h.story_pos | strip_html | replace: '{', ' ' | replace: '}', ' ' | replace: ';', ' ' | strip
   assign pos_lldc = h.lldc_pos | strip_html | replace: '{', ' ' | replace: '}', ' ' | replace: ';', ' ' | strip
 
+  comment
+    Phone crops, sanitised the same way. Each is compared against its own
+    packaged value rather than against the desktop field, so a merchant who
+    only changes the desktop crop still has it carry down to the phone — the
+    mobile rule is written only when they have actually asked for a different
+    crop there.
+  endcomment
+  assign posm_model = h.shop_pos_m | strip_html | replace: '{', ' ' | replace: '}', ' ' | replace: ';', ' ' | strip
+  assign posm_season = h.season_pos_m | strip_html | replace: '{', ' ' | replace: '}', ' ' | replace: ';', ' ' | strip
+  assign posm_thread = h.thread_pos_m | strip_html | replace: '{', ' ' | replace: '}', ' ' | replace: ';', ' ' | strip
+  assign posm_story = h.story_pos_m | strip_html | replace: '{', ' ' | replace: '}', ' ' | replace: ';', ' ' | strip
+  assign posm_lldc = h.lldc_pos_m | strip_html | replace: '{', ' ' | replace: '}', ' ' | replace: ';', ' ' | strip
+
+  if posm_model == '50% 12%'
+    assign posm_model = ''
+  endif
+  if posm_season == '50% 18%'
+    assign posm_season = ''
+  endif
+  if posm_thread == '70% 60%'
+    assign posm_thread = ''
+  endif
+  if posm_story == '50% 50%'
+    assign posm_story = ''
+  endif
+  if posm_lldc == '50% 50%'
+    assign posm_lldc = ''
+  endif
+
   if pos_model == '50% 12%'
     assign pos_model = ''
   endif
@@ -46,6 +75,21 @@
   if pos_story != blank or pos_lldc != blank
     assign h_style = true
   endif
+  comment
+    Mobile group. Below 1180px the bento is `height: auto`, so the clamp floor
+    above no longer governs anything — what sets the stacked height is the
+    cells' own min-height, 280px at 720px and under. That is now published as
+    the hero-cell-min-h token in the stylesheet, with 280px as its fallback.
+  endcomment
+  if h.hero_cell_min_h_m != 280
+    assign h_style = true
+  endif
+  if posm_model != blank or posm_season != blank or posm_thread != blank
+    assign h_style = true
+  endif
+  if posm_story != blank or posm_lldc != blank
+    assign h_style = true
+  endif
 -%}
 
 {%- if h_style -%}
@@ -67,6 +111,33 @@
     {%- endif -%}
     {%- if pos_lldc != blank -%}
       {{ hsel }} .hero-cell--accessories img { object-position: {{ pos_lldc }}; }
+    {%- endif -%}
+
+    {%- comment -%}
+      Phone. The token is only read inside the stylesheet's own 720px block, so
+      publishing it on the section root cannot leak upward into the bento.
+    {%- endcomment -%}
+    {%- if h.hero_cell_min_h_m != 280 -%}
+      {{ hsel }} { --hero-cell-min-h: {{ h.hero_cell_min_h_m }}px; }
+    {%- endif -%}
+    {%- if posm_model != blank or posm_season != blank or posm_thread != blank or posm_story != blank or posm_lldc != blank -%}
+      @media (max-width: 720px) {
+        {%- if posm_model != blank -%}
+          {{ hsel }} .hero-cell--model img { object-position: {{ posm_model }}; }
+        {%- endif -%}
+        {%- if posm_season != blank -%}
+          {{ hsel }} .hero-cell--season img { object-position: {{ posm_season }}; }
+        {%- endif -%}
+        {%- if posm_thread != blank -%}
+          {{ hsel }} .hero-cell--thread img { object-position: {{ posm_thread }}; }
+        {%- endif -%}
+        {%- if posm_story != blank -%}
+          {{ hsel }} .hero-cell--story img { object-position: {{ posm_story }}; }
+        {%- endif -%}
+        {%- if posm_lldc != blank -%}
+          {{ hsel }} .hero-cell--accessories img { object-position: {{ posm_lldc }}; }
+        {%- endif -%}
+      }
     {%- endif -%}
   </style>
 {%- endif -%}
@@ -478,6 +549,52 @@
     },
     {
       "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "hero_cell_min_h_m",
+      "label": "Shortest a stacked cell may get",
+      "info": "Phones only (720px and under), where the bento stacks into one column and the height above no longer applies. The centre message, the tall Shop cell and the map cell keep their own heights.",
+      "min": 160,
+      "max": 520,
+      "step": 10,
+      "unit": "px",
+      "default": 280
+    },
+    {
+      "type": "text",
+      "id": "shop_pos_m",
+      "label": "Shop Shrujan image position",
+      "info": "Phone crop for this cell. Left as it is, the cell keeps whatever the desktop position above is set to.",
+      "default": "50% 12%"
+    },
+    {
+      "type": "text",
+      "id": "season_pos_m",
+      "label": "Studio Collection image position",
+      "default": "50% 18%"
+    },
+    {
+      "type": "text",
+      "id": "thread_pos_m",
+      "label": "Craft traditions image position",
+      "default": "70% 60%"
+    },
+    {
+      "type": "text",
+      "id": "story_pos_m",
+      "label": "Story image position",
+      "default": "50% 50%"
+    },
+    {
+      "type": "text",
+      "id": "lldc_pos_m",
+      "label": "LLDC image position",
+      "default": "50% 50%"
+    },
+    {
+      "type": "header",
       "content": "Design"
     },
     {
@@ -584,6 +701,69 @@
       "id": "sec_custom_css",
       "label": "Custom CSS",
       "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "header",
+      "content": "Design — mobile"
+    },
+    {
+      "type": "select",
+      "id": "sec_width_m",
+      "label": "Section width on mobile",
+      "info": "Only below 768px. Edge-to-edge removes the side gutter entirely.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow (wider gutters)"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        },
+        {
+          "value": "edge",
+          "label": "Edge to edge"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sec_align_m",
+      "label": "Text alignment on mobile",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Leave as designed"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css_m",
+      "label": "Custom CSS (mobile only)",
+      "info": "Wrapped in a max-width: 767px media query for this section."
     }
   ],
   "presets": [

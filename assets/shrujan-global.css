@@ -5341,8 +5341,12 @@ a.house-tile:hover .house-tile__arrow {
     padding: 5px 5px 0;
   }
 
+  /* The stacked cell's floor, as a token so the section can publish a phone
+     value without an id-level rule — which would also flatten the two cells
+     below that carry heights of their own. 280px is the packaged value, so the
+     stylesheet on its own still renders the bento exactly as built. */
   .hero-cell {
-    min-height: 280px;
+    min-height: var(--hero-cell-min-h, 280px);
   }
 
   .hero-cell--model {

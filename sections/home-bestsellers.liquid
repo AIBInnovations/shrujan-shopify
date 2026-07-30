@@ -20,6 +20,19 @@
   if cfg.bs_cols != 5 or cfg.bs_cols_m != 2 or cfg.bs_ratio != 'default'
     assign has_layout = true
   endif
+  comment
+    Mobile group. `bs_ratio` above carries no query because it is meant to hold
+    at every width, so the phone shape follows it inside the 720px query — the
+    same tier `bs_cols_m` is written into. The ghost numeral and the running
+    stitch beside it are decoration the card renders unconditionally, so CSS is
+    the only way to retire them, and only on a phone.
+  endcomment
+  if cfg.bs_ratio_m != 'default' or cfg.bs_show_rank_m == false or cfg.bs_show_thread_m == false
+    assign has_layout = true
+  endif
+  if cfg.bs_show_arrows and cfg.bs_show_arrows_m == false
+    assign has_layout = true
+  endif
 -%}
 {%- if has_layout -%}
   <style>
@@ -36,6 +49,23 @@
     {%- endif -%}
     {%- if cfg.bs_ratio != 'default' -%}
       {{ sel }} .best-card__media { aspect-ratio: {{ cfg.bs_ratio }}; }
+    {%- endif -%}
+
+    {%- if cfg.bs_ratio_m != 'default' or cfg.bs_show_rank_m == false or cfg.bs_show_thread_m == false or cfg.bs_show_arrows_m == false -%}
+      @media (max-width: 720px) {
+        {%- if cfg.bs_ratio_m != 'default' -%}
+          {{ sel }} .best-card__media { aspect-ratio: {{ cfg.bs_ratio_m }}; }
+        {%- endif -%}
+        {%- if cfg.bs_show_rank_m == false -%}
+          {{ sel }} .best-card__rank { display: none; }
+        {%- endif -%}
+        {%- if cfg.bs_show_thread_m == false -%}
+          {{ sel }} .best-card__thread { display: none; }
+        {%- endif -%}
+        {%- if cfg.bs_show_arrows and cfg.bs_show_arrows_m == false -%}
+          {{ sel }} .carousel-arrows { display: none; }
+        {%- endif -%}
+      }
     {%- endif -%}
   </style>
 {%- endif -%}
@@ -341,6 +371,60 @@
     },
     {
       "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "select",
+      "id": "bs_ratio_m",
+      "label": "Image shape",
+      "info": "720px and under — the same tier the mobile card count above uses. Overrides the all-widths shape when both are set.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default (3:4)"
+        },
+        {
+          "value": "1/1",
+          "label": "Square (1:1)"
+        },
+        {
+          "value": "4/5",
+          "label": "Portrait (4:5)"
+        },
+        {
+          "value": "2/3",
+          "label": "Tall (2:3)"
+        },
+        {
+          "value": "16/9",
+          "label": "Landscape (16:9)"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "bs_show_rank_m",
+      "label": "Show the ranking numeral",
+      "info": "The large ghosted number over each card.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "bs_show_thread_m",
+      "label": "Show the running stitch",
+      "info": "The dashed line that runs from one card to the next.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "bs_show_arrows_m",
+      "label": "Show the carousel arrows",
+      "info": "Off leaves swiping as the only way along the rail. Only applies while the arrows are switched on for every size.",
+      "default": true
+    },
+    {
+      "type": "header",
       "content": "Design"
     },
     {
@@ -447,6 +531,69 @@
       "id": "sec_custom_css",
       "label": "Custom CSS",
       "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "header",
+      "content": "Design — mobile"
+    },
+    {
+      "type": "select",
+      "id": "sec_width_m",
+      "label": "Section width on mobile",
+      "info": "Only below 768px. Edge-to-edge removes the side gutter entirely.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow (wider gutters)"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        },
+        {
+          "value": "edge",
+          "label": "Edge to edge"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sec_align_m",
+      "label": "Text alignment on mobile",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Leave as designed"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css_m",
+      "label": "Custom CSS (mobile only)",
+      "info": "Wrapped in a max-width: 767px media query for this section."
     }
   ],
   "blocks": [

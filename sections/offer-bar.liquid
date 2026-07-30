@@ -1,0 +1,421 @@
+{%- render 'section-design', section: section -%}
+
+{%- comment -%}
+  The offer bar — the strip above the header that announces the sale.
+
+  It sits at the very top of sections/header-group.json, outside `.site-header`,
+  so it pushes the header down instead of joining it. That keeps the header's own
+  measurement honest: assets/shrujan-core.js measures `.site-header` and
+  publishes `--header-h`, and a sibling above it changes neither the height it
+  reads nor the spacer that holds its place when it goes fixed.
+
+  What it does change is where the fold sits, so the bar publishes its own height
+  as `--offer-h` — by presence, in CSS, no measurement needed — and the
+  fold-filling heroes take it out of their 100vh sum. See the offer-bar block in
+  assets/shrujan-store.css.
+
+  Both messages render server-side and the media query picks one, so the phone
+  never shows the long line first and swaps it. Dismissal is the only thing
+  JavaScript touches, and it hides the bar synchronously (see the script below)
+  rather than after a frame, so a returning visitor sees no flash of a bar they
+  already closed.
+{%- endcomment -%}
+
+{%- liquid
+  assign os = section.settings
+  assign osel = '#shopify-section-' | append: section.id
+-%}
+
+{%- if os.enabled -%}
+  {%- liquid
+    comment
+      The dismissal key is the announced copy itself, hashed: both messages and
+      the code. Editing any of them mints a new key, so an edited offer comes
+      back for everyone who had closed the old one.
+    endcomment
+    assign offer_seed = os.message | append: '~' | append: os.message_m | append: '~' | append: os.code | strip_html | strip
+    assign offer_key = offer_seed | md5
+
+    assign offer_class = 'offer-bar'
+    if os.message_m != blank
+      assign offer_class = offer_class | append: ' offer-bar--dual'
+    endif
+    unless os.show_mobile
+      assign offer_class = offer_class | append: ' offer-bar--m-off'
+    endunless
+    if os.animation == 'marquee'
+      assign offer_class = offer_class | append: ' offer-bar--marquee'
+    endif
+    if os.dismissible
+      assign offer_class = offer_class | append: ' offer-bar--closable'
+    endif
+  -%}
+
+  {%- comment -%}
+    Colours travel as the bar's own two custom properties, which default to the
+    maroon band in the stylesheet — so an untouched setting keeps the token and
+    the theme's palette stays the single source of it.
+  {%- endcomment -%}
+  {%- if os.bg != blank or os.text != blank -%}
+    <style>
+      {{ osel }} .offer-bar {
+        {%- if os.bg != blank %} --offer-bg: {{ os.bg }};{% endif -%}
+        {%- if os.text != blank %} --offer-ink: {{ os.text }};{% endif -%}
+      }
+    </style>
+  {%- endif -%}
+
+  {%- comment -%}
+    Captured once because the marquee needs the run twice. The clone carries no
+    link and no button, only spans, so `aria-hidden` on it cannot hide anything
+    focusable.
+  {%- endcomment -%}
+  {%- capture offer_run -%}
+    <span class="offer-bar__msg">{{ os.message }}</span>
+    {%- if os.message_m != blank -%}
+      <span class="offer-bar__msg offer-bar__msg--m">{{ os.message_m }}</span>
+    {%- endif -%}
+    {%- if os.code != blank -%}
+      <span class="offer-bar__code">{{ os.code }}</span>
+    {%- endif -%}
+  {%- endcapture -%}
+
+  <div class="{{ offer_class }}" id="offer-bar-{{ section.id }}" data-offer-key="{{ offer_key }}">
+    <div class="offer-bar__inner">
+      <div class="offer-bar__track">
+        <span class="offer-bar__run">{{ offer_run }}</span>
+        {%- if os.animation == 'marquee' -%}
+          <span class="offer-bar__run" aria-hidden="true">{{ offer_run }}</span>
+        {%- endif -%}
+      </div>
+
+      {%- if os.link_label != blank -%}
+        <a class="offer-bar__cta" href="{{ os.link | default: '/collections/all' }}">{{ os.link_label }}<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
+      {%- endif -%}
+
+      {%- if os.dismissible -%}
+        <button class="offer-bar__close" type="button" aria-label="Dismiss this announcement"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var el = document.getElementById('offer-bar-{{ section.id }}');
+      if (!el || el.getAttribute('data-offer-ready') === '1') return;
+      el.setAttribute('data-offer-ready', '1');
+
+      // Private browsing can make localStorage throw on access alone, and a bar
+      // that cannot remember a dismissal must still be dismissable.
+      var store = null;
+      try {
+        store = window.localStorage;
+      } catch (e) {
+        store = null;
+      }
+      var key = 'shrujan:offer:' + (el.getAttribute('data-offer-key') || '');
+
+      // This runs where it sits, immediately after the markup and before the
+      // browser has painted it, so an already-dismissed bar never flashes.
+      // Never in the theme editor though: a merchant who once closed the bar
+      // would otherwise be editing something they cannot see.
+      var editing = !!(window.Shopify && window.Shopify.designMode);
+      if (!editing && store && store.getItem(key) === '1') {
+        el.classList.add('offer-bar--gone');
+        return;
+      }
+
+      var close = el.querySelector('.offer-bar__close');
+      if (!close) return;
+      close.addEventListener('click', function () {
+        el.classList.add('offer-bar--gone');
+        try {
+          if (store) store.setItem(key, '1');
+        } catch (e) {
+          /* a full or blocked store must not stop the bar closing */
+        }
+        // The fold just grew by the bar's height; anything measuring on resize
+        // (the header, the smooth-scroll rig) should hear about it.
+        window.dispatchEvent(new Event('resize'));
+      });
+    })();
+  </script>
+{%- endif -%}
+{% schema %}
+{
+  "name": "Offer bar",
+  "enabled_on": {
+    "groups": [
+      "header"
+    ]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enabled",
+      "label": "Show the offer bar",
+      "info": "Off renders nothing at all — no markup, no strip of colour.",
+      "default": true
+    },
+    {
+      "type": "inline_richtext",
+      "id": "message",
+      "label": "Message",
+      "default": "Festive edit — up to 30% off selected pieces"
+    },
+    {
+      "type": "text",
+      "id": "code",
+      "label": "Discount code",
+      "info": "Optional. Shown as a chip beside the message."
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link",
+      "info": "Defaults to every piece in the catalogue."
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Link label",
+      "info": "Leave empty to announce the offer without a link.",
+      "default": "Shop the edit"
+    },
+    {
+      "type": "color",
+      "id": "bg",
+      "label": "Background",
+      "info": "Leave empty to keep the theme’s maroon band."
+    },
+    {
+      "type": "color",
+      "id": "text",
+      "label": "Text colour",
+      "info": "Leave empty to keep the cream."
+    },
+    {
+      "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_mobile",
+      "label": "Show on mobile",
+      "default": true
+    },
+    {
+      "type": "inline_richtext",
+      "id": "message_m",
+      "label": "Message (mobile)",
+      "info": "A shorter line used below 768px. Leave empty to use the message above on every screen.",
+      "default": "Festive edit — up to 30% off"
+    },
+    {
+      "type": "header",
+      "content": "Behaviour"
+    },
+    {
+      "type": "checkbox",
+      "id": "dismissible",
+      "label": "Let visitors close it",
+      "info": "The dismissal is remembered against this message, so editing the wording brings the bar back.",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "animation",
+      "label": "Animation",
+      "info": "The marquee repeats the message and drifts it sideways; it pauses on hover and holds still for reduced motion.",
+      "default": "none",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "marquee",
+          "label": "Gentle marquee"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "select",
+      "id": "sec_width",
+      "label": "Section width",
+      "info": "Theme default keeps the shared page rail.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow"
+        },
+        {
+          "value": "wide",
+          "label": "Wide"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top",
+      "label": "Extra top spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom",
+      "label": "Extra bottom spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top_m",
+      "label": "Extra top spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom_m",
+      "label": "Extra bottom spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "sec_bg",
+      "label": "Background",
+      "info": "Leave empty to keep the section’s own background."
+    },
+    {
+      "type": "color",
+      "id": "sec_text",
+      "label": "Text colour"
+    },
+    {
+      "type": "color",
+      "id": "sec_accent",
+      "label": "Accent colour"
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_animate",
+      "label": "Animate on scroll",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_mobile",
+      "label": "Hide on mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_desktop",
+      "label": "Hide on desktop",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css",
+      "label": "Custom CSS",
+      "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "header",
+      "content": "Design — mobile"
+    },
+    {
+      "type": "select",
+      "id": "sec_width_m",
+      "label": "Section width on mobile",
+      "info": "Only below 768px. Edge-to-edge removes the side gutter entirely.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow (wider gutters)"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        },
+        {
+          "value": "edge",
+          "label": "Edge to edge"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sec_align_m",
+      "label": "Text alignment on mobile",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Leave as designed"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css_m",
+      "label": "Custom CSS (mobile only)",
+      "info": "Wrapped in a max-width: 767px media query for this section."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Offer bar"
+    }
+  ]
+}
+{% endschema %}

@@ -74,14 +74,11 @@
     assign craft = product.type
   endif
 
-  assign badge = product.metafields.shrujan.badge.value
   comment
-    Both badges live in the one corner the design drew, so "sold out" — the only
-    one a shopper must not miss — takes it when the piece cannot be bought.
+    The badge is decided by snippets/piece-badge.liquid, the same rules the grids
+    use: sold out wins the one corner the design drew, then the discount worked
+    out from the prices, then the shrujan.badge override.
   endcomment
-  if product.available == false
-    assign badge = cfg.sold_out_label
-  endif
 
   comment
     The swatch discs the shrujan.swatches metafield feeds are a card affordance —
@@ -204,9 +201,7 @@
           {%- else -%}
             <figure class="pdp__shot is-active" aria-hidden="false">{{ 'product-1' | placeholder_svg_tag: 'piece__ph' }}</figure>
           {%- endif -%}
-          {%- if badge != blank -%}
-            <span class="pdp__badge">{{ badge }}</span>
-          {%- endif -%}
+          {%- render 'piece-badge', product: product, class: 'pdp__badge', sold_out_label: cfg.sold_out_label -%}
         </div>
       </div>
 
@@ -1109,6 +1104,69 @@
       "id": "sec_custom_css",
       "label": "Custom CSS",
       "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "header",
+      "content": "Design — mobile"
+    },
+    {
+      "type": "select",
+      "id": "sec_width_m",
+      "label": "Section width on mobile",
+      "info": "Only below 768px. Edge-to-edge removes the side gutter entirely.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow (wider gutters)"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        },
+        {
+          "value": "edge",
+          "label": "Edge to edge"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sec_align_m",
+      "label": "Text alignment on mobile",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Leave as designed"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css_m",
+      "label": "Custom CSS (mobile only)",
+      "info": "Wrapped in a max-width: 767px media query for this section."
     }
   ],
   "blocks": [

@@ -182,9 +182,7 @@
               {%- else -%}
                 {{ 'product-1' | placeholder_svg_tag: 'piece__ph' }}
               {%- endif -%}
-              {%- if cfg.card_badge and product.available == false -%}
-                <span class="piece__badge">{{ cfg.sold_out_label }}</span>
-              {%- endif -%}
+              {%- render 'piece-badge', product: product, show: cfg.card_badge, sale: cfg.card_sale_badge, sold_out_label: cfg.sold_out_label -%}
               {%- if cfg.card_wish -%}
                 <button class="piece__wish" type="button" aria-pressed="false" aria-label="{{ cfg.wish_label }}: {{ product.title | escape }}"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19.8S4.5 15.3 4.5 9.9c0-2.6 2-4.4 4.2-4.4 1.5 0 2.7.8 3.3 2 .6-1.2 1.8-2 3.3-2 2.2 0 4.2 1.8 4.2 4.4 0 5.4-7.5 9.9-7.5 9.9Z"></path></svg></button>
               {%- endif -%}
@@ -502,7 +500,15 @@
     {
       "type": "checkbox",
       "id": "card_badge",
-      "label": "Show the sold-out badge",
+      "label": "Show the badge",
+      "info": "“Sold out” when the piece cannot be bought, otherwise the discount worked out from its prices, otherwise the shrujan.badge metafield.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "card_sale_badge",
+      "label": "Show the “N% off” badge",
+      "info": "Worked out from the compare-at price, so it can never go stale.",
       "default": true
     },
     {
@@ -709,6 +715,69 @@
       "id": "sec_custom_css",
       "label": "Custom CSS",
       "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "header",
+      "content": "Design — mobile"
+    },
+    {
+      "type": "select",
+      "id": "sec_width_m",
+      "label": "Section width on mobile",
+      "info": "Only below 768px. Edge-to-edge removes the side gutter entirely.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow (wider gutters)"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        },
+        {
+          "value": "edge",
+          "label": "Edge to edge"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sec_align_m",
+      "label": "Text alignment on mobile",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Leave as designed"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css_m",
+      "label": "Custom CSS (mobile only)",
+      "info": "Wrapped in a max-width: 767px media query for this section."
     }
   ]
 }

@@ -1648,3 +1648,285 @@
   background: var(--ivory-2);
   fill: var(--hairline-strong);
 }
+
+/* ============================================================
+   Offer bar — sections/offer-bar.liquid
+
+   The strip above the header. It borrows the topbar's typographic scale
+   (11.8px / 0.22em / uppercase, see .topbar__note in shrujan-global.css) and
+   the maroon band the marquee and quote panels already use, so it reads as
+   part of the same system rather than as a plugin bolted on top.
+   ============================================================ */
+
+/* The bar's height, published to the whole document by its mere presence.
+   Nothing measures it: the bar *is* --offer-h tall because .offer-bar__inner
+   takes its min-height from it, so the value cannot drift out of step. It falls
+   to 0px when the bar is dismissed or hidden for the phone, and it is simply
+   never defined on a store without a bar — which makes every rule that reads
+   `var(--offer-h, 0px)` a no-op there. */
+:root:has(.offer-bar) {
+  --offer-h: 42px;
+}
+
+.offer-bar {
+  /* Overridable per-section from the Offer bar panel; empty settings emit
+     nothing, so these tokens are what a merchant who touches nothing gets. */
+  --offer-bg: var(--maroon);
+  --offer-ink: var(--cream);
+  background: var(--offer-bg);
+  color: var(--offer-ink);
+}
+
+.offer-bar__inner {
+  position: relative;
+  max-width: var(--header-max);
+  margin-inline: auto;
+  min-height: var(--offer-h, 42px);
+  padding: 5px var(--gutter);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 1.4vw, 26px);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 11.8px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+/* Symmetric, not just on the side the close button sits: the message has to
+   stay optically centred, and reserving the room on one side only shifts it. */
+.offer-bar--closable .offer-bar__inner {
+  padding-inline: calc(var(--gutter) + 30px);
+}
+
+.offer-bar__track {
+  display: flex;
+  align-items: center;
+  gap: clamp(28px, 5vw, 80px);
+  min-width: 0;
+}
+
+.offer-bar__run {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(10px, 1.2vw, 20px);
+}
+
+/* inline_richtext, so the merchant's own emphasis has to land somewhere */
+.offer-bar__msg :is(em, i) {
+  font-style: italic;
+}
+
+.offer-bar__msg :is(strong, b) {
+  font-weight: 500;
+}
+
+.offer-bar__msg a {
+  color: inherit;
+  border-bottom: 1px solid currentColor;
+}
+
+/* The phone line only exists when one was written, and only then does the long
+   one step aside — the section adds --dual so this needs no :has(). */
+.offer-bar__msg--m {
+  display: none;
+}
+
+.offer-bar__code {
+  flex: 0 0 auto;
+  padding: 3px 11px 2px;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+}
+
+.offer-bar__cta {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding-bottom: 1px;
+  color: inherit;
+  border-bottom: 1px solid currentColor;
+  /* opacity rather than a second colour: the bar's two colours are settings,
+     and any accent picked here could fight whatever the merchant chooses */
+  transition: opacity var(--dur-quick) var(--ease);
+}
+
+.offer-bar__cta:hover {
+  opacity: 0.7;
+}
+
+.offer-bar__close {
+  position: absolute;
+  top: 50%;
+  right: calc(var(--gutter) - 4px);
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: inherit;
+  opacity: 0.62;
+  transition: opacity var(--dur-quick) var(--ease);
+}
+
+.offer-bar__close:hover,
+.offer-bar__close:focus-visible {
+  opacity: 1;
+}
+
+/* ---- gentle marquee ---------------------------------------- */
+
+/* Two identical runs travelling one run-plus-gap to the left: at the end of the
+   cycle the second run stands exactly where the first began, so the loop is
+   seamless. The gap is a variable because the keyframe has to subtract it. */
+.offer-bar--marquee .offer-bar__track {
+  --offer-gap: clamp(28px, 5vw, 80px);
+  flex: 1 1 auto;
+  overflow: hidden;
+  gap: var(--offer-gap);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+}
+
+.offer-bar--marquee .offer-bar__run {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  animation: offer-drift 32s linear infinite;
+}
+
+.offer-bar--marquee:hover .offer-bar__run {
+  animation-play-state: paused;
+}
+
+@keyframes offer-drift {
+  to {
+    transform: translateX(calc(-100% - var(--offer-gap)));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .offer-bar--marquee .offer-bar__run {
+    animation: none;
+  }
+
+  /* nothing is moving, so the second run would only read as a stutter */
+  .offer-bar--marquee .offer-bar__run + .offer-bar__run {
+    display: none;
+  }
+}
+
+/* ---- dismissed, and the phone ------------------------------ */
+
+/* Applied by the section's own inline script, where it sits — before the browser
+   paints the bar, so a visitor who closed it yesterday sees no flash of it. */
+.offer-bar--gone {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  :root:has(.offer-bar) {
+    --offer-h: 38px;
+  }
+
+  /* :not(), not source order: the phone line carries both classes, so a plain
+     .offer-bar__msg rule would hide the very span it is making room for */
+  .offer-bar--dual .offer-bar__msg:not(.offer-bar__msg--m) {
+    display: none;
+  }
+
+  .offer-bar--dual .offer-bar__msg--m {
+    display: inline;
+  }
+
+  .offer-bar--m-off {
+    display: none;
+  }
+
+  :root:has(.offer-bar--m-off) {
+    --offer-h: 0px;
+  }
+}
+
+@media (max-width: 599px) {
+  .offer-bar__inner {
+    gap: 10px;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+  }
+
+  /* the gutter is already down to 22px here; reserving a full 30px on both
+     sides on top of it costs the message more room than the line can spare */
+  .offer-bar--closable .offer-bar__inner {
+    padding-inline: calc(var(--gutter) + 20px);
+  }
+
+  .offer-bar__close {
+    right: calc(var(--gutter) - 8px);
+  }
+
+  .offer-bar__cta svg {
+    display: none;
+  }
+}
+
+/* Last, so it beats the 38px the phone query sets and the 42px above it —
+   same specificity, later wins. */
+:root:has(.offer-bar--gone) {
+  --offer-h: 0px;
+}
+
+/* ---- the fold, with a bar above the header ------------------ */
+
+/* The full-height mastheads are built as "the viewport, less the header" —
+   .hero in shrujan-global.css, the three below in shrujan-pages.css. The offer
+   bar sits above the header and pushes that fold down, so it has to come out of
+   the same sum. Each rule restates its own clamp with one term added and nothing
+   else changed; at --offer-h: 0px — no bar, dismissed, or a browser without
+   :has() — the result is identical to the packaged value.
+
+   Each is held inside the range where the fold rule it corrects is the one in
+   force. Below those widths the mastheads stop measuring the header at all and
+   switch to plain vh clamps (.hero goes height: auto at 1180px, the other three
+   take a vh clamp at 720px) — so there is nothing there to correct, and an
+   unscoped rule here would out-cascade those responsive heights and undo them. */
+@media (min-width: 1181px) {
+  .hero {
+    height: clamp(var(--hero-min-h, 600px), calc(100vh - var(--header-h, 130px) - var(--offer-h, 0px) - 6px), 1200px);
+  }
+}
+
+@media (min-width: 721px) {
+  .page-hero--frame {
+    min-height: clamp(420px, calc(100vh - var(--header-h, 130px) - var(--offer-h, 0px) - 12px), 1200px);
+  }
+
+  .shop-banner__frame,
+  .visit-hero {
+    height: clamp(420px, calc(100vh - var(--header-h, 130px) - var(--offer-h, 0px) - 12px), 1200px);
+  }
+}
+
+@media (max-width: 720px) {
+  /* the drawer opens under the bar as well as under the header — same query as
+     the rule it corrects, so it lands in exactly that range */
+  .mobile-nav.open {
+    max-height: calc(100dvh - var(--header-h, 74px) - var(--offer-h, 0px));
+  }
+}
+
+/* ---- the offer, on the card --------------------------------- */
+
+/* snippets/piece-badge.liquid marks the computed discount apart from a
+   "Sold out" and from a merchant's own note, because it is the only one of the
+   three that is an offer. It takes the offer bar's maroon rather than a colour
+   of its own, so the sale reads as one thing from the top of the page down to
+   the card. */
+.piece__badge--sale {
+  background: var(--maroon);
+  color: var(--cream);
+}

@@ -1,5 +1,44 @@
 {%- render 'section-design', section: section -%}
-{%- assign cfg = section.settings -%}
+{%- liquid
+  assign cfg = section.settings
+  assign sel = '#shopify-section-' | append: section.id
+
+  comment
+    Mobile group. The card row is a flex scroller, not a grid, so "cards across"
+    is the cell's flex-basis — 25% packaged, 50% at 900px, 88% at 720px, that
+    last one a deliberate peek at the next card. The grid has no gap, so an
+    even split is a plain division. Inside the card the "also bought" pair is a
+    real two-column grid that never steps, so it gets a count of its own.
+  endcomment
+  assign tm_style = false
+  if cfg.tm_cols_m != 'default' or cfg.tm_buys_cols_m != 2
+    assign tm_style = true
+  endif
+  if cfg.tm_show_loved_m == false
+    assign tm_style = true
+  endif
+  if cfg.tm_show_arrows and cfg.tm_show_arrows_m == false
+    assign tm_style = true
+  endif
+-%}
+{%- if tm_style -%}
+  <style>
+    @media (max-width: 720px) {
+      {%- if cfg.tm_cols_m != 'default' -%}
+        {{ sel }} .tw-cell { flex-basis: calc(100% / {{ cfg.tm_cols_m }}); }
+      {%- endif -%}
+      {%- if cfg.tm_buys_cols_m != 2 -%}
+        {{ sel }} .tw-buys { grid-template-columns: repeat({{ cfg.tm_buys_cols_m }}, minmax(0, 1fr)); }
+      {%- endif -%}
+      {%- if cfg.tm_show_loved_m == false -%}
+        {{ sel }} .tw-loved { display: none; }
+      {%- endif -%}
+      {%- if cfg.tm_show_arrows and cfg.tm_show_arrows_m == false -%}
+        {{ sel }} .carousel-arrows { display: none; }
+      {%- endif -%}
+    }
+  </style>
+{%- endif -%}
 <section class="section container" aria-label="{{ section.settings.title | escape }}">
   <div class="tw__intro" data-reveal>
     <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
@@ -320,6 +359,59 @@
     },
     {
       "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "select",
+      "id": "tm_cols_m",
+      "label": "Cards across",
+      "info": "720px and under. Theme default is a single card at 88% width, so the edge of the next one shows and the row reads as swipeable.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default (one, with a peek)"
+        },
+        {
+          "value": "1",
+          "label": "One, full width"
+        },
+        {
+          "value": "2",
+          "label": "Two"
+        },
+        {
+          "value": "3",
+          "label": "Three"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "tm_buys_cols_m",
+      "label": "“Also bought” columns",
+      "info": "The pair of pieces on the back of a card. This grid holds two across at every width otherwise.",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "checkbox",
+      "id": "tm_show_loved_m",
+      "label": "Show the “loved by” faces",
+      "info": "The overlapping portraits and their caption in the section header.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "tm_show_arrows_m",
+      "label": "Show the carousel arrows",
+      "info": "Off leaves swiping as the only way through the row. Only applies while the arrows are switched on for every size.",
+      "default": true
+    },
+    {
+      "type": "header",
       "content": "Design"
     },
     {
@@ -426,6 +518,69 @@
       "id": "sec_custom_css",
       "label": "Custom CSS",
       "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "header",
+      "content": "Design — mobile"
+    },
+    {
+      "type": "select",
+      "id": "sec_width_m",
+      "label": "Section width on mobile",
+      "info": "Only below 768px. Edge-to-edge removes the side gutter entirely.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow (wider gutters)"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        },
+        {
+          "value": "edge",
+          "label": "Edge to edge"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sec_align_m",
+      "label": "Text alignment on mobile",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Leave as designed"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css_m",
+      "label": "Custom CSS (mobile only)",
+      "info": "Wrapped in a max-width: 767px media query for this section."
     }
   ],
   "blocks": [

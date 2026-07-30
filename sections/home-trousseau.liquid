@@ -37,6 +37,19 @@
   if cfg.tr_cols != 5 or cfg.tr_cols_m != 2 or cfg.tr_ratio != 'default'
     assign has_layout = true
   endif
+  comment
+    Mobile group. The card's shape is the one thing the stylesheet steps on its
+    own — 3/4, then 5/6 at 1500px, then 4/5 at 600px — so the phone shape goes
+    into that 600px query, after the all-widths `tr_ratio` above it. The
+    promises row steps 4 → 2 → 1 on 1080 and 600, so its phone count belongs in
+    the same 600px band.
+  endcomment
+  if cfg.tr_ratio_m != 'default' or cfg.tr_promise_cols_m != 1
+    assign has_layout = true
+  endif
+  if cfg.tr_show_filters and cfg.tr_show_filters_m == false
+    assign has_layout = true
+  endif
 -%}
 {%- if has_layout -%}
   <style>
@@ -52,6 +65,27 @@
     {%- endif -%}
     {%- if cfg.tr_ratio != 'default' -%}
       {{ sel }} .piece__media { aspect-ratio: {{ cfg.tr_ratio }}; }
+    {%- endif -%}
+
+    {%- if cfg.tr_ratio_m != 'default' or cfg.tr_promise_cols_m != 1 or cfg.tr_show_filters_m == false -%}
+      @media (max-width: 600px) {
+        {%- if cfg.tr_ratio_m != 'default' -%}
+          {{ sel }} .piece__media { aspect-ratio: {{ cfg.tr_ratio_m }}; }
+        {%- endif -%}
+        {%- if cfg.tr_promise_cols_m != 1 -%}
+          {{ sel }} .curated__promises { grid-template-columns: repeat({{ cfg.tr_promise_cols_m }}, minmax(0, 1fr)); }
+          {%- comment -%}
+            At one column the theme moves each promise's hairline from its side
+            to its top. Side by side again, the side rule is what separates them.
+          {%- endcomment -%}
+          {{ sel }} .promise + .promise { border-top: 0; }
+          {{ sel }} .promise { border-left: 1px solid var(--hairline); }
+          {{ sel }} .curated__promises .promise:nth-child({{ cfg.tr_promise_cols_m }}n + 1) { border-left: 0; }
+        {%- endif -%}
+        {%- if cfg.tr_show_filters and cfg.tr_show_filters_m == false -%}
+          {{ sel }} .curated__filters { display: none; }
+        {%- endif -%}
+      }
     {%- endif -%}
   </style>
 {%- endif -%}
@@ -85,11 +119,6 @@
       assign taken = taken | plus: 1
       assign card_img = product.featured_image
 
-      # The merchant's own badge, overridden by a piece that cannot be bought.
-      assign card_badge = product.metafields.shrujan.badge.value
-      if product.available == false
-        assign card_badge = 'Sold out'
-      endif
 
       assign card_craft = product.metafields.shrujan.craft.value
       if card_craft == blank
@@ -105,9 +134,7 @@
         {%- else %}
         {{ 'product-1' | placeholder_svg_tag: 'piece__ph' }}
         {%- endif %}
-        {%- if cfg.tr_show_badge and card_badge != blank %}
-        <span class="piece__badge">{{ card_badge | escape }}</span>
-        {%- endif %}
+        {%- render 'piece-badge', product: product, show: cfg.tr_show_badge %}
         {%- if cfg.tr_show_wish %}
         <button class="piece__wish" type="button" aria-label="Save {{ product.title | escape }} to wishlist">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19.8S4.5 15.3 4.5 9.9c0-2.6 2-4.4 4.2-4.4 1.5 0 2.7.8 3.3 2 .6-1.2 1.8-2 3.3-2 2.2 0 4.2 1.8 4.2 4.4 0 5.4-7.5 9.9-7.5 9.9Z"></path></svg>
@@ -393,6 +420,56 @@
     },
     {
       "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "select",
+      "id": "tr_ratio_m",
+      "label": "Image shape",
+      "info": "600px and under, the tier where the theme's own shape settles at 4:5. Overrides the all-widths shape when both are set.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default (4:5 on a phone)"
+        },
+        {
+          "value": "1/1",
+          "label": "Square (1:1)"
+        },
+        {
+          "value": "4/5",
+          "label": "Portrait (4:5)"
+        },
+        {
+          "value": "3/4",
+          "label": "Portrait (3:4)"
+        },
+        {
+          "value": "2/3",
+          "label": "Tall (2:3)"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "tr_promise_cols_m",
+      "label": "Promise columns",
+      "info": "The row of promises under the grid. 600px and under, where the theme stacks them one per row.",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "checkbox",
+      "id": "tr_show_filters_m",
+      "label": "Show the occasion tabs",
+      "info": "Off shows the opening edit only on a phone. Only applies while the tabs are switched on for every size.",
+      "default": true
+    },
+    {
+      "type": "header",
       "content": "Design"
     },
     {
@@ -499,6 +576,69 @@
       "id": "sec_custom_css",
       "label": "Custom CSS",
       "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "header",
+      "content": "Design — mobile"
+    },
+    {
+      "type": "select",
+      "id": "sec_width_m",
+      "label": "Section width on mobile",
+      "info": "Only below 768px. Edge-to-edge removes the side gutter entirely.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow (wider gutters)"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        },
+        {
+          "value": "edge",
+          "label": "Edge to edge"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sec_align_m",
+      "label": "Text alignment on mobile",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Leave as designed"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css_m",
+      "label": "Custom CSS (mobile only)",
+      "info": "Wrapped in a max-width: 767px media query for this section."
     }
   ],
   "blocks": [

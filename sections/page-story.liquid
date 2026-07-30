@@ -13,6 +13,23 @@
   if st.journal_cols != 4 or st.chapters_sticky or st.enable_lightbox == false
     assign story_style = true
   endif
+  comment
+    Mobile group. Four grids, four different phone steps in the stylesheet, so
+    each count is written into the query that owns it: the photo journal steps
+    to two at 620px, the people grid and the origin strip to one at 600px, and
+    the press tearsheets to two at 620px. The chapter rail is only ever pinned
+    by the control above, so its phone switch has work to do only while that one
+    is on; 900px is where the rail turns into a sideways scroller.
+  endcomment
+  if st.journal_cols_m != 2 or st.people_cols_m != 1
+    assign story_style = true
+  endif
+  if st.origin_cols_m != 1 or st.press_cols_m != 2
+    assign story_style = true
+  endif
+  if st.chapters_sticky and st.chapters_sticky_m == false
+    assign story_style = true
+  endif
 -%}
 {%- if story_style -%}
   <style>
@@ -57,6 +74,37 @@
       {{ sel }} .press__sheet { cursor: default; }
       {{ sel }} .jshot:hover img { transform: none; }
       {{ sel }} .press__sheet:hover { transform: none; box-shadow: none; }
+    {%- endif -%}
+
+    {%- comment -%} phone column counts, each in the query that owns that grid {%- endcomment -%}
+    {%- if st.journal_cols_m != 2 or st.press_cols_m != 2 -%}
+      @media (max-width: 620px) {
+        {%- if st.journal_cols_m != 2 -%}
+          {{ sel }} .journal-bento { grid-template-columns: repeat({{ st.journal_cols_m }}, minmax(0, 1fr)); }
+        {%- endif -%}
+        {%- if st.press_cols_m != 2 -%}
+          {{ sel }} .press__sheets { grid-template-columns: repeat({{ st.press_cols_m }}, minmax(0, 1fr)); }
+        {%- endif -%}
+      }
+    {%- endif -%}
+    {%- if st.people_cols_m != 1 or st.origin_cols_m != 1 -%}
+      @media (max-width: 600px) {
+        {%- if st.people_cols_m != 1 -%}
+          {{ sel }} .people { grid-template-columns: repeat({{ st.people_cols_m }}, minmax(0, 1fr)); }
+        {%- endif -%}
+        {%- if st.origin_cols_m != 1 -%}
+          {{ sel }} .origin__gallery { grid-template-columns: repeat({{ st.origin_cols_m }}, minmax(0, 1fr)); }
+        {%- endif -%}
+      }
+    {%- endif -%}
+    {%- comment -%}
+      900px is where the stylesheet turns the chapter rail into a sideways
+      scroller, so that is the tier a pinned rail is released in.
+    {%- endcomment -%}
+    {%- if st.chapters_sticky and st.chapters_sticky_m == false -%}
+      @media (max-width: 900px) {
+        {{ sel }} .chapters { position: static; }
+      }
     {%- endif -%}
   </style>
 {%- endif -%}
@@ -797,6 +845,57 @@
     },
     {
       "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "journal_cols_m",
+      "label": "Photo journal columns",
+      "info": "620px and under, where the archive mosaic steps to two across. Above that it steps itself: four (or the count above), then three at 900px.",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "people_cols_m",
+      "label": "People columns",
+      "info": "600px and under, where the portraits stack one per row.",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "origin_cols_m",
+      "label": "Origins photograph columns",
+      "info": "600px and under, where the three-photograph strip stacks.",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "press_cols_m",
+      "label": "Tearsheet columns",
+      "info": "620px and under, where the press tearsheets step to two across.",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "checkbox",
+      "id": "chapters_sticky_m",
+      "label": "Keep the chapter rail pinned",
+      "info": "900px and under the rail becomes a sideways scroller. Off releases it there so it scrolls away with the page. Only applies while the rail is pinned at all.",
+      "default": true
+    },
+    {
+      "type": "header",
       "content": "Design"
     },
     {
@@ -903,6 +1002,69 @@
       "id": "sec_custom_css",
       "label": "Custom CSS",
       "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "header",
+      "content": "Design — mobile"
+    },
+    {
+      "type": "select",
+      "id": "sec_width_m",
+      "label": "Section width on mobile",
+      "info": "Only below 768px. Edge-to-edge removes the side gutter entirely.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow (wider gutters)"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        },
+        {
+          "value": "edge",
+          "label": "Edge to edge"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sec_align_m",
+      "label": "Text alignment on mobile",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Leave as designed"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css_m",
+      "label": "Custom CSS (mobile only)",
+      "info": "Wrapped in a max-width: 767px media query for this section."
     }
   ],
   "blocks": [

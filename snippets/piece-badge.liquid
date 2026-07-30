@@ -1,0 +1,61 @@
+{%- comment -%}
+  The one place a product card's badge is decided, so the four grids that draw
+  a card cannot drift apart.
+
+  Three rules, first match wins:
+    1. the piece cannot be bought → the sold-out label;
+    2. it is reduced             → the discount worked out from the two prices,
+                                    e.g. "30% off", rounded to a whole number;
+    3. shrujan.badge is set      → that text, as an explicit override.
+
+  Rule 2 is the reason this snippet exists. The percentage used to be typed into
+  the metafield, so a merchant editing a price left a stale badge behind it. It
+  is now derived, which makes the prices the single source of truth and the
+  metafield what it should always have been: an override for the pieces that
+  want to say something else ("Last one", "New").
+
+  Accepts:
+    product         (required)
+    show            false hides the badge entirely — the section's card_badge
+    sale            false skips rule 2 — the section's card_sale_badge
+    sold_out_label  text for rule 1, default 'Sold out'
+    sale_suffix     text after the number, default '% off'
+    class           the badge's base class, default 'piece__badge' — the product
+                    page's own badge is `.pdp__badge`, same rules, different skin
+
+  `x == false` rather than `unless x`: an omitted parameter arrives as nil, and
+  nil is not false in Liquid — so a caller that passes nothing keeps both
+  badges, and only an explicit false switches one off.
+{%- endcomment -%}
+{%- liquid
+  assign badge_text = ''
+  assign badge_is_sale = false
+
+  if product.available == false
+    assign badge_text = sold_out_label | default: 'Sold out'
+  else
+    if sale != false and product.compare_at_price > product.price
+      assign badge_cut = product.compare_at_price | minus: product.price
+      comment
+        Multiplying by 100.0 first keeps the division in floats, so round can
+        round rather than integer division truncating: a piece cut from 6,500 to
+        4,950 is 23.8 percent off and has to read "24% off".
+      endcomment
+      assign badge_pct = badge_cut | times: 100.0 | divided_by: product.compare_at_price | round
+      if badge_pct > 0
+        assign badge_suffix = sale_suffix | default: '% off'
+        assign badge_text = badge_pct | append: badge_suffix
+        assign badge_is_sale = true
+      endif
+    endif
+    if badge_text == blank
+      assign badge_text = product.metafields.shrujan.badge.value
+    endif
+  endif
+
+  if show == false
+    assign badge_text = ''
+  endif
+-%}
+{%- assign badge_class = class | default: 'piece__badge' -%}
+{%- if badge_text != blank -%}<span class="{{ badge_class }}{% if badge_is_sale %} {{ badge_class }}--sale{% endif %}">{{ badge_text | escape }}</span>{%- endif -%}

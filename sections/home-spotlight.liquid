@@ -8,7 +8,42 @@
 {%- endcomment -%}
 {%- liquid
   assign sp = section.settings
+  assign spsel = '#shopify-section-' | append: section.id
+
+  comment
+    Mobile group. At 720px and under the stylesheet turns the stage into a real
+    two-column grid and gives the figure a 0.82 ratio box, so both are honoured
+    by overriding the properties the stylesheet already sets, inside that same
+    query. The arc and the two corner plates are decoration with no markup
+    switch of their own, which is why they are retired in CSS.
+  endcomment
+  assign sp_style = false
+  if sp.sp_cols_m != 2 or sp.sp_ratio_m != 'default'
+    assign sp_style = true
+  endif
+  if sp.sp_show_arc_m == false or sp.sp_show_plates_m == false
+    assign sp_style = true
+  endif
 -%}
+
+{%- if sp_style -%}
+  <style>
+    @media (max-width: 720px) {
+      {%- if sp.sp_cols_m != 2 -%}
+        {{ spsel }} .spotlight__stage { grid-template-columns: repeat({{ sp.sp_cols_m }}, minmax(0, 1fr)); }
+      {%- endif -%}
+      {%- if sp.sp_ratio_m != 'default' -%}
+        {{ spsel }} .spotlight__figure { aspect-ratio: {{ sp.sp_ratio_m }}; }
+      {%- endif -%}
+      {%- if sp.sp_show_arc_m == false -%}
+        {{ spsel }} .spotlight__arc { display: none; }
+      {%- endif -%}
+      {%- if sp.sp_show_plates_m == false -%}
+        {{ spsel }} .spotlight__plate { display: none; }
+      {%- endif -%}
+    }
+  </style>
+{%- endif -%}
 <section class="section container spotlight" id="heritage"{% if sp.arc_scrub == false %} data-arc="off"{% endif %}{% if sp.arc_from != -250 %} data-arc-from="{{ sp.arc_from }}"{% endif %}{% if sp.arc_to != 110 %} data-arc-to="{{ sp.arc_to }}"{% endif %}>
   <div class="spotlight__head" data-reveal>
     <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
@@ -320,6 +355,62 @@
     },
     {
       "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "sp_cols_m",
+      "label": "Stat columns",
+      "info": "Phones only (720px and under), where the stage becomes a grid of stats with the model below them.",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "select",
+      "id": "sp_ratio_m",
+      "label": "Model image shape",
+      "info": "The figure's ratio box below 720px.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default (0.82, tall)"
+        },
+        {
+          "value": "1/1",
+          "label": "Square (1:1)"
+        },
+        {
+          "value": "4/5",
+          "label": "Portrait (4:5)"
+        },
+        {
+          "value": "3/4",
+          "label": "Portrait (3:4)"
+        },
+        {
+          "value": "2/3",
+          "label": "Tall (2:3)"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "sp_show_arc_m",
+      "label": "Show the sweeping arc",
+      "info": "Off retires the arc below 720px, where it has least room.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sp_show_plates_m",
+      "label": "Show the corner plates",
+      "default": true
+    },
+    {
+      "type": "header",
       "content": "Design"
     },
     {
@@ -426,6 +517,69 @@
       "id": "sec_custom_css",
       "label": "Custom CSS",
       "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "header",
+      "content": "Design — mobile"
+    },
+    {
+      "type": "select",
+      "id": "sec_width_m",
+      "label": "Section width on mobile",
+      "info": "Only below 768px. Edge-to-edge removes the side gutter entirely.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow (wider gutters)"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        },
+        {
+          "value": "edge",
+          "label": "Edge to edge"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sec_align_m",
+      "label": "Text alignment on mobile",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Leave as designed"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css_m",
+      "label": "Custom CSS (mobile only)",
+      "info": "Wrapped in a max-width: 767px media query for this section."
     }
   ],
   "presets": [

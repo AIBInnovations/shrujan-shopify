@@ -2,14 +2,39 @@
 {%- liquid
   assign cfg = section.settings
   assign sel = '#shopify-section-' | append: section.id
+
+  comment
+    Mobile group. There is no ratio box here and no n-up grid — the block is one
+    media/panel pair that the stylesheet stacks at 900px, and the photograph is
+    sized by a min-height floor (220–300px below 720px). So the phone controls
+    are that floor, opt-in at 0, and the stacking order, which is a plain `order`
+    on the two children of a grid that is already one column.
+  endcomment
+  assign sca_style = false
+  if cfg.sca_align == 'center' or cfg.sca_media_h_m != 0 or cfg.sca_order_m != 'image'
+    assign sca_style = true
+  endif
 -%}
-{%- if cfg.sca_align == 'center' -%}
+{%- if sca_style -%}
   <style>
-    {%- comment -%}
-      The panel is already a centred flex column, so centring is `align-items`
-      plus `text-align` on that same element — no new layout.
-    {%- endcomment -%}
-    {{ sel }} .shopcta__panel { align-items: center; text-align: center; }
+    {%- if cfg.sca_align == 'center' -%}
+      {%- comment -%}
+        The panel is already a centred flex column, so centring is `align-items`
+        plus `text-align` on that same element — no new layout.
+      {%- endcomment -%}
+      {{ sel }} .shopcta__panel { align-items: center; text-align: center; }
+    {%- endif -%}
+    {%- if cfg.sca_order_m != 'image' -%}
+      @media (max-width: 900px) {
+        {{ sel }} .shopcta__media { order: 2; }
+        {{ sel }} .shopcta__panel { order: 1; }
+      }
+    {%- endif -%}
+    {%- if cfg.sca_media_h_m != 0 -%}
+      @media (max-width: 720px) {
+        {{ sel }} .shopcta__media { min-height: {{ cfg.sca_media_h_m }}px; }
+      }
+    {%- endif -%}
   </style>
 {%- endif -%}
 <section class="shopcta" aria-label="{{ section.settings.cta_label | escape }}">
@@ -154,6 +179,38 @@
     },
     {
       "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "select",
+      "id": "sca_order_m",
+      "label": "Stacking order",
+      "info": "900px and under, where the photograph and the panel stack into one column.",
+      "default": "image",
+      "options": [
+        {
+          "value": "image",
+          "label": "Photograph first"
+        },
+        {
+          "value": "panel",
+          "label": "Text first"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "sca_media_h_m",
+      "label": "Photograph height",
+      "info": "720px and under. The photograph has no fixed shape — it is a min-height floor the crop fills. 0 leaves the theme's floor in charge (220–300px).",
+      "min": 0,
+      "max": 480,
+      "step": 10,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
       "content": "Design"
     },
     {
@@ -260,6 +317,69 @@
       "id": "sec_custom_css",
       "label": "Custom CSS",
       "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "header",
+      "content": "Design — mobile"
+    },
+    {
+      "type": "select",
+      "id": "sec_width_m",
+      "label": "Section width on mobile",
+      "info": "Only below 768px. Edge-to-edge removes the side gutter entirely.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow (wider gutters)"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        },
+        {
+          "value": "edge",
+          "label": "Edge to edge"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sec_align_m",
+      "label": "Text alignment on mobile",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Leave as designed"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css_m",
+      "label": "Custom CSS (mobile only)",
+      "info": "Wrapped in a max-width: 767px media query for this section."
     }
   ],
   "blocks": [

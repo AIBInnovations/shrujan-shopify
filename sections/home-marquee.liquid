@@ -14,6 +14,16 @@
   if m.speed != 46 or m.direction != 'left' or m.pause_on_hover == false
     assign m_style = true
   endif
+  comment
+    Mobile group. There is no grid and no ratio box in a marquee — the band is a
+    single scrolling line. What a phone changes is how fast the same names go
+    past on a much narrower screen, which is the same --marquee-dur the pace
+    control above publishes, and whether the little star between names is worth
+    its 22px of padding at that width.
+  endcomment
+  if m.speed_m != 46 or m.show_glyph_m == false
+    assign m_style = true
+  endif
 -%}
 
 {%- if m_style -%}
@@ -26,6 +36,17 @@
     {%- endif -%}
     {%- if m.pause_on_hover == false -%}
       {{ msel }} .marquee:hover .marquee__track { animation-play-state: running; }
+    {%- endif -%}
+
+    {%- if m.speed_m != 46 or m.show_glyph_m == false -%}
+      @media (max-width: 720px) {
+        {%- if m.speed_m != 46 -%}
+          {{ msel }} { --marquee-dur: {{ m.speed_m }}s; }
+        {%- endif -%}
+        {%- if m.show_glyph_m == false -%}
+          {{ msel }} .marquee__item svg { display: none; }
+        {%- endif -%}
+      }
     {%- endif -%}
   </style>
 {%- endif -%}
@@ -156,6 +177,27 @@
     },
     {
       "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "speed_m",
+      "label": "One full pass takes",
+      "info": "720px and under. The same distance crosses a narrow screen much faster, so a phone often wants a slower pass than the desktop pace above.",
+      "min": 10,
+      "max": 120,
+      "step": 2,
+      "unit": "s",
+      "default": 46
+    },
+    {
+      "type": "checkbox",
+      "id": "show_glyph_m",
+      "label": "Show the star between names",
+      "default": true
+    },
+    {
+      "type": "header",
       "content": "Design"
     },
     {
@@ -262,6 +304,69 @@
       "id": "sec_custom_css",
       "label": "Custom CSS",
       "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "header",
+      "content": "Design — mobile"
+    },
+    {
+      "type": "select",
+      "id": "sec_width_m",
+      "label": "Section width on mobile",
+      "info": "Only below 768px. Edge-to-edge removes the side gutter entirely.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow (wider gutters)"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        },
+        {
+          "value": "edge",
+          "label": "Edge to edge"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sec_align_m",
+      "label": "Text alignment on mobile",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Leave as designed"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css_m",
+      "label": "Custom CSS (mobile only)",
+      "info": "Wrapped in a max-width: 767px media query for this section."
     }
   ]
 }

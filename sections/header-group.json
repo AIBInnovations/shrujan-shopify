@@ -11,12 +11,17 @@
   "name": "Header",
   "type": "header",
   "sections": {
+    "offer_bar": {
+      "type": "offer-bar",
+      "settings": {}
+    },
     "header": {
       "type": "shrujan-header",
       "settings": {}
     }
   },
   "order": [
+    "offer_bar",
     "header"
   ]
 }
