@@ -156,6 +156,15 @@ shop location, except the three the design marks "Sold out"
 availability drives that label rather than a hard-coded badge. Change the
 numbers in **Products → Inventory**; the storefront follows.
 
+**One caveat on this particular store.** `apps-development-4` is a partner
+*app-development* store, and its storefront refuses every cart add with
+`422 "already sold out"` — including for a throwaway product created and stocked
+from scratch, which rules out both the catalogue and the theme. Admin reports
+each piece as it should be (`ACTIVE`, published, `totalInventory 10`,
+`availableForSale true`, priced in every market context). The theme simply
+renders `product.available`, so on a store that permits selling the button
+reads "Add to bag" with no code change.
+
 Setting that stock took four attempts because the API fails *quietly*:
 `inventorySetQuantities` needs both an `@idempotent(key:)` directive on the
 field and `changeFromQuantity` on every quantity, and when either is missing
