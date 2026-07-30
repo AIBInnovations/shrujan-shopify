@@ -1,6 +1,6 @@
 {%- render 'section-design', section: section -%}
 {%- comment -%}
-  Addresses — add, edit and delete, all through `{% form 'customer_address' %}`.
+  Addresses — add, edit and delete, all through the `customer_address` form tag.
 
   Add and edit are `<details>` disclosures rather than JavaScript panels, so
   they work with scripts blocked; the add form opens itself for a customer who
@@ -28,7 +28,7 @@
     {%- form 'customer_address', customer.new_address %}
       {%- render 'store-form-errors', form: form -%}
       <div class="store-form store-form--wide">
-        {%- render 'store-address-fields', form: form, cfg: cfg, prefix: 'NewAddress' -%}
+        {%- render 'store-address-fields', form: form, cfg: cfg, prefix: 'NewAddress', is_default: false -%}
         <button type="submit" class="store-btn">{{ cfg.new_submit }}</button>
       </div>
     {%- endform %}
@@ -37,8 +37,20 @@
   {%- if customer.addresses_count > 0 %}
   <div class="store-addresses">
     {%- for address in customer.addresses %}
+    {%- liquid
+      assign is_default = false
+      if address.id == customer.default_address.id
+        assign is_default = true
+      endif
+      comment
+        Field ids must start with a letter to stay valid selectors, and be
+        unique across every form on the page — hence the address id behind a
+        prefix rather than on its own.
+      endcomment
+      assign edit_prefix = 'Address' | append: address.id
+    -%}
     <div class="store-panel">
-      {%- if address.id == customer.default_address.id %}
+      {%- if is_default %}
       <span class="journal-pill">{{ cfg.default_badge }}</span>
       {%- endif %}
       <div class="store-address__lines">{{ address | format_address }}</div>
@@ -49,7 +61,7 @@
           {%- form 'customer_address', address %}
             {%- render 'store-form-errors', form: form -%}
             <div class="store-form store-form--wide">
-              {%- render 'store-address-fields', form: form, cfg: cfg, prefix: address.id -%}
+              {%- render 'store-address-fields', form: form, cfg: cfg, prefix: edit_prefix, is_default: is_default -%}
               <button type="submit" class="store-btn">{{ cfg.update_label }}</button>
             </div>
           {%- endform %}

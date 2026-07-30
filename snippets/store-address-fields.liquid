@@ -7,7 +7,10 @@
   provinces on the option itself; the section's script reads them from there,
   which is what keeps the province field honest without a vendor library.
 
-  Usage: {% render 'store-address-fields', form: form, cfg: section.settings, prefix: 'New' %}
+  `is_default` is passed in rather than read off the form, because the caller is
+  the only place that can compare an address against `customer.default_address`.
+
+  Usage: {% render 'store-address-fields', form: form, cfg: section.settings, prefix: 'New', is_default: false %}
 {%- endcomment -%}
 <div class="store-fields">
   <div class="store-field">
@@ -60,7 +63,7 @@
   </div>
 
   <label class="store-check store-field--wide" for="{{ prefix }}Default">
-    <input type="checkbox" id="{{ prefix }}Default" name="address[default]" value="true"{% if form.default? %} checked{% endif %}>
+    <input type="checkbox" id="{{ prefix }}Default" name="address[default]" value="true"{% if is_default %} checked{% endif %}>
     {{ cfg.default_label }}
   </label>
 </div>
