@@ -104,6 +104,20 @@
   if cfg.grid_cols != 3 or cfg.grid_cols_m != 1 or cfg.show_rail == false
     assign has_layout = true
   endif
+  comment
+    Mobile group. The catalogue already has its phone count above. What it has no
+    phone control for is the card's shape, which the stylesheet settles at 4:5 at
+    600px. The two supporting grids step on their own tiers: the assurances go
+    five to three at 1180px and then two at 720px and stop there, and the "why it
+    costs" cards stack at 900px. Each assurance is a full inset ring rather than
+    a single side rule, so a one-column choice needs no border reflow.
+
+    The filter rail needs no phone switch: the stylesheet already returns it to
+    static at 1080px and lays it out as a row of chips.
+  endcomment
+  if cfg.card_ratio_m != 'default' or cfg.assure_cols_m != 2 or cfg.why_cols_m != 1
+    assign has_layout = true
+  endif
 -%}
 {%- if has_layout -%}
   <style>
@@ -127,6 +141,22 @@
     {%- endcomment -%}
     {%- if cfg.show_rail == false -%}
       {{ root_sel }} .shop-body { grid-template-columns: minmax(0, 1fr); }
+    {%- endif -%}
+
+    {%- if cfg.card_ratio_m != 'default' -%}
+      @media (max-width: 600px) {
+        {{ root_sel }} .shop-grid .piece__media { aspect-ratio: {{ cfg.card_ratio_m }}; }
+      }
+    {%- endif -%}
+    {%- if cfg.assure_cols_m != 2 -%}
+      @media (max-width: 720px) {
+        {{ root_sel }} .shop-assure__row { grid-template-columns: repeat({{ cfg.assure_cols_m }}, minmax(0, 1fr)); }
+      }
+    {%- endif -%}
+    {%- if cfg.why_cols_m != 1 -%}
+      @media (max-width: 900px) {
+        {{ root_sel }} .shop-why__grid { grid-template-columns: repeat({{ cfg.why_cols_m }}, minmax(0, 1fr)); }
+      }
     {%- endif -%}
   </style>
 {%- endif -%}
@@ -820,6 +850,59 @@
       "id": "card_quick",
       "label": "Show the quick-add label",
       "default": true
+    },
+    {
+      "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "select",
+      "id": "card_ratio_m",
+      "label": "Card image shape",
+      "info": "600px and under, the tier where the theme's own shape settles at 4:5.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default (4:5 on a phone)"
+        },
+        {
+          "value": "1 / 1",
+          "label": "Square (1:1)"
+        },
+        {
+          "value": "3 / 4",
+          "label": "Portrait (3:4)"
+        },
+        {
+          "value": "2 / 3",
+          "label": "Portrait, tall (2:3)"
+        },
+        {
+          "value": "4 / 3",
+          "label": "Landscape (4:3)"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "assure_cols_m",
+      "label": "Assurance columns",
+      "info": "720px and under, where the five assurances fall to two across and stop.",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "why_cols_m",
+      "label": "“Why it costs” columns",
+      "info": "900px and under, where the three explanation cards stack.",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
     },
     {
       "type": "header",
