@@ -1,36 +1,7 @@
 {
   "sections": {
     "main": {
-      "type": "page-studio-collection",
-      "blocks": {
-        "b1": {
-          "type": "strand",
-          "settings": {}
-        },
-        "b2": {
-          "type": "strand",
-          "settings": {}
-        },
-        "b3": {
-          "type": "strand",
-          "settings": {}
-        },
-        "b4": {
-          "type": "row",
-          "settings": {}
-        },
-        "b5": {
-          "type": "row",
-          "settings": {}
-        }
-      },
-      "block_order": [
-        "b1",
-        "b2",
-        "b3",
-        "b4",
-        "b5"
-      ]
+      "type": "page-studio-collection"
     }
   },
   "order": [
