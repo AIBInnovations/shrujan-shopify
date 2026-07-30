@@ -1,4 +1,5 @@
 {%- render 'section-design', section: section -%}
+{%- assign cfg = section.settings -%}
 <section class="section container" id="categories">
   <div class="section-head section-head--center" data-reveal>
     <p class="eyebrow">{{ section.settings.eyebrow }}</p>
@@ -10,10 +11,10 @@
     {%- for block in section.blocks %}
     <a class="catpanel" href="{{ block.settings.link | default: '/pages/shop-shrujan?c=kanchli' }}"{{ block.shopify_attributes }}>
       <img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1200 }}{% else %}{{ block.settings.img_asset | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
-      <span class="catpanel__scrim" aria-hidden="true"></span>
-      <span class="catpanel__index" aria-hidden="true">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
-      <span class="catpanel__spine" aria-hidden="true">{{ block.settings.name | escape }}</span>
-      <span class="catpanel__open"><span class="catpanel__name">{{ block.settings.name | escape }}</span><span class="catpanel__copy">{{ block.settings.copy }}</span><span class="catpanel__foot"><span class="catpanel__cta">{{ section.settings.explore_label }} <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span></span></span>
+      {% if cfg.cat_show_scrim %}<span class="catpanel__scrim" aria-hidden="true"></span>{% endif %}
+      {% if cfg.cat_show_index %}<span class="catpanel__index" aria-hidden="true">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>{% endif %}
+      {% if cfg.cat_show_spine %}<span class="catpanel__spine" aria-hidden="true">{{ block.settings.name | escape }}</span>{% endif %}
+      <span class="catpanel__open"><span class="catpanel__name">{{ block.settings.name | escape }}</span>{% if cfg.cat_show_copy %}<span class="catpanel__copy">{{ block.settings.copy }}</span>{% endif %}{% if cfg.cat_show_cta %}<span class="catpanel__foot"><span class="catpanel__cta">{{ section.settings.explore_label }} <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span></span>{% endif %}</span>
     </a>
     {%- endfor %}
   </div>
@@ -51,6 +52,43 @@
       "label": "Panel button label",
       "default": "Explore",
       "info": "Shown on every panel."
+    },
+    {
+      "type": "header",
+      "content": "Panel content"
+    },
+    {
+      "type": "checkbox",
+      "id": "cat_show_index",
+      "label": "Show panel number",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "cat_show_spine",
+      "label": "Show vertical name",
+      "default": true,
+      "info": "The rotated label on a closed panel. Hidden below 900px either way."
+    },
+    {
+      "type": "checkbox",
+      "id": "cat_show_copy",
+      "label": "Show description",
+      "default": true,
+      "info": "Hidden below 900px either way."
+    },
+    {
+      "type": "checkbox",
+      "id": "cat_show_cta",
+      "label": "Show panel button",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "cat_show_scrim",
+      "label": "Show image scrim",
+      "default": true,
+      "info": "The dark wash the panel text sits against. Turning it off can leave text hard to read on pale photographs."
     },
     {
       "type": "header",

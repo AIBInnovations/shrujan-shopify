@@ -1,5 +1,38 @@
 {%- render 'section-design', section: section -%}
-<section class="section reels" id="reels" aria-label="Shrujan in motion">
+
+{%- comment -%}
+  Reels-specific controls. Autoplay is a script flag, so it travels as data-*;
+  looping is the video element's own attribute; the seal and the rail's snapping
+  are markup and CSS. With the seal gone the head drops from three tracks to
+  two, otherwise the note would inherit the seal's narrow auto column.
+{%- endcomment -%}
+{%- liquid
+  assign r = section.settings
+  assign rsel = '#shopify-section-' | append: section.id
+
+  assign r_style = false
+  if r.show_seal == false or r.rail_snap == false
+    assign r_style = true
+  endif
+-%}
+
+{%- if r_style -%}
+  <style>
+    {%- if r.show_seal == false -%}
+      {%- comment -%}
+        Only above the 900px breakpoint — below it the head is already a single
+        column, and an id-level rule would otherwise outrank that.
+      {%- endcomment -%}
+      @media (min-width: 901px) {
+        {{ rsel }} .reels__head { grid-template-columns: 1fr 1fr; }
+      }
+    {%- endif -%}
+    {%- if r.rail_snap == false -%}
+      {{ rsel }} .reels__rail { scroll-snap-type: none; }
+    {%- endif -%}
+  </style>
+{%- endif -%}
+<section class="section reels" id="reels" aria-label="Shrujan in motion"{% if r.autoplay == false %} data-autoplay="false"{% endif %}>
   <div class="container">
     <div class="reels__head">
       <div class="reels__titles" data-reveal>
@@ -11,6 +44,7 @@
         </h2>
       </div>
 
+      {%- if r.show_seal %}
       <a
         class="reels__seal-link"
         href="{{ section.settings.seal_link | default: 'https://www.instagram.com/shrujanindia/reels/' }}"
@@ -36,6 +70,7 @@
           </svg>
         </span>
       </a>
+      {%- endif %}
 
       <div class="reels__note" data-reveal>
         <p>
@@ -50,7 +85,7 @@
       {%- for block in section.blocks %}
       <a class="reel" href="{{ block.settings.link | default: 'https://www.instagram.com/shrujanindia/reels/' }}" target="_blank" rel="noopener noreferrer" {{ block.shopify_attributes }}>
         <div class="reel__media">
-          <video src="{{ 'reel-' | append: forloop.index | append: '.mp4' | asset_url }}" poster="{{ 'reel-' | append: forloop.index | append: '-poster.jpg' | asset_url }}" muted loop playsinline preload="none" aria-label="{{ block.settings.title | escape }}"></video>
+          <video src="{{ 'reel-' | append: forloop.index | append: '.mp4' | asset_url }}" poster="{{ 'reel-' | append: forloop.index | append: '-poster.jpg' | asset_url }}" muted {% if r.loop %}loop {% endif %}playsinline preload="none" aria-label="{{ block.settings.title | escape }}"></video>
           <span class="reel__scrim" aria-hidden="true"></span>
           <span class="reel__meta">{{ block.settings.meta | escape }}</span>
         </div>
@@ -67,9 +102,12 @@
   if (!root || root.__shrujanInit) return;
   root.__shrujanInit = true;
 
-  /* Play only what's on screen — five autoplaying videos at once is wasteful. */
+  /* Play only what's on screen — five autoplaying videos at once is wasteful.
+     Autoplay is on unless the section turns it off, in which case the cards stay
+     on their posters until the visitor opens the reel. */
+  var autoplay = root.getAttribute('data-autoplay') !== 'false';
   var rail = root.querySelector('.reels__rail');
-  if (rail && 'IntersectionObserver' in window) {
+  if (autoplay && rail && 'IntersectionObserver' in window) {
     var io = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (entry) {
@@ -85,9 +123,12 @@
 
   var mm = gsap.matchMedia();
 
-  mm.add('(prefers-reduced-motion: no-preference)', function () {
+  /* the seal is optional, and GSAP should not be handed a null target */
+  var seal = root.querySelector('.reels__seal');
+
+  if (seal) mm.add('(prefers-reduced-motion: no-preference)', function () {
     gsap.fromTo(
-      root.querySelector('.reels__seal'),
+      seal,
       { rotation: -60 },
       {
         rotation: 120,
@@ -105,6 +146,34 @@
   "max_blocks": 5,
   "settings": [
     {
+      "type": "header",
+      "content": "Playback"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay reels in view",
+      "info": "Each film plays while it is on screen and pauses when it leaves. Off leaves every card on its poster.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "loop",
+      "label": "Loop each reel",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "rail_snap",
+      "label": "Snap the rail to cards",
+      "info": "Scrolling settles on a card rather than stopping between two. Off gives free scrolling.",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Head"
+    },
+    {
       "type": "text",
       "id": "eyebrow",
       "label": "Eyebrow",
@@ -121,6 +190,13 @@
       "id": "title_l2",
       "label": "Title line 2 (italic)",
       "default": "come alive"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_seal",
+      "label": "Show the rotating seal",
+      "info": "The turning “Watch the craft” ring between the title and the note.",
+      "default": true
     },
     {
       "type": "url",

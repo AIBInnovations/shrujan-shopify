@@ -1,4 +1,26 @@
 {%- render 'section-design', section: section -%}
+{%- comment -%}
+  Layout override for the stops column control. Nothing is emitted while the
+  control sits at its default, so the page ships exactly as it was hand-built.
+  `.shopify-section` is `display: contents` and cannot be sized, so the count is
+  published as a custom property — which still inherits through it.
+{%- endcomment -%}
+{%- if section.settings.stops_cols != 3 -%}
+  <style>
+    {%- assign sel = '#shopify-section-' | append: section.id -%}
+    {{ sel }} { --stops-cols: {{ section.settings.stops_cols }}; }
+    {%- comment -%}
+      The stylesheet steps the grid down to two columns below 1081px, so a
+      single-column choice has to be carried down or the grid would widen on the
+      smaller screen.
+    {%- endcomment -%}
+    {%- if section.settings.stops_cols < 2 -%}
+      @media (max-width: 1080px) {
+        {{ sel }} .stops__grid { grid-template-columns: repeat({{ section.settings.stops_cols }}, minmax(0, 1fr)); }
+      }
+    {%- endif -%}
+  </style>
+{%- endif -%}
 <div class="page">
   <header class="visit-hero">
     <div class="visit-hero__bg" aria-hidden="true">
@@ -14,6 +36,7 @@
     </div>
   </header>
 
+  {%- if section.settings.show_ways %}
   <section class="section container ways" aria-label="Two ways to visit">
     {%- assign way_i = 0 -%}
     {%- for block in section.blocks -%}
@@ -48,7 +71,9 @@
     {%- endif -%}
     {%- endfor %}
   </section>
+  {%- endif %}
 
+  {%- if section.settings.show_stops %}
   <section class="section container stops" id="places">
     <div class="stops__head" data-reveal>
       <p class="eyebrow">{{ section.settings.stops_eyebrow | escape }}</p>
@@ -92,7 +117,9 @@
       {%- endfor %}
     </div>
   </section>
+  {%- endif %}
 
+  {%- if section.settings.show_plan %}
   <section class="section container plan" id="plan">
     <div class="plan__head" data-reveal>
       <p class="eyebrow">{{ section.settings.plan_eyebrow | escape }}</p>
@@ -115,15 +142,18 @@
           {%- endfor %}
         </ol>
 
+        {%- if section.settings.show_invite %}
         <div class="plan__invite" data-reveal>
           <p class="plan__invite-copy">{{ section.settings.invite_copy | escape }}</p>
           <a class="btn btn--ghost plan__invite-cta" href="{{ section.settings.invite_cta_link | escape }}">{{ section.settings.invite_cta_label | escape }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
         </div>
+        {%- endif %}
       </div>
 
       <aside class="plan__aside" data-reveal>
-        <p class="plan__season"><span class="plan__pill">{{ section.settings.season_pill | escape }}</span>{{ section.settings.season_copy | escape }}</p>
+        <p class="plan__season">{% if section.settings.show_season_pill %}<span class="plan__pill">{{ section.settings.season_pill | escape }}</span>{% endif %}{{ section.settings.season_copy | escape }}</p>
 
+        {%- if section.settings.show_facts %}
         <dl class="plan__facts">
           {%- for block in section.blocks -%}
           {%- if block.type == 'fact' %}
@@ -134,11 +164,13 @@
           {%- endif -%}
           {%- endfor %}
         </dl>
+        {%- endif %}
 
         <a class="btn plan__cta" href="{{ section.settings.aside_cta_link | escape }}">{{ section.settings.aside_cta_label | escape }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
       </aside>
     </div>
   </section>
+  {%- endif %}
 </div>
 {% schema %}
 {
@@ -186,7 +218,25 @@
     },
     {
       "type": "header",
+      "content": "Two ways to visit"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_ways",
+      "label": "Show this section",
+      "info": "The pair of Way to visit blocks between the hero and the stops.",
+      "default": true
+    },
+    {
+      "type": "header",
       "content": "Where to go"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stops",
+      "label": "Show this section",
+      "info": "The heading and the grid of Stop card blocks. It carries the #places anchor the hero button jumps to, so point that button elsewhere if you switch this off.",
+      "default": true
     },
     {
       "type": "text",
@@ -207,8 +257,25 @@
       "default": "The workrooms, the museum, and the villages the stitches are named after — none of them more than a couple of hours apart."
     },
     {
+      "type": "range",
+      "id": "stops_cols",
+      "label": "Stops per row",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 3,
+      "info": "Desktop only — the grid still steps down to two and one on smaller screens."
+    },
+    {
       "type": "header",
       "content": "Plan the trip"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_plan",
+      "label": "Show this section",
+      "info": "The stay lengths, the invite and the sidebar. It carries the #plan anchor.",
+      "default": true
     },
     {
       "type": "text",
@@ -221,6 +288,13 @@
       "id": "plan_title",
       "label": "Title",
       "default": "Plan the <em>trip</em>"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_invite",
+      "label": "Show the invite",
+      "info": "The line and button under the stay lengths.",
+      "default": true
     },
     {
       "type": "text",
@@ -245,6 +319,13 @@
       "content": "Plan sidebar"
     },
     {
+      "type": "checkbox",
+      "id": "show_season_pill",
+      "label": "Show the season pill",
+      "info": "Off leaves the season note running on its own.",
+      "default": true
+    },
+    {
       "type": "text",
       "id": "season_pill",
       "label": "Season pill",
@@ -255,6 +336,13 @@
       "id": "season_copy",
       "label": "Season note",
       "default": "November to February. The desert is unforgiving either side of it."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_facts",
+      "label": "Show the facts list",
+      "info": "The Fact row blocks — opening hours, contacts, nearest airport.",
+      "default": true
     },
     {
       "type": "text",

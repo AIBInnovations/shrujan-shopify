@@ -1,4 +1,29 @@
 {%- render 'section-design', section: section -%}
+{%- comment -%}
+  Layout override for the mosaic column control. Nothing is emitted while the
+  control sits at its default, so the page ships exactly as it was hand-built.
+  `.shopify-section` is `display: contents` and cannot be sized, so the count is
+  published as a custom property — which still inherits through it.
+{%- endcomment -%}
+{%- if section.settings.campus_cols != 3 -%}
+  <style>
+    {%- assign sel = '#shopify-section-' | append: section.id -%}
+    {{ sel }} { --lldc-cols: {{ section.settings.campus_cols }}; }
+    {%- comment -%}
+      Two things only a single column needs, and both are what the stylesheet
+      already does for itself at its narrowest breakpoint: a wide card has no
+      second column to claim, so it goes back to one; and the mosaic still steps
+      down to two columns below 901px, so the narrower choice is carried down or
+      the grid would widen on the smaller screen.
+    {%- endcomment -%}
+    {%- if section.settings.campus_cols == 1 -%}
+      {{ sel }} .lldc-card--wide { grid-column: auto; }
+      @media (max-width: 900px) {
+        {{ sel }} .lldc__mosaic { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+      }
+    {%- endif -%}
+  </style>
+{%- endif -%}
 {%- capture nl %}
 {% endcapture -%}
 <div class="page">
@@ -29,6 +54,7 @@
       </div>
     </div>
 
+    {%- if section.settings.show_stats %}
     <div class="craft__stats" data-reveal-child>
     {%- for block in section.blocks %}
     {%- if block.type == 'stat' %}
@@ -39,8 +65,10 @@
     {%- endif %}
     {%- endfor %}
     </div>
+    {%- endif %}
   </section>
 
+  {%- if section.settings.show_current_show %}
   <section class="section container">
     <div class="section-intro" data-reveal>
       <p class="eyebrow">{{ section.settings.show_eyebrow }}</p>
@@ -58,7 +86,9 @@
     {%- endfor %}
     </div>
   </section>
+  {%- endif %}
 
+  {%- if section.settings.show_campus %}
   <section class="section container lldc" aria-label="On the campus">
     <div class="section-head" data-reveal>
       <div class="section-head__titles">
@@ -83,13 +113,16 @@
     {%- endfor %}
     </div>
   </section>
+  {%- endif %}
 
+  {%- if section.settings.show_plates or section.settings.show_visit_bar %}
   <section class="section container lldc-visit">
     <div class="lldc-visit__head" data-reveal>
       <p class="eyebrow">{{ section.settings.visit_eyebrow }}</p>
       <h2 class="section-title">{{ section.settings.visit_title }}</h2>
     </div>
 
+    {%- if section.settings.show_plates %}
     <div class="visit-plates" data-reveal-child>
     {%- for block in section.blocks %}
     {%- if block.type == 'plate' %}
@@ -106,7 +139,9 @@
     {%- endif %}
     {%- endfor %}
     </div>
+    {%- endif %}
 
+    {%- if section.settings.show_visit_bar %}
     <div class="visit-bar" data-reveal>
       <div class="visit-bar__col">
         <p class="visit-bar__label">{{ section.settings.bar1_label }}</p>
@@ -123,12 +158,16 @@
         <p class="visit-bar__value">{{ section.settings.bar3_note }}</p>
       </div>
     </div>
+    {%- endif %}
   </section>
+  {%- endif %}
 
+  {%- if section.settings.show_cta %}
   <section class="section container page-cta" data-reveal>
     <p>{{ section.settings.cta_text }}</p>
     <a class="btn" href="{{ section.settings.cta_url | default: 'https://shrujanlldc.org' }}" target="_blank" rel="noreferrer noopener">{{ section.settings.cta_label }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
   </section>
+  {%- endif %}
 </div>
 
 {% schema %}
@@ -173,8 +212,21 @@
       "default": "Through its galleries, research initiatives and archives, the LLDC offers deeper insight into materials, processes, histories and the communities that sustain these living traditions. It is a space for learning, dialogue and exchange — for artisans, students, researchers and visitors alike.\nIt is, however, much more than a museum. Dedicated to the craftspeople of Kutch, it is a multi-dimensional crafts education and resource centre that trains and supports them in traditional crafts, so that they are capable of earning a dignified livelihood."
     },
     {
+      "type": "checkbox",
+      "id": "show_stats",
+      "label": "Show the stats row",
+      "default": true
+    },
+    {
       "type": "header",
       "content": "Current show"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_current_show",
+      "label": "Show this section",
+      "info": "The heading and the strip of Show image blocks.",
+      "default": true
     },
     {
       "type": "text",
@@ -199,6 +251,13 @@
       "content": "Campus"
     },
     {
+      "type": "checkbox",
+      "id": "show_campus",
+      "label": "Show this section",
+      "info": "The heading and the mosaic of Campus card blocks.",
+      "default": true
+    },
+    {
       "type": "text",
       "id": "campus_eyebrow",
       "label": "Eyebrow",
@@ -211,8 +270,25 @@
       "default": "What is <em>here</em>"
     },
     {
+      "type": "range",
+      "id": "campus_cols",
+      "label": "Mosaic cards per row",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 3,
+      "info": "Desktop only — the mosaic still steps down to two and one on smaller screens. A card set to “Wide card” keeps taking two of these columns."
+    },
+    {
       "type": "header",
       "content": "Plan your visit"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_plates",
+      "label": "Show the visit plates",
+      "info": "Hours, admission and getting-there. With both these and the visit bar off, the whole section is dropped.",
+      "default": true
     },
     {
       "type": "text",
@@ -229,6 +305,13 @@
     {
       "type": "header",
       "content": "Visit bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_visit_bar",
+      "label": "Show the visit bar",
+      "info": "The dark address / contact / please-note bar under the plates.",
+      "default": true
     },
     {
       "type": "text",
@@ -287,6 +370,13 @@
     {
       "type": "header",
       "content": "Closing call to action"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Show the closing call to action",
+      "info": "Defaults to shrujanlldc.org when no URL is set.",
+      "default": true
     },
     {
       "type": "text",

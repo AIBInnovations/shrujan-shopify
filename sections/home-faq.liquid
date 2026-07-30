@@ -1,5 +1,6 @@
 {%- render 'section-design', section: section -%}
-<section class="section container faq-section" id="support">
+{%- assign cfg = section.settings -%}
+<section class="section container faq-section" id="support"{% if cfg.faq_multi %} data-multiple="true"{% endif %}>
   <div class="section-intro" data-reveal>
     <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
     <h2 class="section-title">{{ section.settings.title }}</h2>
@@ -10,8 +11,8 @@
 
   <div class="faq" data-reveal>
     {%- for block in section.blocks %}
-    <div class="faq__item{% if forloop.first %} is-open{% endif %}" {{ block.shopify_attributes }}>
-      <button class="faq__summary" type="button" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="faq-panel-{{ forloop.index0 }}">
+    <div class="faq__item{% if forloop.index == cfg.faq_open %} is-open{% endif %}" {{ block.shopify_attributes }}>
+      <button class="faq__summary" type="button" aria-expanded="{% if forloop.index == cfg.faq_open %}true{% else %}false{% endif %}" aria-controls="faq-panel-{{ forloop.index0 }}">
         <span class="faq__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
         <span class="faq__q">{{ block.settings.question | escape }}</span>
         <span class="faq__icon" aria-hidden="true">
@@ -38,18 +39,29 @@
 
   var items = Array.prototype.slice.call(root.querySelectorAll('.faq__item'));
 
+  // The section only writes data-multiple when the merchant asks for it, so an
+  // absent attribute keeps the exclusive accordion this section shipped with.
+  var multiple = root.getAttribute('data-multiple') === 'true';
+
+  function setOpen(item, isOpen) {
+    item.classList.toggle('is-open', isOpen);
+    var btn = item.querySelector('.faq__summary');
+    if (btn) btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  }
+
   items.forEach(function (item) {
     var button = item.querySelector('.faq__summary');
     if (!button) return;
     button.addEventListener('click', function () {
       // setOpen(isOpen ? -1 : i) — one panel open at a time; clicking the
-      // open one closes everything.
+      // open one closes everything. With `multiple`, each item toggles alone.
       var wasOpen = item.classList.contains('is-open');
+      if (multiple) {
+        setOpen(item, !wasOpen);
+        return;
+      }
       items.forEach(function (other) {
-        var isOpen = !wasOpen && other === item;
-        other.classList.toggle('is-open', isOpen);
-        var btn = other.querySelector('.faq__summary');
-        if (btn) btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        setOpen(other, !wasOpen && other === item);
       });
     });
   });
@@ -76,6 +88,27 @@
       "id": "intro",
       "label": "Intro copy",
       "default": "Thoughtful answers for a seamless shopping experience."
+    },
+    {
+      "type": "header",
+      "content": "Behaviour"
+    },
+    {
+      "type": "range",
+      "id": "faq_open",
+      "label": "Question open on arrival",
+      "min": 0,
+      "max": 24,
+      "step": 1,
+      "default": 1,
+      "info": "Counted from the top. Set 0 to open none, or a number past the last question to the same effect."
+    },
+    {
+      "type": "checkbox",
+      "id": "faq_multi",
+      "label": "Allow several open at once",
+      "default": false,
+      "info": "Off, opening a question closes the others."
     },
     {
       "type": "header",

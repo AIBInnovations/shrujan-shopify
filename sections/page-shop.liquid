@@ -1,5 +1,72 @@
 {%- render 'section-design', section: section -%}
-<div class="page">
+{%- comment -%}
+  Layout + region controls for this page. Two rules keep them safe:
+
+   1. The scoped <style> below is written only when a value differs from the
+      built design, and each override is confined to the breakpoint band it
+      belongs to — an id-specificity rule would otherwise flatten the grid's
+      own 3 → 2 → 1 steps.
+   2. The catalogue grid, its cards and the sort order are rendered client-side
+      from window.SHRUJAN, so those controls travel as data-* attributes on the
+      section root and the inline script reads them with today's values as
+      fallbacks. Each attribute is appended only when the merchant has changed
+      it, so the default markup is byte-for-byte what it has always been.
+{%- endcomment -%}
+{%- liquid
+  assign cfg = section.settings
+  assign root_sel = '#shopify-section-' | append: section.id
+
+  assign shop_data = ''
+  if cfg.sort_default != 'featured'
+    assign shop_data = shop_data | append: ' data-sort="' | append: cfg.sort_default | append: '"'
+  endif
+  unless cfg.card_badge
+    assign shop_data = shop_data | append: ' data-card-badge="false"'
+  endunless
+  unless cfg.card_was
+    assign shop_data = shop_data | append: ' data-card-was="false"'
+  endunless
+  unless cfg.card_swatches
+    assign shop_data = shop_data | append: ' data-card-swatches="false"'
+  endunless
+  unless cfg.card_wish
+    assign shop_data = shop_data | append: ' data-card-wish="false"'
+  endunless
+  unless cfg.card_quick
+    assign shop_data = shop_data | append: ' data-card-quick="false"'
+  endunless
+
+  assign has_layout = false
+  if cfg.grid_cols != 3 or cfg.grid_cols_m != 1 or cfg.show_rail == false
+    assign has_layout = true
+  endif
+-%}
+{%- if has_layout -%}
+  <style>
+    {%- if cfg.grid_cols != 3 or cfg.grid_cols_m != 1 -%}
+      {{ root_sel }} { --shop-cols: {{ cfg.grid_cols }}; --shop-cols-m: {{ cfg.grid_cols_m }}; }
+      {%- if cfg.grid_cols != 3 -%}
+        @media (min-width: 901px) {
+          {{ root_sel }} .shop-grid { grid-template-columns: repeat(var(--shop-cols), minmax(0, 1fr)); }
+        }
+      {%- endif -%}
+      {%- if cfg.grid_cols_m != 1 -%}
+        @media (max-width: 600px) {
+          {{ root_sel }} .shop-grid { grid-template-columns: repeat(var(--shop-cols-m), minmax(0, 1fr)); }
+        }
+      {%- endif -%}
+    {%- endif -%}
+
+    {%- comment -%}
+      With the filter rail gone the body must give its column back, or the grid
+      would render inside the 260px rail track.
+    {%- endcomment -%}
+    {%- if cfg.show_rail == false -%}
+      {{ root_sel }} .shop-body { grid-template-columns: minmax(0, 1fr); }
+    {%- endif -%}
+  </style>
+{%- endif -%}
+<div class="page"{{ shop_data }}>
   <!-- ---- hero banner ---- -->
   <section class="shop-banner" aria-label="The handcrafted edit">
     <div class="shop-banner__frame">
@@ -13,6 +80,7 @@
       </div>
     </div>
   </section>
+{%- if section.settings.show_assure %}
 
   <!-- ---- what every piece comes with ---- -->
   <section class="shop-assure" aria-label="What every piece comes with">
@@ -26,6 +94,8 @@
       {%- endif %}{% endfor %}
     </ul>
   </section>
+{%- endif %}
+{%- if section.settings.show_cats %}
 
   <!-- ---- categories as medallions ---- -->
   <section class="section container shop-cats" aria-label="Collections">
@@ -111,9 +181,11 @@
       </div>
     </div>
   </section>
+{%- endif %}
 
   <!-- ---- collection rail + product grid ---- -->
   <section class="section container shop-body" id="catalogue">
+{%- if section.settings.show_rail %}
     <aside class="shop-rail" data-reveal>
       <p class="shop-rail__title"><svg viewBox="0 0 32 32" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M16 2c1.3 4.6 3 7.4 5.2 8.8C23.4 12.2 26 13 30 13.4v.2c-4 .4-6.6 1.2-8.8 2.6C19 17.6 17.3 20.4 16 25c-1.3-4.6-3-7.4-5.2-8.8C8.6 14.8 6 14 2 13.6v-.2c4-.4 6.6-1.2 8.8-2.6C13 9.4 14.7 6.6 16 2Z"></path><circle cx="16" cy="28.5" r="1.6"></circle></svg> Browse by collection</p>
       <ul class="shop-rail__list">
@@ -133,6 +205,7 @@
 
       <p class="shop-rail__note">Suf is counted from the reverse. Paako is worked from the front. Aabhla cages a mirror in thread. The stitch is the difference.</p>
     </aside>
+{%- endif %}
 
     <div class="shop-main">
       <div class="shop-main__bar" data-reveal>
@@ -154,6 +227,7 @@
       <div class="curated__grid shop-grid" data-reveal-child></div>
     </div>
   </section>
+{%- if section.settings.show_spotlight %}
 
   <!-- ---- one collection, given a full spread ---- -->
   <section class="section container spotlight-col" aria-label="Kanchli">
@@ -179,6 +253,8 @@
       <a class="btn" href="#catalogue">Shop the collection <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
     </div>
   </section>
+{%- endif %}
+{%- if section.settings.show_why %}
 
   <!-- ---- why it costs what it costs ---- -->
   <section class="section container shop-why" aria-label="Why Shrujan">
@@ -201,6 +277,7 @@
       {%- endif %}{% endfor %}
     </div>
   </section>
+{%- endif %}
 
   <section class="section container page-cta" data-reveal>
     <p>{{ section.settings.cta_text }}</p>
@@ -216,6 +293,23 @@
 
   var page = root.closest('.page') || document;
   var SHRUJAN = window.SHRUJAN;
+
+  /* ---- customizer controls: data-* on the section root, today's behaviour as
+     the fallback whenever the attribute is absent ---- */
+  function dataAttr(name) {
+    return page.getAttribute ? page.getAttribute('data-' + name) : null;
+  }
+  function dataFlag(name, dflt) {
+    var v = dataAttr(name);
+    return v === null || v === '' ? dflt : v !== 'false';
+  }
+  var CARD = {
+    badge: dataFlag('card-badge', true),
+    was: dataFlag('card-was', true),
+    swatches: dataFlag('card-swatches', true),
+    wish: dataFlag('card-wish', true),
+    quick: dataFlag('card-quick', true)
+  };
 
   /* Filter by COLLECTION, not craft — collection is what the live site
      organises by, and every product carries a real one. */
@@ -250,7 +344,12 @@
   }
 
   var active = ALL;
+
+  /* the opening sort order, validated against the orders this menu implements
+     so an unknown value can never leave the listbox out of step with the grid */
   var sort = 'featured';
+  var wantSort = dataAttr('sort');
+  for (var so = 0; so < SORTS.length; so++) if (SORTS[so].key === wantSort) sort = wantSort;
 
   var catRail = page.querySelector('.shop-cats__rail');
   var medallions = Array.prototype.slice.call(page.querySelectorAll('.shop-cats__rail .medallion'));
@@ -268,17 +367,19 @@
     var html = '<a class="piece shop-piece" href="/products/' + SHRUJAN.productSlug(p) + '">';
     html += '<div class="piece__media" style="--tint: ' + TINTS[i % TINTS.length] + '">';
     html += '<img src="' + SHRUJAN.asset(p.img) + '" alt="' + p.alt + '" loading="lazy">';
-    if (p.badge) html += '<span class="piece__badge">' + p.badge + '</span>';
-    html += '<button class="piece__wish" type="button" aria-label="Save ' + p.name + ' to wishlist">' + HEART_16 + '</button>';
-    html += '<span class="piece__quick">Add to bag</span>';
+    if (CARD.badge && p.badge) html += '<span class="piece__badge">' + p.badge + '</span>';
+    if (CARD.wish) html += '<button class="piece__wish" type="button" aria-label="Save ' + p.name + ' to wishlist">' + HEART_16 + '</button>';
+    if (CARD.quick) html += '<span class="piece__quick">Add to bag</span>';
     html += '</div>';
     html += '<div class="piece__info">';
     html += '<p class="piece__name">' + p.name + '</p>';
     html += '<p class="piece__craft">' + p.craft + '</p>';
-    html += '<p class="piece__price">' + p.price + (p.was ? '<span>' + p.was + '</span>' : '') + '</p>';
-    var swatches = '';
-    p.swatches.forEach(function (c) { swatches += '<i style="background: ' + c + '"></i>'; });
-    html += '<span class="piece__swatches" aria-hidden="true">' + swatches + '</span>';
+    html += '<p class="piece__price">' + p.price + (CARD.was && p.was ? '<span>' + p.was + '</span>' : '') + '</p>';
+    if (CARD.swatches) {
+      var swatches = '';
+      p.swatches.forEach(function (c) { swatches += '<i style="background: ' + c + '"></i>'; });
+      html += '<span class="piece__swatches" aria-hidden="true">' + swatches + '</span>';
+    }
     html += '</div>';
     html += '</a>';
     return html;
@@ -478,6 +579,10 @@
     el.addEventListener('click', function () { pick(SORTS[i].key); });
   });
 
+  /* Bring the listbox in step with the opening sort order. With the theme
+     default this writes back exactly what the markup already says. */
+  renderMenu();
+
   /* initial state from the URL (?c=), exactly as useSearchParams reads it on mount */
   onParamsChange();
 })();
@@ -562,6 +667,124 @@
       "type": "url",
       "id": "cta_link",
       "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Catalogue grid"
+    },
+    {
+      "type": "range",
+      "id": "grid_cols",
+      "label": "Products per row (desktop)",
+      "info": "Applies above 900px. Between 600 and 900px the grid stays two across, and below 600px it uses the mobile count.",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "grid_cols_m",
+      "label": "Products per row (mobile)",
+      "info": "Applies below 600px.",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "select",
+      "id": "sort_default",
+      "label": "Default sort order",
+      "info": "The order the catalogue opens in. Shoppers can still change it from the Sort menu.",
+      "default": "featured",
+      "options": [
+        {
+          "value": "featured",
+          "label": "Featured"
+        },
+        {
+          "value": "price-asc",
+          "label": "Price, low to high"
+        },
+        {
+          "value": "price-desc",
+          "label": "Price, high to low"
+        },
+        {
+          "value": "name",
+          "label": "Name, A–Z"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Sections shown"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_assure",
+      "label": "Show the assurance strip",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cats",
+      "label": "Show the collection medallions",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rail",
+      "label": "Show the collection filter rail",
+      "info": "With the rail hidden the catalogue takes the full width. Collections can still be reached with a ?c= link.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_spotlight",
+      "label": "Show the collection spotlight",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_why",
+      "label": "Show the “why it costs what it costs” cards",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Product card"
+    },
+    {
+      "type": "checkbox",
+      "id": "card_badge",
+      "label": "Show the badge",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "card_was",
+      "label": "Show the “was” price",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "card_swatches",
+      "label": "Show the colour swatches",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "card_wish",
+      "label": "Show the wishlist button",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "card_quick",
+      "label": "Show the quick-add label",
+      "default": true
     },
     {
       "type": "header",

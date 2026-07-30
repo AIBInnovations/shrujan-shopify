@@ -76,6 +76,50 @@ After installing:
    the React fallback). Prices/checkout stay display-only until you decide to
    wire the catalogue to real Shopify products.
 
+## Customizing without code
+
+Everything below is editable in **Online Store → Customize**. No file needs to
+be touched to run the store.
+
+**Theme settings** (the gear icon) drive the design tokens the stylesheets are
+actually built on, so a change there re-themes the whole site rather than
+patching one spot:
+
+| Group | What it controls |
+|---|---|
+| Brand | logo image + width, tagline |
+| Colours | the full palette — canvas, text, dark panels, accents |
+| Typography | font pairing (Heritage / Classic / Modern) and overall text size |
+| Layout | content + header width, gutters, space between sections, corner radius |
+| Motion | animate on scroll, smooth scrolling, animation speed, easing |
+| Custom CSS | site-wide escape hatch |
+
+**Every section** carries the same Design panel — section width, extra top and
+bottom spacing for desktop *and* mobile, background / text / accent colour,
+hide on mobile or desktop, animate on scroll, and Custom CSS scoped to that
+section alone. On top of that each section exposes its own controls: the header
+has sticky behaviour, dropdown trigger, utility toggles and mobile logo
+settings; grids expose columns per row; carousels expose arrows and autoplay;
+the films expose autoplay / loop / posters-only; every page section can show or
+hide each of its regions.
+
+Two conventions make this safe to hand to a non-technical editor:
+
+- **Every default is a no-op.** Spacing is applied as additive margin, colours
+  are only emitted when set, and behaviour flags only reach the markup once
+  moved off their default. An untouched theme renders byte-identically to the
+  hand-built design — that is verified by render-diffing each section against
+  its pre-customizer version.
+- **Layout knobs drive real CSS custom properties** (`--journal-cols`,
+  `--hero-min-h`, `--marquee-dur`, `--footer-bg`, …) whose stylesheet fallback
+  is the packaged value, so the stylesheet alone still renders the original
+  design.
+
+Content lives in the sections too: repeating things (product cards, FAQs,
+testimonials, craft films, stops, journal shots) are **blocks** you can add,
+remove and reorder — numbering, alternating treatments and meters recompute
+from position.
+
 ## Notes
 
 - Smooth scroll = Lenis driven by GSAP's ticker, exactly as documented in

@@ -1,6 +1,67 @@
 {%- render 'section-design', section: section -%}
+{%- comment -%}
+  Layout overrides for the controls below. Nothing is emitted while every
+  control sits at its default, so the page ships exactly as it was hand-built.
+  `.shopify-section` is `display: contents` and cannot be painted or sized, so
+  the column count is published as a custom property — which still inherits
+  through it — rather than set on the wrapper itself.
+{%- endcomment -%}
+{%- liquid
+  assign st = section.settings
+  assign sel = '#shopify-section-' | append: section.id
+  assign story_style = false
+  if st.journal_cols != 4 or st.chapters_sticky or st.enable_lightbox == false
+    assign story_style = true
+  endif
+-%}
+{%- if story_style -%}
+  <style>
+    {%- if st.journal_cols != 4 -%}
+      {{ sel }} { --journal-cols: {{ st.journal_cols }}; }
+      {%- comment -%}
+        The hand-placed 4 x 7 block only closes flush at four columns, so any
+        other count falls back to uniform auto-placed cells — exactly what the
+        stylesheet already does for itself below 901px.
+      {%- endcomment -%}
+      @media (min-width: 901px) {
+        {{ sel }} .journal-bento > * { grid-column: auto; grid-row: span 2; }
+      }
+      {%- comment -%}
+        The stylesheet steps the grid down to three columns below 901px. A count
+        already narrower than that has to be carried down too, or the grid would
+        widen on the smaller screen.
+      {%- endcomment -%}
+      {%- if st.journal_cols < 3 -%}
+        @media (max-width: 900px) {
+          {{ sel }} .journal-bento { grid-template-columns: repeat({{ st.journal_cols }}, minmax(0, 1fr)); }
+        }
+      {%- endif -%}
+    {%- endif -%}
+
+    {%- if st.chapters_sticky -%}
+      {{ sel }} .chapters {
+        position: sticky;
+        /* --header-h is the bar's measured height, published by the core script */
+        top: calc(var(--header-h, 80px) + 8px);
+        /* below the masthead's 60, so the bar still wins when it slides back in */
+        z-index: 40;
+      }
+    {%- endif -%}
+
+    {%- comment -%}
+      With the lightbox off the frames are figures, not buttons — so nothing
+      may still read as clickable.
+    {%- endcomment -%}
+    {%- if st.enable_lightbox == false -%}
+      {{ sel }} .jshot,
+      {{ sel }} .press__sheet { cursor: default; }
+      {{ sel }} .jshot:hover img { transform: none; }
+      {{ sel }} .press__sheet:hover { transform: none; box-shadow: none; }
+    {%- endif -%}
+  </style>
+{%- endif -%}
 <!-- The Shrujan Story — converted from src/pages/ShrujanStory.jsx (+ components/Lightbox.jsx) -->
-<header class="page-hero page-hero--ghost" data-reveal>
+<header class="page-hero page-hero--ghost" data-reveal{% unless section.settings.enable_lightbox %} data-lightbox-enabled="false"{% endunless %}>
   <span class="page-hero__ghost" aria-hidden="true">{{ section.settings.ghost | escape }}</span>
 
   <div class="container page-hero__grid">
@@ -18,6 +79,7 @@
 </header>
 
 <!-- ---- chapter rail ---- -->
+{%- if section.settings.show_chapters %}
 <nav class="chapters" aria-label="Story chapters">
   <div class="container chapters__inner">
     <ol class="chapters__list">
@@ -33,6 +95,7 @@
     </ol>
   </div>
 </nav>
+{%- endif %}
 
 <!-- ---- 01 Origins ---- -->
 <section class="section container" id="origins">
@@ -52,6 +115,7 @@
     </div>
   </div>
 
+  {%- if section.settings.show_origins_gallery %}
   <div class="origin__gallery" data-reveal-child>
     {%- for block in section.blocks -%}
       {%- if block.type == 'origin_shot' %}
@@ -61,9 +125,11 @@
       {%- endif -%}
     {%- endfor %}
   </div>
+  {%- endif %}
 
   <blockquote class="origin__pull" data-reveal>{{ section.settings.origin_quote | escape }}</blockquote>
 
+  {%- if section.settings.show_stats %}
   <div class="craft__stats" data-reveal-child>
     {%- for block in section.blocks -%}
       {%- if block.type == 'stat' %}
@@ -74,9 +140,11 @@
       {%- endif -%}
     {%- endfor %}
   </div>
+  {%- endif %}
 </section>
 
 <!-- ---- 02 Philosophy & Values ---- -->
+{%- if section.settings.show_values %}
 <section class="section container" id="values">
   <div class="section-intro" data-reveal>
     <p class="eyebrow">{{ section.settings.values_eyebrow | escape }}</p>
@@ -102,8 +170,10 @@
     {%- endfor %}
   </div>
 </section>
+{%- endif %}
 
 <!-- ---- 03 The People of Shrujan ---- -->
+{%- if section.settings.show_people %}
 <section class="section container" id="people">
   <div class="section-intro" data-reveal>
     <p class="eyebrow">{{ section.settings.people_eyebrow | escape }}</p>
@@ -125,14 +195,17 @@
     {%- endfor %}
   </div>
 </section>
+{%- endif %}
 
 <!-- ---- 04 Photo Journal ---- -->
+{%- if section.settings.show_journal %}
 <section class="section container" id="journal">
   <div class="section-intro" data-reveal>
     <p class="eyebrow">{{ section.settings.journal_eyebrow | escape }}</p>
     <h2 class="section-title">{{ section.settings.journal_title }}</h2>
     <p class="section-intro__copy">{{ section.settings.journal_copy | escape }}</p>
   </div>
+  {%- if section.settings.enable_lightbox -%}
   {%- capture journal_json -%}
     [
     {%- assign shot_n = 0 -%}
@@ -149,19 +222,27 @@
       {%- endif -%}
     {%- endfor -%}
     ]
-  {%- endcapture %}
+  {%- endcapture -%}
+  {%- endif %}
 
-  <div class="journal-bento" data-reveal-child data-lightbox="{{ journal_json | escape }}">
+  <div class="journal-bento" data-reveal-child{% if section.settings.enable_lightbox %} data-lightbox="{{ journal_json | escape }}"{% endif %}>
     {%- for block in section.blocks -%}
-      {%- if block.type == 'jshot' %}
+      {%- if block.type == 'jshot' -%}
+        {%- if section.settings.enable_lightbox %}
     <button type="button" class="jshot jshot--{{ block.settings.span }}" aria-label="Open photograph: {{ block.settings.caption | escape }}" {{ block.shopify_attributes }}><img src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 1200 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}" alt="{{ block.settings.caption | escape }}" loading="lazy"><span class="jshot__cap">{{ block.settings.caption | escape }}</span></button>
+        {%- else %}
+    <figure class="jshot jshot--{{ block.settings.span }}" {{ block.shopify_attributes }}><img src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 1200 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}" alt="{{ block.settings.caption | escape }}" loading="lazy"><span class="jshot__cap">{{ block.settings.caption | escape }}</span></figure>
+        {%- endif -%}
       {%- endif -%}
     {%- endfor %}
   </div>
 </section>
+{%- endif %}
 
 <!-- ---- 05 In the Media ---- -->
+{%- if section.settings.show_press or section.settings.show_cta %}
 <section class="section container" id="press">
+  {%- if section.settings.show_press %}
   <div class="section-intro" data-reveal>
     <p class="eyebrow">{{ section.settings.press_eyebrow | escape }}</p>
     <h2 class="section-title">{{ section.settings.press_title }}</h2>
@@ -172,6 +253,7 @@
     {%- for block in section.blocks -%}
       {%- if block.type == 'press' -%}
         {%- assign sheet_list = block.settings.sheets | split: ',' -%}
+        {%- if section.settings.enable_lightbox -%}
         {%- capture press_json -%}
           {%- assign page_n = 0 -%}
           {"publication":{{ block.settings.pub | json }},"headline":{{ block.settings.head | json }},"pages":[
@@ -184,8 +266,9 @@
             {%- endif -%}
           {%- endfor -%}
           ]}
-        {%- endcapture %}
-    <article class="press__item" data-press="{{ press_json | escape }}" {{ block.shopify_attributes }}>
+        {%- endcapture -%}
+        {%- endif %}
+    <article class="press__item"{% if section.settings.enable_lightbox %} data-press="{{ press_json | escape }}"{% endif %} {{ block.shopify_attributes }}>
       <div class="press__meta">
         <p class="press__section">{{ block.settings.section_label | escape }}</p>
         <h3 class="press__pub">{{ block.settings.pub | escape }}</h3>
@@ -213,8 +296,12 @@
         {%- for s in sheet_list -%}
           {%- assign sheet = s | strip -%}
           {%- if sheet != blank -%}
-            {%- assign page_n = page_n | plus: 1 %}
+            {%- assign page_n = page_n | plus: 1 -%}
+            {%- if section.settings.enable_lightbox %}
         <button type="button" class="press__sheet" aria-label="Read {{ block.settings.pub | escape }}, page {{ page_n }}"><img src="{{ sheet | asset_url }}" alt="{{ block.settings.pub | escape }}, page {{ page_n }}" loading="lazy"><span class="press__pageno">{% if page_n < 10 %}0{% endif %}{{ page_n }}</span></button>
+            {%- else %}
+        <figure class="press__sheet"><img src="{{ sheet | asset_url }}" alt="{{ block.settings.pub | escape }}, page {{ page_n }}" loading="lazy"><span class="press__pageno">{% if page_n < 10 %}0{% endif %}{{ page_n }}</span></figure>
+            {%- endif -%}
           {%- endif -%}
         {%- endfor %}
       </div>
@@ -222,17 +309,27 @@
       {%- endif -%}
     {%- endfor %}
   </div>
+  {%- endif %}
 
+  {%- if section.settings.show_cta %}
   <div class="curated__more" data-reveal>
     <a class="btn btn--ghost" href="{{ section.settings.cta_url | default: '/pages/lldc' }}">{{ section.settings.cta_label | escape }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
   </div>
+  {%- endif %}
 </section>
+{%- endif %}
 
 <script>
 (function () {
-  var root = document.querySelector('.chapters');
-  if (!root || root.__shrujanInit) return;
-  root.__shrujanInit = true;
+  /* The chapter rail is optional, so the run-once guard and the behaviour flags
+     hang off the hero instead — the one region that always renders. */
+  var host = document.querySelector('.page-hero--ghost');
+  var rail = document.querySelector('.chapters');
+  if (!host || host.__shrujanInit) return;
+  host.__shrujanInit = true;
+
+  // An absent flag means the hand-built default, so today's behaviour stands.
+  var LIGHTBOX = host.getAttribute('data-lightbox-enabled') !== 'false';
 
   /* ---- Lightbox (port of components/Lightbox.jsx) ----
      `items` is [{ src, alt, caption }]; `index` is the open frame, or -1 closed. */
@@ -324,34 +421,38 @@
   var journalHost = document.querySelector('.journal-bento');
   var JOURNAL = JSON.parse((journalHost && journalHost.getAttribute('data-lightbox')) || '[]');
 
-  document.querySelectorAll('.journal-bento .jshot').forEach(function (btn, i) {
-    btn.addEventListener('click', function () {
-      lbOpen(JOURNAL.map(function (x) {
-        return { src: x.src, alt: x.alt, caption: x.alt };
-      }), i);
+  if (LIGHTBOX) {
+    document.querySelectorAll('.journal-bento .jshot').forEach(function (btn, i) {
+      btn.addEventListener('click', function () {
+        lbOpen(JOURNAL.map(function (x) {
+          return { src: x.src, alt: x.alt, caption: x.alt };
+        }), i);
+      });
     });
-  });
+  }
 
   /* ---- In the Media: open the tearsheets ---- */
 
   // Each article carries { publication, headline, pages } emitted by its
   // press block; pages are the resolved tearsheet URLs in reading order.
 
-  document.querySelectorAll('.press .press__item').forEach(function (article) {
-    var p = JSON.parse(article.getAttribute('data-press') || 'null');
-    if (!p) return;
-    article.querySelectorAll('.press__sheet').forEach(function (btn, i) {
-      btn.addEventListener('click', function () {
-        lbOpen(p.pages.map(function (s, n) {
-          return {
-            src: s,
-            alt: p.publication + ': ' + p.headline + ', page ' + (n + 1),
-            caption: p.publication + ' · ' + p.headline + ' · page ' + (n + 1) + ' of ' + p.pages.length
-          };
-        }), i);
+  if (LIGHTBOX) {
+    document.querySelectorAll('.press .press__item').forEach(function (article) {
+      var p = JSON.parse(article.getAttribute('data-press') || 'null');
+      if (!p) return;
+      article.querySelectorAll('.press__sheet').forEach(function (btn, i) {
+        btn.addEventListener('click', function () {
+          lbOpen(p.pages.map(function (s, n) {
+            return {
+              src: s,
+              alt: p.publication + ': ' + p.headline + ', page ' + (n + 1),
+              caption: p.publication + ' · ' + p.headline + ' · page ' + (n + 1) + ' of ' + p.pages.length
+            };
+          }), i);
+        });
       });
     });
-  });
+  }
 
   /* ---- Chapter rail: jumps + scroll-spy ---- */
 
@@ -362,7 +463,9 @@
     return (header ? header.offsetHeight : 0) + 28;
   }
 
-  var chapterLinks = Array.prototype.slice.call(root.querySelectorAll('.chapters__link'));
+  // Empty when the rail is switched off; the scroll-spy below then has nothing
+  // to light up, and every other feature on the page carries on regardless.
+  var chapterLinks = rail ? Array.prototype.slice.call(rail.querySelectorAll('.chapters__link')) : [];
 
   chapterLinks.forEach(function (link) {
     link.addEventListener('click', function (e) {
@@ -500,6 +603,24 @@
     },
     {
       "type": "header",
+      "content": "Chapter rail"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_chapters",
+      "label": "Show the chapter rail",
+      "info": "The numbered links that jump between the five chapters.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "chapters_sticky",
+      "label": "Pin the rail while scrolling",
+      "info": "Off by design: pinned, the rail rides over the body copy the whole way down. On, it clears the masthead and follows the reader.",
+      "default": false
+    },
+    {
+      "type": "header",
       "content": "01 · Origins"
     },
     {
@@ -527,8 +648,27 @@
       "default": "Sustainable practices, slow fashion, ethical fair trade, minimal wastage. Shrujan takes a tiny bit of pride for having consciously practised these values from the first day."
     },
     {
+      "type": "checkbox",
+      "id": "show_origins_gallery",
+      "label": "Show the origins photo gallery",
+      "info": "The row of Origins photo blocks between the copy and the pull quote.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stats",
+      "label": "Show the stats row",
+      "default": true
+    },
+    {
       "type": "header",
       "content": "02 · Philosophy & Values"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_values",
+      "label": "Show this chapter",
+      "default": true
     },
     {
       "type": "text",
@@ -547,6 +687,12 @@
       "content": "03 · The People of Shrujan"
     },
     {
+      "type": "checkbox",
+      "id": "show_people",
+      "label": "Show this chapter",
+      "default": true
+    },
+    {
       "type": "text",
       "id": "people_eyebrow",
       "label": "Eyebrow",
@@ -561,6 +707,12 @@
     {
       "type": "header",
       "content": "04 · Photo Journal"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_journal",
+      "label": "Show this chapter",
+      "default": true
     },
     {
       "type": "text",
@@ -581,8 +733,31 @@
       "default": "Frames from the Shrujan archive, from the earliest village visits to the craftswomen at work today."
     },
     {
+      "type": "range",
+      "id": "journal_cols",
+      "label": "Frames per row",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4,
+      "info": "Desktop only — the grid still steps down to three and two on smaller screens. Four keeps the hand-placed block that closes flush; any other count auto-places uniform cells instead."
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_lightbox",
+      "label": "Open photographs full screen",
+      "info": "Also covers the tearsheets in chapter 05. Off, the frames and tearsheets stay as plain, non-clickable pictures.",
+      "default": true
+    },
+    {
       "type": "header",
       "content": "05 · In the Media"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_press",
+      "label": "Show this chapter",
+      "default": true
     },
     {
       "type": "text",
@@ -601,6 +776,13 @@
       "id": "press_copy",
       "label": "Intro copy",
       "default": "Tearsheets as they were printed. Open any page to read it full size."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Show the LLDC link",
+      "info": "The button that closes the page. Defaults to /pages/lldc when no URL is set.",
+      "default": true
     },
     {
       "type": "text",

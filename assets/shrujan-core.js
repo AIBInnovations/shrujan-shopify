@@ -258,6 +258,18 @@
   function initHeader() {
     var bar = document.querySelector('.site-header');
     if (!bar) return;
+    // The theme editor re-renders the whole section on every setting change, so
+    // this runs again against a fresh element. Wiring the same one twice would
+    // double every listener; the window-level ones below self-retire instead,
+    // by bailing once their bar has left the document.
+    if (bar.__shrujanHeader) return;
+    bar.__shrujanHeader = true;
+
+    // Behaviour flags from sections/shrujan-header.liquid. The section only
+    // emits an attribute once the merchant moves the control off its default,
+    // so these fallbacks are the packaged behaviour.
+    var STICKY = bar.getAttribute('data-sticky') || 'scroll-up';
+    var DROPDOWN = bar.getAttribute('data-dropdown') || 'hover';
 
     var toggle = bar.querySelector('.menu-toggle');
     var mobileNav = bar.querySelector('.mobile-nav');
@@ -277,6 +289,7 @@
     // goes fixed — otherwise the page jumps up by that height. Published as
     // --header-h so sticky sub-navs and :target offsets can clear the bar.
     function measure() {
+      if (!bar.isConnected) return;
       height = bar.offsetHeight || 0;
       spacer.style.height = height + 'px';
       document.documentElement.style.setProperty('--header-h', height + 'px');
@@ -331,7 +344,22 @@
     }
 
     function read() {
+      if (!bar.isConnected) {
+        ticking = false;
+        return;
+      }
       var y = window.scrollY;
+
+      // Sticky "never": the bar stays in flow and scrolls away with the page.
+      if (STICKY === 'never') {
+        clearTimeout(unfix);
+        setFixed(false);
+        setShown(false);
+        lastY = y;
+        ticking = false;
+        return;
+      }
+
       var past = y > heroEnd();
       var delta = y - lastY;
       var h = bar.offsetHeight || 120;
@@ -340,7 +368,11 @@
         // in the floating zone: away while reading down, back on scroll up
         clearTimeout(unfix);
         setFixed(true);
-        if (Math.abs(delta) > 4) {
+        if (STICKY === 'always') {
+          // once it is floating it stays put, whichever way the page moves
+          setShown(true);
+          lastY = y;
+        } else if (Math.abs(delta) > 4) {
           setShown(delta < 0);
           lastY = y;
         }
@@ -382,9 +414,10 @@
       });
     }
 
-    // Dropdown panels: one open at a time; hover and focus both open, Escape
-    // closes. (The SPA's ignore-hover-after-navigation guard is moot here —
-    // every navigation is a full page load.)
+    // Dropdown panels: one open at a time, Escape closes. By default hover and
+    // focus both open; the header section can switch the trigger to click.
+    // (The SPA's ignore-hover-after-navigation guard is moot here — every
+    // navigation is a full page load.)
     var items = bar.querySelectorAll('.nav-item.has-menu');
 
     function closeAll(except) {
@@ -393,24 +426,56 @@
       });
     }
 
-    items.forEach(function (item) {
-      item.addEventListener('mouseenter', function () {
-        closeAll(item);
-        item.classList.add('is-open');
+    if (DROPDOWN === 'click') {
+      // Click mode: the top-level link toggles its own panel rather than
+      // navigating — the panel's lead card carries the same destination. No
+      // focusin opener here, or tabbing to the link would open the panel and
+      // the Enter that follows would immediately shut it again.
+      items.forEach(function (item) {
+        var link = item.querySelector('.nav-item__link');
+        if (link) {
+          link.addEventListener('click', function (e) {
+            e.preventDefault();
+            var open = item.classList.contains('is-open');
+            closeAll(null);
+            if (!open) item.classList.add('is-open');
+          });
+        }
+        item.addEventListener('focusout', function (e) {
+          if (!item.contains(e.relatedTarget)) item.classList.remove('is-open');
+        });
       });
-      item.addEventListener('mouseleave', function () {
-        item.classList.remove('is-open');
+
+      // Outside click closes. This runs after the link's own handler, and a
+      // click on the link (or inside its panel) is inside the nav item, so
+      // opening a panel never closes it on the same click.
+      document.addEventListener('click', function (e) {
+        if (!bar.isConnected) return;
+        var el = e.target;
+        if (el && el.closest && el.closest('.nav-item.has-menu')) return;
+        closeAll(null);
       });
-      item.addEventListener('focusin', function () {
-        closeAll(item);
-        item.classList.add('is-open');
+    } else {
+      items.forEach(function (item) {
+        item.addEventListener('mouseenter', function () {
+          closeAll(item);
+          item.classList.add('is-open');
+        });
+        item.addEventListener('mouseleave', function () {
+          item.classList.remove('is-open');
+        });
+        item.addEventListener('focusin', function () {
+          closeAll(item);
+          item.classList.add('is-open');
+        });
+        item.addEventListener('focusout', function (e) {
+          if (!item.contains(e.relatedTarget)) item.classList.remove('is-open');
+        });
       });
-      item.addEventListener('focusout', function (e) {
-        if (!item.contains(e.relatedTarget)) item.classList.remove('is-open');
-      });
-    });
+    }
 
     window.addEventListener('keydown', function (e) {
+      if (!bar.isConnected) return;
       if (e.key === 'Escape') closeAll(null);
     });
   }
@@ -466,6 +531,7 @@
       }
     });
     initFooter(); // the footer form is wired here, not in a section script
+    initHeader(); // re-wires a re-rendered header (and its behaviour flags)
     ScrollTrigger.refresh();
   });
 })();

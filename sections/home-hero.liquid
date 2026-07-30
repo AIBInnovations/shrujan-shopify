@@ -1,5 +1,76 @@
 {%- render 'section-design', section: section -%}
-<section class="hero" aria-label="{{ section.settings.title_l1 | strip_html | escape }} {{ section.settings.title_l2 | strip_html | downcase | escape }} {{ section.settings.title_l3 | strip_html | downcase | escape }}">
+
+{%- comment -%}
+  Hero-specific controls. The bento's height is the clamp floor the stylesheet
+  keys on (--hero-min-h, 600px packaged); each cell's crop is its own
+  object-position, seeded with the value the stylesheet already ships. Nothing
+  is emitted unless a setting has moved, so an untouched hero is byte-identical.
+
+  The crops are sanitised, then compared against the packaged value: a field left
+  at its default (or emptied) produces no rule at all, so the stylesheet stays in
+  charge of that cell.
+{%- endcomment -%}
+{%- liquid
+  assign h = section.settings
+  assign hsel = '#shopify-section-' | append: section.id
+
+  assign pos_model = h.shop_pos | strip_html | replace: '{', ' ' | replace: '}', ' ' | replace: ';', ' ' | strip
+  assign pos_season = h.season_pos | strip_html | replace: '{', ' ' | replace: '}', ' ' | replace: ';', ' ' | strip
+  assign pos_thread = h.thread_pos | strip_html | replace: '{', ' ' | replace: '}', ' ' | replace: ';', ' ' | strip
+  assign pos_story = h.story_pos | strip_html | replace: '{', ' ' | replace: '}', ' ' | replace: ';', ' ' | strip
+  assign pos_lldc = h.lldc_pos | strip_html | replace: '{', ' ' | replace: '}', ' ' | replace: ';', ' ' | strip
+
+  if pos_model == '50% 12%'
+    assign pos_model = ''
+  endif
+  if pos_season == '50% 18%'
+    assign pos_season = ''
+  endif
+  if pos_thread == '70% 60%'
+    assign pos_thread = ''
+  endif
+  if pos_story == '50% 50%'
+    assign pos_story = ''
+  endif
+  if pos_lldc == '50% 50%'
+    assign pos_lldc = ''
+  endif
+
+  assign h_style = false
+  if h.hero_min_h != 600
+    assign h_style = true
+  endif
+  if pos_model != blank or pos_season != blank or pos_thread != blank
+    assign h_style = true
+  endif
+  if pos_story != blank or pos_lldc != blank
+    assign h_style = true
+  endif
+-%}
+
+{%- if h_style -%}
+  <style>
+    {%- if h.hero_min_h != 600 -%}
+      {{ hsel }} { --hero-min-h: {{ h.hero_min_h }}px; }
+    {%- endif -%}
+    {%- if pos_model != blank -%}
+      {{ hsel }} .hero-cell--model img { object-position: {{ pos_model }}; }
+    {%- endif -%}
+    {%- if pos_season != blank -%}
+      {{ hsel }} .hero-cell--season img { object-position: {{ pos_season }}; }
+    {%- endif -%}
+    {%- if pos_thread != blank -%}
+      {{ hsel }} .hero-cell--thread img { object-position: {{ pos_thread }}; }
+    {%- endif -%}
+    {%- if pos_story != blank -%}
+      {{ hsel }} .hero-cell--story img { object-position: {{ pos_story }}; }
+    {%- endif -%}
+    {%- if pos_lldc != blank -%}
+      {{ hsel }} .hero-cell--accessories img { object-position: {{ pos_lldc }}; }
+    {%- endif -%}
+  </style>
+{%- endif -%}
+<section class="hero" aria-label="{{ section.settings.title_l1 | strip_html | escape }} {{ section.settings.title_l2 | strip_html | downcase | escape }} {{ section.settings.title_l3 | strip_html | downcase | escape }}"{% if h.hero_animate == false %} data-hero-animate="false"{% endif %}>
   <a class="hero-cell hero-cell--model" href="{{ section.settings.shop_url | default: '/pages/shop-shrujan' | escape }}" data-hero="cell">
     <img src="{% if section.settings.shop_img %}{{ section.settings.shop_img | image_url: width: 1200 }}{% else %}{{ 'hero-left.webp' | asset_url }}{% endif %}" alt="{{ section.settings.shop_alt | escape }}" fetchpriority="high">
     <span class="hero-cell__label"><i class="hero-cell__dash" aria-hidden="true"></i><em>{{ section.settings.shop_em | escape }}</em>{{ section.settings.shop_label | escape }}<span class="hero-cell__sub">{{ section.settings.shop_sub | escape }}</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
@@ -65,9 +136,14 @@
   if (!root || root.__shrujanInit) return;
   root.__shrujanInit = true;
 
+  /* Intro animation is on unless the section says otherwise. Skipping the
+     timeline leaves every cell in its natural, fully visible state — the
+     hidden start values only ever exist as GSAP inline styles. */
+  var animate = root.getAttribute('data-hero-animate') !== 'false';
+
   var mm = gsap.matchMedia(root);
 
-  mm.add('(prefers-reduced-motion: no-preference)', function () {
+  if (animate) mm.add('(prefers-reduced-motion: no-preference)', function () {
     var tl = gsap.timeline({
       defaults: { ease: 'power3.out', duration: 0.9 },
     });
@@ -106,6 +182,28 @@
   "settings": [
     {
       "type": "header",
+      "content": "Bento layout"
+    },
+    {
+      "type": "range",
+      "id": "hero_min_h",
+      "label": "Shortest the bento may get",
+      "info": "The hero fills the fold (viewport minus the header) and never exceeds 1200px. This is the floor it will not drop below on short screens. Below 1180px wide the cells stack and size themselves.",
+      "min": 400,
+      "max": 1000,
+      "step": 10,
+      "unit": "px",
+      "default": 600
+    },
+    {
+      "type": "checkbox",
+      "id": "hero_animate",
+      "label": "Play the intro animation",
+      "info": "Off renders the hero in place — the cells, headline lines, rule, copy and button never animate in.",
+      "default": true
+    },
+    {
+      "type": "header",
       "content": "Shop Shrujan cell"
     },
     {
@@ -117,6 +215,13 @@
       "type": "image_picker",
       "id": "shop_img",
       "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "shop_pos",
+      "label": "Image position",
+      "info": "CSS object-position — which part of the photo stays in frame as the cell crops. e.g. 50% 12%, center top.",
+      "default": "50% 12%"
     },
     {
       "type": "text",
@@ -198,6 +303,13 @@
     },
     {
       "type": "text",
+      "id": "season_pos",
+      "label": "Image position",
+      "info": "CSS object-position.",
+      "default": "50% 18%"
+    },
+    {
+      "type": "text",
       "id": "season_alt",
       "label": "Image alt text",
       "default": "Model in a red hand-embroidered bridal lehenga in a studio setting"
@@ -230,6 +342,13 @@
     },
     {
       "type": "text",
+      "id": "thread_pos",
+      "label": "Image position",
+      "info": "CSS object-position.",
+      "default": "70% 60%"
+    },
+    {
+      "type": "text",
       "id": "thread_alt",
       "label": "Image alt text",
       "default": "Embroiderers of Kutch working together outside their village"
@@ -259,6 +378,13 @@
       "type": "image_picker",
       "id": "story_img",
       "label": "Background image"
+    },
+    {
+      "type": "text",
+      "id": "story_pos",
+      "label": "Image position",
+      "info": "CSS object-position.",
+      "default": "50% 50%"
     },
     {
       "type": "text",
@@ -297,6 +423,13 @@
       "type": "image_picker",
       "id": "lldc_img",
       "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "lldc_pos",
+      "label": "Image position",
+      "info": "CSS object-position.",
+      "default": "50% 50%"
     },
     {
       "type": "text",

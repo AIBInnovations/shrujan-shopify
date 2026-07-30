@@ -1,4 +1,57 @@
 {%- render 'section-design', section: section -%}
+
+{%- comment -%}
+  Footer-specific controls. Everything below is opt-in: the scoped <style> is
+  only emitted when a setting has moved off its packaged default, and each
+  custom property it publishes has today's value as its stylesheet fallback.
+
+  The top row collapses to one column when the letter sign-up is gone, or when
+  the merchant asks for the stacked layout — otherwise the mark would sit alone
+  against the right edge of a 1.4fr / 0.6fr grid.
+
+  A footer text colour drives --footer-link and --footer-muted through the same
+  alpha the packaged palette uses, so the sitemap and bottom bar keep their
+  tuned dimming instead of flattening to one tone.
+{%- endcomment -%}
+{%- liquid
+  assign f = section.settings
+  assign fsel = '#shopify-section-' | append: section.id
+
+  assign ftop_single = false
+  if f.nl_layout == 'stacked' or f.show_newsletter == false
+    assign ftop_single = true
+  endif
+
+  assign f_style = false
+  if f.footer_bg != blank or f.footer_text != blank or f.footer_top_border == false
+    assign f_style = true
+  endif
+  if ftop_single
+    assign f_style = true
+  endif
+-%}
+
+{%- if f_style -%}
+  <style>
+    {%- if f.footer_bg != blank -%}
+      {{ fsel }} { --footer-bg: {{ f.footer_bg }}; }
+    {%- endif -%}
+    {%- if f.footer_text != blank -%}
+      {{ fsel }} {
+        --footer-text: {{ f.footer_text }};
+        --footer-link: {{ f.footer_text | color_modify: 'alpha', 0.72 }};
+        --footer-muted: {{ f.footer_text | color_modify: 'alpha', 0.5 }};
+      }
+    {%- endif -%}
+    {%- if f.footer_top_border == false -%}
+      {{ fsel }} .footer { box-shadow: none; }
+    {%- endif -%}
+    {%- if ftop_single -%}
+      {{ fsel }} .ftop { grid-template-columns: 1fr; }
+      {{ fsel }} .fbrand { justify-items: start; text-align: left; }
+    {%- endif -%}
+  </style>
+{%- endif -%}
 <footer class="footer">
   <span class="footer__weave" aria-hidden="true">
     <span class="footer__mandala footer__mandala--left"></span>
@@ -7,6 +60,7 @@
 
   <div class="footer__inner">
     <div class="ftop">
+      {%- if f.show_newsletter %}
       <div class="fletters" id="letters">
         <p class="fletters__eyebrow">{{ section.settings.nl_eyebrow }}</p>
         <h2 class="fletters__title">{{ section.settings.nl_title }}</h2>
@@ -21,6 +75,7 @@
           </button>
         </form>
       </div>
+      {%- endif %}
 
       <div class="fbrand">
         <span class="fbrand__mark" role="img" aria-label="Shrujan"></span>
@@ -29,28 +84,31 @@
           <span>{{ section.settings.brand_tag_2 }}</span>
         </p>
 
+        {%- if f.show_socials %}
         <div class="footer__socials">
           <a class="footer__social" href="{{ section.settings.social_instagram | default: 'https://www.instagram.com/shrujanindia/' | escape }}" aria-label="Instagram" target="_blank" rel="noreferrer noopener">
-            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6">
+            <svg viewBox="0 0 24 24" width="{{ f.social_size }}" height="{{ f.social_size }}" fill="none" stroke="currentColor" stroke-width="1.6">
               <rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect>
               <circle cx="12" cy="12" r="3.9"></circle>
               <circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"></circle>
             </svg>
           </a>
           <a class="footer__social" href="{{ section.settings.social_facebook | default: 'https://www.facebook.com/shrujanindia' | escape }}" aria-label="Facebook" target="_blank" rel="noreferrer noopener">
-            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+            <svg viewBox="0 0 24 24" width="{{ f.social_size }}" height="{{ f.social_size }}" fill="currentColor">
               <path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.25-1.5 1.55-1.5h1.65V3.6c-.3 0-1.3-.1-2.45-.1-2.4 0-4.05 1.5-4.05 4.2v2.2H7.5V13h2.7v8Z"></path>
             </svg>
           </a>
           <a class="footer__social" href="{{ section.settings.social_pinterest | default: 'https://www.pinterest.com/shrujancreations/' | escape }}" aria-label="Pinterest" target="_blank" rel="noreferrer noopener">
-            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+            <svg viewBox="0 0 24 24" width="{{ f.social_size }}" height="{{ f.social_size }}" fill="currentColor">
               <path d="M12 3a9 9 0 0 0-3.3 17.36c-.08-.72-.15-1.83.03-2.62.16-.7 1.06-4.5 1.06-4.5s-.27-.54-.27-1.34c0-1.26.73-2.2 1.63-2.2.77 0 1.14.58 1.14 1.27 0 .78-.49 1.94-.75 3.02-.21.9.46 1.64 1.35 1.64 1.62 0 2.87-1.71 2.87-4.18 0-2.19-1.57-3.72-3.82-3.72-2.6 0-4.13 1.95-4.13 3.97 0 .79.3 1.63.68 2.09.08.09.09.17.06.26l-.25 1.02c-.4.17-.13.2-.3.12-1.11-.52-1.8-2.14-1.8-3.44 0-2.8 2.03-5.37 5.87-5.37 3.08 0 5.47 2.2 5.47 5.13 0 3.06-1.93 5.52-4.6 5.52-.9 0-1.75-.47-2.04-1.02l-.55 2.12c-.2.77-.74 1.73-1.1 2.32A9 9 0 1 0 12 3Z"></path>
             </svg>
           </a>
         </div>
+        {%- endif %}
       </div>
     </div>
 
+    {%- if f.show_sitemap %}
     <nav class="fmap" aria-label="Footer">
       <div class="fmap__col">
         <p class="fmap__group">Explore</p>
@@ -118,7 +176,9 @@
         </ul>
       </div>
     </nav>
+    {%- endif %}
 
+    {%- if f.show_legal %}
     <div class="footer__bottom">
       <span>{{ section.settings.copyright }}</span>
 
@@ -127,6 +187,7 @@
         <a href="{{ section.settings.legal_2_url | default: 'https://shrujan.com/policies/terms-of-service' | escape }}" target="_blank" rel="noreferrer noopener">{{ section.settings.legal_2_label | escape }}</a>
       </div>
     </div>
+    {%- endif %}
   </div>
 </footer>
 {% schema %}
@@ -141,6 +202,30 @@
     {
       "type": "header",
       "content": "Newsletter"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_newsletter",
+      "label": "Show the newsletter block",
+      "info": "The “Letters from the Loom” sign-up. It is also the #letters anchor other pages link to.",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "nl_layout",
+      "label": "Newsletter layout",
+      "info": "Beside the mark is the packaged design. Stacked puts the sign-up above the mark on every screen — the same treatment small screens already get.",
+      "default": "beside",
+      "options": [
+        {
+          "value": "beside",
+          "label": "Beside the brand mark"
+        },
+        {
+          "value": "stacked",
+          "label": "Stacked"
+        }
+      ]
     },
     {
       "type": "text",
@@ -199,6 +284,23 @@
       "content": "Social links"
     },
     {
+      "type": "checkbox",
+      "id": "show_socials",
+      "label": "Show the socials row",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "social_size",
+      "label": "Social icon size",
+      "info": "The glyph inside the 32px button.",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
       "type": "url",
       "id": "social_instagram",
       "label": "Instagram URL"
@@ -212,6 +314,17 @@
       "type": "url",
       "id": "social_pinterest",
       "label": "Pinterest URL"
+    },
+    {
+      "type": "header",
+      "content": "Sitemap"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sitemap",
+      "label": "Show the sitemap columns",
+      "info": "The five link columns, including the Reach us details below.",
+      "default": true
     },
     {
       "type": "header",
@@ -252,6 +365,13 @@
       "content": "Bottom bar"
     },
     {
+      "type": "checkbox",
+      "id": "show_legal",
+      "label": "Show the legal row",
+      "info": "The bottom rule with the copyright line and the policy links.",
+      "default": true
+    },
+    {
       "type": "text",
       "id": "copyright",
       "label": "Copyright line",
@@ -278,6 +398,29 @@
       "type": "url",
       "id": "legal_2_url",
       "label": "Legal link 2 URL"
+    },
+    {
+      "type": "header",
+      "content": "Footer appearance"
+    },
+    {
+      "type": "color",
+      "id": "footer_bg",
+      "label": "Footer background",
+      "info": "Leave empty to keep the packaged maroon gradient. A flat colour replaces it entirely."
+    },
+    {
+      "type": "color",
+      "id": "footer_text",
+      "label": "Footer text colour",
+      "info": "Leave empty to keep the cream palette. Set it and the wordmark, sitemap links and bottom bar follow, each keeping its own dimming."
+    },
+    {
+      "type": "checkbox",
+      "id": "footer_top_border",
+      "label": "Show top border",
+      "info": "The gold hairline where the footer meets the page.",
+      "default": true
     },
     {
       "type": "header",

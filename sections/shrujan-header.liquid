@@ -1,5 +1,118 @@
 {%- render 'section-design', section: section -%}
-<header class="site-header">
+
+{%- comment -%}
+  Header controls. Same two rules as snippets/section-design.liquid: every
+  default is a no-op, and because `.shopify-section` is `display: contents` the
+  wrapper cannot be painted — so this either publishes custom properties or
+  reaches the header's own children through `#shopify-section-<id>`.
+
+  Behaviour (sticky mode, dropdown trigger) is not CSS, so it travels as data
+  attributes on `.site-header` — and only when the merchant has moved the
+  control off its default, so the packaged markup stays byte-for-byte itself.
+  assets/shrujan-core.js (initHeader) reads them with today's values as
+  fallbacks.
+{%- endcomment -%}
+
+{%- liquid
+  assign hs = section.settings
+  assign hsel = '#shopify-section-' | append: section.id
+  assign hdr_pad = hs.header_pad_top | plus: hs.header_pad_bottom
+  assign has_hdr_style = false
+  if hs.header_width != 'default' or hdr_pad != 0 or hs.header_separator
+    assign has_hdr_style = true
+  endif
+  if hs.logo_size != 0 or hs.logo_align_mobile != 'center' or hs.show_topbar == false
+    assign has_hdr_style = true
+  endif
+  if hs.utility_style != 'label' or hs.collapse_on_scroll
+    assign has_hdr_style = true
+  endif
+  if hs.topbar_bg != blank or hs.topbar_text != blank
+    assign has_hdr_style = true
+  endif
+-%}
+
+{%- if has_hdr_style -%}
+  <style>
+    {%- comment -%} the header keeps its own, wider rail — Theme settings → Layout → Header width {%- endcomment -%}
+    {%- if hs.header_width == 'full' -%}
+      {{ hsel }} { --header-max: 100%; }
+    {%- elsif hs.header_width == 'narrow' -%}
+      {{ hsel }} { --header-max: var(--page-max); }
+    {%- endif -%}
+
+    {%- comment -%}
+      `--logo-h` is the brand block's one knob: the logo's height and the offset
+      that puts its centre on the topbar rule both derive from it. Desktop only —
+      the phone bar pins the mark at 38px on purpose, or the bar grows.
+    {%- endcomment -%}
+    {%- if hs.logo_size != 0 -%}
+      @media (min-width: 1081px) { {{ hsel }} .brand { --logo-h: {{ hs.logo_size }}px; } }
+    {%- endif -%}
+    {%- if hs.logo_align_mobile != 'center' -%}
+      @media (max-width: 1080px) {
+        {{ hsel }} .brand { justify-self: {% if hs.logo_align_mobile == 'right' %}end{% else %}start{% endif %}; }
+      }
+    {%- endif -%}
+
+    {%- comment -%}
+      Additive: the row's resting height is the `--header-row-min` token, so the
+      padding grows the bar instead of being swallowed by its min-height.
+    {%- endcomment -%}
+    {%- if hdr_pad != 0 -%}
+      {{ hsel }} .site-header__inner {
+        padding-top: {{ hs.header_pad_top }}px;
+        padding-bottom: {{ hs.header_pad_bottom }}px;
+        min-height: calc(var(--header-row-min) + {{ hdr_pad }}px);
+      }
+    {%- endif -%}
+
+    {%- if hs.header_separator -%}
+      {{ hsel }} .site-header { border-bottom: 1px solid var(--hairline); }
+    {%- endif -%}
+
+    {%- comment -%}
+      No topbar means no rule for the logo to straddle, so the brand takes the
+      centred in-flow position the phone bar already uses rather than floating
+      half a logo above the header.
+    {%- endcomment -%}
+    {%- unless hs.show_topbar -%}
+      {{ hsel }} .brand {
+        position: static;
+        transform: none;
+        grid-column: 2;
+        justify-self: center;
+        padding: 8px 0 10px;
+        background: transparent;
+      }
+    {%- endunless -%}
+
+    {%- if hs.topbar_bg != blank -%}
+      {{ hsel }} .topbar { background-color: {{ hs.topbar_bg }}; }
+    {%- endif -%}
+    {%- if hs.topbar_text != blank -%}
+      {{ hsel }} .topbar__inner,
+      {{ hsel }} .topbar__select,
+      {{ hsel }} .topbar__note { color: {{ hs.topbar_text }}; }
+      {{ hsel }} .topbar__sep { background: {{ hs.topbar_text | color_modify: 'alpha', 0.35 }}; }
+    {%- endif -%}
+
+    {%- comment -%}
+      Icon only: the label is hidden, never removed — every utility already
+      carries its own aria-label, and this is the same rule the phone bar uses.
+    {%- endcomment -%}
+    {%- if hs.utility_style == 'icon' -%}
+      {{ hsel }} .utility-link span { display: none; }
+    {%- endif -%}
+
+    {%- if hs.collapse_on_scroll -%}
+      {{ hsel }} .site-header.is-fixed .topbar { display: none; }
+    {%- endif -%}
+  </style>
+{%- endif -%}
+
+<header class="site-header"{% if hs.sticky_mode != 'scroll-up' %} data-sticky="{{ hs.sticky_mode }}"{% endif %}{% if hs.dropdown_trigger != 'hover' %} data-dropdown="{{ hs.dropdown_trigger }}"{% endif %}>
+  {%- if hs.show_topbar %}
   <div class="topbar">
     <div class="topbar__inner">
       <div class="topbar__selects">
@@ -10,6 +123,7 @@
       <span class="topbar__note">{{ section.settings.topbar_note }}</span>
     </div>
   </div>
+  {%- endif %}
 
   <div class="site-header__inner">
     <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h16M4 12h16M4 16.5h16"></path></svg></button>
@@ -295,10 +409,18 @@
     </a>
 
     <div class="header-utils">
-      <a class="utility-link" href="/pages/shop-shrujan#catalogue" aria-label="Search"><span>Search</span> <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"></circle><path d="m20 20-4.35-4.35"></path></svg></a>
+      {%- if hs.show_search %}
+      <a class="utility-link" href="{{ hs.search_url | default: '/pages/shop-shrujan#catalogue' }}" aria-label="Search"><span>Search</span> <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"></circle><path d="m20 20-4.35-4.35"></path></svg></a>
+      {%- endif %}
+      {%- if hs.show_account %}
       <button class="utility-link" type="button" aria-label="Account" aria-disabled="true"><span>Account</span> <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.75"></circle><path d="M4.75 19.5c1.6-3.1 4.1-4.5 7.25-4.5s5.65 1.4 7.25 4.5"></path></svg></button>
+      {%- endif %}
+      {%- if hs.show_wishlist %}
       <button class="utility-link" type="button" aria-label="Wishlist" aria-disabled="true"><span>Wishlist</span> <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19.8S4.5 15.3 4.5 9.9c0-2.6 2-4.4 4.2-4.4 1.5 0 2.7.8 3.3 2 .6-1.2 1.8-2 3.3-2 2.2 0 4.2 1.8 4.2 4.4 0 5.4-7.5 9.9-7.5 9.9Z"></path></svg></button>
-      <a class="utility-link" href="/pages/shop-shrujan#catalogue" aria-label="Shopping bag, 0 items"><span>Bag&nbsp;(0)</span> <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 8h13l-.9 12h-11.2Z"></path><path d="M9 10V6.5a3 3 0 0 1 6 0V10"></path></svg></a>
+      {%- endif %}
+      {%- if hs.show_bag %}
+      <a class="utility-link" href="{{ hs.bag_url | default: '/pages/shop-shrujan#catalogue' }}" aria-label="Shopping bag, 0 items"><span>Bag&nbsp;(0)</span> <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 8h13l-.9 12h-11.2Z"></path><path d="M9 10V6.5a3 3 0 0 1 6 0V10"></path></svg></a>
+      {%- endif %}
     </div>
   </div>
 
@@ -378,10 +500,29 @@
       "content": "Top bar"
     },
     {
+      "type": "checkbox",
+      "id": "show_topbar",
+      "label": "Show the top bar",
+      "info": "Hiding it re-centres the logo inside the nav row.",
+      "default": true
+    },
+    {
       "type": "text",
       "id": "topbar_note",
       "label": "Top bar note",
       "default": "Complimentary shipping on orders above ₹5,000"
+    },
+    {
+      "type": "color",
+      "id": "topbar_bg",
+      "label": "Top bar background",
+      "info": "Leave empty to keep the header’s ivory."
+    },
+    {
+      "type": "color",
+      "id": "topbar_text",
+      "label": "Top bar text",
+      "info": "Leave empty to keep the ink tones."
     },
     {
       "type": "header",
@@ -393,10 +534,199 @@
       "label": "Logo image"
     },
     {
+      "type": "range",
+      "id": "logo_size",
+      "label": "Logo size",
+      "info": "Sets the mark’s height; width follows. 0 keeps the responsive theme default. Desktop only — the phone bar holds its own size.",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "select",
+      "id": "logo_align_mobile",
+      "label": "Logo alignment (mobile)",
+      "default": "center",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
       "type": "text",
       "id": "brand_tag",
       "label": "Brand tagline",
       "default": "Heritage by Hand"
+    },
+    {
+      "type": "header",
+      "content": "Header layout"
+    },
+    {
+      "type": "select",
+      "id": "header_width",
+      "label": "Header width",
+      "info": "Theme default is the wider header rail set in Theme settings → Layout. Narrow lines the header up with the page rail.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "header_pad_top",
+      "label": "Extra top padding",
+      "info": "Added to the nav row’s own height.",
+      "min": 0,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "header_pad_bottom",
+      "label": "Extra bottom padding",
+      "min": 0,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "header_separator",
+      "label": "Separator line under the header",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Header utilities"
+    },
+    {
+      "type": "select",
+      "id": "utility_style",
+      "label": "Utility style",
+      "info": "Icon only still carries each item’s label for screen readers.",
+      "default": "label",
+      "options": [
+        {
+          "value": "label",
+          "label": "Icon with text"
+        },
+        {
+          "value": "icon",
+          "label": "Icon only"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show search",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "search_url",
+      "label": "Search link",
+      "info": "Defaults to the catalogue on the Shop page."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_account",
+      "label": "Show account",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_wishlist",
+      "label": "Show wishlist",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_bag",
+      "label": "Show bag",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "bag_url",
+      "label": "Bag link",
+      "info": "Defaults to the catalogue on the Shop page."
+    },
+    {
+      "type": "header",
+      "content": "Navigation behaviour"
+    },
+    {
+      "type": "select",
+      "id": "dropdown_trigger",
+      "label": "Open dropdowns on",
+      "info": "On click, a menu link opens its panel instead of navigating — the panel’s lead card carries the same destination.",
+      "default": "hover",
+      "options": [
+        {
+          "value": "hover",
+          "label": "Hover"
+        },
+        {
+          "value": "click",
+          "label": "Click"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sticky_mode",
+      "label": "Sticky header",
+      "info": "On scroll up, the bar steps aside while reading down and returns on the way up.",
+      "default": "scroll-up",
+      "options": [
+        {
+          "value": "scroll-up",
+          "label": "Show on scroll up"
+        },
+        {
+          "value": "always",
+          "label": "Always visible"
+        },
+        {
+          "value": "never",
+          "label": "Never — scrolls away"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "collapse_on_scroll",
+      "label": "Collapse on scroll",
+      "info": "Drops the top bar once the header lifts out of flow, so the sticky bar sits slimmer.",
+      "default": false
     },
     {
       "type": "header",

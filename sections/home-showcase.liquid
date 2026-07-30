@@ -1,4 +1,42 @@
 {%- render 'section-design', section: section -%}
+{%- liquid
+  assign cfg = section.settings
+  assign sel = '#shopify-section-' | append: section.id
+  assign has_layout = false
+  if cfg.sw_cols != 4 or cfg.sw_cols_m != 1 or cfg.sw_align != 'center'
+    assign has_layout = true
+  endif
+  if cfg.sw_show_divider == false
+    assign has_layout = true
+  endif
+-%}
+{%- if has_layout -%}
+  <style>
+    {%- if cfg.sw_cols != 4 -%}
+      @media (min-width: 1081px) {
+        {{ sel }} .manifesto__grid { grid-template-columns: repeat({{ cfg.sw_cols }}, minmax(0, 1fr)); }
+      }
+    {%- endif -%}
+    {%- if cfg.sw_cols_m != 1 -%}
+      @media (max-width: 600px) {
+        {{ sel }} .manifesto__grid { grid-template-columns: repeat({{ cfg.sw_cols_m }}, minmax(0, 1fr)); }
+      }
+    {%- endif -%}
+    {%- comment -%}
+      The intro is a centred grid, so left-aligning it means flipping the two
+      properties that centre it rather than adding any.
+    {%- endcomment -%}
+    {%- if cfg.sw_align == 'left' -%}
+      {{ sel }} .section-intro { text-align: left; justify-items: start; }
+    {%- endif -%}
+    {%- comment -%}
+      The rule between seals is a pseudo-element, so only CSS can retire it.
+    {%- endcomment -%}
+    {%- if cfg.sw_show_divider == false -%}
+      {{ sel }} .seal + .seal::before { display: none; }
+    {%- endif -%}
+  </style>
+{%- endif -%}
 <section class="section container manifesto" id="promise">
   <div class="section-intro" data-reveal>
     <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
@@ -13,11 +51,13 @@
   <ol class="manifesto__grid" data-reveal-child>
     {%- for block in section.blocks %}
     <li class="seal" {{ block.shopify_attributes }}>
-      <span class="seal__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
+      {% if cfg.sw_show_number %}<span class="seal__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>{% endif %}
 
+      {% if cfg.sw_show_ring %}
       <span class="seal__ring">
         <img src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 900 }}{% else %}{{ block.settings.fallback | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
       </span>
+      {% endif %}
 
       <h3 class="seal__title">{{ block.settings.title | escape }}</h3>
       <p class="seal__copy">{{ block.settings.copy | escape }}</p>
@@ -25,11 +65,13 @@
     {%- endfor %}
   </ol>
 
+  {% if cfg.sw_show_more %}
   <div class="manifesto__more" data-reveal>
     <a class="arrow-link" href="{{ section.settings.more_link }}">
       {{ section.settings.more_label | escape }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
     </a>
   </div>
+  {% endif %}
 </section>
 
 {% schema %}
@@ -65,6 +107,76 @@
       "id": "more_link",
       "label": "Link",
       "default": "#craft"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "sw_align",
+      "label": "Heading alignment",
+      "default": "center",
+      "options": [
+        {
+          "value": "center",
+          "label": "Centred"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "sw_cols",
+      "label": "Seals per row (desktop)",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 4,
+      "info": "Applies above 1080px. Between 600 and 1080px the theme shows two."
+    },
+    {
+      "type": "range",
+      "id": "sw_cols_m",
+      "label": "Seals per row (mobile)",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1,
+      "info": "Applies below 600px."
+    },
+    {
+      "type": "header",
+      "content": "Seal content"
+    },
+    {
+      "type": "checkbox",
+      "id": "sw_show_number",
+      "label": "Show seal number",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sw_show_ring",
+      "label": "Show seal image",
+      "default": true,
+      "info": "The round portrait above each promise."
+    },
+    {
+      "type": "checkbox",
+      "id": "sw_show_divider",
+      "label": "Show rule between seals",
+      "default": true,
+      "info": "Drawn only where seals sit side by side, so it already disappears once they stack."
+    },
+    {
+      "type": "checkbox",
+      "id": "sw_show_more",
+      "label": "Show bottom link",
+      "default": true
     },
     {
       "type": "header",

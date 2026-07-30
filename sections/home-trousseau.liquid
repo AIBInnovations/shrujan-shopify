@@ -1,4 +1,57 @@
 {%- render 'section-design', section: section -%}
+{%- liquid
+  assign cfg = section.settings
+  assign sel = '#shopify-section-' | append: section.id
+
+  # Every card element is hidden with CSS rather than removed in Liquid: the
+  # inline script rebuilds this grid from window.SHRUJAN.PIECES the moment a
+  # filter is pressed, so a Liquid condition would only hold for the first paint.
+  assign has_layout = false
+  if cfg.tr_cols != 5 or cfg.tr_cols_m != 2 or cfg.tr_ratio != 'default'
+    assign has_layout = true
+  endif
+  if cfg.tr_show_badge == false or cfg.tr_show_price == false or cfg.tr_show_was == false
+    assign has_layout = true
+  endif
+  if cfg.tr_show_swatches == false or cfg.tr_show_wish == false or cfg.tr_show_quick == false
+    assign has_layout = true
+  endif
+-%}
+{%- if has_layout -%}
+  <style>
+    {%- if cfg.tr_cols != 5 -%}
+      @media (min-width: 1081px) {
+        {{ sel }} .curated__grid { grid-template-columns: repeat({{ cfg.tr_cols }}, minmax(0, 1fr)); }
+      }
+    {%- endif -%}
+    {%- if cfg.tr_cols_m != 2 -%}
+      @media (max-width: 720px) {
+        {{ sel }} .curated__grid { grid-template-columns: repeat({{ cfg.tr_cols_m }}, minmax(0, 1fr)); }
+      }
+    {%- endif -%}
+    {%- if cfg.tr_ratio != 'default' -%}
+      {{ sel }} .piece__media { aspect-ratio: {{ cfg.tr_ratio }}; }
+    {%- endif -%}
+    {%- if cfg.tr_show_badge == false -%}
+      {{ sel }} .piece__badge { display: none; }
+    {%- endif -%}
+    {%- if cfg.tr_show_price == false -%}
+      {{ sel }} .piece__price { display: none; }
+    {%- endif -%}
+    {%- if cfg.tr_show_was == false -%}
+      {{ sel }} .piece__price span { display: none; }
+    {%- endif -%}
+    {%- if cfg.tr_show_swatches == false -%}
+      {{ sel }} .piece__swatches { display: none; }
+    {%- endif -%}
+    {%- if cfg.tr_show_wish == false -%}
+      {{ sel }} .piece__wish { display: none; }
+    {%- endif -%}
+    {%- if cfg.tr_show_quick == false -%}
+      {{ sel }} .piece__quick { display: none; }
+    {%- endif -%}
+  </style>
+{%- endif -%}
 <section class="section container" id="curated">
   <div class="section-intro" data-reveal>
     <p class="eyebrow">{{ section.settings.eyebrow }}</p>
@@ -8,6 +61,7 @@
     </p>
   </div>
 
+  {% if cfg.tr_show_filters %}
   <div class="curated__filters" data-reveal role="tablist" aria-label="Filter by occasion">
     <button type="button" role="tab" aria-selected="true" class="curated__filter is-active">{{ section.settings.tab_1 }}</button>
     <button type="button" role="tab" aria-selected="false" class="curated__filter">{{ section.settings.tab_2 }}</button>
@@ -15,6 +69,7 @@
     <button type="button" role="tab" aria-selected="false" class="curated__filter">{{ section.settings.tab_4 }}</button>
     <button type="button" role="tab" aria-selected="false" class="curated__filter">{{ section.settings.tab_5 }}</button>
   </div>
+  {% endif %}
 
   <div class="curated__grid" data-reveal-child>
     <a class="piece" href="/pages/shop-shrujan#catalogue">
@@ -273,6 +328,107 @@
       "type": "url",
       "id": "more_url",
       "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "tr_cols",
+      "label": "Cards per row (desktop)",
+      "min": 1,
+      "max": 8,
+      "step": 1,
+      "default": 5,
+      "info": "Applies above 1080px. Narrower screens keep the theme’s own ladder — 3, then 2. Five cards are shown, so a different count leaves a short last row."
+    },
+    {
+      "type": "range",
+      "id": "tr_cols_m",
+      "label": "Cards per row (mobile)",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2,
+      "info": "Applies below 720px. Left at 2, phones under 560px keep stacking one card per row."
+    },
+    {
+      "type": "select",
+      "id": "tr_ratio",
+      "label": "Image shape",
+      "default": "default",
+      "info": "Theme default steps from 3:4 down to 5:6 and then 4:5 as the screen narrows. Any other choice holds at every size.",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "1/1",
+          "label": "Square (1:1)"
+        },
+        {
+          "value": "4/5",
+          "label": "Portrait (4:5)"
+        },
+        {
+          "value": "3/4",
+          "label": "Portrait (3:4)"
+        },
+        {
+          "value": "2/3",
+          "label": "Tall (2:3)"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Card content"
+    },
+    {
+      "type": "checkbox",
+      "id": "tr_show_filters",
+      "label": "Show occasion filters",
+      "default": true,
+      "info": "Without them the grid stays on its opening selection."
+    },
+    {
+      "type": "checkbox",
+      "id": "tr_show_badge",
+      "label": "Show status badge",
+      "default": true,
+      "info": "The “Sold out” style flag over the image."
+    },
+    {
+      "type": "checkbox",
+      "id": "tr_show_price",
+      "label": "Show price",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "tr_show_was",
+      "label": "Show “was” price",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "tr_show_swatches",
+      "label": "Show colour swatches",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "tr_show_wish",
+      "label": "Show wishlist button",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "tr_show_quick",
+      "label": "Show quick-add on hover",
+      "default": true
     },
     {
       "type": "header",

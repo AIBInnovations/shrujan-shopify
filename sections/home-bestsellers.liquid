@@ -10,8 +10,36 @@
   if max_sold == 0
     assign max_sold = 1
   endif
+
+  # `s` is taken by the loop above, so the settings alias here is `cfg`. Layout
+  # CSS is emitted only when a knob moves off its built-in value, so a merchant
+  # who touches nothing gets byte-identical markup.
+  assign cfg = section.settings
+  assign sel = '#shopify-section-' | append: section.id
+  assign has_layout = false
+  if cfg.bs_cols != 5 or cfg.bs_cols_m != 2 or cfg.bs_ratio != 'default'
+    assign has_layout = true
+  endif
 -%}
-<section class="section container best" id="bestsellers">
+{%- if has_layout -%}
+  <style>
+    {%- comment -%}
+      `--best-cols` already drives the card width, and the theme steps it down
+      at 1080/720/560. Overriding it inside the matching query keeps that
+      ladder intact instead of pinning one count at every size.
+    {%- endcomment -%}
+    {%- if cfg.bs_cols != 5 -%}
+      @media (min-width: 1081px) { {{ sel }} .best__rail { --best-cols: {{ cfg.bs_cols }}; } }
+    {%- endif -%}
+    {%- if cfg.bs_cols_m != 2 -%}
+      @media (max-width: 720px) { {{ sel }} .best__rail { --best-cols: {{ cfg.bs_cols_m }}; } }
+    {%- endif -%}
+    {%- if cfg.bs_ratio != 'default' -%}
+      {{ sel }} .best-card__media { aspect-ratio: {{ cfg.bs_ratio }}; }
+    {%- endif -%}
+  </style>
+{%- endif -%}
+<section class="section container best" id="bestsellers"{% if cfg.bs_step != 'page' %} data-step="{{ cfg.bs_step }}"{% endif %}{% if cfg.bs_autoplay %} data-autoplay="{{ cfg.bs_interval | times: 1000 }}"{% endif %}>
   <div class="section-head" data-reveal>
     <div class="section-head__titles">
       <p class="eyebrow">{{ section.settings.eyebrow }}</p>
@@ -20,6 +48,7 @@
 
     <div class="section-head__aside">
       <p class="best__legend">{{ section.settings.legend }}</p>
+      {% if cfg.bs_show_arrows %}
       <div class="carousel-arrows">
         <button type="button" aria-label="Previous bestsellers">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5 8 12l6.5 6.5"></path></svg>
@@ -28,6 +57,7 @@
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9.5 5.5 6.5 6.5-6.5 6.5"></path></svg>
         </button>
       </div>
+      {% endif %}
     </div>
   </div>
 
@@ -37,18 +67,26 @@
       <span class="best-card__rank"><span class="best-card__num">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span><span class="best-card__thread" aria-hidden="true"></span></span>
       <div class="best-card__media">
         <img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1200 }}{% else %}{{ block.settings.img_asset | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
+        {% if cfg.bs_show_wish %}
         <button class="best-card__wish" type="button" aria-label="Save {{ block.settings.name | escape }} to wishlist">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19.8S4.5 15.3 4.5 9.9c0-2.6 2-4.4 4.2-4.4 1.5 0 2.7.8 3.3 2 .6-1.2 1.8-2 3.3-2 2.2 0 4.2 1.8 4.2 4.4 0 5.4-7.5 9.9-7.5 9.9Z"></path></svg>
         </button>
-        {% if block.settings.note != blank %}<span class="best-card__note">{{ block.settings.note }}</span>{% endif %}
+        {% endif %}
+        {% if cfg.bs_show_badge and block.settings.note != blank %}<span class="best-card__note">{{ block.settings.note }}</span>{% endif %}
       </div>
       <div class="best-card__info">
         <p class="best-card__name">{{ block.settings.name }}</p>
         <p class="best-card__craft">{{ block.settings.craft }}</p>
-        <p class="best-card__price">{{ block.settings.price }}{% if block.settings.was_price != blank %}<span>{{ block.settings.was_price }}</span>{% endif %}</p>
+        {% if cfg.bs_show_price %}
+        <p class="best-card__price">{{ block.settings.price }}{% if cfg.bs_show_was and block.settings.was_price != blank %}<span>{{ block.settings.was_price }}</span>{% endif %}</p>
+        {% endif %}
+        {% if cfg.bs_show_sold %}
         <span class="best-card__meter" style="--fill: {{ block.settings.sold | plus: 0 | times: 100.0 | divided_by: max_sold | round }}%" aria-hidden="true"></span>
         <p class="best-card__sold"><strong>{{ block.settings.sold }}</strong> {{ section.settings.sold_label }}</p>
+        {% endif %}
+        {% if cfg.bs_show_swatches %}
         <span class="best-card__swatches" aria-hidden="true">{% assign swatch_list = block.settings.swatches | split: ',' %}{% for swatch in swatch_list %}<i style="background: {{ swatch | strip }}"></i>{% endfor %}</span>
+        {% endif %}
       </div>
     </a>
     {%- endfor %}
@@ -67,10 +105,24 @@
 
   var rail = root.querySelector('.best__rail');
 
-  // Scroll one full page — however many cards currently fit.
+  // Behaviour flags ride on data attributes on the section root. The section
+  // only writes an attribute when the merchant moves off the built-in value, so
+  // every read here falls back to what this carousel has always done.
+  var step = root.getAttribute('data-step') || 'page';
+  var every = parseInt(root.getAttribute('data-autoplay'), 10) || 0;
+
+  // One card plus the rail's gap, measured live so it tracks --best-cols.
+  function cardStep() {
+    var card = rail.querySelector('.best-card');
+    if (!card) return rail.clientWidth;
+    return card.getBoundingClientRect().width + (parseFloat(getComputedStyle(rail).columnGap) || 0);
+  }
+
+  // Scroll one full page — however many cards currently fit — or a single card.
   function page(dir) {
     if (!rail) return;
-    rail.scrollBy({ left: dir * rail.clientWidth, behavior: 'smooth' });
+    var by = step === 'card' ? cardStep() : rail.clientWidth;
+    rail.scrollBy({ left: dir * by, behavior: 'smooth' });
   }
 
   var arrows = root.querySelectorAll('.carousel-arrows button');
@@ -81,6 +133,34 @@
   root.querySelectorAll('.best-card__wish').forEach(function (btn) {
     btn.addEventListener('click', function (e) { e.preventDefault(); });
   });
+
+  // Autoplay is opt-in. It pauses on hover and on keyboard focus, and never
+  // starts for a visitor who asked for reduced motion.
+  if (every > 0 && rail && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var timer = null;
+
+    var stopAuto = function () {
+      if (timer) { clearInterval(timer); timer = null; }
+    };
+
+    var startAuto = function () {
+      stopAuto();
+      timer = setInterval(function () {
+        // 2px of slack — the scrolled edge and scrollWidth rarely land exactly.
+        if (rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 2) {
+          rail.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          page(1);
+        }
+      }, every);
+    };
+
+    root.addEventListener('mouseenter', stopAuto);
+    root.addEventListener('mouseleave', startAuto);
+    root.addEventListener('focusin', stopAuto);
+    root.addEventListener('focusout', startAuto);
+    startAuto();
+  }
 })();
 </script>
 {% schema %}
@@ -122,6 +202,142 @@
       "type": "url",
       "id": "more_link",
       "label": "Bottom link"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "bs_cols",
+      "label": "Cards in view (desktop)",
+      "min": 1,
+      "max": 8,
+      "step": 1,
+      "default": 5,
+      "info": "Applies above 1080px. Narrower screens keep the theme’s own ladder — 3, then 2."
+    },
+    {
+      "type": "range",
+      "id": "bs_cols_m",
+      "label": "Cards in view (mobile)",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2,
+      "info": "Applies below 720px. Left at 2, phones under 560px keep showing a fraction over one card so the next one peeks in."
+    },
+    {
+      "type": "select",
+      "id": "bs_ratio",
+      "label": "Image shape",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default (3:4)"
+        },
+        {
+          "value": "1/1",
+          "label": "Square (1:1)"
+        },
+        {
+          "value": "4/5",
+          "label": "Portrait (4:5)"
+        },
+        {
+          "value": "2/3",
+          "label": "Tall (2:3)"
+        },
+        {
+          "value": "16/9",
+          "label": "Landscape (16:9)"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Carousel"
+    },
+    {
+      "type": "checkbox",
+      "id": "bs_show_arrows",
+      "label": "Show arrows",
+      "default": true,
+      "info": "The rail stays swipeable and scrollable either way."
+    },
+    {
+      "type": "select",
+      "id": "bs_step",
+      "label": "Arrow moves",
+      "default": "page",
+      "options": [
+        {
+          "value": "page",
+          "label": "One page"
+        },
+        {
+          "value": "card",
+          "label": "One card"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "bs_autoplay",
+      "label": "Autoplay",
+      "default": false,
+      "info": "Pauses on hover and on keyboard focus, and never runs for visitors who ask for reduced motion."
+    },
+    {
+      "type": "range",
+      "id": "bs_interval",
+      "label": "Autoplay interval",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "unit": "s",
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Card content"
+    },
+    {
+      "type": "checkbox",
+      "id": "bs_show_badge",
+      "label": "Show note badge",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "bs_show_price",
+      "label": "Show price",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "bs_show_was",
+      "label": "Show “was” price",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "bs_show_sold",
+      "label": "Show sold meter and count",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "bs_show_swatches",
+      "label": "Show colour swatches",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "bs_show_wish",
+      "label": "Show wishlist button",
+      "default": true
     },
     {
       "type": "header",

@@ -1,4 +1,5 @@
 {%- render 'section-design', section: section -%}
+{%- assign cfg = section.settings -%}
 <section class="section container" aria-label="{{ section.settings.title | escape }}">
   <div class="tw__intro" data-reveal>
     <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
@@ -8,13 +9,14 @@
     </p>
   </div>
 
-  <div class="tw" data-reveal>
+  <div class="tw" data-reveal{% if cfg.tm_step != 'page' %} data-step="{{ cfg.tm_step }}"{% endif %}{% if cfg.tm_autoplay %} data-autoplay="{{ cfg.tm_interval | times: 1000 }}"{% endif %}>
     <header class="tw__head">
       <p class="tw__title">
         {{ section.settings.kind_title }}
       </p>
 
       <div class="tw__meta">
+        {% if cfg.tm_show_rating %}
         <div class="tw-rating">
           <span class="tw-rating__stars" aria-label="5 out of 5 stars">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.6L12 17.6 6.1 20.7l1.2-6.6L2.5 9.5l6.6-.9Z"></path></svg>
@@ -25,6 +27,7 @@
           </span>
           <span class="tw-rating__count">{{ section.settings.rating_count }}</span>
         </div>
+        {% endif %}
 
         <div class="tw-loved">
           <span class="tw-loved__stack" aria-hidden="true">
@@ -39,6 +42,7 @@
           </span>
         </div>
 
+        {% if cfg.tm_show_arrows %}
         <div class="carousel-arrows">
           <button type="button" aria-label="Previous testimonials">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5 8 12l6.5 6.5"></path></svg>
@@ -47,13 +51,14 @@
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9.5 5.5 6.5 6.5-6.5 6.5"></path></svg>
           </button>
         </div>
+        {% endif %}
       </div>
     </header>
 
     <div class="tw__grid">
       {%- for block in section.blocks %}
       {%- assign twmod = forloop.index0 | modulo: 2 %}
-      <article class="tw-cell{% if twmod == 1 %} tw-cell--flip{% endif %}" {{ block.shopify_attributes }}>
+      <article class="tw-cell{% if cfg.tm_alternate and twmod == 1 %} tw-cell--flip{% endif %}" {{ block.shopify_attributes }}>
         <div class="tw-cell__inner">
           <div class="tw-cell__face tw-cell__face--front">
             <div class="tw-cell__person">
@@ -106,15 +111,58 @@
 
   var track = root.querySelector('.tw__grid');
 
-  // Scroll one full page (whatever number of cells currently fit).
+  // Behaviour flags ride on data attributes on this element. The section only
+  // writes one when the merchant moves off the built-in value, so every read
+  // here falls back to what this carousel has always done.
+  var step = root.getAttribute('data-step') || 'page';
+  var every = parseInt(root.getAttribute('data-autoplay'), 10) || 0;
+
+  // One cell plus any gap, measured live so it tracks the cell's flex-basis.
+  function cellStep() {
+    var cell = track.querySelector('.tw-cell');
+    if (!cell) return track.clientWidth;
+    return cell.getBoundingClientRect().width + (parseFloat(getComputedStyle(track).columnGap) || 0);
+  }
+
+  // Scroll one full page (whatever number of cells currently fit), or one cell.
   function page(dir) {
     if (!track) return;
-    track.scrollBy({ left: dir * track.clientWidth, behavior: 'smooth' });
+    var by = step === 'cell' ? cellStep() : track.clientWidth;
+    track.scrollBy({ left: dir * by, behavior: 'smooth' });
   }
 
   var arrows = root.querySelectorAll('.carousel-arrows button');
   if (arrows[0]) arrows[0].addEventListener('click', function () { page(-1); });
   if (arrows[1]) arrows[1].addEventListener('click', function () { page(1); });
+
+  // Autoplay is opt-in. It pauses on hover and on keyboard focus — which also
+  // keeps it from fighting the flip cards, since those open on focus-within —
+  // and never starts for a visitor who asked for reduced motion.
+  if (every > 0 && track && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var timer = null;
+
+    var stopAuto = function () {
+      if (timer) { clearInterval(timer); timer = null; }
+    };
+
+    var startAuto = function () {
+      stopAuto();
+      timer = setInterval(function () {
+        // 2px of slack — the scrolled edge and scrollWidth rarely land exactly.
+        if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 2) {
+          track.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          page(1);
+        }
+      }, every);
+    };
+
+    root.addEventListener('mouseenter', stopAuto);
+    root.addEventListener('mouseleave', startAuto);
+    root.addEventListener('focusin', stopAuto);
+    root.addEventListener('focusout', startAuto);
+    startAuto();
+  }
 })();
 </script>
 {% schema %}
@@ -207,6 +255,68 @@
       "type": "url",
       "id": "picks_url",
       "label": "Picks link"
+    },
+    {
+      "type": "header",
+      "content": "Carousel"
+    },
+    {
+      "type": "checkbox",
+      "id": "tm_show_arrows",
+      "label": "Show arrows",
+      "default": true,
+      "info": "The rail stays swipeable and scrollable either way."
+    },
+    {
+      "type": "select",
+      "id": "tm_step",
+      "label": "Arrow moves",
+      "default": "page",
+      "options": [
+        {
+          "value": "page",
+          "label": "One page"
+        },
+        {
+          "value": "cell",
+          "label": "One card"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "tm_autoplay",
+      "label": "Autoplay",
+      "default": false,
+      "info": "Pauses on hover and on keyboard focus, and never runs for visitors who ask for reduced motion."
+    },
+    {
+      "type": "range",
+      "id": "tm_interval",
+      "label": "Autoplay interval",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "unit": "s",
+      "default": 6
+    },
+    {
+      "type": "header",
+      "content": "Cards"
+    },
+    {
+      "type": "checkbox",
+      "id": "tm_alternate",
+      "label": "Mirror every other card",
+      "default": true,
+      "info": "Every second card reads right-aligned against its neighbour. Off, all cards align the same way."
+    },
+    {
+      "type": "checkbox",
+      "id": "tm_show_rating",
+      "label": "Show rating",
+      "default": true,
+      "info": "The stars and review count above the cards."
     },
     {
       "type": "header",

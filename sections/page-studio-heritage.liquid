@@ -1,4 +1,22 @@
 {%- render 'section-design', section: section -%}
+{%- comment -%}
+  Region + grid controls. Every default reproduces the built page. The hallmark
+  grid steps 4 → 2 → 1 at 1100px and 620px, so the column override is confined
+  to the band the built rule owns — an id-specificity rule with no media query
+  would otherwise flatten those steps on tablets and phones.
+{%- endcomment -%}
+{%- liquid
+  assign cfg = section.settings
+  assign root_sel = '#shopify-section-' | append: section.id
+-%}
+{%- if cfg.mark_cols != 4 -%}
+  <style>
+    {{ root_sel }} { --mark-cols: {{ cfg.mark_cols }}; }
+    @media (min-width: 1101px) {
+      {{ root_sel }} .marks { grid-template-columns: repeat(var(--mark-cols), minmax(0, 1fr)); }
+    }
+  </style>
+{%- endif -%}
 {%- assign strand_blocks = section.blocks | where: 'type', 'strand' -%}
 {%- assign stat_blocks = section.blocks | where: 'type', 'stat' -%}
 {%- assign mark_blocks = section.blocks | where: 'type', 'mark' -%}
@@ -19,6 +37,7 @@
 
     <span class="page-hero__rule" aria-hidden="true"></span>
   </header>
+{%- if section.settings.show_strands %}
 
   <nav class="strands" aria-label="Studio Collection">
     <div class="container strands__inner">
@@ -34,14 +53,19 @@
       </ol>
     </div>
   </nav>
+{%- endif %}
+{%- if section.settings.show_origin or section.settings.show_stats or section.settings.show_marks %}
 
   <section class="section container">
+{%- if section.settings.show_origin %}
     <div class="origin" data-reveal>
       <p class="origin__lead">{{ section.settings.lead }}</p>
       <div class="origin__body">
         {{ section.settings.body }}
       </div>
     </div>
+{%- endif %}
+{%- if section.settings.show_stats %}
 
     <div class="craft__stats" data-reveal-child>
 {%- for block in stat_blocks %}
@@ -51,6 +75,8 @@
       </div>
 {%- endfor %}
     </div>
+{%- endif %}
+{%- if section.settings.show_marks %}
 
     <ol class="marks" data-reveal-child>
 {%- for block in mark_blocks %}
@@ -61,9 +87,13 @@
       </li>
 {%- endfor %}
     </ol>
+{%- endif %}
   </section>
+{%- endif %}
+{%- if section.settings.show_arch or section.settings.show_pull %}
 
   <section class="section container">
+{%- if section.settings.show_arch %}
     <div class="section-intro" data-reveal>
       <p class="eyebrow">{{ section.settings.arch_eyebrow | escape }}</p>
       <h2 class="section-title">{{ section.settings.arch_title }}</h2>
@@ -76,9 +106,14 @@
       </figure>
 {%- endfor %}
     </div>
+{%- endif %}
+{%- if section.settings.show_pull %}
 
     <blockquote class="origin__pull" data-reveal>{{ section.settings.pull }}</blockquote>
+{%- endif %}
   </section>
+{%- endif %}
+{%- if section.settings.show_enquiry %}
 
   <section class="section container enquiry" id="heritage-enquiry" data-done-title="{{ section.settings.done_title | escape }}" data-done-body="{{ section.settings.done_body | escape }}" data-done-again="{{ section.settings.done_again | escape }}">
     <div class="enquiry__intro" data-reveal>
@@ -168,6 +203,7 @@
       </div>
     </form>
   </section>
+{%- endif %}
 </div>
 
 <script>
@@ -335,6 +371,62 @@
       "id": "done_again",
       "label": "Success button label",
       "default": "Send another enquiry"
+    },
+    {
+      "type": "header",
+      "content": "Sections shown"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_strands",
+      "label": "Show the strand navigation",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_origin",
+      "label": "Show the intro lead and body",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stats",
+      "label": "Show the stats row",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_marks",
+      "label": "Show the hallmarks grid",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arch",
+      "label": "Show the archive image grid",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pull",
+      "label": "Show the pull quote",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_enquiry",
+      "label": "Show the enquiry form",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "mark_cols",
+      "label": "Hallmarks per row",
+      "info": "Applies above 1100px. The grid still steps to two across below that and one below 620px.",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 4
     },
     {
       "type": "header",

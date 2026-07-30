@@ -1,4 +1,44 @@
 {%- render 'section-design', section: section -%}
+{%- comment -%}
+  Gallery layout. The ≤720px stylesheet already lays the thumbnail rail out
+  under the shot, so "below" simply asks for that arrangement at every width;
+  and the pinned block is released by returning .pdp__media to static, which is
+  what it already becomes at ≤900px. Both are written only when the merchant
+  moves off the built design.
+{%- endcomment -%}
+{%- liquid
+  assign cfg = section.settings
+  assign root_sel = '#shopify-section-' | append: section.id
+-%}
+{%- if cfg.gallery_thumbs != 'left' or cfg.gallery_sticky == false -%}
+  <style>
+    {%- if cfg.gallery_thumbs == 'below' -%}
+      {{ root_sel }} .pdp__media { grid-template-columns: minmax(0, 1fr); }
+      {{ root_sel }} .pdp__rail {
+        order: 2;
+        grid-auto-flow: column;
+        grid-auto-columns: 64px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        padding-top: 10px;
+      }
+      {{ root_sel }} .pdp__rail::-webkit-scrollbar { display: none; }
+      {%- comment -%}
+        The stage is sized to fill the screen, so with the rail moved underneath
+        it the pinned block has to give back the strip's height (a 64px-wide
+        thumbnail at 3/4 is ~85px tall, plus its 10px of padding) or the
+        thumbnails would sit below the fold of the block that pins them.
+      {%- endcomment -%}
+      {{ root_sel }} .pdp__stage {
+        order: 1;
+        height: min(calc(100vh - 2 * clamp(14px, 1.6vw, 26px) - 104px), 756px);
+      }
+    {%- endif -%}
+    {%- if cfg.gallery_sticky == false -%}
+      {{ root_sel }} .pdp__media { position: static; }
+    {%- endif -%}
+  </style>
+{%- endif -%}
 <!-- Product detail — three columns. Resolved from the URL at runtime, so the
      whole page is client-rendered from window.SHRUJAN into the shell below. -->
 <div class="page pdp-page"
@@ -9,7 +49,14 @@
   data-mode2-note="{{ section.settings.mode2_note | escape }}"
   data-mode2-price="{{ section.settings.mode2_price | escape }}"
   data-reassure="{{ section.settings.reassure | escape }}"
-  data-review-note="{{ section.settings.review_note | escape }}"></div>
+  data-review-note="{{ section.settings.review_note | escape }}"
+  data-show-sizes="{{ section.settings.show_sizes }}"
+  data-show-modes="{{ section.settings.show_modes }}"
+  data-show-details="{{ section.settings.show_details }}"
+  data-show-reviews="{{ section.settings.show_reviews }}"
+  data-show-rec="{{ section.settings.show_rec }}"
+  data-show-other="{{ section.settings.show_other }}"
+  data-card-swatches="{{ section.settings.card_swatches }}"></div>
 
 <script>
 (function () {
@@ -32,6 +79,22 @@
     mode2Price: txt('mode2-price', '+ ₹ 1,200'),
     reassure: txt('reassure', 'Free alterations for as long as you own it'),
     reviewNote: txt('review-note', 'Bought this piece? Tell us how it wears — we send every review back to the woman who made it.')
+  };
+
+  /* ---- customizer regions: same shell attributes, every fallback is today's
+     value, so an absent attribute keeps the page exactly as built ---- */
+  function flag(name, fallback) {
+    var v = root.getAttribute('data-' + name);
+    return v === null || v === '' ? fallback : v !== 'false';
+  }
+  var SHOW = {
+    sizes: flag('show-sizes', true),
+    modes: flag('show-modes', true),
+    details: flag('show-details', true),
+    reviews: flag('show-reviews', true),
+    rec: flag('show-rec', true),
+    other: flag('show-other', true),
+    swatches: flag('card-swatches', true)
   };
 
   /* ---- resolve the piece: /products/<slug> from the path, ?slug= fallback ---- */
@@ -92,9 +155,11 @@
     h += '<p class="piece__name">' + p.name + '</p>';
     h += '<p class="piece__craft">' + p.craft + '</p>';
     h += '<p class="piece__price">' + p.price + (p.was ? '<span>' + p.was + '</span>' : '') + '</p>';
-    h += '<span class="piece__swatches" aria-hidden="true">';
-    for (var i = 0; i < p.swatches.length; i++) h += '<i style="background: ' + p.swatches[i] + '"></i>';
-    h += '</span>';
+    if (SHOW.swatches) {
+      h += '<span class="piece__swatches" aria-hidden="true">';
+      for (var i = 0; i < p.swatches.length; i++) h += '<i style="background: ' + p.swatches[i] + '"></i>';
+      h += '</span>';
+    }
     h += '</div>';
     h += '</a>';
     return h;
@@ -127,32 +192,38 @@
   S.SPECS.forEach(function (sp) { buyHtml += '<li>' + sp + '</li>'; });
   buyHtml += '</ul></div>';
 
-  buyHtml += '<div class="pdp__block"><div class="pdp__label-row"><p class="pdp__label">Size</p><button type="button" class="pdp__size-guide">Size guide</button></div>';
-  buyHtml += '<div class="pdp__sizes" role="group" aria-label="Size">';
-  S.SIZES.forEach(function (sz) {
-    buyHtml += '<button type="button" class="pdp__size' + (sz === 'M' ? ' is-active' : '') + '" aria-pressed="' + (sz === 'M' ? 'true' : 'false') + '">' + sz + '</button>';
-  });
-  buyHtml += '</div></div>';
+  if (SHOW.sizes) {
+    buyHtml += '<div class="pdp__block"><div class="pdp__label-row"><p class="pdp__label">Size</p><button type="button" class="pdp__size-guide">Size guide</button></div>';
+    buyHtml += '<div class="pdp__sizes" role="group" aria-label="Size">';
+    S.SIZES.forEach(function (sz) {
+      buyHtml += '<button type="button" class="pdp__size' + (sz === 'M' ? ' is-active' : '') + '" aria-pressed="' + (sz === 'M' ? 'true' : 'false') + '">' + sz + '</button>';
+    });
+    buyHtml += '</div></div>';
+  }
 
-  buyHtml += '<div class="pdp__options" role="radiogroup" aria-label="How it is made">';
-  buyHtml += '<label class="pdp__option is-active"><input type="radio" name="pdp-mode" checked><span class="pdp__option-body"><span class="pdp__option-title">' + TEXT.mode1Title + '</span><span class="pdp__option-note">' + TEXT.mode1Note + '</span></span><span class="pdp__option-price">' + piece.price + '</span></label>';
-  buyHtml += '<label class="pdp__option"><input type="radio" name="pdp-mode"><span class="pdp__option-body"><span class="pdp__option-title">' + TEXT.mode2Title + '</span><span class="pdp__option-note">' + TEXT.mode2Note + '</span></span><span class="pdp__option-price">' + TEXT.mode2Price + '</span></label>';
-  buyHtml += '</div>';
+  if (SHOW.modes) {
+    buyHtml += '<div class="pdp__options" role="radiogroup" aria-label="How it is made">';
+    buyHtml += '<label class="pdp__option is-active"><input type="radio" name="pdp-mode" checked><span class="pdp__option-body"><span class="pdp__option-title">' + TEXT.mode1Title + '</span><span class="pdp__option-note">' + TEXT.mode1Note + '</span></span><span class="pdp__option-price">' + piece.price + '</span></label>';
+    buyHtml += '<label class="pdp__option"><input type="radio" name="pdp-mode"><span class="pdp__option-body"><span class="pdp__option-title">' + TEXT.mode2Title + '</span><span class="pdp__option-note">' + TEXT.mode2Note + '</span></span><span class="pdp__option-price">' + TEXT.mode2Price + '</span></label>';
+    buyHtml += '</div>';
+  }
 
   buyHtml += '<div class="pdp__cta"><button type="button" class="btn pdp__add">Add to bag — ' + piece.price + '</button><button type="button" class="pdp__wish" aria-label="Save to wishlist">' + heartIcon(17) + '</button></div>';
   buyHtml += '<p class="pdp__reassure">' + phoolIcon + ' ' + TEXT.reassure + '</p>';
 
-  buyHtml += '<div class="pdp__details">';
-  S.DETAILS.forEach(function (d, i) {
-    buyHtml += '<div class="pdp__detail' + (i === 0 ? ' is-open' : '') + '">';
-    buyHtml += '<button type="button" class="pdp__detail-summary" aria-expanded="' + (i === 0 ? 'true' : 'false') + '" aria-controls="pdp-detail-' + i + '">';
-    buyHtml += '<span>' + d.q + '</span>';
-    buyHtml += '<span class="pdp__detail-icon" aria-hidden="true">' + plusIcon + '</span>';
-    buyHtml += '</button>';
-    buyHtml += '<div class="pdp__detail-panel" id="pdp-detail-' + i + '" role="region"><div class="pdp__detail-inner"><p>' + d.a + '</p></div></div>';
+  if (SHOW.details) {
+    buyHtml += '<div class="pdp__details">';
+    S.DETAILS.forEach(function (d, i) {
+      buyHtml += '<div class="pdp__detail' + (i === 0 ? ' is-open' : '') + '">';
+      buyHtml += '<button type="button" class="pdp__detail-summary" aria-expanded="' + (i === 0 ? 'true' : 'false') + '" aria-controls="pdp-detail-' + i + '">';
+      buyHtml += '<span>' + d.q + '</span>';
+      buyHtml += '<span class="pdp__detail-icon" aria-hidden="true">' + plusIcon + '</span>';
+      buyHtml += '</button>';
+      buyHtml += '<div class="pdp__detail-panel" id="pdp-detail-' + i + '" role="region"><div class="pdp__detail-inner"><p>' + d.a + '</p></div></div>';
+      buyHtml += '</div>';
+    });
     buyHtml += '</div>';
-  });
-  buyHtml += '</div>';
+  }
 
   buyHtml += '<div class="pdp__worn"><div class="pdp__label-row"><p class="pdp__label">Worn by</p><a href="#reviews">All 126 reviews</a></div><div class="pdp__faces">';
   S.REVIEW_FACES.forEach(function (f) { buyHtml += '<img src="' + S.asset(f) + '" alt="" loading="lazy">'; });
@@ -161,31 +232,40 @@
   buyHtml += '<a class="arrow-link pdp__back" href="/pages/shop-shrujan">Back to the catalogue ' + arrowIcon(15) + '</a>';
 
   /* ---- reviews ---- */
-  var reviewsHtml = '<section class="section container pdp-reviews" id="reviews">';
-  reviewsHtml += '<div class="section-head" data-reveal><div class="section-head__titles"><p class="eyebrow">126 reviews</p><h2 class="section-title">What buyers <em>say</em></h2></div><a class="arrow-link" href="#write-review">Write a review ' + arrowIcon(16) + '</a></div>';
-  reviewsHtml += '<div class="reviews" data-reveal-child>';
-  reviewsHtml += '<aside class="review-add" id="write-review"><p class="review-add__score">5.0</p>' + stars(5) + '<p class="review-add__count">Based on 126 reviews</p><button type="button" class="btn">Write a review</button><p class="review-add__note">' + TEXT.reviewNote + '</p></aside>';
-  S.REVIEWS.forEach(function (r, i) {
-    reviewsHtml += '<article class="review">' + stars(r.stars);
-    reviewsHtml += '<p class="review__body">' + r.body + '</p>';
-    reviewsHtml += '<div class="review__who"><img src="' + S.asset(S.REVIEW_FACES[i % S.REVIEW_FACES.length]) + '" alt="" loading="lazy"><span><span class="review__name">' + r.name + '</span><span class="review__place">' + r.place + '</span></span></div>';
-    reviewsHtml += '</article>';
-  });
-  reviewsHtml += '</div></section>';
+  var reviewsHtml = '';
+  if (SHOW.reviews) {
+    reviewsHtml = '<section class="section container pdp-reviews" id="reviews">';
+    reviewsHtml += '<div class="section-head" data-reveal><div class="section-head__titles"><p class="eyebrow">126 reviews</p><h2 class="section-title">What buyers <em>say</em></h2></div><a class="arrow-link" href="#write-review">Write a review ' + arrowIcon(16) + '</a></div>';
+    reviewsHtml += '<div class="reviews" data-reveal-child>';
+    reviewsHtml += '<aside class="review-add" id="write-review"><p class="review-add__score">5.0</p>' + stars(5) + '<p class="review-add__count">Based on 126 reviews</p><button type="button" class="btn">Write a review</button><p class="review-add__note">' + TEXT.reviewNote + '</p></aside>';
+    S.REVIEWS.forEach(function (r, i) {
+      reviewsHtml += '<article class="review">' + stars(r.stars);
+      reviewsHtml += '<p class="review__body">' + r.body + '</p>';
+      reviewsHtml += '<div class="review__who"><img src="' + S.asset(S.REVIEW_FACES[i % S.REVIEW_FACES.length]) + '" alt="" loading="lazy"><span><span class="review__name">' + r.name + '</span><span class="review__place">' + r.place + '</span></span></div>';
+      reviewsHtml += '</article>';
+    });
+    reviewsHtml += '</div></section>';
+  }
 
   /* ---- recommendation ---- */
-  var recHtml = '<section class="section container pdp-rec" aria-label="Recommended">';
-  recHtml += '<div class="section-head" data-reveal><div class="section-head__titles"><p class="eyebrow">You may also like</p><h2 class="section-title">More from the <em>same hands</em></h2></div></div>';
-  recHtml += '<div class="curated__grid" data-reveal-child>';
-  alsoLike.forEach(function (p) { recHtml += cardHtml(p); });
-  recHtml += '</div></section>';
+  var recHtml = '';
+  if (SHOW.rec) {
+    recHtml = '<section class="section container pdp-rec" aria-label="Recommended">';
+    recHtml += '<div class="section-head" data-reveal><div class="section-head__titles"><p class="eyebrow">You may also like</p><h2 class="section-title">More from the <em>same hands</em></h2></div></div>';
+    recHtml += '<div class="curated__grid" data-reveal-child>';
+    alsoLike.forEach(function (p) { recHtml += cardHtml(p); });
+    recHtml += '</div></section>';
+  }
 
   /* ---- the rest of the catalogue ---- */
-  var otherHtml = '<section class="section container pdp-other" aria-label="Other products">';
-  otherHtml += '<div class="section-head" data-reveal><div class="section-head__titles"><p class="eyebrow">Elsewhere in the catalogue</p><h2 class="section-title">Other <em>pieces</em></h2></div><a class="arrow-link" href="/pages/shop-shrujan">Shop everything ' + arrowIcon(16) + '</a></div>';
-  otherHtml += '<div class="curated__grid" data-reveal-child>';
-  others.forEach(function (p) { otherHtml += cardHtml(p); });
-  otherHtml += '</div></section>';
+  var otherHtml = '';
+  if (SHOW.other) {
+    otherHtml = '<section class="section container pdp-other" aria-label="Other products">';
+    otherHtml += '<div class="section-head" data-reveal><div class="section-head__titles"><p class="eyebrow">Elsewhere in the catalogue</p><h2 class="section-title">Other <em>pieces</em></h2></div><a class="arrow-link" href="/pages/shop-shrujan">Shop everything ' + arrowIcon(16) + '</a></div>';
+    otherHtml += '<div class="curated__grid" data-reveal-child>';
+    others.forEach(function (p) { otherHtml += cardHtml(p); });
+    otherHtml += '</div></section>';
+  }
 
   root.innerHTML =
     '<div class="container pdp"><div class="pdp__media"><div class="pdp__rail" aria-label="Product images">' + railHtml + '</div><div class="pdp__stage">' + stageHtml + '</div></div><div class="pdp__buy">' + buyHtml + '</div></div>' +
@@ -264,14 +344,17 @@
   // "Size guide" opens the fit panel rather than pointing at a page that does
   // not exist. Found by label, so reordering DETAILS cannot silently open the
   // wrong one.
-  root.querySelector('.pdp__size-guide').addEventListener('click', function () {
-    var i = S.DETAILS.findIndex(function (d) { return d.q === 'Fabric & fit'; });
-    if (i < 0) return;
-    open = i;
-    applyOpen();
-    var el = detailsEl;
-    if (el) window.Shrujan.scrollToY(el.getBoundingClientRect().top + window.scrollY - 120);
-  });
+  var sizeGuideBtn = root.querySelector('.pdp__size-guide');
+  if (sizeGuideBtn) {
+    sizeGuideBtn.addEventListener('click', function () {
+      var i = S.DETAILS.findIndex(function (d) { return d.q === 'Fabric & fit'; });
+      if (i < 0) return;
+      open = i;
+      applyOpen();
+      var el = detailsEl;
+      if (el) window.Shrujan.scrollToY(el.getBoundingClientRect().top + window.scrollY - 120);
+    });
+  }
 
   detailEls.forEach(function (d, i) {
     d.querySelector('.pdp__detail-summary').addEventListener('click', function () {
@@ -416,6 +499,86 @@
       "id": "review_note",
       "label": "Write-a-review note",
       "default": "Bought this piece? Tell us how it wears — we send every review back to the woman who made it."
+    },
+    {
+      "type": "header",
+      "content": "Gallery"
+    },
+    {
+      "type": "select",
+      "id": "gallery_thumbs",
+      "label": "Thumbnail position",
+      "info": "On phones the rail always sits under the shot, whichever option is chosen.",
+      "default": "left",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left of the shot"
+        },
+        {
+          "value": "below",
+          "label": "Below the shot"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "gallery_sticky",
+      "label": "Pin the gallery while the buying column scrolls",
+      "info": "The scroll-driven image change needs the pinned gallery; turning this off lets the whole page scroll together.",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Buying column"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sizes",
+      "label": "Show the size picker",
+      "info": "Also hides the “Size guide” link that opens the fit panel.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_modes",
+      "label": "Show the ready-to-ship / made-to-measure options",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_details",
+      "label": "Show the detail accordions",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Sections shown"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_reviews",
+      "label": "Show the review section",
+      "info": "The rating line above the product name stays; its “126 reviews” link simply has nothing to jump to.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rec",
+      "label": "Show the “more from the same hands” rail",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_other",
+      "label": "Show the “other pieces” rail",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "card_swatches",
+      "label": "Show colour swatches on the rail cards",
+      "default": true
     },
     {
       "type": "header",

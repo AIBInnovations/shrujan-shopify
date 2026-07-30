@@ -1,4 +1,27 @@
 {%- render 'section-design', section: section -%}
+{%- comment -%}
+  Layout override for the sticky-player control. Nothing is emitted while the
+  control sits at its default, so the page ships exactly as it was hand-built.
+{%- endcomment -%}
+{%- if section.settings.films_sticky == false -%}
+  <style>
+    {%- assign sel = '#shopify-section-' | append: section.id -%}
+    {{ sel }} .craft-atlas__media { position: static; }
+    {%- comment -%}
+      Below 900px the stylesheet gives the pinned player a full-bleed ivory
+      backdrop so body copy cannot show through it; unpinned it has nothing to
+      cover, so the chrome comes off with the stickiness.
+    {%- endcomment -%}
+    @media (max-width: 900px) {
+      {{ sel }} .craft-atlas__media {
+        padding: 0;
+        background: none;
+        box-shadow: none;
+        clip-path: none;
+      }
+    }
+  </style>
+{%- endif -%}
 {%- capture nl %}
 {% endcapture -%}
 {%- assign first_craft = section.blocks.first -%}
@@ -19,6 +42,7 @@
     <span class="page-hero__rule" aria-hidden="true"></span>
   </header>
 
+  {%- if section.settings.show_intro %}
   <section class="section container craft-open" data-reveal>
     <p class="craft-open__lead">{{ section.settings.open_lead }}</p>
     <div class="craft-open__copy">
@@ -28,13 +52,16 @@
       {%- endfor %}
     </div>
   </section>
+  {%- endif %}
 
-  <section class="section craft-atlas" aria-label="The crafts">
+  <section class="section craft-atlas" aria-label="The crafts"{% unless section.settings.film_autoplay %} data-film-autoplay="false"{% endunless %}{% if section.settings.film_posters_only %} data-film-posters-only="true"{% endif %}>
     <div class="container craft-atlas__grid">
       <div class="craft-atlas__media">
         <div class="craft-stage">
-          <video class="craft-stage__video" poster="{{ first_craft.settings.poster | asset_url }}" playsinline muted loop preload="none" tabindex="-1">
+          <video class="craft-stage__video" poster="{{ first_craft.settings.poster | asset_url }}" playsinline muted{% if section.settings.film_loop %} loop{% endif %} preload="none"{% if section.settings.film_autoplay %} tabindex="-1"{% else %} controls{% endif %}>
+            {%- unless section.settings.film_posters_only %}
             <source src="{{ first_craft.settings.video | asset_url }}" type="video/mp4">
+            {%- endunless %}
           </video>
 
           <div class="craft-stage__tag" aria-hidden="true">
@@ -86,7 +113,7 @@
             {%- endfor %}
           </div>
           {%- assign more_clean = block.settings.more | strip -%}
-          {%- if more_clean != blank %}
+          {%- if more_clean != blank and section.settings.craft_read_more %}
 
           <button type="button" class="craft-entry__more arrow-link" aria-expanded="false" aria-controls="{{ block.id }}-body">Read more · {{ more_clean | split: nl | size }} more</button>
           {%- endif %}
@@ -96,10 +123,12 @@
     </div>
   </section>
 
+  {%- if section.settings.show_cta %}
   <section class="section container page-cta" data-reveal>
     <p>{{ section.settings.cta_text }}</p>
     <a class="btn" href="{{ section.settings.cta_url | default: '/pages/shop-shrujan' }}">{{ section.settings.cta_label }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
   </section>
+  {%- endif %}
 </div>
 
 <script type="application/json" data-craft-atlas-data>
@@ -135,6 +164,11 @@
 
   var STICKY_TOP = 96; // clears the fixed header at its tallest
 
+  // Behaviour flags carried on the section root. An absent attribute means the
+  // hand-built default, so today's behaviour stands untouched.
+  var AUTOPLAY = root.getAttribute('data-film-autoplay') !== 'false';
+  var POSTERS_ONLY = root.getAttribute('data-film-posters-only') === 'true';
+
   // CRAFTS and MORE are built from the section's craft blocks, serialized
   // into the JSON data tag rendered just above this script.
   var DATA = JSON.parse(document.querySelector('[data-craft-atlas-data]').textContent);
@@ -142,6 +176,7 @@
   var MORE = DATA.more;
 
   var video = root.querySelector('.craft-stage__video');
+  // absent in posters-only mode, where no film is ever put in the document
   var source = video.querySelector('source');
   var tagNo = root.querySelector('.craft-stage__no');
   var tagName = root.querySelector('.craft-stage__name');
@@ -170,7 +205,7 @@
     active = i;
     var c = CRAFTS[i];
     video.setAttribute('poster', SHRUJAN.asset(c.poster));
-    source.setAttribute('src', SHRUJAN.asset(c.src));
+    if (source) source.setAttribute('src', SHRUJAN.asset(c.src));
     tagNo.textContent = c.no;
     tagName.textContent = c.name;
     picks.forEach(function (btn, j) {
@@ -247,15 +282,19 @@
     });
   });
 
-  ScrollTrigger.create({
-    trigger: '.craft-atlas',
-    start: 'top 70%',
-    once: true,
-    onEnter: function () {
-      armed = true;
-      playVideo();
-    }
-  });
+  // Never armed when autoplay is off or the films are held back to posters, so
+  // playVideo's `armed` guard keeps every byte of film off the wire.
+  if (AUTOPLAY && !POSTERS_ONLY) {
+    ScrollTrigger.create({
+      trigger: '.craft-atlas',
+      start: 'top 70%',
+      once: true,
+      onEnter: function () {
+        armed = true;
+        playVideo();
+      }
+    });
+  }
 
   ScrollTrigger.refresh();
 })();
@@ -291,6 +330,13 @@
       "content": "Introduction"
     },
     {
+      "type": "checkbox",
+      "id": "show_intro",
+      "label": "Show the introduction",
+      "info": "The lead line and paragraphs between the hero and the films.",
+      "default": true
+    },
+    {
       "type": "inline_richtext",
       "id": "open_lead",
       "label": "Lead line",
@@ -307,6 +353,40 @@
       "content": "Films"
     },
     {
+      "type": "checkbox",
+      "id": "film_autoplay",
+      "label": "Play the film when it scrolls into view",
+      "info": "Off, the player shows the still and gains the browser's own controls so a visitor can start it themselves.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "film_loop",
+      "label": "Loop the film",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "film_posters_only",
+      "label": "Posters only — never load the films",
+      "info": "Keeps each craft's still and leaves the films (about 10 MB each) out of the page entirely.",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "films_sticky",
+      "label": "Pin the player beside the text",
+      "info": "On, the player and craft index follow the reader down the entry they belong to.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "craft_read_more",
+      "label": "Show the Read more expansion",
+      "info": "Off, each entry keeps only its opening paragraphs and the button is dropped.",
+      "default": true
+    },
+    {
       "type": "inline_richtext",
       "id": "credit",
       "label": "Films credit line",
@@ -315,6 +395,12 @@
     {
       "type": "header",
       "content": "Closing call to action"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Show the closing call to action",
+      "default": true
     },
     {
       "type": "text",

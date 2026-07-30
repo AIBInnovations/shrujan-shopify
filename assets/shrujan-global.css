@@ -54,6 +54,10 @@
 
   /* ---- Header geometry --------------------------------------- */
   --topbar-h: 44px;
+  /* the nav row's resting height. A token rather than a literal so the header
+     section's padding control can add to it (calc) without restating the clamp,
+     and so the mobile bar can restate just the number. */
+  --header-row-min: clamp(64px, 4.2vw, 80px);
 
   /* ---- Motion (Premium archetype) ---------------------------- */
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
@@ -403,7 +407,7 @@ ul {
   display: grid;
   grid-template-columns: 1fr minmax(280px, 30vw) 1fr;
   align-items: center;
-  min-height: clamp(64px, 4.2vw, 80px);
+  min-height: var(--header-row-min);
 }
 
 .site-nav {
@@ -1020,8 +1024,12 @@ ul {
      --header-h is the bar's measured height, published by Header.jsx. The
      130px here was a guess, and the bar is really 109px at 1440 and 125px at
      1920 — so the marquee below was left peeking into the fold by up to 21px.
-     The extra 6px is the gap under the hero, matching its own side inset. */
-  height: clamp(600px, calc(100vh - var(--header-h, 130px) - 6px), 1200px);
+     The extra 6px is the gap under the hero, matching its own side inset.
+
+     --hero-min-h is the clamp's floor, published per-section by the Home hero
+     so a merchant can set the shortest the bento is allowed to get. 600px is
+     the packaged value. */
+  height: clamp(var(--hero-min-h, 600px), calc(100vh - var(--header-h, 130px) - 6px), 1200px);
   max-width: 2400px;
   margin-inline: auto;
 }
@@ -1393,7 +1401,9 @@ a.hero-cell:hover .hero-cell__label svg {
 .marquee__track {
   display: flex;
   width: max-content;
-  animation: marquee 46s linear infinite;
+  /* --marquee-dur is published per-section by the Craft marquee; 46s is the
+     packaged pace, and one loop is exactly half the doubled track. */
+  animation: marquee var(--marquee-dur, 46s) linear infinite;
 }
 
 .marquee:hover .marquee__track {
@@ -4429,10 +4439,14 @@ a.house-tile:hover .house-tile__arrow {
   margin-top: var(--section-gap);
   padding-block: clamp(26px, 2.4vw, 44px) clamp(14px, 1.4vw, 22px);
   /* the promises band's ground, flipped: light where the seal sits, sinking to
-     the darkest tone at the foot of the page */
-  background: radial-gradient(118% 82% at 50% 0%, #6b241a 0%, var(--maroon) 40%, #3d120d 100%);
+     the darkest tone at the foot of the page.
+
+     --footer-bg / --footer-text / --footer-link / --footer-muted are published
+     per-section by the Shrujan footer's colour settings. Every fallback here is
+     the packaged value, so an untouched footer renders exactly as designed. */
+  background: var(--footer-bg, radial-gradient(118% 82% at 50% 0%, #6b241a 0%, var(--maroon) 40%, #3d120d 100%));
   box-shadow: inset 0 1px 0 rgba(199, 165, 106, 0.32);
-  color: var(--cream);
+  color: var(--footer-text, var(--cream));
 }
 
 /* Ornament layer. z-index -1 paints it over the footer's own background and
@@ -4494,10 +4508,12 @@ a.house-tile:hover .house-tile__arrow {
   text-align: right;
 }
 
+/* the wordmark is type, not imagery — it tracks the footer's text colour so a
+   merchant who inverts the footer does not lose the logo */
 .fbrand__mark {
   width: clamp(126px, 11vw, 172px);
   aspect-ratio: 1644 / 715;
-  background: var(--cream);
+  background: var(--footer-text, var(--cream));
   -webkit-mask: url(logo-wordmark.png) center / contain no-repeat;
   mask: url(logo-wordmark.png) center / contain no-repeat;
 }
@@ -4639,7 +4655,7 @@ a.house-tile:hover .house-tile__arrow {
 
 .fmap a {
   font-size: clamp(14px, calc(13.6px + 0.078vw), 15.7px);
-  color: rgba(242, 237, 224, 0.72);
+  color: var(--footer-link, rgba(242, 237, 224, 0.72));
   transition: color var(--dur-quick) var(--ease);
 }
 
@@ -4674,7 +4690,7 @@ a.house-tile:hover .house-tile__arrow {
   display: block;
   margin-top: 2px;
   font-size: clamp(14px, calc(13.6px + 0.078vw), 15.7px);
-  color: var(--cream);
+  color: var(--footer-text, var(--cream));
   transition: color var(--dur-quick) var(--ease);
 }
 
@@ -4694,7 +4710,7 @@ a.house-tile:hover .house-tile__arrow {
   padding-top: clamp(12px, 1.2vw, 18px);
   border-top: 1px solid rgba(199, 165, 106, 0.24);
   font-size: clamp(12.9px, 0.762vw, 14.6px);
-  color: rgba(242, 237, 224, 0.5);
+  color: var(--footer-muted, rgba(242, 237, 224, 0.5));
 }
 
 .footer__socials {
@@ -4899,7 +4915,9 @@ a.house-tile:hover .house-tile__arrow {
 
   .site-header__inner {
     grid-template-columns: auto 1fr auto;
-    min-height: 74px;
+    /* restating the token, not min-height, keeps the section's padding control
+       adding to the phone bar's height rather than the desktop clamp */
+    --header-row-min: 74px;
   }
 
   .brand {

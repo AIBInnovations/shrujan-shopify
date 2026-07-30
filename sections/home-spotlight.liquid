@@ -1,5 +1,15 @@
 {%- render 'section-design', section: section -%}
-<section class="section container spotlight" id="heritage">
+
+{%- comment -%}
+  Spotlight-specific controls. The arc's sweep and its on/off switch reach the
+  inline script as data-* attributes, and only when they differ from the packaged
+  -250° → 110° scrub — the script falls back to those numbers on its own. The
+  stat toggles are pure markup: a hidden stat is not rendered at all.
+{%- endcomment -%}
+{%- liquid
+  assign sp = section.settings
+-%}
+<section class="section container spotlight" id="heritage"{% if sp.arc_scrub == false %} data-arc="off"{% endif %}{% if sp.arc_from != -250 %} data-arc-from="{{ sp.arc_from }}"{% endif %}{% if sp.arc_to != 110 %} data-arc-to="{{ sp.arc_to }}"{% endif %}>
   <div class="spotlight__head" data-reveal>
     <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
 
@@ -21,7 +31,9 @@
         <circle cx="50" cy="50" r="48.5" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-dasharray="82 223"></circle>
       </svg>
 
+      {%- if sp.show_ghost %}
       <p class="spotlight__ghost" aria-hidden="true">{{ section.settings.ghost_value | escape }}<span>{{ section.settings.ghost_label | escape }}</span></p>
+      {%- endif %}
 
       <img class="spotlight__model" src="{% if section.settings.model_img %}{{ section.settings.model_img | image_url: width: 1200 }}{% else %}{{ 'model.webp' | asset_url }}{% endif %}" alt="{{ section.settings.model_alt | escape }}" loading="lazy">
 
@@ -33,13 +45,21 @@
       </figure>
     </div>
 
+    {%- if sp.show_stat1 %}
     <div class="spotlight__stat spotlight__stat--women"><strong>{{ section.settings.stat1_value | escape }}</strong><span>{{ section.settings.stat1_label | escape }}</span></div>
+    {%- endif %}
 
+    {%- if sp.show_stat2 %}
     <div class="spotlight__stat spotlight__stat--crafts"><strong>{{ section.settings.stat2_value | escape }}</strong><span>{{ section.settings.stat2_label | escape }}</span></div>
+    {%- endif %}
 
+    {%- if sp.show_note %}
     <p class="spotlight__note">{{ section.settings.note | escape }}</p>
+    {%- endif %}
 
+    {%- if sp.show_stat3 %}
     <div class="spotlight__stat spotlight__stat--villages"><strong>{{ section.settings.stat3_value | escape }}</strong><span>{{ section.settings.stat3_label | escape }}</span></div>
+    {%- endif %}
   </div>
 
   <div class="spotlight__outro" data-reveal>
@@ -53,15 +73,22 @@
   if (!root || root.__shrujanInit) return;
   root.__shrujanInit = true;
 
+  /* Sweep and switch come from the section; these are the packaged values. */
+  var scrub = root.getAttribute('data-arc') !== 'off';
+  var from = parseFloat(root.getAttribute('data-arc-from'));
+  var to = parseFloat(root.getAttribute('data-arc-to'));
+  if (isNaN(from)) from = -250;
+  if (isNaN(to)) to = 110;
+
   var mm = gsap.matchMedia(root);
 
   // The arc orbits the circle as the section scrolls through the viewport.
-  mm.add('(prefers-reduced-motion: no-preference)', function () {
+  if (scrub) mm.add('(prefers-reduced-motion: no-preference)', function () {
     gsap.fromTo(
       '.spotlight__arc circle',
-      { rotation: -250, svgOrigin: '50 50' },
+      { rotation: from, svgOrigin: '50 50' },
       {
-        rotation: 110,
+        rotation: to,
         svgOrigin: '50 50',
         ease: 'none',
         scrollTrigger: {
@@ -73,6 +100,12 @@
       }
     );
   });
+
+  /* Scrub off: hold the composed pose the theme already uses for reduced motion,
+     rather than leaving the arc at the raw angle it was drawn at. */
+  if (!scrub) {
+    gsap.set(root.querySelector('.spotlight__arc circle'), { rotation: -118, svgOrigin: '50 50' });
+  }
 
   mm.add('(prefers-reduced-motion: reduce)', function () {
     gsap.set('.spotlight__arc circle', { rotation: -118, svgOrigin: '50 50' });
@@ -130,6 +163,39 @@
     },
     {
       "type": "header",
+      "content": "Arc"
+    },
+    {
+      "type": "checkbox",
+      "id": "arc_scrub",
+      "label": "Scrub the arc on scroll",
+      "info": "Off holds the arc still, in the same pose visitors on reduced motion see.",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "arc_from",
+      "label": "Arc start angle",
+      "info": "Where the arc sits when the stage enters the viewport.",
+      "min": -360,
+      "max": 360,
+      "step": 10,
+      "unit": "°",
+      "default": -250
+    },
+    {
+      "type": "range",
+      "id": "arc_to",
+      "label": "Arc end angle",
+      "info": "Where it lands as the stage leaves.",
+      "min": -360,
+      "max": 360,
+      "step": 10,
+      "unit": "°",
+      "default": 110
+    },
+    {
+      "type": "header",
       "content": "Figure"
     },
     {
@@ -143,6 +209,13 @@
       "id": "ghost_label",
       "label": "Ghost stat label",
       "default": "Hand-embroidered"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_ghost",
+      "label": "Show the ghost stat",
+      "info": "The oversized figure behind the model.",
+      "default": true
     },
     {
       "type": "image_picker",
@@ -170,6 +243,16 @@
       "content": "Stats"
     },
     {
+      "type": "paragraph",
+      "content": "The stats float around the figure on desktop and become a grid below it on mobile. Hiding one leaves its place empty on desktop."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stat1",
+      "label": "Show stat 1",
+      "default": true
+    },
+    {
       "type": "text",
       "id": "stat1_value",
       "label": "Stat 1 value",
@@ -180,6 +263,12 @@
       "id": "stat1_label",
       "label": "Stat 1 label",
       "default": "Artisan women behind every piece"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stat2",
+      "label": "Show stat 2",
+      "default": true
     },
     {
       "type": "text",
@@ -194,10 +283,22 @@
       "default": "Living craft traditions of Kutch"
     },
     {
+      "type": "checkbox",
+      "id": "show_note",
+      "label": "Show the note",
+      "default": true
+    },
+    {
       "type": "text",
       "id": "note",
       "label": "Note",
       "default": "Every piece signed by the hands that made it"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stat3",
+      "label": "Show stat 3",
+      "default": true
     },
     {
       "type": "text",

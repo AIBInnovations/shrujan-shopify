@@ -1,4 +1,21 @@
 {%- render 'section-design', section: section -%}
+{%- comment -%}
+  Region + grid controls. Every default reproduces the built page. The steps grid
+  is two across and stacks below 900px, so the column override is confined to the
+  band the built rule owns rather than flattening the stack on phones.
+{%- endcomment -%}
+{%- liquid
+  assign cfg = section.settings
+  assign root_sel = '#shopify-section-' | append: section.id
+-%}
+{%- if cfg.step_cols != 2 -%}
+  <style>
+    {{ root_sel }} { --step-cols: {{ cfg.step_cols }}; }
+    @media (min-width: 901px) {
+      {{ root_sel }} .steps { grid-template-columns: repeat(var(--step-cols), minmax(0, 1fr)); }
+    }
+  </style>
+{%- endif -%}
 {%- assign strand_blocks = section.blocks | where: 'type', 'strand' -%}
 {%- assign meta_blocks = section.blocks | where: 'type', 'meta' -%}
 {%- assign step_blocks = section.blocks | where: 'type', 'step' -%}
@@ -12,14 +29,17 @@
         <p class="eyebrow">{{ section.settings.hero_eyebrow | escape }}</p>
         <h1 class="page-hero__title">{{ section.settings.hero_title }}</h1>
         <p class="page-hero__lede">{{ section.settings.hero_lede }}</p>
+{%- if section.settings.show_meta %}
         <ul class="page-meta">
 {%- for block in meta_blocks %}
           <li {{ block.shopify_attributes }}><span class="page-meta__value">{{ block.settings.value }}</span><span class="page-meta__label">{{ block.settings.label }}</span></li>
 {%- endfor %}
         </ul>
+{%- endif %}
       </div>
     </div>
   </header>
+{%- if section.settings.show_strands %}
 
   <nav class="strands" aria-label="Studio Collection">
     <div class="container strands__inner">
@@ -35,8 +55,11 @@
       </ol>
     </div>
   </nav>
+{%- endif %}
+{%- if section.settings.show_gloss or section.settings.show_origin %}
 
   <section class="section container">
+{%- if section.settings.show_gloss %}
     <figure class="gloss" data-reveal>
       <figcaption class="gloss__head">
         <span class="gloss__word">{{ section.settings.gloss_word }}</span>
@@ -45,6 +68,8 @@
       <p class="gloss__meaning">{{ section.settings.gloss_meaning }}</p>
       <p class="gloss__note">{{ section.settings.gloss_note }}</p>
     </figure>
+{%- endif %}
+{%- if section.settings.show_origin %}
 
     <div class="origin" data-reveal>
       <p class="origin__lead">{{ section.settings.lead }}</p>
@@ -52,9 +77,13 @@
         {{ section.settings.body }}
       </div>
     </div>
+{%- endif %}
   </section>
+{%- endif %}
+{%- if section.settings.show_steps or section.settings.show_pull %}
 
   <section class="section container">
+{%- if section.settings.show_steps %}
     <div class="section-intro" data-reveal>
       <p class="eyebrow">{{ section.settings.steps_eyebrow | escape }}</p>
       <h2 class="section-title">{{ section.settings.steps_title }}</h2>
@@ -71,9 +100,14 @@
       </li>
 {%- endfor %}
     </ol>
+{%- endif %}
+{%- if section.settings.show_pull %}
 
     <blockquote class="origin__pull" data-reveal>{{ section.settings.pull }}</blockquote>
+{%- endif %}
   </section>
+{%- endif %}
+{%- if section.settings.show_gallery %}
 
   <section class="section container">
     <div class="section-intro" data-reveal>
@@ -89,6 +123,8 @@
 {%- endfor %}
     </div>
   </section>
+{%- endif %}
+{%- if section.settings.show_enquiry %}
 
   <section class="section container enquiry" id="avinya-enquiry" data-done-title="{{ section.settings.done_title | escape }}" data-done-body="{{ section.settings.done_body | escape }}" data-done-again="{{ section.settings.done_again | escape }}">
     <div class="enquiry__intro" data-reveal>
@@ -173,6 +209,7 @@
       </div>
     </form>
   </section>
+{%- endif %}
 </div>
 
 <script>
@@ -383,6 +420,68 @@
       "id": "done_again",
       "label": "Success button label",
       "default": "Send another enquiry"
+    },
+    {
+      "type": "header",
+      "content": "Sections shown"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_meta",
+      "label": "Show the hero meta row",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_strands",
+      "label": "Show the strand navigation",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_gloss",
+      "label": "Show the word gloss",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_origin",
+      "label": "Show the intro lead and body",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_steps",
+      "label": "Show the process steps",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pull",
+      "label": "Show the pull quote",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_gallery",
+      "label": "Show the studio gallery",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_enquiry",
+      "label": "Show the enquiry form",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "step_cols",
+      "label": "Steps per row",
+      "info": "Applies above 900px; the steps stack below that.",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2
     },
     {
       "type": "header",

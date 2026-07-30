@@ -1,4 +1,34 @@
 {%- render 'section-design', section: section -%}
+
+{%- comment -%}
+  Marquee-specific controls. The pace is the stylesheet's own animation duration,
+  published as --marquee-dur (46s packaged) so one loop still covers exactly half
+  the doubled track at any speed. Direction and the hover pause are plain
+  overrides of the packaged rules, emitted only when they move off default.
+{%- endcomment -%}
+{%- liquid
+  assign m = section.settings
+  assign msel = '#shopify-section-' | append: section.id
+
+  assign m_style = false
+  if m.speed != 46 or m.direction != 'left' or m.pause_on_hover == false
+    assign m_style = true
+  endif
+-%}
+
+{%- if m_style -%}
+  <style>
+    {%- if m.speed != 46 -%}
+      {{ msel }} { --marquee-dur: {{ m.speed }}s; }
+    {%- endif -%}
+    {%- if m.direction != 'left' -%}
+      {{ msel }} .marquee__track { animation-direction: reverse; }
+    {%- endif -%}
+    {%- if m.pause_on_hover == false -%}
+      {{ msel }} .marquee:hover .marquee__track { animation-play-state: running; }
+    {%- endif -%}
+  </style>
+{%- endif -%}
 <div class="marquee" role="presentation">
   <div class="marquee__track">
     <div class="marquee__group">
@@ -87,6 +117,43 @@
     }
   ],
   "settings": [
+    {
+      "type": "header",
+      "content": "Motion"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Loop duration",
+      "info": "Seconds for the ticker to travel one full set of names. Higher is slower.",
+      "min": 10,
+      "max": 110,
+      "step": 1,
+      "unit": "s",
+      "default": 46
+    },
+    {
+      "type": "select",
+      "id": "direction",
+      "label": "Direction",
+      "default": "left",
+      "options": [
+        {
+          "value": "left",
+          "label": "Right to left"
+        },
+        {
+          "value": "right",
+          "label": "Left to right"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause on hover",
+      "default": true
+    },
     {
       "type": "header",
       "content": "Design"

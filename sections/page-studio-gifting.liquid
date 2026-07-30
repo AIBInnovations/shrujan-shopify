@@ -1,4 +1,34 @@
 {%- render 'section-design', section: section -%}
+{%- comment -%}
+  Region + grid controls. Every default reproduces the built page. The steps grid
+  is two across and stacks below 900px, so the column override is confined to the
+  band the built rule owns rather than flattening the stack on phones.
+
+  The "ways to work together" rows are .studio-row media/body pairs rather than an
+  n-up grid, so they carry a visibility toggle but no column count — there is
+  nothing in the CSS for one to key on.
+{%- endcomment -%}
+{%- liquid
+  assign cfg = section.settings
+  assign root_sel = '#shopify-section-' | append: section.id
+
+  comment
+    With the form hidden the in-page anchor would have no target, so the offer
+    links fall back to the studio's inbox instead of going nowhere.
+  endcomment
+  assign offer_href = '#gifting-enquiry'
+  unless cfg.show_enquiry
+    assign offer_href = 'mailto:' | append: cfg.email
+  endunless
+-%}
+{%- if cfg.step_cols != 2 -%}
+  <style>
+    {{ root_sel }} { --step-cols: {{ cfg.step_cols }}; }
+    @media (min-width: 901px) {
+      {{ root_sel }} .steps { grid-template-columns: repeat(var(--step-cols), minmax(0, 1fr)); }
+    }
+  </style>
+{%- endif -%}
 {%- assign strand_blocks = section.blocks | where: 'type', 'strand' -%}
 {%- assign meta_blocks = section.blocks | where: 'type', 'meta' -%}
 {%- assign offer_blocks = section.blocks | where: 'type', 'offer' -%}
@@ -10,11 +40,13 @@
         <p class="eyebrow">{{ section.settings.hero_eyebrow | escape }}</p>
         <h1 class="page-hero__title">{{ section.settings.hero_title }}</h1>
         <p class="page-hero__lede">{{ section.settings.hero_lede }}</p>
+{%- if section.settings.show_meta %}
         <ul class="page-meta">
 {%- for block in meta_blocks %}
           <li {{ block.shopify_attributes }}><span class="page-meta__value">{{ block.settings.value }}</span><span class="page-meta__label">{{ block.settings.label }}</span></li>
 {%- endfor %}
         </ul>
+{%- endif %}
       </div>
     </div>
 
@@ -22,6 +54,7 @@
       <img src="{% if section.settings.hero_img %}{{ section.settings.hero_img | image_url: width: 1600 }}{% else %}{{ 'shop-hero.webp' | asset_url }}{% endif %}" alt="{{ section.settings.hero_alt | escape }}" fetchpriority="high">
     </figure>
   </header>
+{%- if section.settings.show_strands %}
 
   <nav class="strands" aria-label="Studio Collection">
     <div class="container strands__inner">
@@ -37,6 +70,8 @@
       </ol>
     </div>
   </nav>
+{%- endif %}
+{%- if section.settings.show_offers %}
 
   <section class="section container">
     <div class="section-intro" data-reveal>
@@ -68,14 +103,17 @@
 {%- endif %}
           </ul>
 
-          <a class="arrow-link studio-row__link" href="#gifting-enquiry">{{ block.settings.link_label }}</a>
+          <a class="arrow-link studio-row__link" href="{{ offer_href }}">{{ block.settings.link_label }}</a>
         </div>
       </article>
 {%- endfor %}
     </div>
   </section>
+{%- endif %}
+{%- if section.settings.show_steps or section.settings.show_pull %}
 
   <section class="section container">
+{%- if section.settings.show_steps %}
     <div class="section-intro" data-reveal>
       <p class="eyebrow">{{ section.settings.steps_eyebrow | escape }}</p>
       <h2 class="section-title">{{ section.settings.steps_title }}</h2>
@@ -92,9 +130,14 @@
       </li>
 {%- endfor %}
     </ol>
+{%- endif %}
+{%- if section.settings.show_pull %}
 
     <blockquote class="origin__pull" data-reveal>{{ section.settings.pull }}</blockquote>
+{%- endif %}
   </section>
+{%- endif %}
+{%- if section.settings.show_enquiry %}
 
   <section class="section container enquiry" id="gifting-enquiry" data-done-title="{{ section.settings.done_title | escape }}" data-done-body="{{ section.settings.done_body | escape }}" data-done-again="{{ section.settings.done_again | escape }}">
     <div class="enquiry__intro" data-reveal>
@@ -184,6 +227,7 @@
       </div>
     </form>
   </section>
+{%- endif %}
 </div>
 
 <script>
@@ -363,6 +407,57 @@
       "id": "done_again",
       "label": "Success button label",
       "default": "Send another enquiry"
+    },
+    {
+      "type": "header",
+      "content": "Sections shown"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_meta",
+      "label": "Show the hero meta row",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_strands",
+      "label": "Show the strand navigation",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_offers",
+      "label": "Show the ways to work together",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_steps",
+      "label": "Show the process steps",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pull",
+      "label": "Show the pull quote",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_enquiry",
+      "label": "Show the enquiry form",
+      "info": "With the form hidden, each “ways to work together” link points at the studio email instead of the form.",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "step_cols",
+      "label": "Steps per row",
+      "info": "Applies above 900px; the steps stack below that.",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2
     },
     {
       "type": "header",

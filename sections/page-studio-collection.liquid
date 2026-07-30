@@ -1,4 +1,22 @@
 {%- render 'section-design', section: section -%}
+{%- comment -%}
+  Region + grid controls. Every default reproduces the built page: the scoped
+  <style> is written only when a column count differs, and it is confined to the
+  band the built rule owns (the strand cards stack below 900px) so an
+  id-specificity rule cannot flatten the responsive steps.
+{%- endcomment -%}
+{%- liquid
+  assign cfg = section.settings
+  assign root_sel = '#shopify-section-' | append: section.id
+-%}
+{%- if cfg.strand_cols != 3 -%}
+  <style>
+    {{ root_sel }} { --strand-cols: {{ cfg.strand_cols }}; }
+    @media (min-width: 901px) {
+      {{ root_sel }} .strand-cards { grid-template-columns: repeat(var(--strand-cols), minmax(0, 1fr)); }
+    }
+  </style>
+{%- endif -%}
 <div class="page">
   <header class="page-hero page-hero--cover page-hero--frame" data-reveal>
     <div class="page-hero__bg" aria-hidden="true">
@@ -15,6 +33,7 @@
 
     <span class="page-hero__rule" aria-hidden="true"></span>
   </header>
+{%- if section.settings.show_strands %}
 
   <section class="section container">
     <div class="section-intro" data-reveal>
@@ -42,6 +61,8 @@
       {%- endfor %}
     </ul>
   </section>
+{%- endif %}
+{%- if section.settings.show_rows %}
 
   <div class="section container studio">
     {%- assign row_i = 0 -%}
@@ -77,11 +98,14 @@
     {%- endif -%}
     {%- endfor %}
   </div>
+{%- endif %}
+{%- if section.settings.show_cta %}
 
   <section class="section container page-cta" data-reveal>
     <p>{{ section.settings.cta_copy | escape }}</p>
     <a class="btn" href="{{ section.settings.cta_link | escape }}">{{ section.settings.cta_label | escape }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
   </section>
+{%- endif %}
 </div>
 {% schema %}
 {
@@ -146,6 +170,38 @@
       "id": "cta_link",
       "label": "Button link",
       "default": "#letters"
+    },
+    {
+      "type": "header",
+      "content": "Sections shown"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_strands",
+      "label": "Show the strand cards",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rows",
+      "label": "Show the studio pieces",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Show the closing call to action",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "strand_cols",
+      "label": "Strand cards per row",
+      "info": "Applies above 900px; the cards stack below that.",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 3
     },
     {
       "type": "header",

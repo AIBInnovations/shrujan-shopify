@@ -1,4 +1,21 @@
 {%- render 'section-design', section: section -%}
+{%- liquid
+  assign cfg = section.settings
+  assign sel = '#shopify-section-' | append: section.id
+-%}
+{%- if cfg.house_cols_m != 2 -%}
+  <style>
+    {%- comment -%}
+      Below 900px the theme already resets every tile's explicit grid placement
+      (`grid-column: auto !important`), so a plain column count lands cleanly
+      there. Above it the bento is hand-placed tile by tile and has no column
+      count to change.
+    {%- endcomment -%}
+    @media (max-width: 900px) {
+      {{ sel }} .house__grid { grid-template-columns: repeat({{ cfg.house_cols_m }}, minmax(0, 1fr)); }
+    }
+  </style>
+{%- endif -%}
 <section class="section container house" id="house">
   <div class="section-intro" data-reveal>
     <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
@@ -15,18 +32,21 @@
     {%- for block in tiles %}
     <a class="house-tile" href="{{ block.settings.link | default: '/pages/shop-shrujan?c=kanchli' }}" {{ block.shopify_attributes }}>
       <img src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 1200 }}{% else %}{{ block.settings.fallback | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
-      <span class="house-tile__scrim" aria-hidden="true"></span>
+      {% if cfg.house_show_scrim %}<span class="house-tile__scrim" aria-hidden="true"></span>{% endif %}
       <span class="house-tile__body">
         <span class="house-tile__name">{{ block.settings.name | escape }}</span>
-        <span class="house-tile__note">{{ block.settings.note | escape }}</span>
+        {% if cfg.house_show_note %}<span class="house-tile__note">{{ block.settings.note | escape }}</span>{% endif %}
       </span>
+      {% if cfg.house_show_arrow %}
       <span class="house-tile__arrow" aria-hidden="true">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
       </span>
+      {% endif %}
     </a>
     {%- endfor %}
   </div>
 
+  {% if cfg.house_show_strip %}
   <div class="house__strip" data-reveal>
     <span class="house__strip-label">{{ section.settings.strip_label | escape }}</span>
     <ul class="house__strip-links">
@@ -40,6 +60,7 @@
       {%- endfor %}
     </ul>
   </div>
+  {% endif %}
 </section>
 
 {% schema %}
@@ -69,6 +90,50 @@
       "id": "strip_label",
       "label": "Strip label",
       "default": "All bags"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "house_cols_m",
+      "label": "Tiles per row (mobile)",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2,
+      "info": "Applies below 900px, where the bento flattens. Left at 2, phones under 600px keep stacking one tile per row. Above 900px each tile is placed by hand, so there is no column count to set."
+    },
+    {
+      "type": "header",
+      "content": "Tile content"
+    },
+    {
+      "type": "checkbox",
+      "id": "house_show_note",
+      "label": "Show tile note",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "house_show_arrow",
+      "label": "Show tile arrow",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "house_show_scrim",
+      "label": "Show image scrim",
+      "default": true,
+      "info": "The dark wash the tile text sits against. Turning it off can leave text hard to read on pale photographs."
+    },
+    {
+      "type": "checkbox",
+      "id": "house_show_strip",
+      "label": "Show link strip",
+      "default": true,
+      "info": "The labelled row of extra links under the grid."
     },
     {
       "type": "header",
