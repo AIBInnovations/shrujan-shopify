@@ -297,15 +297,31 @@
     measure();
     window.addEventListener('resize', measure);
 
+    /* The drawer overlays the page rather than sitting in flow: it used to be a
+       display toggle inside the header, which could not animate and grew the
+       header, pushing the hero down as it opened. */
+    var scrim = bar.querySelector('.nav-scrim');
+    if (!scrim) {
+      scrim = document.createElement('div');
+      scrim.className = 'nav-scrim';
+      scrim.setAttribute('aria-hidden', 'true');
+      bar.appendChild(scrim);
+      scrim.addEventListener('click', function () { setMenuOpen(false); });
+    }
+
     function setMenuOpen(v) {
       if (menuOpen === v) return;
       menuOpen = v;
+      bar.classList.toggle('nav-open', v);
       if (mobileNav) mobileNav.classList.toggle('open', v);
       if (toggle) {
         toggle.setAttribute('aria-label', v ? 'Close menu' : 'Open menu');
         toggle.setAttribute('aria-expanded', v ? 'true' : 'false');
         toggle.innerHTML = v ? CLOSE_SVG : MENU_SVG;
       }
+      // the page must not scroll under an open drawer
+      if (v) stopScroll(); else startScroll();
+      if (!v) closeAll(null);
     }
 
     function setFixed(v) {
@@ -408,9 +424,58 @@
     if (toggle) {
       toggle.addEventListener('click', function () { setMenuOpen(!menuOpen); });
     }
+
+    var isDrawer = function () { return window.matchMedia('(max-width: 1200px)').matches; };
+
+    /* A panel's pictures sit in a visibility:hidden subtree, which Chrome will
+       not fetch — so the first open used to pop its images in. Warm them once,
+       on the first sign of intent. */
+    var warmed = false;
+    function warmPanels() {
+      if (warmed) return;
+      warmed = true;
+      bar.querySelectorAll('.nav-panel img[loading="lazy"]').forEach(function (img) {
+        img.loading = 'eager';
+        if (img.decode) img.decode().catch(function () {});
+      });
+    }
+    ['pointerenter', 'pointerdown', 'focusin'].forEach(function (evt) {
+      bar.addEventListener(evt, warmPanels, { once: true, passive: true });
+    });
     if (mobileNav) {
       mobileNav.addEventListener('click', function (e) {
         if (e.target.closest('a')) setMenuOpen(false);
+      });
+    }
+
+    /* ---- the drawer's accordions ------------------------------------ *
+       Inside the drawer a top-level link opens its own panel on the first tap
+       — the panel's lead card carries the same destination — and follows the
+       link on the second. One panel open at a time, as on the desktop. */
+    function initDrawerAccordions() {
+      bar.querySelectorAll('.nav-item.has-menu > .nav-item__link').forEach(function (link) {
+        link.addEventListener('click', function (e) {
+          if (!isDrawer()) return;
+          var item = link.parentElement;
+          if (item.classList.contains('is-open')) return; // a second tap navigates
+          e.preventDefault();
+          closeAll(item);
+          item.classList.add('is-open');
+        });
+      });
+
+      // following a real destination closes the drawer behind you
+      bar.addEventListener('click', function (e) {
+        if (!isDrawer() || !menuOpen) return;
+        var a = e.target.closest && e.target.closest('.site-nav a');
+        if (!a || a.classList.contains('nav-item__link')) return;
+        setMenuOpen(false);
+      });
+
+      // a drawer left open as the window grows back to desktop would hang
+      // over the page as a stray panel
+      window.addEventListener('resize', function () {
+        if (!isDrawer() && menuOpen) setMenuOpen(false);
       });
     }
 
@@ -458,13 +523,16 @@
     } else {
       items.forEach(function (item) {
         item.addEventListener('mouseenter', function () {
+          if (isDrawer()) return;
           closeAll(item);
           item.classList.add('is-open');
         });
         item.addEventListener('mouseleave', function () {
+          if (isDrawer()) return;
           item.classList.remove('is-open');
         });
         item.addEventListener('focusin', function () {
+          if (isDrawer()) return;
           closeAll(item);
           item.classList.add('is-open');
         });
@@ -476,13 +544,61 @@
 
     window.addEventListener('keydown', function (e) {
       if (!bar.isConnected) return;
-      if (e.key === 'Escape') closeAll(null);
+      if (e.key !== 'Escape') return;
+      closeAll(null);
+      if (menuOpen) setMenuOpen(false);
     });
+
+    initDrawerAccordions();
   }
 
   /* ------------------------------------------------------------------ *
    *  Footer letters form (port of the Footer.jsx `sent` state)
    * ------------------------------------------------------------------ */
+
+  /* On a phone the sitemap is five stacked lists — a long scroll before the
+     contact details. Each column becomes a disclosure, animated by the same
+     0fr → 1fr row the nav uses. Desktop is untouched: the CSS only collapses
+     below 760px, and the class is inert above it. */
+  function initFooterColumns() {
+    var cols = document.querySelectorAll('.fmap__col');
+    if (!cols.length) return;
+    var phone = window.matchMedia('(max-width: 760px)');
+
+    cols.forEach(function (col, i) {
+      var head = col.querySelector('.fmap__group');
+      var list = col.querySelector('ul');
+      if (!head || !list || col.__shrujanFooterCol) return;
+      col.__shrujanFooterCol = true;
+      col.classList.add('is-collapsible');
+
+      var listId = 'fmap-list-' + i;
+      list.id = listId;
+      head.setAttribute('role', 'button');
+      head.setAttribute('tabindex', '0');
+      head.setAttribute('aria-controls', listId);
+
+      var sync = function () {
+        var open = col.classList.contains('is-open');
+        head.setAttribute('aria-expanded', phone.matches ? String(open) : 'true');
+      };
+      sync();
+
+      var toggle = function () {
+        if (!phone.matches) return;
+        col.classList.toggle('is-open');
+        sync();
+      };
+      head.addEventListener('click', toggle);
+      head.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggle();
+        }
+      });
+      phone.addEventListener('change', sync);
+    });
+  }
 
   function initFooter() {
     var form = document.querySelector('.fletters__form');
@@ -506,6 +622,7 @@
     initSmoothScroll();
     initHeader();
     initFooter();
+    initFooterColumns();
     initReveals();
     initHashLanding();
   }

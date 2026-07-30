@@ -58,6 +58,24 @@
   if cfg.cols != 4 or cfg.cols_t != 3 or cfg.cols_m != 2 or cfg.ratio != 'default'
     assign has_layout = true
   endif
+  comment
+    Mobile group. The column counts above are already per device, because the
+    grid rule reads a different property at each tier. What has no phone version
+    is the card shape — `ratio` is written without a query, so it holds at every
+    width — and the toolbar, which has no breakpoint rule of its own and keeps
+    both its groups down to 320px. The two groups are distinguishable in the
+    markup: the sort form carries data-store-sort, the filter group does not.
+    600px is the tier the grid's own phone count uses.
+  endcomment
+  if cfg.ratio_m != 'default' or cfg.show_count_m == false
+    assign has_layout = true
+  endif
+  if show_filters and cfg.show_filters_m == false
+    assign has_layout = true
+  endif
+  if show_sort and cfg.show_sort_m == false
+    assign has_layout = true
+  endif
 -%}
 {%- if has_layout -%}
   <style>
@@ -75,6 +93,23 @@
     {%- endif -%}
     {%- if cfg.ratio != 'default' -%}
       {{ sel }} .piece__media { aspect-ratio: {{ cfg.ratio }}; }
+    {%- endif -%}
+
+    {%- if cfg.ratio_m != 'default' or cfg.show_count_m == false or cfg.show_filters_m == false or cfg.show_sort_m == false -%}
+      @media (max-width: 600px) {
+        {%- if cfg.ratio_m != 'default' -%}
+          {{ sel }} .piece__media { aspect-ratio: {{ cfg.ratio_m }}; }
+        {%- endif -%}
+        {%- if cfg.show_count_m == false -%}
+          {{ sel }} .store-head__count { display: none; }
+        {%- endif -%}
+        {%- if show_filters and cfg.show_filters_m == false -%}
+          {{ sel }} .store-bar__group:not([data-store-sort]) { display: none; }
+        {%- endif -%}
+        {%- if show_sort and cfg.show_sort_m == false -%}
+          {{ sel }} .store-bar__group[data-store-sort] { display: none; }
+        {%- endif -%}
+      }
     {%- endif -%}
   </style>
 {%- endif -%}
