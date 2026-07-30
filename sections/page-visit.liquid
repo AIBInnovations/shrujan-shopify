@@ -5,18 +5,61 @@
   `.shopify-section` is `display: contents` and cannot be sized, so the count is
   published as a custom property — which still inherits through it.
 {%- endcomment -%}
-{%- if section.settings.stops_cols != 3 -%}
+{%- liquid
+  assign cfg = section.settings
+  assign sel = '#shopify-section-' | append: section.id
+
+  comment
+    Mobile group. Three grids on two phone tiers: the stops and the stay steps
+    both stack at 620px, the three ways to visit at 900px. Neither the stop nor
+    the way photograph has a responsive shape of its own, so both keep their
+    desktop ratio all the way down to 320px unless one is chosen here.
+  endcomment
+  assign v_style = false
+  if cfg.stops_cols != 3 or cfg.stops_cols_m != 1 or cfg.ways_cols_m != 1
+    assign v_style = true
+  endif
+  if cfg.steps_cols_m != 1 or cfg.stop_ratio_m != 'default' or cfg.way_ratio_m != 'default'
+    assign v_style = true
+  endif
+-%}
+{%- if v_style -%}
   <style>
-    {%- assign sel = '#shopify-section-' | append: section.id -%}
-    {{ sel }} { --stops-cols: {{ section.settings.stops_cols }}; }
-    {%- comment -%}
-      The stylesheet steps the grid down to two columns below 1081px, so a
-      single-column choice has to be carried down or the grid would widen on the
-      smaller screen.
-    {%- endcomment -%}
-    {%- if section.settings.stops_cols < 2 -%}
-      @media (max-width: 1080px) {
-        {{ sel }} .stops__grid { grid-template-columns: repeat({{ section.settings.stops_cols }}, minmax(0, 1fr)); }
+    {%- if cfg.stops_cols != 3 -%}
+      {{ sel }} { --stops-cols: {{ section.settings.stops_cols }}; }
+      {%- comment -%}
+        The stylesheet steps the grid down to two columns below 1081px, so a
+        single-column choice has to be carried down or the grid would widen on the
+        smaller screen.
+      {%- endcomment -%}
+      {%- if section.settings.stops_cols < 2 -%}
+        @media (max-width: 1080px) {
+          {{ sel }} .stops__grid { grid-template-columns: repeat({{ section.settings.stops_cols }}, minmax(0, 1fr)); }
+        }
+      {%- endif -%}
+    {%- endif -%}
+
+    {%- if cfg.stops_cols_m != 1 or cfg.steps_cols_m != 1 or cfg.stop_ratio_m != 'default' -%}
+      @media (max-width: 620px) {
+        {%- if cfg.stops_cols_m != 1 -%}
+          {{ sel }} .stops__grid { grid-template-columns: repeat({{ cfg.stops_cols_m }}, minmax(0, 1fr)); }
+        {%- endif -%}
+        {%- if cfg.steps_cols_m != 1 -%}
+          {{ sel }} .plan__steps { grid-template-columns: repeat({{ cfg.steps_cols_m }}, minmax(0, 1fr)); }
+        {%- endif -%}
+        {%- if cfg.stop_ratio_m != 'default' -%}
+          {{ sel }} .stop__media { aspect-ratio: {{ cfg.stop_ratio_m }}; }
+        {%- endif -%}
+      }
+    {%- endif -%}
+    {%- if cfg.ways_cols_m != 1 or cfg.way_ratio_m != 'default' -%}
+      @media (max-width: 900px) {
+        {%- if cfg.ways_cols_m != 1 -%}
+          {{ sel }} .ways { grid-template-columns: repeat({{ cfg.ways_cols_m }}, minmax(0, 1fr)); }
+        {%- endif -%}
+        {%- if cfg.way_ratio_m != 'default' -%}
+          {{ sel }} .way__media { aspect-ratio: {{ cfg.way_ratio_m }}; }
+        {%- endif -%}
       }
     {%- endif -%}
   </style>

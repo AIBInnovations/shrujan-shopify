@@ -5,9 +5,27 @@
   `.shopify-section` is `display: contents` and cannot be sized, so the count is
   published as a custom property — which still inherits through it.
 {%- endcomment -%}
-{%- if section.settings.campus_cols != 3 -%}
+{%- liquid
+  assign cfg = section.settings
+  assign sel = '#shopify-section-' | append: section.id
+
+  comment
+    Mobile group. Four grids, two phone tiers. The campus mosaic and the current
+    show both stack at 720px; the visit plates and the info bar both stack at
+    900px. The mosaic cards also change shape at 900px, from 2 by 1 (3 by 1 for a
+    wide card) to 16 by 9, so a phone shape belongs in that same tier.
+  endcomment
+  assign l_style = false
+  if cfg.campus_cols != 3 or cfg.campus_cols_m != 1 or cfg.show_cols_m != 1
+    assign l_style = true
+  endif
+  if cfg.plates_cols_m != 1 or cfg.bar_cols_m != 1 or cfg.card_ratio_m != 'default'
+    assign l_style = true
+  endif
+-%}
+{%- if l_style -%}
   <style>
-    {%- assign sel = '#shopify-section-' | append: section.id -%}
+    {%- if cfg.campus_cols != 3 -%}
     {{ sel }} { --lldc-cols: {{ section.settings.campus_cols }}; }
     {%- comment -%}
       Two things only a single column needs, and both are what the stylesheet
@@ -20,6 +38,35 @@
       {{ sel }} .lldc-card--wide { grid-column: auto; }
       @media (max-width: 900px) {
         {{ sel }} .lldc__mosaic { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+      }
+    {%- endif -%}
+    {%- endif -%}
+
+    {%- comment -%}
+      Phone. The stylesheet already returns a wide card to a single track at
+      720px, so a count above one there needs nothing extra to land.
+    {%- endcomment -%}
+    {%- if cfg.campus_cols_m != 1 or cfg.show_cols_m != 1 -%}
+      @media (max-width: 720px) {
+        {%- if cfg.campus_cols_m != 1 -%}
+          {{ sel }} .lldc__mosaic { grid-template-columns: repeat({{ cfg.campus_cols_m }}, minmax(0, 1fr)); }
+        {%- endif -%}
+        {%- if cfg.show_cols_m != 1 -%}
+          {{ sel }} .lldc-show { grid-template-columns: repeat({{ cfg.show_cols_m }}, minmax(0, 1fr)); }
+        {%- endif -%}
+      }
+    {%- endif -%}
+    {%- if cfg.plates_cols_m != 1 or cfg.bar_cols_m != 1 or cfg.card_ratio_m != 'default' -%}
+      @media (max-width: 900px) {
+        {%- if cfg.plates_cols_m != 1 -%}
+          {{ sel }} .visit-plates { grid-template-columns: repeat({{ cfg.plates_cols_m }}, minmax(0, 1fr)); }
+        {%- endif -%}
+        {%- if cfg.bar_cols_m != 1 -%}
+          {{ sel }} .visit-bar { grid-template-columns: repeat({{ cfg.bar_cols_m }}, minmax(0, 1fr)); }
+        {%- endif -%}
+        {%- if cfg.card_ratio_m != 'default' -%}
+          {{ sel }} .lldc-card__media { aspect-ratio: {{ cfg.card_ratio_m }}; }
+        {%- endif -%}
       }
     {%- endif -%}
   </style>
@@ -394,6 +441,79 @@
       "type": "url",
       "id": "cta_url",
       "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "campus_cols_m",
+      "label": "Campus mosaic columns",
+      "info": "720px and under, where the mosaic stacks one card per row. Between 720 and 900px the theme shows two.",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "select",
+      "id": "card_ratio_m",
+      "label": "Mosaic card shape",
+      "info": "900px and under, where the theme already reshapes every card to 16:9 — a wide card included.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default (16:9)"
+        },
+        {
+          "value": "2/1",
+          "label": "Wide (2:1)"
+        },
+        {
+          "value": "4/3",
+          "label": "Landscape (4:3)"
+        },
+        {
+          "value": "1/1",
+          "label": "Square (1:1)"
+        },
+        {
+          "value": "4/5",
+          "label": "Portrait (4:5)"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "show_cols_m",
+      "label": "Current show columns",
+      "info": "720px and under, where the three exhibition photographs stack.",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "plates_cols_m",
+      "label": "Visit plate columns",
+      "info": "900px and under, where the plan-your-visit plates stack.",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "bar_cols_m",
+      "label": "Info bar columns",
+      "info": "900px and under, where the maroon address and contact bar stacks.",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
     },
     {
       "type": "header",

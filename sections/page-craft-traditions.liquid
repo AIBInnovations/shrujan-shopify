@@ -3,23 +3,65 @@
   Layout override for the sticky-player control. Nothing is emitted while the
   control sits at its default, so the page ships exactly as it was hand-built.
 {%- endcomment -%}
-{%- if section.settings.films_sticky == false -%}
+{%- liquid
+  assign cfg = section.settings
+  assign sel = '#shopify-section-' | append: section.id
+
+  comment
+    Mobile group. The player is the one thing on this page the desktop layout
+    pins, and the stylesheet keeps it pinned on a phone too — at 900px it gains a
+    full-bleed ivory backdrop instead of being released. So a phone switch has
+    real work to do, and it is the same pair of changes the all-widths control
+    makes, confined to that 900px tier. The facts row steps to one column at
+    720px, and the film frame holds 16 by 9 at every width.
+  endcomment
+  assign ct_style = false
+  if cfg.films_sticky == false or cfg.facts_cols_m != 1 or cfg.stage_ratio_m != 'default'
+    assign ct_style = true
+  endif
+  if cfg.films_sticky and cfg.films_sticky_m == false
+    assign ct_style = true
+  endif
+-%}
+{%- if ct_style -%}
   <style>
-    {%- assign sel = '#shopify-section-' | append: section.id -%}
-    {{ sel }} .craft-atlas__media { position: static; }
-    {%- comment -%}
-      Below 900px the stylesheet gives the pinned player a full-bleed ivory
-      backdrop so body copy cannot show through it; unpinned it has nothing to
-      cover, so the chrome comes off with the stickiness.
-    {%- endcomment -%}
-    @media (max-width: 900px) {
-      {{ sel }} .craft-atlas__media {
-        padding: 0;
-        background: none;
-        box-shadow: none;
-        clip-path: none;
+    {%- if cfg.films_sticky == false -%}
+      {{ sel }} .craft-atlas__media { position: static; }
+      {%- comment -%}
+        Below 900px the stylesheet gives the pinned player a full-bleed ivory
+        backdrop so body copy cannot show through it; unpinned it has nothing to
+        cover, so the chrome comes off with the stickiness.
+      {%- endcomment -%}
+      @media (max-width: 900px) {
+        {{ sel }} .craft-atlas__media {
+          padding: 0;
+          background: none;
+          box-shadow: none;
+          clip-path: none;
+        }
       }
-    }
+    {%- endif -%}
+    {%- if cfg.films_sticky and cfg.films_sticky_m == false -%}
+      @media (max-width: 900px) {
+        {{ sel }} .craft-atlas__media {
+          position: static;
+          padding: 0;
+          background: none;
+          box-shadow: none;
+          clip-path: none;
+        }
+      }
+    {%- endif -%}
+    {%- if cfg.stage_ratio_m != 'default' -%}
+      @media (max-width: 900px) {
+        {{ sel }} .craft-stage { aspect-ratio: {{ cfg.stage_ratio_m }}; }
+      }
+    {%- endif -%}
+    {%- if cfg.facts_cols_m != 1 -%}
+      @media (max-width: 720px) {
+        {{ sel }} .craft-facts { grid-template-columns: repeat({{ cfg.facts_cols_m }}, minmax(0, 1fr)); }
+      }
+    {%- endif -%}
   </style>
 {%- endif -%}
 {%- capture nl %}
@@ -418,6 +460,52 @@
       "type": "url",
       "id": "cta_url",
       "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "checkbox",
+      "id": "films_sticky_m",
+      "label": "Keep the player pinned",
+      "info": "900px and under the pinned player stays put and takes a full-bleed backdrop so the text can scroll behind it. Off releases it there and drops that backdrop. Only applies while the player is pinned at all.",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "stage_ratio_m",
+      "label": "Film shape",
+      "info": "900px and under. The frame holds 16:9 at every width otherwise, which is a shallow band on a phone.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default (16:9)"
+        },
+        {
+          "value": "4/3",
+          "label": "Landscape (4:3)"
+        },
+        {
+          "value": "1/1",
+          "label": "Square (1:1)"
+        },
+        {
+          "value": "3/2",
+          "label": "Landscape (3:2)"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "facts_cols_m",
+      "label": "Craft fact columns",
+      "info": "720px and under, where the three facts under each craft stack one per row.",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
     },
     {
       "type": "header",
