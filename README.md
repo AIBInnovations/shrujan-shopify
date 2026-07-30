@@ -147,6 +147,25 @@ Two Shopify behaviours worth knowing when working on this theme:
   carry a default, range settings need at least three steps, and `gift_card`
   must stay a `.liquid` template.
 
+### Inventory, and an API trap worth knowing
+
+The catalogue is stocked and purchasable: every piece carries real stock at the
+shop location, except the three the design marks "Sold out"
+(`megenta-pink-hand-embroidered-kanchli`, `dupatta-copy-4`,
+`handloom-weaving-takiya-cover-2`) which sit at zero so Shopify's own
+availability drives that label rather than a hard-coded badge. Change the
+numbers in **Products → Inventory**; the storefront follows.
+
+Setting that stock took four attempts because the API fails *quietly*:
+`inventorySetQuantities` needs both an `@idempotent(key:)` directive on the
+field and `changeFromQuantity` on every quantity, and when either is missing
+the error arrives as a top-level GraphQL error — **not** in `userErrors`. A
+script that only inspects `userErrors` will report success while changing
+nothing. Always re-read the quantities afterwards. Two related gotchas: a
+variant's inventory level lives at one specific location (activating a
+different one silently does nothing), and turning tracking off is not enough to
+make an unstocked variant purchasable.
+
 ## Notes
 
 - Smooth scroll = Lenis driven by GSAP's ticker, exactly as documented in
