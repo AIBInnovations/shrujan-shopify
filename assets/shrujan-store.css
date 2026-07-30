@@ -2031,8 +2031,14 @@
 
   /* a scrim so the drawer reads as a layer above the hero rather than part of it */
   .nav-scrim {
-    position: fixed;
-    inset: 0;
+    /* anchored under the bar rather than over the whole viewport: the header is
+       transparent above the hero, so a full-screen scrim dimmed the hero
+       *through* it and muddied the logo row. */
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 100dvh;
     z-index: 70;
     background: rgba(43, 29, 25, 0.38);
     opacity: 0;
