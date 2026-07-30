@@ -21,9 +21,11 @@
       belongs to, and the script hides the ones outside the selection. That is
       the same job the rail did before, minus the catalogue in JS.
    2. The sort menu is a listbox, so its pointer and keyboard behaviour is
-      scripted. The order itself is computed in Liquid from the theme setting,
-      so the page arrives sorted; picking another order re-lays the cards that
-      are already on the page.
+      scripted. Ordering also happens in the browser: it re-lays the cards
+      already on the page. Liquid cannot sort across the collections, because
+      the union has to be built with nested loops (see the grid comment), so
+      the page arrives in the curated "Featured" order and the chosen default
+      is applied once on load.
 
   Layout controls stay in a scoped <style>, written only when a value differs
   from the built design — an id-specificity rule would otherwise flatten the
@@ -59,32 +61,25 @@
   assign col_keys = col_keys | split: ','
 
   comment
-    The grid is every listed collection's products, in rail order — the order
-    the catalogue has always opened in — deduplicated, then ordered server-side
-    so the page needs no script to arrive sorted.
+    Counted the same way the grid is drawn: `concat` silently returns the
+    original array when handed a collection's products drop, so a union built
+    that way collapses to the first collection. Nested loops with an id ledger
+    are what actually reach all of the catalogue, and they also sidestep the
+    50-item cap a single products loop carries.
   endcomment
   assign grid_count = 0
   if has_cols
+    assign counted = ''
     for key in col_keys
       assign key_col = collections[key]
-      if forloop.first
-        assign grid_products = key_col.products
-      else
-        assign grid_products = grid_products | concat: key_col.products
-      endif
+      for product in key_col.products
+        assign id_token = product.id | append: ','
+        unless counted contains id_token
+          assign counted = counted | append: id_token
+          assign grid_count = grid_count | plus: 1
+        endunless
+      endfor
     endfor
-    assign grid_products = grid_products | uniq: 'id'
-
-    case cfg.sort_default
-      when 'price-asc'
-        assign grid_products = grid_products | sort: 'price'
-      when 'price-desc'
-        assign grid_products = grid_products | sort: 'price' | reverse
-      when 'name'
-        assign grid_products = grid_products | sort: 'title'
-    endcase
-
-    assign grid_count = grid_products.size
   endif
 
   assign count_word = 'pieces'
@@ -245,7 +240,13 @@
 {%- if grid_count > 0 %}
 
       <div class="curated__grid shop-grid" data-reveal-child>
-        {%- for product in grid_products %}
+        {%- assign painted_ids = '' -%}
+        {%- for key in col_keys %}
+        {%- assign key_col = collections[key] -%}
+        {%- for product in key_col.products %}
+        {%- assign card_token = product.id | append: ',' -%}
+        {%- unless painted_ids contains card_token -%}
+        {%- assign painted_ids = painted_ids | append: card_token -%}
         {%- liquid
           assign card_img = product.featured_image
 
@@ -279,6 +280,8 @@
             {%- endif %}
           </div>
         </a>
+        {%- endunless -%}
+        {%- endfor %}
         {%- endfor %}
       </div>
 {%- else %}
@@ -501,7 +504,9 @@
 
   /* the opening order is whatever Liquid rendered — read it back off the
      listbox so the menu and the grid can never disagree */
-  var sort = SORTS[0] || '';
+  /* the option Liquid pre-selected — the sort setting, applied on load */
+  var selectedAtLoad = optionEls.findIndex(function (el) { return el.classList.contains('is-selected'); });
+  var sort = SORTS[selectedAtLoad > -1 ? selectedAtLoad : 0] || '';
   optionEls.forEach(function (el, i) {
     if (el.getAttribute('aria-selected') === 'true') sort = SORTS[i];
   });
@@ -603,6 +608,10 @@
     el.addEventListener('pointerenter', function () { setCursor(i); });
     el.addEventListener('click', function () { pick(SORTS[i]); });
   });
+
+  /* The grid arrives in the curated order, so a non-default sort setting has to
+     be applied once here — Liquid cannot sort across the collections. */
+  if (sort && sort !== 'featured') applySort();
 
   /* initial state from the URL (?c=), exactly as useSearchParams read it on mount */
   onParamsChange();
