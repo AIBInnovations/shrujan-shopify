@@ -1,17 +1,142 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "main": {
       "type": "page-studio-heritage",
-      "settings": {}
+      "blocks": {
+        "b1": {
+          "type": "strand",
+          "settings": {
+            "label": "Heritage",
+            "link": "/pages/studio-heritage",
+            "current": true
+          }
+        },
+        "b2": {
+          "type": "strand",
+          "settings": {
+            "label": "Avinya",
+            "link": "/pages/studio-avinya",
+            "current": false
+          }
+        },
+        "b3": {
+          "type": "strand",
+          "settings": {
+            "label": "Gifting & Collaborations",
+            "link": "/pages/studio-gifting",
+            "current": false
+          }
+        },
+        "b4": {
+          "type": "stat",
+          "settings": {
+            "value": "12",
+            "label": "Living traditions"
+          }
+        },
+        "b5": {
+          "type": "stat",
+          "settings": {
+            "value": "6–14",
+            "label": "Months on the frame"
+          }
+        },
+        "b6": {
+          "type": "stat",
+          "settings": {
+            "value": "1",
+            "label": "Of its kind"
+          }
+        },
+        "b7": {
+          "type": "mark",
+          "settings": {
+            "title": "One pair of hands",
+            "copy": "A heritage piece is never split across a workshop. One embroiderer carries it from the first counted thread to the last, and her name goes on it."
+          }
+        },
+        "b8": {
+          "type": "mark",
+          "settings": {
+            "title": "The community canon",
+            "copy": "Every motif belongs to a community, and is stitched in the vocabulary that community has kept — not a house style drawn over the top of it."
+          }
+        },
+        "b9": {
+          "type": "mark",
+          "settings": {
+            "title": "Natural cloth, natural dye",
+            "copy": "Handloom cotton, mulberry silk and desert wool, coloured with madder, indigo and pomegranate rind. Nothing synthetic touches the ground cloth."
+          }
+        },
+        "b10": {
+          "type": "mark",
+          "settings": {
+            "title": "Recorded before it leaves",
+            "copy": "Each piece is photographed, measured and documented at the LLDC in Bhuj, so the record of how it was made outlives the cloth itself."
+          }
+        },
+        "b11": {
+          "type": "shot",
+          "settings": {
+            "asset": "frame-r3t26.webp",
+            "alt": "Heritage embroidery worked in fine counted thread"
+          }
+        },
+        "b12": {
+          "type": "shot",
+          "settings": {
+            "asset": "frame-r1t20.webp",
+            "alt": "Mirror-work set into a hand-embroidered panel"
+          }
+        },
+        "b13": {
+          "type": "shot",
+          "settings": {
+            "asset": "frame-r5t25.webp",
+            "alt": "Detail of a heritage textile in indigo and madder"
+          }
+        },
+        "b14": {
+          "type": "shot",
+          "settings": {
+            "asset": "frame-r2t5.webp",
+            "alt": "Border of a hand-embroidered heritage cloth"
+          }
+        },
+        "b15": {
+          "type": "shot",
+          "settings": {
+            "asset": "frame-r1t12.webp",
+            "alt": "Hand-embroidered panel in madder and indigo"
+          }
+        },
+        "b16": {
+          "type": "shot",
+          "settings": {
+            "asset": "frame-r3t6.webp",
+            "alt": "Kutchi mirror-work across a silk ground"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "b9",
+        "b10",
+        "b11",
+        "b12",
+        "b13",
+        "b14",
+        "b15",
+        "b16"
+      ]
     }
   },
   "order": [

@@ -1,17 +1,136 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "main": {
       "type": "page-studio-gifting",
-      "settings": {}
+      "blocks": {
+        "b1": {
+          "type": "strand",
+          "settings": {
+            "label": "Heritage",
+            "link": "/pages/studio-heritage",
+            "current": false
+          }
+        },
+        "b2": {
+          "type": "strand",
+          "settings": {
+            "label": "Avinya",
+            "link": "/pages/studio-avinya",
+            "current": false
+          }
+        },
+        "b3": {
+          "type": "strand",
+          "settings": {
+            "label": "Gifting & Collaborations",
+            "link": "/pages/studio-gifting",
+            "current": true
+          }
+        },
+        "b4": {
+          "type": "meta",
+          "settings": {
+            "value": "25+",
+            "label": "Minimum order"
+          }
+        },
+        "b5": {
+          "type": "meta",
+          "settings": {
+            "value": "4–12",
+            "label": "Weeks to deliver"
+          }
+        },
+        "b6": {
+          "type": "meta",
+          "settings": {
+            "value": "40",
+            "label": "Villages at work"
+          }
+        },
+        "b7": {
+          "type": "offer",
+          "settings": {
+            "asset": "sj-jat-garasiya-mobile-pouch-31-1.webp",
+            "alt": "Hand-embroidered mobile pouches in Jat Garasiya work",
+            "name": "Corporate & Institutional Gifting",
+            "copy": "Meaningful, high-quality gifts rooted in craft, for organisations marking a milestone, a partnership or an occasion. Chosen for craftsmanship and cultural integrity, so the gift carries depth as well as value.",
+            "fact_1": "From 25 pieces",
+            "fact_2": "4–8 weeks",
+            "fact_3": "Presentation packaging",
+            "link_label": "Enquire about this"
+          }
+        },
+        "b8": {
+          "type": "offer",
+          "settings": {
+            "asset": "sj-jat-garasiya-party-bag-copy-1-1.webp",
+            "alt": "Hand-embroidered party bags arranged together",
+            "name": "Wedding & Occasion Gifting",
+            "copy": "Handcrafted pieces chosen for celebrations — for how they look, and for the artisan skill and the story they carry with them.",
+            "fact_1": "From 50 pieces",
+            "fact_2": "6–10 weeks",
+            "fact_3": "Custom colourways",
+            "link_label": "Enquire about this"
+          }
+        },
+        "b9": {
+          "type": "offer",
+          "settings": {
+            "asset": "sj-handloom-weaving-cushion-cover-5-1.webp",
+            "alt": "Handloom cushion covers in natural dyed cotton",
+            "name": "Custom Collaborations",
+            "copy": "Some projects call for something more specific. We take on custom commissions involving particular colours, materials or craft techniques, developed through dialogue and aligned with Shrujan’s craft values.",
+            "fact_1": "By commission",
+            "fact_2": "12+ weeks",
+            "fact_3": "Developed with the artisans",
+            "link_label": "Enquire about this"
+          }
+        },
+        "b10": {
+          "type": "step",
+          "settings": {
+            "title": "The brief",
+            "copy": "Numbers, budget, occasion and how long you have. We will tell you honestly what is possible in the time."
+          }
+        },
+        "b11": {
+          "type": "step",
+          "settings": {
+            "title": "Selection",
+            "copy": "We put a shortlist together from the crafts that suit the brief, with samples where the order justifies them."
+          }
+        },
+        "b12": {
+          "type": "step",
+          "settings": {
+            "title": "The making",
+            "copy": "The order goes to the villages best suited to it. Artisans are paid per piece, on time, for every unit made."
+          }
+        },
+        "b13": {
+          "type": "step",
+          "settings": {
+            "title": "Delivery",
+            "copy": "Packed, documented and shipped — with a card naming the craft and the community behind the piece."
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "b9",
+        "b10",
+        "b11",
+        "b12",
+        "b13"
+      ]
     }
   },
   "order": [
