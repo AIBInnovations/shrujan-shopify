@@ -11,6 +11,12 @@
 {%- liquid
   assign cfg = section.settings
   assign sel = '#shopify-section-' | append: section.id
+  comment
+    An article with no featured image still has to hold its cell, so it borrows
+    one of the theme's own journal photographs — stepped through by index so a
+    page of image-less posts does not repeat the same frame down the grid.
+  endcomment
+  assign fallbacks = 'journal-1.webp,journal-5.webp,journal-8.webp,journal-11.webp' | split: ','
 -%}
 {%- if cfg.cols != 3 or cfg.cols_m != 1 -%}
   <style>
@@ -58,10 +64,11 @@
 <div class="container">
   <div class="store-journal{% if paginate.pages > 1 %} store-journal--paged{% endif %}" data-reveal-child>
     {%- for article in blog.articles %}
+    {%- assign fallback_i = forloop.index0 | modulo: fallbacks.size -%}
     <a class="journal-card store-post" href="{{ article.url }}">
       {%- if cfg.show_image %}
       <div class="journal-card__media">
-        <img src="{% if article.image %}{{ article.image | image_url: width: 1200 }}{% else %}{% cycle 'fallbacks': 'journal-1.webp', 'journal-5.webp', 'journal-8.webp', 'journal-11.webp' | asset_url %}{% endif %}" alt="{{ article.image.alt | default: article.title | escape }}" loading="lazy">
+        <img src="{% if article.image %}{{ article.image | image_url: width: 1200 }}{% else %}{{ fallbacks[fallback_i] | asset_url }}{% endif %}" alt="{{ article.image.alt | default: article.title | escape }}" loading="lazy">
         {%- if cfg.show_tag and article.tags.size > 0 %}<span class="journal-pill">{{ article.tags.first }}</span>{% endif %}
         <span class="journal-card__arrow" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>

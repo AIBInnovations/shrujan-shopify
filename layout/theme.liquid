@@ -4,8 +4,25 @@
     <meta charset="UTF-8">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 6 L44 32 L32 58 L20 32 Z' fill='%23B05C3B'/%3E%3Cpath d='M32 20 L38 32 L32 44 L26 32 Z' fill='%23F5F1E6'/%3E%3C/svg%3E">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Shrujan — Heritage by Hand. Handcrafted Indian clothing rooted in the living embroidery traditions of Kutch.">
-    <title>SHRUJAN — Heritage by Hand</title>
+    {%- comment -%}
+      Per-page title and description, so a product, article or collection is not
+      published under one shared title. The home page keeps the designed wording.
+    {%- endcomment -%}
+    {%- capture meta_desc -%}
+      {%- if page_description != blank -%}{{ page_description | escape }}
+      {%- else -%}Shrujan — Heritage by Hand. Handcrafted Indian clothing rooted in the living embroidery traditions of Kutch.
+      {%- endif -%}
+    {%- endcapture -%}
+    <meta name="description" content="{{ meta_desc | strip }}">
+    <title>
+      {%- if request.page_type == 'index' -%}
+        SHRUJAN — Heritage by Hand
+      {%- else -%}
+        {{ page_title }}{% if current_tags %} — {{ current_tags | join: ', ' }}{% endif %}
+        {%- if current_page != 1 %} — page {{ current_page }}{% endif %} — SHRUJAN
+      {%- endif -%}
+    </title>
+    <link rel="canonical" href="{{ canonical_url }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     {%- comment -%} the pairing chosen in Theme settings → Typography {%- endcomment -%}

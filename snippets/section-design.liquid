@@ -54,19 +54,24 @@
       {{ sel }} { --gerua: {{ s.sec_accent }}; --gold: {{ s.sec_accent }}; }
     {%- endif -%}
 
+    {%- comment -%}
+      `:nth-child(1 of :not(style))` rather than `:first-child`: a section that
+      emits its own scoped <style> would otherwise make that tag the first
+      child, and the spacing would land on an invisible element.
+    {%- endcomment -%}
     {%- if s.sec_space_top != 0 -%}
-      {{ sel }} > *:first-child { margin-top: {{ s.sec_space_top }}px; }
+      {{ sel }} > *:nth-child(1 of :not(style)) { margin-top: {{ s.sec_space_top }}px; }
     {%- endif -%}
     {%- if s.sec_space_bottom != 0 -%}
-      {{ sel }} > *:last-child { margin-bottom: {{ s.sec_space_bottom }}px; }
+      {{ sel }} > *:nth-last-child(1 of :not(style)) { margin-bottom: {{ s.sec_space_bottom }}px; }
     {%- endif -%}
 
     @media (max-width: 767px) {
       {%- if s.sec_space_top_m != 0 -%}
-        {{ sel }} > *:first-child { margin-top: {{ s.sec_space_top_m }}px; }
+        {{ sel }} > *:nth-child(1 of :not(style)) { margin-top: {{ s.sec_space_top_m }}px; }
       {%- endif -%}
       {%- if s.sec_space_bottom_m != 0 -%}
-        {{ sel }} > *:last-child { margin-bottom: {{ s.sec_space_bottom_m }}px; }
+        {{ sel }} > *:nth-last-child(1 of :not(style)) { margin-bottom: {{ s.sec_space_bottom_m }}px; }
       {%- endif -%}
       {%- if s.sec_hide_mobile -%}
         {{ sel }} { display: none !important; }
