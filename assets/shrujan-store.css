@@ -2019,6 +2019,16 @@
       visibility 0s;
   }
 
+  /* The header's own rows sit above the scrim, so opening the drawer dims the
+     page rather than washing out the bar the shopper is still using. Order:
+     page < scrim (70) < bar and offer bar (75) < drawer (80). */
+  .offer-bar,
+  .topbar,
+  .site-header__inner {
+    position: relative;
+    z-index: 75;
+  }
+
   /* a scrim so the drawer reads as a layer above the hero rather than part of it */
   .nav-scrim {
     position: fixed;
