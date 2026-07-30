@@ -8,13 +8,55 @@
 {%- liquid
   assign cfg = section.settings
   assign root_sel = '#shopify-section-' | append: section.id
+
+  comment
+    Mobile group. Three grids, three phone tiers. The hallmarks step to one at
+    620px, the archive photographs jump straight from three to one at 720px with
+    nothing in between, and the figures row bottoms out at two across at 900px
+    and never reaches one. That last one is hairline-separated, so a single
+    column also has to move each rule from the side to the top, which is what
+    the theme itself does for comparable rows at their narrowest step.
+  endcomment
+  assign sh_style = false
+  if cfg.mark_cols != 4 or cfg.mark_cols_m != 1 or cfg.arch_cols_m != 1
+    assign sh_style = true
+  endif
+  if cfg.arch_ratio_m != 'default' or cfg.stat_cols_m != 2
+    assign sh_style = true
+  endif
 -%}
-{%- if cfg.mark_cols != 4 -%}
+{%- if sh_style -%}
   <style>
-    {{ root_sel }} { --mark-cols: {{ cfg.mark_cols }}; }
-    @media (min-width: 1101px) {
-      {{ root_sel }} .marks { grid-template-columns: repeat(var(--mark-cols), minmax(0, 1fr)); }
-    }
+    {%- if cfg.mark_cols != 4 -%}
+      {{ root_sel }} { --mark-cols: {{ cfg.mark_cols }}; }
+      @media (min-width: 1101px) {
+        {{ root_sel }} .marks { grid-template-columns: repeat(var(--mark-cols), minmax(0, 1fr)); }
+      }
+    {%- endif -%}
+    {%- if cfg.mark_cols_m != 1 -%}
+      @media (max-width: 620px) {
+        {{ root_sel }} .marks { grid-template-columns: repeat({{ cfg.mark_cols_m }}, minmax(0, 1fr)); }
+      }
+    {%- endif -%}
+    {%- if cfg.arch_cols_m != 1 or cfg.arch_ratio_m != 'default' -%}
+      @media (max-width: 720px) {
+        {%- if cfg.arch_cols_m != 1 -%}
+          {{ root_sel }} .arch-grid { grid-template-columns: repeat({{ cfg.arch_cols_m }}, minmax(0, 1fr)); }
+        {%- endif -%}
+        {%- if cfg.arch_ratio_m != 'default' -%}
+          {{ root_sel }} .arch-grid figure { aspect-ratio: {{ cfg.arch_ratio_m }}; }
+        {%- endif -%}
+      }
+    {%- endif -%}
+    {%- if cfg.stat_cols_m != 2 -%}
+      @media (max-width: 900px) {
+        {{ root_sel }} .craft__stats { grid-template-columns: repeat({{ cfg.stat_cols_m }}, minmax(0, 1fr)); }
+        {%- if cfg.stat_cols_m == 1 -%}
+          {{ root_sel }} .craft__stats .stat { border-left: 0; }
+          {{ root_sel }} .craft__stats .stat + .stat { border-top: 1px solid var(--hairline); }
+        {%- endif -%}
+      }
+    {%- endif -%}
   </style>
 {%- endif -%}
 {%- assign strand_blocks = section.blocks | where: 'type', 'strand' -%}
