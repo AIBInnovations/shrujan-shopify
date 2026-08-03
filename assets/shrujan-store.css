@@ -2197,3 +2197,22 @@
     transition-duration: 1ms !important;
   }
 }
+
+/* ============================================================
+   Gallery rows that left a band of background
+   ------------------------------------------------------------
+   The origins strip gives its first frame a wider column (1.3fr 1fr 1fr) while
+   every frame is locked to `aspect-ratio: 4 / 3`. A grid item carrying an
+   aspect-ratio is treated like a replaced element, so `align-self: normal` does
+   NOT stretch it — the two narrower frames came up 99px short of the row the
+   wide one set, and that shortfall showed as a gap under them.
+
+   Asking for stretch explicitly hands the row height back to every frame; the
+   images already cover, so they crop rather than distort. The wider first
+   column — the emphasis the design intends — is untouched.
+   ============================================================ */
+.origin__gallery > * { align-self: stretch; }
+.origin__gallery .origin__shot { height: 100%; }
+
+/* the tearsheet row has the same shape: mixed frame heights in one row */
+.press__sheets > * { align-self: stretch; }
