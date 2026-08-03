@@ -30,9 +30,38 @@
   if st.chapters_sticky and st.chapters_sticky_m == false
     assign story_style = true
   endif
+
+  comment
+    The stylesheet places the twelve photographs by hand into a flush 4 x 7
+    block, keyed on :nth-child(1) … :nth-child(12). Those frames are editable
+    blocks now, so any other count leaves the tail of that map pointing at
+    nothing — which is exactly how a hole opens in the middle of the grid.
+    Count them, and fall back to uniform auto-placed cells when the number is
+    not the twelve the map was drawn for.
+  endcomment
+  assign jshot_count = 0
+  for block in section.blocks
+    if block.type == 'jshot'
+      assign jshot_count = jshot_count | plus: 1
+    endif
+  endfor
+  unless jshot_count == 12
+    assign story_style = true
+  endunless
 -%}
 {%- if story_style -%}
   <style>
+    {%- comment -%}
+      Not twelve photographs: drop the hand-placed map and let every frame take
+      a uniform cell. `dense` then backfills any gap a taller frame would leave.
+    {%- endcomment -%}
+    {%- unless jshot_count == 12 -%}
+      @media (min-width: 901px) {
+        {{ sel }} .journal-bento { grid-auto-flow: dense; }
+        {{ sel }} .journal-bento > * { grid-column: auto; grid-row: span 2; }
+        {{ sel }} .journal-bento > .jshot--tall { grid-row: span 3; }
+      }
+    {%- endunless -%}
     {%- if st.journal_cols != 4 -%}
       {{ sel }} { --journal-cols: {{ st.journal_cols }}; }
       {%- comment -%}
