@@ -587,7 +587,7 @@
         "b6": {
           "type": "stat",
           "settings": {
-            "value": "4,000+",
+            "value": "2,000+",
             "label": "Artisan women at work"
           }
         }
@@ -874,7 +874,7 @@
           "type": "item",
           "settings": {
             "question": "Are your pieces handcrafted?",
-            "answer": "Yes. Every garment is embroidered by artisan women across forty villages of Kutch. No machine embroidery, ever. Each piece carries the name of the hands that made it."
+            "answer": "Yes. Every garment is embroidered by artisan women across sixty-six villages of Kutch. No machine embroidery, ever. Each piece carries the name of the hands that made it."
           }
         },
         "b2": {

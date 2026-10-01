@@ -6,7 +6,7 @@
         "b1": {
           "type": "stat",
           "settings": {
-            "value": "3",
+            "value": "4",
             "label": "Galleries"
           }
         },
@@ -27,7 +27,7 @@
         "b4": {
           "type": "stat",
           "settings": {
-            "value": "15 km",
+            "value": "16 km",
             "label": "From Bhuj"
           }
         },
@@ -58,7 +58,7 @@
             "asset": "lldc-hero.webp",
             "alt": "Figures in the ceremonial dress of twelve Kutchi communities, arranged in a circular gallery",
             "name": "The Museum",
-            "copy": "Three galleries, a library and the crafts studios — the whole complex built around the collection.",
+            "copy": "Four galleries, a library and the crafts studios — the whole complex built around the collection.",
             "wide": true
           }
         },
@@ -132,7 +132,7 @@
           "type": "plate",
           "settings": {
             "label": "Getting there",
-            "head": "15 km from Bhuj",
+            "head": "16 km from Bhuj",
             "lines": "Ajrakhpur, on the Bhuj–Bhachau highway\nState transport and private buses run there, as do shared chhakada-rickshaws\nBhuj itself: rail from Ahmedabad, Mumbai and Delhi, flights from Mumbai and Delhi"
           }
         }
