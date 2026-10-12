@@ -2173,15 +2173,133 @@
 .press__sheets > * { align-self: stretch; }
 
 /* ============================================================
-   Hero, first cell as a photograph
+   Hero, as one film
    ------------------------------------------------------------
-   The site's first cell is now the craft-film montage, and the shared
-   stylesheet dropped the photo crop and label drop with it. The theme keeps
-   the photograph as a setting, so those two rules live on here, scoped so
-   the montage label is left alone.
+   The theme's home hero is the craft-film montage alone: edge to edge, a full
+   screen tall, with the headline set over its middle. The site still ships
+   the seven-cell bento, and its rules in the shared stylesheet are left
+   exactly as they are so that sheet keeps merging. Everything here is keyed
+   on .hero.hero--film, which outranks every one of them: the grid, the
+   breakpoint heights, and the offer-bar correction above.
+
+   The height is a floor rather than a fixed height. On a short, wide phone
+   the words need more room than the screen has, and a fixed height would
+   crop them.
    ============================================================ */
-.hero-cell--model > img { object-position: 50% 12%; }
-.hero-cell--model .hero-cell__label:not(.hero-cell__label--montage) { top: 38%; }
+.hero.hero--film {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 0;
+  max-width: none;
+  height: auto;
+  min-height: calc(var(--hero-h, 100) * 1vh);
+  overflow: hidden;
+  background: var(--ink);
+}
+
+/* the screen as it is actually visible on a phone, where 100vh runs on under
+   the browser's own bars */
+@supports (height: 100svh) {
+  .hero.hero--film {
+    min-height: calc(var(--hero-h, 100) * 1svh);
+  }
+}
+
+/* the cell cropped from the top to keep hands in a tall frame; across the
+   whole screen the middle of the film is the subject */
+.hero--film .hero-montage__video {
+  object-position: center;
+}
+
+/* Three washes, all scaled by the one setting so that 0 really is the film as
+   shot: an even one over the whole frame, a deeper pool behind the words, and
+   shading at the top and bottom edges. The edges are where the films carry the
+   Design Centre's own mark and caption band, which the old tall cell cropped
+   away and a full screen does not. */
+.hero-film__scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 62% 58% at 50% 50%, rgba(10, 5, 3, calc(var(--hero-scrim, 0.45) * 0.55)) 0%, rgba(10, 5, 3, 0) 100%),
+    linear-gradient(
+      180deg,
+      rgba(10, 5, 3, calc(var(--hero-scrim, 0.45) * 1.4)) 0%,
+      rgba(10, 5, 3, 0) 24%,
+      rgba(10, 5, 3, 0) 66%,
+      rgba(10, 5, 3, calc(var(--hero-scrim, 0.45) * 1.5)) 100%
+    ),
+    rgba(10, 5, 3, var(--hero-scrim, 0.45));
+  pointer-events: none;
+}
+
+.hero-film__message {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1100px;
+  padding: clamp(56px, 9vh, 110px) var(--gutter);
+  text-align: center;
+}
+
+.hero--film .hero-message__title {
+  font-size: clamp(46px, calc(28px + 3.6vw), 108px);
+}
+
+/* The panel was narrow enough to need a word a line. Across the screen the
+   second and third lines sit side by side, and fall back to stacking on their
+   own wherever they do not fit. */
+.hero--film .hero-message__title .line {
+  display: inline-block;
+  vertical-align: top;
+  margin-inline: 0.11em;
+}
+
+.hero--film .hero-message__title .line:first-child {
+  display: block;
+  margin-inline: 0;
+}
+
+/* the panel's ink and crimson were set for ivory; over the film they become
+   the two tones the theme already uses on dark surfaces */
+.hero--film .hero-message__title .t-ink {
+  color: var(--ivory);
+}
+
+.hero--film .hero-message__title .t-red {
+  color: var(--tan);
+}
+
+.hero--film .hero-message__copy {
+  max-width: 46ch;
+  color: var(--cream);
+}
+
+.hero--film .hero-message__cta {
+  align-self: center;
+  color: var(--ivory);
+  border-bottom-color: var(--ivory);
+}
+
+.hero--film .hero-message__cta:hover {
+  color: var(--tan);
+  border-color: var(--tan);
+}
+
+@media (max-width: 720px) {
+  .hero-film__message {
+    padding-inline: 22px;
+  }
+
+  .hero--film .hero-message__title {
+    font-size: clamp(38px, 11.4vw, 50px);
+  }
+}
 
 /* ============================================================
    Phone menu sections fold

@@ -1,237 +1,79 @@
 {%- render 'section-design', section: section -%}
 
 {%- comment -%}
-  Hero-specific controls. The bento's height is the clamp floor the stylesheet
-  keys on (--hero-min-h, 600px packaged); each cell's crop is its own
-  object-position, seeded with the value the stylesheet already ships. Nothing
-  is emitted unless a setting has moved, so an untouched hero is byte-identical.
+  The hero is one film: the craft montage, edge to edge and a full screen tall,
+  with the headline set over its middle. Nothing else sits in it.
 
-  The crops are sanitised, then compared against the packaged value: a field left
-  at its default (or emptied) produces no rule at all, so the stylesheet stays in
-  charge of that cell.
+  Hero-specific controls. The film's height is a share of the screen
+  (--hero-h, 100 packaged) and it plays under a dark wash that keeps the words
+  readable (--hero-scrim, 0.45 packaged). Nothing is emitted unless a setting
+  has moved, so an untouched hero is byte-identical.
+
+  The two heights are each written inside their own width range rather than one
+  overriding the other, so changing the desktop height leaves a phone on its own
+  setting, and the reverse.
 {%- endcomment -%}
 {%- liquid
   assign h = section.settings
   assign hsel = '#shopify-section-' | append: section.id
 
-  assign pos_model = h.shop_pos | strip_html | replace: '{', ' ' | replace: '}', ' ' | replace: ';', ' ' | strip
-  assign pos_season = h.season_pos | strip_html | replace: '{', ' ' | replace: '}', ' ' | replace: ';', ' ' | strip
-  assign pos_thread = h.thread_pos | strip_html | replace: '{', ' ' | replace: '}', ' ' | replace: ';', ' ' | strip
-  assign pos_story = h.story_pos | strip_html | replace: '{', ' ' | replace: '}', ' ' | replace: ';', ' ' | strip
-  assign pos_lldc = h.lldc_pos | strip_html | replace: '{', ' ' | replace: '}', ' ' | replace: ';', ' ' | strip
-
-  comment
-    Phone crops, sanitised the same way. Each is compared against its own
-    packaged value rather than against the desktop field, so a merchant who
-    only changes the desktop crop still has it carry down to the phone — the
-    mobile rule is written only when they have actually asked for a different
-    crop there.
-  endcomment
-  assign posm_model = h.shop_pos_m | strip_html | replace: '{', ' ' | replace: '}', ' ' | replace: ';', ' ' | strip
-  assign posm_season = h.season_pos_m | strip_html | replace: '{', ' ' | replace: '}', ' ' | replace: ';', ' ' | strip
-  assign posm_thread = h.thread_pos_m | strip_html | replace: '{', ' ' | replace: '}', ' ' | replace: ';', ' ' | strip
-  assign posm_story = h.story_pos_m | strip_html | replace: '{', ' ' | replace: '}', ' ' | replace: ';', ' ' | strip
-  assign posm_lldc = h.lldc_pos_m | strip_html | replace: '{', ' ' | replace: '}', ' ' | replace: ';', ' ' | strip
-
-  if posm_model == '50% 12%'
-    assign posm_model = ''
-  endif
-  if posm_season == '50% 18%'
-    assign posm_season = ''
-  endif
-  if posm_thread == '70% 60%'
-    assign posm_thread = ''
-  endif
-  if posm_story == '50% 50%'
-    assign posm_story = ''
-  endif
-  if posm_lldc == '50% 50%'
-    assign posm_lldc = ''
-  endif
-
-  if pos_model == '50% 12%'
-    assign pos_model = ''
-  endif
-  if pos_season == '50% 18%'
-    assign pos_season = ''
-  endif
-  if pos_thread == '70% 60%'
-    assign pos_thread = ''
-  endif
-  if pos_story == '50% 50%'
-    assign pos_story = ''
-  endif
-  if pos_lldc == '50% 50%'
-    assign pos_lldc = ''
-  endif
-
   assign h_style = false
-  if h.hero_min_h != 600
-    assign h_style = true
-  endif
-  if pos_model != blank or pos_season != blank or pos_thread != blank
-    assign h_style = true
-  endif
-  if pos_story != blank or pos_lldc != blank
-    assign h_style = true
-  endif
-  comment
-    Mobile group. Below 1180px the bento is `height: auto`, so the clamp floor
-    above no longer governs anything — what sets the stacked height is the
-    cells' own min-height, 280px at 720px and under. That is now published as
-    the hero-cell-min-h token in the stylesheet, with 280px as its fallback.
-  endcomment
-  if h.hero_cell_min_h_m != 280
-    assign h_style = true
-  endif
-  if posm_model != blank or posm_season != blank or posm_thread != blank
-    assign h_style = true
-  endif
-  if posm_story != blank or posm_lldc != blank
+  if h.hero_h != 100 or h.hero_h_m != 100 or h.hero_scrim != 45
     assign h_style = true
   endif
 -%}
 
 {%- if h_style -%}
   <style>
-    {%- if h.hero_min_h != 600 -%}
-      {{ hsel }} { --hero-min-h: {{ h.hero_min_h }}px; }
+    {%- if h.hero_h != 100 -%}
+      @media (min-width: 721px) { {{ hsel }} { --hero-h: {{ h.hero_h }}; } }
     {%- endif -%}
-    {%- if pos_model != blank -%}
-      {{ hsel }} .hero-cell--model img { object-position: {{ pos_model }}; }
+    {%- if h.hero_h_m != 100 -%}
+      @media (max-width: 720px) { {{ hsel }} { --hero-h: {{ h.hero_h_m }}; } }
     {%- endif -%}
-    {%- if pos_season != blank -%}
-      {{ hsel }} .hero-cell--season img { object-position: {{ pos_season }}; }
-    {%- endif -%}
-    {%- if pos_thread != blank -%}
-      {{ hsel }} .hero-cell--thread img { object-position: {{ pos_thread }}; }
-    {%- endif -%}
-    {%- if pos_story != blank -%}
-      {{ hsel }} .hero-cell--story img { object-position: {{ pos_story }}; }
-    {%- endif -%}
-    {%- if pos_lldc != blank -%}
-      {{ hsel }} .hero-cell--accessories img { object-position: {{ pos_lldc }}; }
-    {%- endif -%}
-
-    {%- comment -%}
-      Phone. The token is only read inside the stylesheet's own 720px block, so
-      publishing it on the section root cannot leak upward into the bento.
-    {%- endcomment -%}
-    {%- if h.hero_cell_min_h_m != 280 -%}
-      {{ hsel }} { --hero-cell-min-h: {{ h.hero_cell_min_h_m }}px; }
-    {%- endif -%}
-    {%- if posm_model != blank or posm_season != blank or posm_thread != blank or posm_story != blank or posm_lldc != blank -%}
-      @media (max-width: 720px) {
-        {%- if posm_model != blank -%}
-          {{ hsel }} .hero-cell--model img { object-position: {{ posm_model }}; }
-        {%- endif -%}
-        {%- if posm_season != blank -%}
-          {{ hsel }} .hero-cell--season img { object-position: {{ posm_season }}; }
-        {%- endif -%}
-        {%- if posm_thread != blank -%}
-          {{ hsel }} .hero-cell--thread img { object-position: {{ posm_thread }}; }
-        {%- endif -%}
-        {%- if posm_story != blank -%}
-          {{ hsel }} .hero-cell--story img { object-position: {{ posm_story }}; }
-        {%- endif -%}
-        {%- if posm_lldc != blank -%}
-          {{ hsel }} .hero-cell--accessories img { object-position: {{ posm_lldc }}; }
-        {%- endif -%}
-      }
+    {%- if h.hero_scrim != 45 -%}
+      {{ hsel }} { --hero-scrim: {{ h.hero_scrim | divided_by: 100.0 }}; }
     {%- endif -%}
   </style>
 {%- endif -%}
-<section class="hero" aria-label="{{ section.settings.title_l1 | strip_html | escape }} {{ section.settings.title_l2 | strip_html | downcase | escape }} {{ section.settings.title_l3 | strip_html | downcase | escape }}"{% if h.hero_animate == false %} data-hero-animate="false"{% endif %}>
-  {%- if h.cell1_mode == 'photo' %}
-  <a class="hero-cell hero-cell--model" href="{{ section.settings.shop_url | default: '/pages/shop-shrujan' | escape }}" data-hero="cell">
-    <img src="{% if section.settings.shop_img %}{{ section.settings.shop_img | image_url: width: 1200 }}{% else %}{{ 'hero-left.webp' | asset_url }}{% endif %}" alt="{{ section.settings.shop_alt | escape }}" fetchpriority="high">
-    <span class="hero-cell__label"><i class="hero-cell__dash" aria-hidden="true"></i><em>{{ section.settings.shop_em | escape }}</em>{{ section.settings.shop_label | escape }}<span class="hero-cell__sub">{{ section.settings.shop_sub | escape }}</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
-  </a>
-  {%- else -%}
-    {%- comment -%}
-      The craft films, one after another: a few seconds from the middle of each,
-      where the hands are working. One line per film: film | poster.
-    {%- endcomment -%}
-    {%- assign montage_lines = h.montage_films | newline_to_br | split: '<br />' -%}
-    {%- assign montage_first = '' -%}
-    {%- assign montage_first_poster = '' -%}
-    {%- capture montage_json -%}[
-      {%- assign m_n = 0 -%}
-      {%- for l in montage_lines -%}
-        {%- assign line = l | strip -%}
-        {%- if line != blank -%}
-          {%- assign parts = line | split: '|' -%}
-          {%- assign m_film = parts[0] | strip | asset_url -%}
-          {%- assign m_poster = parts[1] | strip -%}
-          {%- if m_poster != blank -%}{%- assign m_poster = m_poster | asset_url -%}{%- endif -%}
-          {%- if m_n == 0 -%}
-            {%- assign montage_first = m_film -%}
-            {%- assign montage_first_poster = m_poster -%}
-          {%- else -%},{%- endif -%}
-          {"src":{{ m_film | json }},"poster":{{ m_poster | json }}}
-          {%- assign m_n = m_n | plus: 1 -%}
-        {%- endif -%}
-      {%- endfor -%}
-    ]{%- endcapture %}
-  <a class="hero-cell hero-cell--model" href="{{ section.settings.montage_url | default: '/pages/video' | escape }}" data-hero="cell">
-    <video class="hero-montage__video" poster="{{ montage_first_poster }}" playsinline muted preload="auto" aria-hidden="true" data-hero-montage="{{ montage_json | escape }}" data-clip="{{ h.montage_clip }}" data-seek="{{ h.montage_seek }}"><source src="{{ montage_first }}" type="video/mp4"></video>
-    <span class="hero-cell__scrim hero-cell__scrim--montage" aria-hidden="true"></span>
-    <span class="hero-cell__label hero-cell__label--montage"><i class="hero-cell__dash" aria-hidden="true"></i>{{ h.montage_l1 | escape }}{% if h.montage_l2 != blank %}<br>{{ h.montage_l2 | escape }}{% endif %}<span class="hero-cell__sub">{{ h.montage_sub | escape }}</span>{% if h.montage_em != blank %}<em>{{ h.montage_em | escape }}</em>{% endif %}</span>
-  </a>
-  {%- endif %}
 
-  <div class="hero-cell hero-cell--message" data-hero="cell">
-    <span class="hero-message__ornament" aria-hidden="true"><svg viewBox="0 0 64 64" width="58" height="58" fill="none" stroke="currentColor" stroke-width="1">
-      <ellipse cx="32" cy="14" rx="5.5" ry="12" transform="rotate(0 32 32)"></ellipse>
-      <ellipse cx="32" cy="14" rx="5.5" ry="12" transform="rotate(30 32 32)"></ellipse>
-      <ellipse cx="32" cy="14" rx="5.5" ry="12" transform="rotate(60 32 32)"></ellipse>
-      <ellipse cx="32" cy="14" rx="5.5" ry="12" transform="rotate(90 32 32)"></ellipse>
-      <ellipse cx="32" cy="14" rx="5.5" ry="12" transform="rotate(120 32 32)"></ellipse>
-      <ellipse cx="32" cy="14" rx="5.5" ry="12" transform="rotate(150 32 32)"></ellipse>
-      <ellipse cx="32" cy="14" rx="5.5" ry="12" transform="rotate(180 32 32)"></ellipse>
-      <ellipse cx="32" cy="14" rx="5.5" ry="12" transform="rotate(210 32 32)"></ellipse>
-      <ellipse cx="32" cy="14" rx="5.5" ry="12" transform="rotate(240 32 32)"></ellipse>
-      <ellipse cx="32" cy="14" rx="5.5" ry="12" transform="rotate(270 32 32)"></ellipse>
-      <ellipse cx="32" cy="14" rx="5.5" ry="12" transform="rotate(300 32 32)"></ellipse>
-      <ellipse cx="32" cy="14" rx="5.5" ry="12" transform="rotate(330 32 32)"></ellipse>
-      <circle cx="32" cy="32" r="5"></circle>
-    </svg></span>
+{%- comment -%}
+  The craft films, one after another: a few seconds from the middle of each,
+  where the hands are working. One line per film: film | poster.
+{%- endcomment -%}
+{%- assign montage_lines = h.montage_films | newline_to_br | split: '<br />' -%}
+{%- assign montage_first = '' -%}
+{%- assign montage_first_poster = '' -%}
+{%- capture montage_json -%}[
+  {%- assign m_n = 0 -%}
+  {%- for l in montage_lines -%}
+    {%- assign line = l | strip -%}
+    {%- if line != blank -%}
+      {%- assign parts = line | split: '|' -%}
+      {%- assign m_film = parts[0] | strip | asset_url -%}
+      {%- assign m_poster = parts[1] | strip -%}
+      {%- if m_poster != blank -%}{%- assign m_poster = m_poster | asset_url -%}{%- endif -%}
+      {%- if m_n == 0 -%}
+        {%- assign montage_first = m_film -%}
+        {%- assign montage_first_poster = m_poster -%}
+      {%- else -%},{%- endif -%}
+      {"src":{{ m_film | json }},"poster":{{ m_poster | json }}}
+      {%- assign m_n = m_n | plus: 1 -%}
+    {%- endif -%}
+  {%- endfor -%}
+]{%- endcapture %}
+<section class="hero hero--film" aria-label="{{ section.settings.title_l1 | strip_html | escape }} {{ section.settings.title_l2 | strip_html | downcase | escape }} {{ section.settings.title_l3 | strip_html | downcase | escape }}"{% if h.hero_animate == false %} data-hero-animate="false"{% endif %}>
+  {%- if montage_first != blank %}
+  <video class="hero-montage__video" poster="{{ montage_first_poster }}" playsinline muted preload="auto" aria-hidden="true" data-hero-montage="{{ montage_json | escape }}" data-clip="{{ h.montage_clip }}" data-seek="{{ h.montage_seek }}"><source src="{{ montage_first }}" type="video/mp4"></video>
+  {%- endif %}
+  <span class="hero-film__scrim" aria-hidden="true"></span>
+
+  <div class="hero-film__message">
     <h1 class="hero-message__title"><span class="line"><span class="t-ink">{{ section.settings.title_l1 }}</span></span><span class="line"><span class="t-red">{{ section.settings.title_l2 }}</span></span><span class="line"><span class="t-red">{{ section.settings.title_l3 }}</span></span></h1>
     <span class="hero-message__rule" data-hero="rule" aria-hidden="true"></span>
     <p class="hero-message__copy" data-hero="copy">{{ section.settings.copy }}</p>
     <a class="hero-message__cta" href="{{ section.settings.cta_url | escape }}" data-hero="cta">{{ section.settings.cta_label | escape }} <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
   </div>
-
-  <a class="hero-cell hero-cell--season" href="{{ section.settings.season_url | default: '/pages/studio-collection' | escape }}" data-hero="cell">
-    <img src="{% if section.settings.season_img %}{{ section.settings.season_img | image_url: width: 1600 }}{% else %}{{ 'look-b2.webp' | asset_url }}{% endif %}" alt="{{ section.settings.season_alt | escape }}">
-    <span class="hero-cell__scrim" aria-hidden="true"></span>
-    <span class="hero-cell__label hero-cell__label--bottom"><em>{{ section.settings.season_em | escape }}</em>{{ section.settings.season_label | escape }}<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
-  </a>
-
-  <a class="hero-cell hero-cell--thread" href="{{ section.settings.thread_url | default: '/pages/video' | escape }}" data-hero="cell">
-    <img src="{% if section.settings.thread_img %}{{ section.settings.thread_img | image_url: width: 1600 }}{% else %}{{ 'craft-hero.webp' | asset_url }}{% endif %}" alt="{{ section.settings.thread_alt | escape }}">
-    <span class="hero-cell__scrim" aria-hidden="true"></span>
-    <span class="hero-cell__label hero-cell__label--bottom"><em>{{ section.settings.thread_em | escape }}</em>{{ section.settings.thread_label | escape }}<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
-  </a>
-
-  <a class="hero-cell hero-cell--story" href="{{ section.settings.story_url | default: '/pages/the-shrujan-story' | escape }}" data-hero="cell">
-    <img src="{% if section.settings.story_img %}{{ section.settings.story_img | image_url: width: 1000 }}{% else %}{{ 'story-origin-2.webp' | asset_url }}{% endif %}" alt="" aria-hidden="true">
-    <span class="hero-cell__scrim hero-cell__scrim--story" aria-hidden="true"></span>
-    <p class="hero-story__title">{{ section.settings.story_t1 | escape }}{% if section.settings.story_t2 != blank %}<br>{{ section.settings.story_t2 | escape }}{% endif %}</p>
-    <p class="hero-story__copy">{{ section.settings.story_copy | escape }}</p>
-    <span class="hero-story__link">{{ section.settings.story_link | escape }} <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
-  </a>
-
-  <a class="hero-cell hero-cell--accessories" href="{{ section.settings.lldc_url | default: '/pages/lldc' | escape }}" data-hero="cell">
-    <img src="{% if section.settings.lldc_img %}{{ section.settings.lldc_img | image_url: width: 1600 }}{% else %}{{ 'craft-embroidery-poster.webp' | asset_url }}{% endif %}" alt="{{ section.settings.lldc_alt | escape }}">
-    <span class="hero-cell__scrim" aria-hidden="true"></span>
-    <span class="hero-cell__label hero-cell__label--bottom"><em>{{ section.settings.lldc_em | escape }}</em>{{ section.settings.lldc_l1 | escape }}{% if section.settings.lldc_l2 != blank %}<br>{{ section.settings.lldc_l2 | escape }}{% endif %}<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
-  </a>
-
-  <a class="hero-cell hero-cell--india" href="{{ section.settings.india_url | default: '/pages/visit-experience' | escape }}" data-hero="cell">
-    <span class="hero-india__map" aria-hidden="true"></span>
-    <span class="hero-cell__label hero-cell__label--bottom hero-cell__label--ink"><em>{{ section.settings.india_em | escape }}</em>{{ section.settings.india_label | escape }}<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
-  </a>
 </section>
 
 <script>
@@ -241,11 +83,11 @@
   root.__shrujanInit = true;
 
   /* Intro animation is on unless the section says otherwise. Skipping the
-     timeline leaves every cell in its natural, fully visible state — the
+     timeline leaves the words in their natural, fully visible state — the
      hidden start values only ever exist as GSAP inline styles. */
   var animate = root.getAttribute('data-hero-animate') !== 'false';
 
-  /* ---- First cell: the craft montage (port of CraftMontage in Hero.jsx) ----
+  /* ---- The film: the craft montage (port of CraftMontage in Hero.jsx) ----
      Each film opens at its middle, plays for the clip length, then hands over
      to the next. Off screen the montage stops and fetches nothing; with reduced
      motion it never starts, and the first poster simply stands. */
@@ -298,31 +140,27 @@
 
   var mm = gsap.matchMedia(root);
 
+  /* The film itself never animates in — it is the first thing painted, and
+     holding it back would only delay the page. The words arrive over it. */
   if (animate) mm.add('(prefers-reduced-motion: no-preference)', function () {
     var tl = gsap.timeline({
       defaults: { ease: 'power3.out', duration: 0.9 },
     });
 
     tl.fromTo(
-      '[data-hero="cell"]',
-      { opacity: 0, y: 26 },
-      { opacity: 1, y: 0, duration: 1, stagger: 0.1 },
-      0
+      '.hero-message__title .line > span',
+      { yPercent: 110 },
+      { yPercent: 0, duration: 1, stagger: 0.12, ease: 'power4.out' },
+      0.15
     )
       .fromTo(
-        '.hero-message__title .line > span',
-        { yPercent: 110 },
-        { yPercent: 0, duration: 1, stagger: 0.12, ease: 'power4.out' },
-        0.35
-      )
-      .fromTo(
         '[data-hero="rule"]',
-        { scaleX: 0, transformOrigin: 'left center' },
+        { scaleX: 0, transformOrigin: 'center center' },
         { scaleX: 1, duration: 0.6 },
-        0.8
+        0.6
       )
-      .fromTo('[data-hero="copy"]', { opacity: 0, y: 16 }, { opacity: 1, y: 0 }, 0.9)
-      .fromTo('[data-hero="cta"]', { opacity: 0, y: 14 }, { opacity: 1, y: 0 }, 1.02);
+      .fromTo('[data-hero="copy"]', { opacity: 0, y: 16 }, { opacity: 1, y: 0 }, 0.7)
+      .fromTo('[data-hero="cta"]', { opacity: 0, y: 14 }, { opacity: 1, y: 0 }, 0.82);
   });
 
   mm.add('(prefers-reduced-motion: reduce)', function () {
@@ -337,80 +175,45 @@
   "settings": [
     {
       "type": "header",
-      "content": "Bento layout"
+      "content": "Film hero"
     },
     {
       "type": "range",
-      "id": "hero_min_h",
-      "label": "Shortest the bento may get",
-      "info": "The hero fills the fold (viewport minus the header) and never exceeds 1200px. This is the floor it will not drop below on short screens. Below 1180px wide the cells stack and size themselves.",
-      "min": 400,
-      "max": 1000,
-      "step": 10,
-      "unit": "px",
-      "default": 600
+      "id": "hero_h",
+      "label": "Height",
+      "info": "How much of the screen the film fills. 100 is the whole screen. On phones, use the Mobile setting below.",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "hero_scrim",
+      "label": "Darken the film",
+      "info": "The dark wash over the film that keeps the words readable. 0 shows the film as shot.",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 45
     },
     {
       "type": "checkbox",
       "id": "hero_animate",
       "label": "Play the intro animation",
-      "info": "Off renders the hero in place — the cells, headline lines, rule, copy and button never animate in.",
+      "info": "Off renders the hero in place — the headline lines, rule, copy and button never animate in.",
       "default": true
     },
     {
       "type": "header",
-      "content": "First cell"
-    },
-    {
-      "type": "select",
-      "id": "cell1_mode",
-      "label": "Show",
-      "default": "montage",
-      "options": [
-        {
-          "value": "montage",
-          "label": "Craft film montage"
-        },
-        {
-          "value": "photo",
-          "label": "Photograph (Shop Shrujan)"
-        }
-      ]
-    },
-    {
-      "type": "url",
-      "id": "montage_url",
-      "label": "Montage link",
-      "info": "Defaults to Craft Traditions, the page the films come from."
-    },
-    {
-      "type": "text",
-      "id": "montage_l1",
-      "label": "Montage label, line 1",
-      "default": "Woven in Kutch,"
-    },
-    {
-      "type": "text",
-      "id": "montage_l2",
-      "label": "Montage label, line 2",
-      "default": "Worn by the World"
-    },
-    {
-      "type": "text",
-      "id": "montage_sub",
-      "label": "Montage sub line",
-      "default": "Six living crafts, one desert. Hand-embroidered by the women of Kutch since 1969."
-    },
-    {
-      "type": "text",
-      "id": "montage_em",
-      "label": "Montage signature",
-      "default": "Heritage by Hand"
+      "content": "Film"
     },
     {
       "type": "textarea",
       "id": "montage_films",
-      "label": "Montage films (one per line)",
+      "label": "Films (one per line)",
       "info": "Film | poster, both theme asset filenames. They play in this order.",
       "default": "craft-embroidery.mp4 | craft-embroidery-poster.webp\ncraft-ajrakh.mp4 | craft-ajrakh-poster.webp\ncraft-weaving.mp4 | craft-weaving-poster.webp\ncraft-tiedye.mp4 | craft-tiedye-poster.webp\ncraft-discharge.mp4 | craft-discharge-poster.webp\ncraft-pottery.mp4 | craft-pottery-poster.webp"
     },
@@ -434,51 +237,6 @@
       "step": 1,
       "unit": "s",
       "default": 6
-    },
-    {
-      "type": "header",
-      "content": "First cell as a photograph"
-    },
-    {
-      "type": "url",
-      "id": "shop_url",
-      "label": "Link"
-    },
-    {
-      "type": "image_picker",
-      "id": "shop_img",
-      "label": "Image"
-    },
-    {
-      "type": "text",
-      "id": "shop_pos",
-      "label": "Image position",
-      "info": "CSS object-position — which part of the photo stays in frame as the cell crops. e.g. 50% 12%, center top.",
-      "default": "50% 12%"
-    },
-    {
-      "type": "text",
-      "id": "shop_alt",
-      "label": "Image alt text",
-      "default": "Model in a rust-red ajrakh kurta with gold jewellery before an arched wall"
-    },
-    {
-      "type": "text",
-      "id": "shop_em",
-      "label": "Label lead-in",
-      "default": "Shop"
-    },
-    {
-      "type": "text",
-      "id": "shop_label",
-      "label": "Label",
-      "default": "Shrujan"
-    },
-    {
-      "type": "text",
-      "id": "shop_sub",
-      "label": "Sub line",
-      "default": "Saris, kurtas and dupattas, hand-embroidered by the women of Kutch."
     },
     {
       "type": "header",
@@ -522,238 +280,18 @@
     },
     {
       "type": "header",
-      "content": "Studio Collection cell"
-    },
-    {
-      "type": "url",
-      "id": "season_url",
-      "label": "Link"
-    },
-    {
-      "type": "image_picker",
-      "id": "season_img",
-      "label": "Image"
-    },
-    {
-      "type": "text",
-      "id": "season_pos",
-      "label": "Image position",
-      "info": "CSS object-position.",
-      "default": "50% 18%"
-    },
-    {
-      "type": "text",
-      "id": "season_alt",
-      "label": "Image alt text",
-      "default": "Model in a red hand-embroidered bridal lehenga in a studio setting"
-    },
-    {
-      "type": "text",
-      "id": "season_em",
-      "label": "Label lead-in",
-      "default": "Studio"
-    },
-    {
-      "type": "text",
-      "id": "season_label",
-      "label": "Label",
-      "default": "Collection"
-    },
-    {
-      "type": "header",
-      "content": "Craft traditions cell"
-    },
-    {
-      "type": "url",
-      "id": "thread_url",
-      "label": "Link"
-    },
-    {
-      "type": "image_picker",
-      "id": "thread_img",
-      "label": "Image"
-    },
-    {
-      "type": "text",
-      "id": "thread_pos",
-      "label": "Image position",
-      "info": "CSS object-position.",
-      "default": "70% 60%"
-    },
-    {
-      "type": "text",
-      "id": "thread_alt",
-      "label": "Image alt text",
-      "default": "Embroiderers of Kutch working together outside their village"
-    },
-    {
-      "type": "text",
-      "id": "thread_em",
-      "label": "Label lead-in",
-      "default": "Craft Traditions"
-    },
-    {
-      "type": "text",
-      "id": "thread_label",
-      "label": "Label",
-      "default": "of Kutch"
-    },
-    {
-      "type": "header",
-      "content": "Story cell"
-    },
-    {
-      "type": "url",
-      "id": "story_url",
-      "label": "Link"
-    },
-    {
-      "type": "image_picker",
-      "id": "story_img",
-      "label": "Background image"
-    },
-    {
-      "type": "text",
-      "id": "story_pos",
-      "label": "Image position",
-      "info": "CSS object-position.",
-      "default": "50% 50%"
-    },
-    {
-      "type": "text",
-      "id": "story_t1",
-      "label": "Title line 1",
-      "default": "Rooted in heritage."
-    },
-    {
-      "type": "text",
-      "id": "story_t2",
-      "label": "Title line 2",
-      "default": "Made for tomorrow."
-    },
-    {
-      "type": "text",
-      "id": "story_copy",
-      "label": "Copy",
-      "default": "Supporting artisans since 1969."
-    },
-    {
-      "type": "text",
-      "id": "story_link",
-      "label": "Link label",
-      "default": "The Shrujan Story"
-    },
-    {
-      "type": "header",
-      "content": "LLDC cell"
-    },
-    {
-      "type": "url",
-      "id": "lldc_url",
-      "label": "Link"
-    },
-    {
-      "type": "image_picker",
-      "id": "lldc_img",
-      "label": "Image"
-    },
-    {
-      "type": "text",
-      "id": "lldc_pos",
-      "label": "Image position",
-      "info": "CSS object-position.",
-      "default": "50% 50%"
-    },
-    {
-      "type": "text",
-      "id": "lldc_alt",
-      "label": "Image alt text",
-      "default": "An artisan at work in the Living & Learning Design Centre studio"
-    },
-    {
-      "type": "text",
-      "id": "lldc_em",
-      "label": "Label lead-in",
-      "default": "LLDC"
-    },
-    {
-      "type": "text",
-      "id": "lldc_l1",
-      "label": "Label line 1",
-      "default": "Living & Learning"
-    },
-    {
-      "type": "text",
-      "id": "lldc_l2",
-      "label": "Label line 2",
-      "default": "Design Centre"
-    },
-    {
-      "type": "header",
-      "content": "Visit & Experience cell"
-    },
-    {
-      "type": "url",
-      "id": "india_url",
-      "label": "Link"
-    },
-    {
-      "type": "text",
-      "id": "india_em",
-      "label": "Label lead-in",
-      "default": "Visit &"
-    },
-    {
-      "type": "text",
-      "id": "india_label",
-      "label": "Label",
-      "default": "Experience"
-    },
-    {
-      "type": "header",
       "content": "Mobile"
     },
     {
       "type": "range",
-      "id": "hero_cell_min_h_m",
-      "label": "Shortest a stacked cell may get",
-      "info": "Phones only (720px and under), where the bento stacks into one column and the height above no longer applies. The centre message, the tall Shop cell and the map cell keep their own heights.",
-      "min": 160,
-      "max": 520,
-      "step": 10,
-      "unit": "px",
-      "default": 280
-    },
-    {
-      "type": "text",
-      "id": "shop_pos_m",
-      "label": "Shop Shrujan image position",
-      "info": "Phone crop for this cell. Left as it is, the cell keeps whatever the desktop position above is set to.",
-      "default": "50% 12%"
-    },
-    {
-      "type": "text",
-      "id": "season_pos_m",
-      "label": "Studio Collection image position",
-      "default": "50% 18%"
-    },
-    {
-      "type": "text",
-      "id": "thread_pos_m",
-      "label": "Craft traditions image position",
-      "default": "70% 60%"
-    },
-    {
-      "type": "text",
-      "id": "story_pos_m",
-      "label": "Story image position",
-      "default": "50% 50%"
-    },
-    {
-      "type": "text",
-      "id": "lldc_pos_m",
-      "label": "LLDC image position",
-      "default": "50% 50%"
+      "id": "hero_h_m",
+      "label": "Height on phones",
+      "info": "Phones only (720px and under).",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "default": 100
     },
     {
       "type": "header",
