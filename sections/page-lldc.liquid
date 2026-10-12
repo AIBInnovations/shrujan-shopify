@@ -16,7 +16,7 @@
     wide card) to 16 by 9, so a phone shape belongs in that same tier.
   endcomment
   assign l_style = false
-  if cfg.campus_cols != 3 or cfg.campus_cols_m != 1 or cfg.show_cols_m != 1
+  if cfg.campus_cols != 3 or cfg.campus_cols_m != 2 or cfg.show_cols_m != 2
     assign l_style = true
   endif
   if cfg.plates_cols_m != 1 or cfg.bar_cols_m != 1 or cfg.card_ratio_m != 'default'
@@ -46,12 +46,12 @@
       Phone. The stylesheet already returns a wide card to a single track at
       720px, so a count above one there needs nothing extra to land.
     {%- endcomment -%}
-    {%- if cfg.campus_cols_m != 1 or cfg.show_cols_m != 1 -%}
+    {%- if cfg.campus_cols_m != 2 or cfg.show_cols_m != 2 -%}
       @media (max-width: 720px) {
-        {%- if cfg.campus_cols_m != 1 -%}
+        {%- if cfg.campus_cols_m != 2 -%}
           {{ sel }} .lldc__mosaic { grid-template-columns: repeat({{ cfg.campus_cols_m }}, minmax(0, 1fr)); }
         {%- endif -%}
-        {%- if cfg.show_cols_m != 1 -%}
+        {%- if cfg.show_cols_m != 2 -%}
           {{ sel }} .lldc-show { grid-template-columns: repeat({{ cfg.show_cols_m }}, minmax(0, 1fr)); }
         {%- endif -%}
       }
@@ -450,11 +450,11 @@
       "type": "range",
       "id": "campus_cols_m",
       "label": "Campus mosaic columns",
-      "info": "720px and under, where the mosaic stacks one card per row. Between 720 and 900px the theme shows two.",
+      "info": "720px and under. From 900px down the theme sets the mosaic two cards across.",
       "min": 1,
       "max": 3,
       "step": 1,
-      "default": 1
+      "default": 2
     },
     {
       "type": "select",
@@ -489,11 +489,11 @@
       "type": "range",
       "id": "show_cols_m",
       "label": "Current show columns",
-      "info": "720px and under, where the three exhibition photographs stack.",
+      "info": "720px and under, where the exhibition photographs sit two across.",
       "min": 1,
       "max": 3,
       "step": 1,
-      "default": 1
+      "default": 2
     },
     {
       "type": "range",

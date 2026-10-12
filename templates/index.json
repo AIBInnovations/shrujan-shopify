@@ -67,7 +67,8 @@
       ]
     },
     "home-spotlight": {
-      "type": "home-spotlight"
+      "type": "home-spotlight",
+      "disabled": true
     },
     "home-bestsellers": {
       "type": "home-bestsellers",
@@ -257,7 +258,8 @@
         "b10",
         "b11",
         "b12"
-      ]
+      ],
+      "disabled": true
     },
     "home-categories": {
       "type": "home-categories",
@@ -319,7 +321,8 @@
         "b3",
         "b4",
         "b5"
-      ]
+      ],
+      "disabled": true
     },
     "home-showcase": {
       "type": "home-showcase",
@@ -547,22 +550,6 @@
     "home-craft-story": {
       "type": "home-craft-story",
       "blocks": {
-        "b1": {
-          "type": "shot",
-          "settings": {
-            "fallback": "bottom-left.webp",
-            "alt": "Master weaver working threads at his handloom",
-            "caption": "At the loom, Bhujodi"
-          }
-        },
-        "b2": {
-          "type": "shot",
-          "settings": {
-            "fallback": "top-right.webp",
-            "alt": "Artisan hand embroidering mirror-work flowers with a fine needle",
-            "caption": "Suf, stitched from the reverse"
-          }
-        },
         "b3": {
           "type": "stat",
           "settings": {
@@ -590,11 +577,81 @@
             "value": "2,000+",
             "label": "Artisan women at work"
           }
+        },
+        "tile-1": {
+          "type": "tile",
+          "settings": {
+            "fallback": "story-origin-1.webp",
+            "alt": "Archive photograph from the founding years of Shrujan",
+            "caption": "The first stitches, 1969"
+          }
+        },
+        "tile-2": {
+          "type": "tile",
+          "settings": {
+            "fallback": "story-chanda.webp",
+            "alt": "Chanda Shroff, the founder of Shrujan",
+            "caption": "Chanda “Kaki” Shroff"
+          }
+        },
+        "tile-3": {
+          "type": "tile",
+          "settings": {
+            "fallback": "craft-hero.webp",
+            "alt": "Embroiderers of Kutch working together outside their village",
+            "caption": "The embroiderers of Kutch"
+          }
+        },
+        "tile-4": {
+          "type": "tile",
+          "settings": {
+            "fallback": "story-origin-2.webp",
+            "alt": "Archive photograph of early Shrujan embroidery work",
+            "caption": "From the archive"
+          }
+        },
+        "tile-5": {
+          "type": "tile",
+          "settings": {
+            "fallback": "story-dignity.webp",
+            "alt": "An artisan at work, photographed in her village",
+            "caption": "Dignity in work"
+          }
+        },
+        "tile-6": {
+          "type": "tile",
+          "settings": {
+            "fallback": "story-origin-3.webp",
+            "alt": "Archive photograph of a village workshop",
+            "caption": "Village workshops"
+          }
+        },
+        "tile-7": {
+          "type": "tile",
+          "settings": {
+            "fallback": "story-continuity.webp",
+            "alt": "A younger embroiderer learning the craft",
+            "caption": "Craft, carried forward"
+          }
+        },
+        "tile-8": {
+          "type": "tile",
+          "settings": {
+            "fallback": "story-origin-4.webp",
+            "alt": "Archive photograph of Shrujan artisans",
+            "caption": "Five decades on"
+          }
         }
       },
       "block_order": [
-        "b1",
-        "b2",
+        "tile-1",
+        "tile-2",
+        "tile-3",
+        "tile-4",
+        "tile-5",
+        "tile-6",
+        "tile-7",
+        "tile-8",
         "b3",
         "b4",
         "b5",
@@ -941,17 +998,22 @@
         "b2",
         "b3"
       ]
+    },
+    "home-poster": {
+      "type": "home-poster",
+      "settings": {}
     }
   },
   "order": [
     "home-hero",
     "home-marquee",
+    "home-poster",
     "home-spotlight",
     "home-bestsellers",
     "home-categories",
+    "home-house",
     "home-showcase",
     "home-reels",
-    "home-house",
     "home-craft-story",
     "home-trousseau",
     "home-testimonials",

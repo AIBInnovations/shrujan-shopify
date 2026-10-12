@@ -1,0 +1,364 @@
+{%- render 'section-design', section: section -%}
+<!-- Kaarigar, from the studio archive — converted from src/components/CraftPoster.jsx -->
+<section class="section poster" id="kaarigar" aria-label="{{ section.settings.caption | strip | escape }}"{% if section.settings.colour_on_scroll %} data-poster-colour{% endif %}>
+  <div class="container poster__stage">
+    {%- comment -%} curator's note, top right {%- endcomment %}
+    <div class="poster__note poster__note--tr" data-reveal>
+      <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      <p class="poster__lead">{{ section.settings.lead_l1 | escape }}{% if section.settings.lead_l2 != blank %}<br><em>{{ section.settings.lead_l2 | escape }}</em>{% endif %}</p>
+      {%- if section.settings.copy != blank %}
+      <p class="poster__copy">{{ section.settings.copy | escape }}</p>
+      {%- endif %}
+    </div>
+
+    {%- comment -%} the art, centred on the page ground {%- endcomment %}
+    <figure class="poster__art">
+      <img src="{% if section.settings.art_img %}{{ section.settings.art_img | image_url: width: 1640 }}{% else %}{{ section.settings.art_asset | asset_url }}{% endif %}" alt="{{ section.settings.art_alt | escape }}" loading="lazy">
+      {%- if section.settings.caption != blank %}
+      <figcaption class="poster__caption"><span aria-hidden="true">—</span> {{ section.settings.caption | escape }} <span aria-hidden="true">—</span></figcaption>
+      {%- endif %}
+    </figure>
+
+    {%- comment -%} plate line, bottom left {%- endcomment %}
+    <div class="poster__note poster__note--bl" data-reveal>
+      {%- if section.settings.plate != blank %}
+      <p class="poster__plate">{{ section.settings.plate | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.quiet != blank %}
+      <p class="poster__lead poster__lead--quiet"><em>{{ section.settings.quiet | escape }}</em></p>
+      {%- endif -%}
+      {%- if section.settings.link_label != blank %}
+      <a class="arrow-link poster__link" href="{{ section.settings.link | default: '/pages/video' }}">{{ section.settings.link_label | escape }} <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
+      {%- endif %}
+    </div>
+
+    {%- if section.settings.show_stamp %}
+    <span class="poster__stamp" aria-hidden="true">
+      <svg viewBox="0 0 120 120">
+        <defs><path id="poster-arc-{{ section.id }}" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"></path></defs>
+        <circle cx="60" cy="60" r="56" fill="none" stroke="currentColor" stroke-width="1.6"></circle>
+        <circle cx="60" cy="60" r="31" fill="none" stroke="currentColor" stroke-width="1"></circle>
+        <text><textPath href="#poster-arc-{{ section.id }}" startOffset="0">{{ section.settings.stamp_text | escape }}</textPath></text>
+        <text x="60" y="65" text-anchor="middle" class="poster-stamp__glyph">✦</text>
+      </svg>
+    </span>
+    {%- endif %}
+  </div>
+</section>
+
+<script>
+(function () {
+  /* One move on scroll: the art arrives black-and-white and takes its colour
+     back as the section passes through, scrubbed to the scroll. With reduced
+     motion, or the setting off, it is simply there in colour. */
+  var root = document.querySelector('[data-poster-colour]');
+  if (!root || root.__shrujanInit || !window.gsap || !window.ScrollTrigger) return;
+  root.__shrujanInit = true;
+  var art = root.querySelector('.poster__art img');
+  if (!art) return;
+  var mm = gsap.matchMedia();
+  mm.add('(prefers-reduced-motion: no-preference)', function () {
+    gsap.fromTo(art, { filter: 'grayscale(1)' }, {
+      filter: 'grayscale(0)',
+      ease: 'none',
+      scrollTrigger: { trigger: art.parentElement, start: 'top 88%', end: 'center 48%', scrub: 0.6 }
+    });
+  });
+  mm.add('(prefers-reduced-motion: reduce)', function () {
+    gsap.set(art, { clearProps: 'filter' });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Home Kaarigar poster",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Curator’s note"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "From the Studio Archive"
+    },
+    {
+      "type": "text",
+      "id": "lead_l1",
+      "label": "Lead, line 1",
+      "default": "Six pairs of hands,"
+    },
+    {
+      "type": "text",
+      "id": "lead_l2",
+      "label": "Lead, line 2 (italic)",
+      "default": "one piece of cloth."
+    },
+    {
+      "type": "textarea",
+      "id": "copy",
+      "label": "Copy",
+      "default": "Kadhai, ajrakh, discharge, bunai, mitti kala, tie-dye — the living crafts of Kutch, painted the way our first posters were."
+    },
+    {
+      "type": "header",
+      "content": "Artwork"
+    },
+    {
+      "type": "image_picker",
+      "id": "art_img",
+      "label": "Artwork",
+      "info": "A transparent PNG or WebP sits straight on the page ground, with no card behind it."
+    },
+    {
+      "type": "text",
+      "id": "art_asset",
+      "label": "Artwork theme asset (fallback)",
+      "default": "kaarigar-art.webp"
+    },
+    {
+      "type": "text",
+      "id": "art_alt",
+      "label": "Artwork alt text",
+      "default": "Hand-painted panels titled Kaarigar: six Kutchi artisans at work across embroidery, ajrakh block printing, discharge printing, weaving, pottery and tie-dye"
+    },
+    {
+      "type": "text",
+      "id": "caption",
+      "label": "Caption",
+      "default": "कारीगर · The Makers of Kutch"
+    },
+    {
+      "type": "checkbox",
+      "id": "colour_on_scroll",
+      "label": "Bring the colour in on scroll",
+      "info": "The art arrives black-and-white and takes its colour back as the section moves through the screen. Off, it is in colour from the start.",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Plate line"
+    },
+    {
+      "type": "text",
+      "id": "plate",
+      "label": "Plate",
+      "default": "Archive print no. 07 · hand-lettered, Bhuj"
+    },
+    {
+      "type": "text",
+      "id": "quiet",
+      "label": "Closing line (italic)",
+      "default": "Every Shrujan piece passes through hands like these."
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Link label",
+      "default": "Meet the crafts"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link",
+      "info": "Defaults to Craft Traditions."
+    },
+    {
+      "type": "header",
+      "content": "Ink stamp"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stamp",
+      "label": "Show the ink stamp",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "stamp_text",
+      "label": "Stamp text",
+      "info": "Runs once around the ring; end it with a separator so the join reads cleanly.",
+      "default": "SHRUJAN · BHUJ · SINCE 1969 · KUTCH ·"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "select",
+      "id": "sec_width",
+      "label": "Section width",
+      "info": "Theme default keeps the shared page rail.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow"
+        },
+        {
+          "value": "wide",
+          "label": "Wide"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top",
+      "label": "Extra top spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom",
+      "label": "Extra bottom spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top_m",
+      "label": "Extra top spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom_m",
+      "label": "Extra bottom spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "sec_bg",
+      "label": "Background",
+      "info": "Leave empty to keep the section’s own background."
+    },
+    {
+      "type": "color",
+      "id": "sec_text",
+      "label": "Text colour"
+    },
+    {
+      "type": "color",
+      "id": "sec_accent",
+      "label": "Accent colour"
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_animate",
+      "label": "Animate on scroll",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_mobile",
+      "label": "Hide on mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_desktop",
+      "label": "Hide on desktop",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css",
+      "label": "Custom CSS",
+      "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "header",
+      "content": "Design — mobile"
+    },
+    {
+      "type": "select",
+      "id": "sec_width_m",
+      "label": "Section width on mobile",
+      "info": "Only below 768px. Edge-to-edge removes the side gutter entirely.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow (wider gutters)"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        },
+        {
+          "value": "edge",
+          "label": "Edge to edge"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sec_align_m",
+      "label": "Text alignment on mobile",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Leave as designed"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css_m",
+      "label": "Custom CSS (mobile only)",
+      "info": "Wrapped in a max-width: 767px media query for this section."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Home Kaarigar poster"
+    }
+  ]
+}
+{% endschema %}

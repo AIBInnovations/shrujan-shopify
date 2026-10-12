@@ -53,9 +53,14 @@
   </style>
 {%- endif -%}
 <footer class="footer">
+  {%- comment -%}
+    The ornament layer, clipped so it can bleed off every edge: the village
+    panorama, resting faintly along the footer's floor.
+  {%- endcomment -%}
   <span class="footer__weave" aria-hidden="true">
-    <span class="footer__mandala footer__mandala--left"></span>
-    <span class="footer__mandala footer__mandala--right"></span>
+    {%- if section.settings.show_village %}
+    <img class="footer__village" src="{% if section.settings.village_img %}{{ section.settings.village_img | image_url: width: 1600 }}{% else %}{{ section.settings.village_asset | asset_url }}{% endif %}" alt="" loading="lazy">
+    {%- endif %}
   </span>
 
   <div class="footer__inner">
@@ -111,7 +116,7 @@
     {%- if f.show_sitemap %}
     <nav class="fmap" aria-label="Footer">
       <div class="fmap__col">
-        <p class="fmap__group">Explore</p>
+        <button class="fmap__group" type="button" aria-expanded="false">Explore <svg class="fmap__chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9.5 6 6 6-6"></path></svg></button>
         <ul>
           <li><a href="/pages/the-shrujan-story">The Shrujan Story</a></li>
           <li><a href="/pages/the-shrujan-story#origins">Origins</a></li>
@@ -121,7 +126,7 @@
         </ul>
       </div>
       <div class="fmap__col">
-        <p class="fmap__group">Shop</p>
+        <button class="fmap__group" type="button" aria-expanded="false">Shop <svg class="fmap__chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9.5 6 6 6-6"></path></svg></button>
         <ul>
           <li><a href="/pages/shop-shrujan">All of Shrujan</a></li>
           <li><a href="/pages/shop-shrujan?c=hand-bags">Bags</a></li>
@@ -132,7 +137,7 @@
         </ul>
       </div>
       <div class="fmap__col">
-        <p class="fmap__group">Studio</p>
+        <button class="fmap__group" type="button" aria-expanded="false">Studio <svg class="fmap__chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9.5 6 6 6-6"></path></svg></button>
         <ul>
           <li><a href="/pages/studio-collection">Studio Collection</a></li>
           <li><a href="/pages/studio-heritage">Heritage</a></li>
@@ -141,7 +146,7 @@
         </ul>
       </div>
       <div class="fmap__col">
-        <p class="fmap__group">Visit &amp; Help</p>
+        <button class="fmap__group" type="button" aria-expanded="false">Visit &amp; Help <svg class="fmap__chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9.5 6 6 6-6"></path></svg></button>
         <ul>
           <li><a href="/pages/video">Craft Traditions of Kutch</a></li>
           <li><a href="/pages/lldc">Living &amp; Learning Design Centre</a></li>
@@ -151,7 +156,7 @@
       </div>
 
       <div class="fmap__col">
-        <p class="fmap__group">Reach us</p>
+        <button class="fmap__group" type="button" aria-expanded="false">Reach us <svg class="fmap__chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9.5 6 6 6-6"></path></svg></button>
         <ul class="freach">
           <li>
             <span class="freach__label">Write to us</span>
@@ -199,6 +204,27 @@
     ]
   },
   "settings": [
+    {
+      "type": "header",
+      "content": "Village panorama"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_village",
+      "label": "Etch the village along the footer floor",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "village_img",
+      "label": "Panorama image"
+    },
+    {
+      "type": "text",
+      "id": "village_asset",
+      "label": "Panorama theme asset (fallback)",
+      "default": "heritage-village.webp"
+    },
     {
       "type": "header",
       "content": "Newsletter"

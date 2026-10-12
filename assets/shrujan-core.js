@@ -309,6 +309,34 @@
       scrim.addEventListener('click', function () { setMenuOpen(false); });
     }
 
+    /* Sections collapse. Expanded, the six groups run to thirty-five links,
+       a wall of small caps that buries Craft, LLDC and Visit below three
+       screens of scrolling. One open at a time. */
+    if (mobileNav) {
+      var groups = Array.prototype.slice.call(mobileNav.querySelectorAll('.mobile-nav__group'));
+      groups.forEach(function (g) {
+        var btn = g.querySelector('.mobile-nav__toggle');
+        if (!btn) return;
+        var name = (g.querySelector('.mobile-nav__row > a') || {}).textContent || '';
+        btn.addEventListener('click', function () {
+          var open = !g.classList.contains('is-open');
+          groups.forEach(function (o) {
+            o.classList.remove('is-open');
+            var b = o.querySelector('.mobile-nav__toggle');
+            if (b) {
+              b.setAttribute('aria-expanded', 'false');
+              b.setAttribute('aria-label', 'Expand ' + ((o.querySelector('.mobile-nav__row > a') || {}).textContent || ''));
+            }
+          });
+          if (open) {
+            g.classList.add('is-open');
+            btn.setAttribute('aria-expanded', 'true');
+            btn.setAttribute('aria-label', 'Collapse ' + name);
+          }
+        });
+      });
+    }
+
     function setMenuOpen(v) {
       if (menuOpen === v) return;
       menuOpen = v;
@@ -379,6 +407,17 @@
       var past = y > heroEnd();
       var delta = y - lastY;
       var h = bar.offsetHeight || 120;
+
+      // The drawer lives inside this bar, so hiding the bar takes the open menu
+      // with it, which is what made the panel vanish mid-scroll. While it is
+      // open the bar stays put and the drawer scrolls its own overflow.
+      if (menuOpen) {
+        clearTimeout(unfix);
+        setShown(true);
+        lastY = y;
+        ticking = false;
+        return;
+      }
 
       if (past) {
         // in the floating zone: away while reading down, back on scroll up
@@ -556,47 +595,28 @@
    *  Footer letters form (port of the Footer.jsx `sent` state)
    * ------------------------------------------------------------------ */
 
-  /* On a phone the sitemap is five stacked lists — a long scroll before the
-     contact details. Each column becomes a disclosure, animated by the same
-     0fr → 1fr row the nav uses. Desktop is untouched: the CSS only collapses
-     below 760px, and the class is inert above it. */
+  /* On a phone the sitemap folds (port of Footer.jsx): stacked into one column
+     it is twenty-odd links deep and buries the contact details and the legal
+     row. Each heading is a button, one section opens at a time, and above the
+     breakpoint the CSS leaves the buttons inert and every list open. */
   function initFooterColumns() {
-    var cols = document.querySelectorAll('.fmap__col');
-    if (!cols.length) return;
-    var phone = window.matchMedia('(max-width: 760px)');
-
-    cols.forEach(function (col, i) {
+    var cols = Array.prototype.slice.call(document.querySelectorAll('.fmap__col'));
+    cols.forEach(function (col) {
       var head = col.querySelector('.fmap__group');
-      var list = col.querySelector('ul');
-      if (!head || !list || col.__shrujanFooterCol) return;
+      if (!head || col.__shrujanFooterCol) return;
       col.__shrujanFooterCol = true;
-      col.classList.add('is-collapsible');
-
-      var listId = 'fmap-list-' + i;
-      list.id = listId;
-      head.setAttribute('role', 'button');
-      head.setAttribute('tabindex', '0');
-      head.setAttribute('aria-controls', listId);
-
-      var sync = function () {
-        var open = col.classList.contains('is-open');
-        head.setAttribute('aria-expanded', phone.matches ? String(open) : 'true');
-      };
-      sync();
-
-      var toggle = function () {
-        if (!phone.matches) return;
-        col.classList.toggle('is-open');
-        sync();
-      };
-      head.addEventListener('click', toggle);
-      head.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          toggle();
+      head.addEventListener('click', function () {
+        var open = !col.classList.contains('is-open');
+        cols.forEach(function (c) {
+          c.classList.remove('is-open');
+          var h = c.querySelector('.fmap__group');
+          if (h) h.setAttribute('aria-expanded', 'false');
+        });
+        if (open) {
+          col.classList.add('is-open');
+          head.setAttribute('aria-expanded', 'true');
         }
       });
-      phone.addEventListener('change', sync);
     });
   }
 

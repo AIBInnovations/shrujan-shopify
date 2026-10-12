@@ -3,7 +3,7 @@
   assign cfg = section.settings
   assign sel = '#shopify-section-' | append: section.id
   assign has_layout = false
-  if cfg.jr_cols != 3 or cfg.jr_cols_m != 1 or cfg.jr_ratio != 'default'
+  if cfg.jr_cols != 3 or cfg.jr_cols_m != 2 or cfg.jr_ratio != 'default'
     assign has_layout = true
   endif
   comment
@@ -31,7 +31,7 @@
         {{ sel }} .journal-grid { grid-template-columns: repeat({{ cfg.jr_cols }}, minmax(0, 1fr)); }
       }
     {%- endif -%}
-    {%- if cfg.jr_cols_m != 1 -%}
+    {%- if cfg.jr_cols_m != 2 -%}
       @media (max-width: 900px) {
         {{ sel }} .journal-grid { grid-template-columns: repeat({{ cfg.jr_cols_m }}, minmax(0, 1fr)); }
       }
@@ -228,7 +228,7 @@
       "min": 1,
       "max": 3,
       "step": 1,
-      "default": 1,
+      "default": 2,
       "info": "Applies below 900px."
     },
     {

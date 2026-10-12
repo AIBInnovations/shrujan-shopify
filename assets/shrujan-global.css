@@ -970,18 +970,52 @@ ul {
   background: var(--ivory);
 }
 
+/* The drawer is taller than a phone once a section is expanded, and it lives
+   inside a bar that may be `position: fixed` — so it has to scroll its own
+   overflow rather than relying on the page. `--header-h` is the bar's measured
+   height, published by the component. */
 .mobile-nav.open {
   display: block;
+  max-height: calc(100vh - var(--header-h, 120px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
-.mobile-nav__group > a {
+/* the section title and its expander share a row, so the chevron sits on the
+   same line as the label rather than under it */
+.mobile-nav__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.mobile-nav__row > a {
   font-weight: 500;
+  border-bottom: 0;
+}
+
+.mobile-nav__toggle {
+  display: grid;
+  place-items: center;
+  /* a 44px target, the smallest a thumb should have to hit */
+  width: 44px;
+  align-self: stretch;
+  color: var(--ink-soft);
+  transition: transform var(--dur-quick) var(--ease), color var(--dur-quick) var(--ease);
+}
+
+.mobile-nav__group.is-open .mobile-nav__toggle {
+  transform: rotate(180deg);
+  color: var(--gerua);
 }
 
 .mobile-nav__sub {
   list-style: none;
-  padding: 0 var(--gutter) 14px;
+  padding: 4px var(--gutter) 14px;
   border-bottom: 1px solid var(--hairline);
+  background: var(--ivory-2);
 }
 
 .mobile-nav__sub a {
@@ -1173,15 +1207,56 @@ a.hero-cell:hover .hero-cell__label svg {
   transform: translateX(6px);
 }
 
-/* ---- 1 · model ----------------------------------------------- */
+/* ---- 1 · model / montage ------------------------------------- */
 
-.hero-cell--model img {
-  object-position: 50% 12%;
+.hero-montage__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
 }
 
-.hero-cell--model .hero-cell__label {
-  top: 38%;
+.hero-cell__scrim--montage {
+  background: linear-gradient(
+    180deg,
+    rgba(10, 5, 3, 0.18) 0%,
+    rgba(10, 5, 3, 0.28) 40%,
+    rgba(10, 5, 3, 0.72) 100%
+  );
 }
+
+.hero-cell__label--montage {
+  top: auto;
+  bottom: clamp(28px, 3vw, 52px);
+  transform: none;
+  font-size: clamp(15px, 1.05vw, 19px);
+}
+
+.hero-cell__label--montage em {
+  display: block;
+  margin-top: 10px;
+  font-family: var(--font-serif);
+  font-style: normal;
+  font-size: clamp(20px, 1.6vw, 30px);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tan);
+}
+
+@media (max-width: 720px) {
+  .hero-cell__label--montage {
+    bottom: 20px;
+    font-size: 13px;
+  }
+
+  .hero-cell__label--montage em {
+    font-size: 17px;
+  }
+}
+
 
 /* ---- 2 · ivory message panel --------------------------------- */
 
@@ -2309,6 +2384,14 @@ a.hero-cell:hover .hero-cell__label svg {
 
   .faq__a {
     margin-left: 0;
+  }
+
+  /* Nothing stranded: a two-column grid with an odd number of items left a
+     hole beside the last one, so it takes the whole row instead. */
+  /* the shop catalogue is excluded — it filters, so a full-width card would
+     appear and vanish as the result count changed parity */
+  .curated__grid:not(.shop-grid) > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
   }
 }
 
@@ -4107,14 +4190,25 @@ a.hero-cell:hover .hero-cell__label svg {
 .reel__scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(0deg, rgba(18, 10, 8, 0.62) 0%, rgba(18, 10, 8, 0.08) 44%, rgba(18, 10, 8, 0) 70%);
+  /* deeper than before: it is holding the title now, not just a duration */
+  background: linear-gradient(
+    0deg,
+    rgba(18, 10, 8, 0.82) 0%,
+    rgba(18, 10, 8, 0.5) 22%,
+    rgba(18, 10, 8, 0.12) 48%,
+    rgba(18, 10, 8, 0.28) 100%
+  );
 }
 
 .reel__meta {
   position: absolute;
   left: 14px;
-  bottom: 14px;
+  top: 14px;
   z-index: 2;
+  padding: 4px 9px;
+  border-radius: var(--radius-pill);
+  background: rgba(18, 10, 8, 0.42);
+  backdrop-filter: blur(5px);
   font-size: clamp(11.8px, 0.694vw, 13.4px);
   font-weight: 500;
   letter-spacing: 0.14em;
@@ -4122,18 +4216,42 @@ a.hero-cell:hover .hero-cell__label svg {
   color: var(--cream);
 }
 
+/* inside the frame now, over the scrim — see the note in Reels.jsx */
 .reel__title {
-  margin-top: 14px;
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+  z-index: 2;
   font-family: var(--font-serif);
   font-weight: 600;
   font-size: clamp(16.8px, calc(16.4px + 0.101vw), 19px);
-  line-height: 1.3;
-  color: var(--ink);
-  transition: color var(--dur-quick) var(--ease);
+  line-height: 1.25;
+  color: var(--cream);
+  text-shadow: 0 1px 14px rgba(18, 10, 8, 0.5);
 }
 
-.reel:hover .reel__title {
-  color: var(--gerua-600);
+/* ---- K · U · T · C · H — one pennant hanging off each reel card ---- */
+
+.reel__letter {
+  display: block;
+  width: auto;
+  height: clamp(104px, 10vw, 180px);
+  /* flush to the card's bottom edge, so the pennant reads as hanging from it
+     rather than floating below it. The art's own top edge is the hanging bar,
+     which is what meets the card. */
+  margin: 0 auto;
+  transition: transform var(--dur) var(--ease-out);
+}
+
+.reel:hover .reel__letter {
+  transform: translateY(4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reel__letter {
+    transition: none;
+  }
 }
 
 @media (max-width: 900px) {
@@ -4150,6 +4268,18 @@ a.hero-cell:hover .hero-cell__label svg {
 
   .reels__seal-link {
     order: 3;
+  }
+
+  /* Nothing stranded: a two-column grid with an odd number of items left a
+     hole beside the last one, so it takes the whole row instead. */
+  /* !important to match the placement reset just above, which needs it to beat
+     the desktop nth-child positions */
+  .house__grid > :last-child:nth-child(odd) {
+    grid-column: 1 / -1 !important;
+  }
+
+  .journal-grid > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
   }
 }
 
@@ -4498,7 +4628,8 @@ a.house-tile:hover .house-tile__arrow {
   align-items: start;
   gap: clamp(22px, 3vw, 60px);
   padding-bottom: clamp(20px, 2.2vw, 36px);
-  border-bottom: 1px solid rgba(199, 165, 106, 0.24);
+  /* the stitch above the sitemap draws this seam now */
+  border-bottom: 0;
 }
 
 .fbrand {
@@ -4638,13 +4769,28 @@ a.house-tile:hover .house-tile__arrow {
   margin-top: clamp(20px, 2.2vw, 36px);
 }
 
+/* a heading up here, a disclosure button on a phone — see the mobile block */
 .fmap__group {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   margin-bottom: clamp(12px, 1.3vw, 20px);
+  font-family: var(--font-sans);
   font-size: clamp(11.8px, 0.694vw, 13.4px);
   font-weight: 500;
   letter-spacing: 0.26em;
   text-transform: uppercase;
+  text-align: left;
   color: var(--tan);
+  cursor: default;
+}
+
+.fmap__chev {
+  display: none;
+  flex-shrink: 0;
+  transition: transform var(--dur-quick) var(--ease);
 }
 
 .fmap ul {
@@ -4708,7 +4854,7 @@ a.house-tile:hover .house-tile__arrow {
   gap: 16px;
   margin-top: clamp(20px, 2.2vw, 36px);
   padding-top: clamp(12px, 1.2vw, 18px);
-  border-top: 1px solid rgba(199, 165, 106, 0.24);
+  border-top: 1px dashed rgba(199, 165, 106, 0.34);
   font-size: clamp(12.9px, 0.762vw, 14.6px);
   color: var(--footer-muted, rgba(242, 237, 224, 0.5));
 }
@@ -4772,8 +4918,74 @@ a.house-tile:hover .house-tile__arrow {
 }
 
 @media (max-width: 560px) {
+  /* Centred on a phone: with one column there is no rail for the copy to hang
+     off, and left-aligned blocks of different widths read as misaligned. */
+  .footer__inner {
+    text-align: center;
+  }
+
+  .fletters {
+    justify-items: center;
+  }
+
+  .fletters__copy,
+  .fletters__form {
+    margin-inline: auto;
+  }
+
+  .fbrand {
+    justify-items: center;
+    text-align: center;
+  }
+
+  .fmap__group {
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .fmap__col ul,
+  .freach {
+    justify-items: center;
+  }
+
+  .footer__bottom,
+  .footer__legal {
+    justify-content: center;
+  }
+
+  /* Stacked, the sitemap is twenty-odd links deep and buries the contact
+     details and the legal row beneath it. Each group folds instead: the
+     heading becomes the tap target and only one section opens at a time. */
   .fmap {
     grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .fmap__col {
+    border-bottom: 1px solid rgba(199, 165, 106, 0.2);
+  }
+
+  .fmap__group {
+    margin-bottom: 0;
+    padding: 15px 0;
+    cursor: pointer;
+  }
+
+  .fmap__chev {
+    display: block;
+  }
+
+  .fmap__col.is-open .fmap__chev {
+    transform: rotate(180deg);
+  }
+
+  .fmap__col ul {
+    display: none;
+    padding-bottom: 16px;
+  }
+
+  .fmap__col.is-open ul {
+    display: grid;
   }
 
   /* the label and the button no longer fit on one line */
@@ -4794,7 +5006,8 @@ a.house-tile:hover .house-tile__arrow {
   }
 
   .footer__bottom {
-    justify-content: flex-start;
+    flex-direction: column;
+    gap: 10px;
   }
 }
 
@@ -4913,11 +5126,19 @@ a.house-tile:hover .house-tile__arrow {
     grid-column: 1;
   }
 
+  /* Equal side columns, so the brand lands on the middle of the bar. With
+     `auto 1fr auto` the centre column ran from the toggle's right edge to the
+     utilities' left edge — 36px one side against 120px the other — and the
+     logo sat 42px left of centre. */
   .site-header__inner {
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: 1fr auto 1fr;
     /* restating the token, not min-height, keeps the section's padding control
        adding to the phone bar's height rather than the desktop clamp */
     --header-row-min: 74px;
+  }
+
+  .menu-toggle {
+    justify-self: start;
   }
 
   .brand {
@@ -4930,6 +5151,10 @@ a.house-tile:hover .house-tile__arrow {
     justify-self: center;
     padding: 8px 0 10px;
     background: transparent;
+  }
+
+  .header-utils {
+    justify-self: end;
   }
 
   .utility-link span {
@@ -5026,8 +5251,9 @@ a.house-tile:hover .house-tile__arrow {
     border-top: 1px solid var(--hairline);
   }
 
+  /* the three recent cards stay two up; only the feature spread unstacks */
   .journal-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 6px;
   }
 
@@ -5041,26 +5267,54 @@ a.house-tile:hover .house-tile__arrow {
 }
 
 @media (max-width: 720px) {
+  /* Four icons need ~120px a side, and equal side columns cannot give that and
+     still leave room for the mark on a 390px screen. Account and wishlist come
+     out — both are reachable from the drawer — leaving search and the bag. */
+  .header-utils .utility-link[aria-label='Account'],
+  .header-utils .utility-link[aria-label='Wishlist'] {
+    display: none;
+  }
+
+  /* Two across, so the bento stays a bento. Stacked one-per-row its seven
+     cells ran to 2,125px on a phone — two and a half screens before the page
+     had said anything. */
   .hero {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
   }
 
   .hero-cell {
-    min-height: 340px;
+    min-height: 190px;
   }
 
+  /* the two cells that carry the page's opening take the full width; the
+     remaining photographs pair off two to a row */
   .hero-cell--model {
-    grid-column: auto;
-    min-height: 68vh;
+    grid-column: 1 / -1;
+    min-height: 46vh;
   }
 
   .hero-cell--message {
+    grid-column: 1 / -1;
     min-height: 0;
-    padding-block: 56px;
+    padding-block: 40px;
   }
 
-  .hero-cell__label {
-    top: 38%;
+  /* an odd cell last would leave a hole beside it */
+  .hero-cell:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  /* Every caption sits on the foot of its card. Half of them were pinned there
+     already and half were vertically centred, so at this size the row read as
+     two different treatments. The model cell is named explicitly because it
+     carries its own `top: 38%`, which outranks the base selector. The message
+     panel is not one of these — no photograph under it, its own layout. */
+  .hero-cell__label,
+  .hero-cell__label--bottom,
+  .hero-cell--model .hero-cell__label {
+    top: auto;
+    bottom: clamp(16px, 4vw, 28px);
+    transform: none;
   }
 
   .curated__grid {
@@ -5091,8 +5345,9 @@ a.house-tile:hover .house-tile__arrow {
 }
 
 @media (max-width: 560px) {
+  /* still two up — a phone holds two product cards across */
   .curated__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   /* a fraction over one, so the next card peeks and reads as scrollable */
@@ -5550,17 +5805,37 @@ a.house-tile:hover .house-tile__arrow {
      mandatory snap + snap-stop means a swipe advances exactly
      one reel; the stagger flattens so the cards track level. */
 
+  /* the seal moves up beside the heading on the right, rather than sitting
+     under the note where it read as a third block */
   .reels__head {
-    gap: 14px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 14px 16px;
     margin-bottom: 20px;
   }
 
+  .reels__titles {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
   .reels__seal-link {
-    width: 92px;
+    grid-column: 2;
+    grid-row: 1;
+    order: 0;
+    width: 84px;
+    justify-self: end;
+  }
+
+  .reels__note {
+    grid-column: 1 / -1;
+    grid-row: 2;
   }
 
   .reels__rail {
     --reel-gap: 10px;
+    /* the gutter as scroll padding on both sides, so a centre-snapped card sits
+       in the middle of the screen with its neighbours peeking either side */
     padding-inline: var(--gutter);
     scroll-padding-inline: var(--gutter);
     padding-bottom: 20px;
@@ -5568,7 +5843,8 @@ a.house-tile:hover .house-tile__arrow {
   }
 
   .reel {
-    flex: 0 0 min(76vw, 300px);
+    /* 72vw leaves ~14vw of the card either side of the centred one */
+    flex: 0 0 min(72vw, 280px);
     scroll-snap-align: center;
     scroll-snap-stop: always;
   }
@@ -5716,73 +5992,674 @@ a.house-tile:hover .house-tile__arrow {
 /* ---- ≤600: every remaining grid unrolls to one column ------- */
 
 @media (max-width: 600px) {
-  /* curated pieces stack full-width */
+  /* Two up, not one. Every grid on this page used to collapse to a single
+     column here, which ran the home page to 19,000px — twenty-two screens of
+     scrolling. A phone holds two cards across perfectly well; what it cannot
+     hold is a paragraph in two columns, so reading blocks still stack. */
   .curated__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .piece__media {
     aspect-ratio: 4 / 5;
   }
 
-  /* promises read as a single stitched list */
+  /* two by two, not a four-deep list */
   .curated__promises {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  /* centred: at half width the ragged left edges of four different-length
+     titles read as misalignment */
   .promise {
-    border-left: 0;
-    text-align: left;
-    padding: 14px 2px;
+    text-align: center;
+    padding: 14px 10px;
   }
 
-  .promise + .promise {
+  .promise__copy {
+    margin-inline: auto;
+  }
+
+  .promise:nth-child(odd) {
+    border-left: 0;
+  }
+
+  .promise:nth-child(n + 3) {
     border-top: 1px solid var(--hairline);
   }
 
-  /* the four seals stack, still centred */
+  /* the four seals in a 2x2, still centred */
   .manifesto__grid {
-    grid-template-columns: 1fr;
-    gap: 34px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 30px 12px;
   }
 
   .seal__ring {
-    width: clamp(132px, 40vw, 168px);
+    width: clamp(104px, 30vw, 150px);
   }
 
   .seal__copy {
-    max-width: 32ch;
+    max-width: 26ch;
   }
 
-  /* the house bento becomes one tile under another */
   .house__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .house-tile {
-    min-height: 230px;
+    min-height: 168px;
   }
 
-  /* category bands — same selector weight as the hover rules
-     they override */
+  /* The five bag links were a wrapping flex row, which broke into ragged
+     part-rows — two, two, then one, each starting at a different place. A
+     two-column grid instead, label on its own line above them. */
+  .house__strip {
+    display: grid;
+    gap: 14px;
+    padding: clamp(16px, 4vw, 22px);
+  }
+
+  .house__strip-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 14px;
+  }
+
+  .house__strip-links a {
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+  }
+
+  .house__strip-links > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  /* Two to a row rather than five stacked bands. Same selector weight as the
+     hover rules it overrides. The fifth sits alone on the last row and takes
+     the full width, which reads as the band's end. */
+  .catbar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
   .catpanel,
   .catbar:hover .catpanel,
   .catbar .catpanel:hover {
-    height: clamp(168px, 46vw, 220px);
+    height: clamp(150px, 40vw, 190px);
   }
 
-  /* craft story shots stack full-width; the contact-sheet drop
-     only made sense side by side */
-  .craft__gallery {
-    grid-template-columns: 1fr;
+  .catbar .catpanel:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
   }
 
+  /* no room for the sentence beside a half-width tile */
+  .catpanel__copy {
+    display: none;
+  }
+
+  /* the two craft shots stay side by side — the contact-sheet drop is what
+     goes, not the pairing */
   .craft__shot-media {
-    height: clamp(240px, 62vw, 360px);
+    height: clamp(150px, 40vw, 240px);
   }
 
   .craft__shot:nth-child(2) .craft__shot-media {
     margin-top: 0;
-    height: clamp(200px, 52vw, 320px);
+    height: clamp(150px, 40vw, 240px);
   }
 }
+
+/* ============================================================
+   CRAFT WALL — heritage photographs on a two-axis expanding wall
+   Eight archive frames in two hung rows, scattered like the
+   mosaic reference: every frame carries its own width share
+   (--fx) and its own drop, so no two edges line up. Hovering a
+   frame expands it BOTH ways — it widens while its row-mates
+   give way, and its row deepens while the other row shrinks
+   (the :has() row rule). All of it is the category band's
+   flex-grow move, run on two axes at once.
+   ============================================================ */
+
+.craft-wall {
+  position: relative;
+  max-width: 1240px;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: clamp(440px, 42vw, 640px);
+}
+
+.craft-wall__row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1 1 0;
+  min-height: 0;
+  transition: flex-grow var(--dur-slow) var(--ease-out);
+}
+
+/* the second row hangs inset, so the wall reads as hung frames
+   rather than a table; the gerua dots live in the strips left free */
+.craft-wall__row--offset {
+  padding-inline: 4.5% 2.5%;
+}
+
+/* ---- vertical axis: the hovered frame's row deepens ---- */
+
+.craft-wall:hover .craft-wall__row {
+  flex-grow: 0.8;
+}
+
+.craft-wall__row:has(.craft-wall__tile:hover) {
+  flex-grow: 1.55;
+}
+
+.craft-wall__tile {
+  --fx: 1;
+  position: relative;
+  flex: var(--fx) 1 0%;
+  min-width: 0;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--ivory-2);
+  /* flex-grow animates smoothly and, unlike width, keeps the row exact */
+  transition:
+    flex-grow var(--dur-slow) var(--ease-out),
+    height var(--dur-slow) var(--ease-out);
+}
+
+/* ---- the scatter: widths and drops, no two edges level ---- */
+
+.craft-wall__row:nth-child(1) .craft-wall__tile:nth-child(1) { --fx: 1.15; height: 92%; align-self: flex-end; }
+.craft-wall__row:nth-child(1) .craft-wall__tile:nth-child(2) { --fx: 0.8;  height: 100%; }
+/* flex-end, not flex-start: paired with the tile below it in the second row
+   both frames were pulling away from the seam and their two recessions added
+   up to a 100px hole through the middle of the wall. Each keeps its own
+   height — the scatter now shows on the wall's outer edges instead. */
+.craft-wall__row:nth-child(1) .craft-wall__tile:nth-child(3) { --fx: 1.3;  height: 86%; align-self: flex-end; }
+.craft-wall__row:nth-child(1) .craft-wall__tile:nth-child(4) { --fx: 0.95; height: 94%; align-self: flex-end; }
+
+.craft-wall__row:nth-child(2) .craft-wall__tile:nth-child(1) { --fx: 0.9;  height: 94%; align-self: flex-start; }
+.craft-wall__row:nth-child(2) .craft-wall__tile:nth-child(2) { --fx: 1.25; height: 100%; }
+.craft-wall__row:nth-child(2) .craft-wall__tile:nth-child(3) { --fx: 0.85; height: 84%; align-self: flex-start; }
+.craft-wall__row:nth-child(2) .craft-wall__tile:nth-child(4) { --fx: 1.1;  height: 92%; align-self: flex-start; }
+
+/* ---- horizontal axis: row-mates give way, the open frame takes
+        its full drop as well as the width ---- */
+
+.craft-wall__row:hover .craft-wall__tile {
+  flex-grow: calc(var(--fx) * 0.78);
+}
+
+.craft-wall__row .craft-wall__tile:hover {
+  flex-grow: calc(var(--fx) * 2 + 0.7);
+  height: 100%;
+}
+
+.craft-wall__tile img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.craft-wall__tile:hover img {
+  transform: scale(1.04);
+}
+
+.craft-wall__tile figcaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 30px 14px 11px;
+  background: linear-gradient(0deg, rgba(24, 12, 10, 0.72) 0%, rgba(24, 12, 10, 0) 100%);
+  font-size: clamp(11px, calc(10.6px + 0.09vw), 13px);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cream);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity var(--dur-quick) var(--ease), transform var(--dur-quick) var(--ease);
+}
+
+.craft-wall__tile:hover figcaption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---- the reference wall's red dots, in gerua ---- */
+
+.craft-wall__dot {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--gerua);
+}
+
+.craft-wall__dot--a { width: 24px; height: 24px; left: 1.2%; bottom: 14%; }
+.craft-wall__dot--b { width: 10px; height: 10px; right: 0.6%; bottom: 4%; }
+.craft-wall__dot--c { width: 12px; height: 12px; right: 24%; top: -26px; }
+
+.craft-wall__more {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(26px, 3vw, 44px);
+  color: var(--ink);
+}
+
+.craft-wall__more .arrow-link:hover {
+  color: var(--gerua);
+}
+
+/* ---- no hover on touch: the frames fall into a plain
+        two-across grid, captions on ---- */
+
+@media (max-width: 900px) {
+  .craft-wall {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    height: auto;
+  }
+
+  .craft-wall__row {
+    display: contents;
+  }
+
+  .craft-wall__tile,
+  .craft-wall__row .craft-wall__tile:nth-child(n) {
+    flex: none;
+    height: auto;
+    align-self: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .craft-wall__tile figcaption {
+    opacity: 1;
+    transform: none;
+  }
+
+  .craft-wall__dot {
+    display: none;
+  }
+}
+
+/* ============================================================
+   KAARIGAR POSTER — from the studio archive
+   The six painted panels sit straight on the page ground — the
+   artwork carries its own transparency, so there is no card
+   behind it. On scroll the art draws itself in: a brush-wipe
+   mask driven by --wipe sweeps across while the colour returns
+   (see CraftPoster.jsx). Type sits on the shared scale — the
+   quote step for the lead, the card step for the quiet line,
+   the craft-figcaption step for plate and caption.
+   ============================================================ */
+
+.poster__stage {
+  position: relative;
+}
+
+/* ---- the art, centred ---- */
+
+.poster__art {
+  position: relative;
+  z-index: 1;
+  width: min(56%, 820px);
+  margin-inline: auto;
+}
+
+/* One image, one move: it arrives black-and-white and takes its
+   colour back as the section scrolls through — scrubbed in
+   CraftPoster.jsx. At rest it is fully painted. */
+.poster__art img {
+  width: 100%;
+  display: block;
+}
+
+/* set exactly like .craft__shot figcaption — the site's figure caption */
+.poster__caption,
+.poster__plate {
+  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.poster__caption {
+  margin-top: clamp(16px, 1.8vw, 28px);
+  text-align: center;
+}
+
+.poster__caption span {
+  color: var(--gold);
+}
+
+/* ---- the two notes ---- */
+
+.poster__note {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  gap: 12px;
+}
+
+.poster__note--tr {
+  top: 0;
+  right: var(--gutter);
+  /* never wider than the margin the 56%-wide art leaves beside it */
+  max-width: min(23ch, calc(22% - 20px));
+  justify-items: end;
+  text-align: right;
+}
+
+.poster__note--bl {
+  bottom: 0;
+  left: var(--gutter);
+  max-width: min(26ch, calc(22% - 20px));
+}
+
+/* the ledger rule under the shared eyebrow */
+.poster__note .eyebrow::after {
+  content: '';
+  display: block;
+  width: 44px;
+  height: 1px;
+  margin-top: 8px;
+  background: rgba(148, 118, 63, 0.6);
+}
+
+.poster__note--tr .eyebrow::after {
+  margin-left: auto;
+}
+
+/* the shared quote step — same as the nav lead and pull quotes */
+.poster__lead {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(22px, calc(19.5px + 0.64vw), 36px);
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.poster__lead em {
+  font-style: italic;
+  color: var(--gerua);
+}
+
+/* the shared card-title step */
+.poster__lead--quiet {
+  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  color: var(--ink);
+}
+
+.poster__lead--quiet em {
+  color: inherit;
+}
+
+/* the shared small-copy step — same as the seal copy */
+.poster__copy {
+  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.poster__link {
+  margin-top: 2px;
+  color: var(--gerua);
+}
+
+.poster__link:hover {
+  color: var(--gerua-600);
+}
+
+/* ---- the ink stamp ---- */
+
+.poster__stamp {
+  position: absolute;
+  z-index: 3;
+  right: clamp(24px, 13%, 240px);
+  bottom: clamp(-8px, -0.5vw, 0px);
+  width: clamp(84px, 8vw, 118px);
+  aspect-ratio: 1;
+  color: var(--gerua);
+  opacity: 0.55;
+  transform: rotate(-12deg);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.poster__stamp svg {
+  width: 100%;
+  height: 100%;
+}
+
+.poster__stamp text {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  fill: currentColor;
+}
+
+.poster__stamp .poster-stamp__glyph {
+  font-size: 16px;
+  letter-spacing: 0;
+}
+
+/* ---- the notes fold above and below the art once the sides
+        run out of room ---- */
+
+@media (max-width: 1180px) {
+  .poster__note {
+    position: static;
+  }
+
+  .poster__note--tr {
+    margin-bottom: clamp(22px, 3vw, 34px);
+    max-width: 34ch;
+  }
+
+  .poster__note--bl {
+    margin-top: clamp(22px, 3vw, 34px);
+    max-width: 40ch;
+  }
+
+  .poster__art {
+    width: min(86%, 720px);
+  }
+}
+
+@media (max-width: 720px) {
+  .poster__note--tr,
+  .poster__note--bl {
+    max-width: none;
+  }
+
+  .poster__art {
+    width: 100%;
+  }
+
+  /* the same steps the mobile layer gives the quote band and
+     card titles */
+  .poster__lead {
+    font-size: clamp(20px, 5.8vw, 25px);
+  }
+
+  .poster__lead--quiet {
+    font-size: 17.5px;
+  }
+
+  .poster__copy {
+    font-size: 14.5px;
+  }
+
+  .poster__stamp {
+    position: static;
+    display: block;
+    width: 84px;
+    margin: 16px 0 0 auto;
+    transform: rotate(-10deg);
+  }
+}
+
+
+/* ============================================================
+   HERITAGE CHROME — the Kutchi vocabulary, applied sparingly
+   Measured interventions, never wallpaper: a woven selvedge
+   line at the very top of the page, phool marks flanking the
+   centred eyebrows, a kantha running-stitch rule under every
+   section intro, stitched edges on the marquee band, and a
+   kungri (temple-tooth) border where the page meets the footer.
+   Everything is CSS — no images, no new weight.
+   ============================================================ */
+
+/* ---- selvedge line, the woven edge of the page ---- */
+
+.topbar {
+  position: relative;
+}
+
+.topbar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--gerua) 0 26px,
+    var(--gold) 26px 34px,
+    var(--maroon) 34px 60px
+  );
+}
+
+/* ---- phool marks flanking the centred eyebrows ---- */
+
+.section-intro .eyebrow::before,
+.section-intro .eyebrow::after {
+  content: '✦';
+  color: var(--gold);
+  font-size: 0.85em;
+  vertical-align: 1px;
+}
+
+.section-intro .eyebrow::before {
+  margin-right: 12px;
+}
+
+.section-intro .eyebrow::after {
+  margin-left: 12px;
+}
+
+/* ---- kantha running stitch closing every section intro ---- */
+
+.section-intro::after {
+  content: '';
+  width: 120px;
+  height: 10px;
+  margin-top: clamp(4px, 0.8vw, 10px);
+  background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='10' viewBox='0 0 120 10'><path d='M0 5h44' stroke='%23b23127' stroke-width='1.2' stroke-dasharray='6 5' opacity='0.75'/><path d='M76 5h44' stroke='%23b23127' stroke-width='1.2' stroke-dasharray='6 5' opacity='0.75'/><rect x='56' y='1' width='8' height='8' fill='%23b23127' transform='rotate(45 60 5)'/></svg>")
+    no-repeat center / contain;
+}
+
+/* ---- the marquee, stitched on like a textile band ---- */
+
+.marquee {
+  border: 1px dashed rgba(199, 165, 106, 0.45);
+}
+
+/* ---- stitch above the sitemap; phool opening the letters ---- */
+
+.fmap {
+  border-top: 1px dashed rgba(199, 165, 106, 0.28);
+  padding-top: clamp(20px, 2.2vw, 36px);
+}
+
+.fletters__eyebrow::before {
+  content: '✦';
+  margin-right: 10px;
+  color: var(--gold);
+  font-size: 0.85em;
+}
+
+
+/* ============================================================
+   HERITAGE ARTWORK — the three archive illustrations
+   ============================================================ */
+
+/* ---- jharokha tilework flanking the promises section.
+        Pinned to the section's own corners (left/top of the box,
+        not its padding), mirrored on the left. Behind the seals. */
+
+.manifesto {
+  position: relative;
+}
+
+.manifesto__arch {
+  position: absolute;
+  bottom: clamp(28px, 4vw, 60px);
+  width: clamp(180px, 15vw, 280px);
+  height: auto;
+  pointer-events: none;
+  z-index: 0;
+  /* Fade the cut edges so the tilework surfaces out of the page ground
+     instead of ending on a straight line: top and bottom, plus the inner
+     edge where the seal copy runs. The element's own left edge is the
+     inner one on both sides — the left arch is mirrored, so its mask
+     mirrors with it. */
+  -webkit-mask-image:
+    linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000 16%, #000 84%, rgba(0, 0, 0, 0) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.55) 34%, #000 72%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000 16%, #000 84%, rgba(0, 0, 0, 0) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.55) 34%, #000 72%);
+  mask-composite: intersect;
+}
+
+/* pinned to the viewport's own edges, not the container's —
+   html/body carry overflow-x: clip, so the 50vw reach is safe */
+.manifesto__arch--right {
+  right: calc(50% - 50vw);
+}
+
+.manifesto__arch--left {
+  left: calc(50% - 50vw);
+  transform: scaleX(-1);
+}
+
+.manifesto .section-intro,
+.manifesto .manifesto__grid,
+.manifesto .manifesto__more {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 1180px) {
+  .manifesto__arch {
+    display: none;
+  }
+}
+
+/* ---- the village along the footer's floor, a faint etching in
+        the weave layer behind everything ---- */
+
+.footer__village {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: max(100%, 1100px);
+  opacity: 0.16;
+}
+

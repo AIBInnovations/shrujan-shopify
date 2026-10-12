@@ -142,10 +142,43 @@
   </style>
 {%- endif -%}
 <section class="hero" aria-label="{{ section.settings.title_l1 | strip_html | escape }} {{ section.settings.title_l2 | strip_html | downcase | escape }} {{ section.settings.title_l3 | strip_html | downcase | escape }}"{% if h.hero_animate == false %} data-hero-animate="false"{% endif %}>
+  {%- if h.cell1_mode == 'photo' %}
   <a class="hero-cell hero-cell--model" href="{{ section.settings.shop_url | default: '/pages/shop-shrujan' | escape }}" data-hero="cell">
     <img src="{% if section.settings.shop_img %}{{ section.settings.shop_img | image_url: width: 1200 }}{% else %}{{ 'hero-left.webp' | asset_url }}{% endif %}" alt="{{ section.settings.shop_alt | escape }}" fetchpriority="high">
     <span class="hero-cell__label"><i class="hero-cell__dash" aria-hidden="true"></i><em>{{ section.settings.shop_em | escape }}</em>{{ section.settings.shop_label | escape }}<span class="hero-cell__sub">{{ section.settings.shop_sub | escape }}</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
   </a>
+  {%- else -%}
+    {%- comment -%}
+      The craft films, one after another: a few seconds from the middle of each,
+      where the hands are working. One line per film: film | poster.
+    {%- endcomment -%}
+    {%- assign montage_lines = h.montage_films | newline_to_br | split: '<br />' -%}
+    {%- assign montage_first = '' -%}
+    {%- assign montage_first_poster = '' -%}
+    {%- capture montage_json -%}[
+      {%- assign m_n = 0 -%}
+      {%- for l in montage_lines -%}
+        {%- assign line = l | strip -%}
+        {%- if line != blank -%}
+          {%- assign parts = line | split: '|' -%}
+          {%- assign m_film = parts[0] | strip | asset_url -%}
+          {%- assign m_poster = parts[1] | strip -%}
+          {%- if m_poster != blank -%}{%- assign m_poster = m_poster | asset_url -%}{%- endif -%}
+          {%- if m_n == 0 -%}
+            {%- assign montage_first = m_film -%}
+            {%- assign montage_first_poster = m_poster -%}
+          {%- else -%},{%- endif -%}
+          {"src":{{ m_film | json }},"poster":{{ m_poster | json }}}
+          {%- assign m_n = m_n | plus: 1 -%}
+        {%- endif -%}
+      {%- endfor -%}
+    ]{%- endcapture %}
+  <a class="hero-cell hero-cell--model" href="{{ section.settings.montage_url | default: '/pages/video' | escape }}" data-hero="cell">
+    <video class="hero-montage__video" poster="{{ montage_first_poster }}" playsinline muted preload="auto" aria-hidden="true" data-hero-montage="{{ montage_json | escape }}" data-clip="{{ h.montage_clip }}" data-seek="{{ h.montage_seek }}"><source src="{{ montage_first }}" type="video/mp4"></video>
+    <span class="hero-cell__scrim hero-cell__scrim--montage" aria-hidden="true"></span>
+    <span class="hero-cell__label hero-cell__label--montage"><i class="hero-cell__dash" aria-hidden="true"></i>{{ h.montage_l1 | escape }}{% if h.montage_l2 != blank %}<br>{{ h.montage_l2 | escape }}{% endif %}<span class="hero-cell__sub">{{ h.montage_sub | escape }}</span>{% if h.montage_em != blank %}<em>{{ h.montage_em | escape }}</em>{% endif %}</span>
+  </a>
+  {%- endif %}
 
   <div class="hero-cell hero-cell--message" data-hero="cell">
     <span class="hero-message__ornament" aria-hidden="true"><svg viewBox="0 0 64 64" width="58" height="58" fill="none" stroke="currentColor" stroke-width="1">
@@ -212,6 +245,57 @@
      hidden start values only ever exist as GSAP inline styles. */
   var animate = root.getAttribute('data-hero-animate') !== 'false';
 
+  /* ---- First cell: the craft montage (port of CraftMontage in Hero.jsx) ----
+     Each film opens at its middle, plays for the clip length, then hands over
+     to the next. Off screen the montage stops and fetches nothing; with reduced
+     motion it never starts, and the first poster simply stands. */
+  var montage = root.querySelector('[data-hero-montage]');
+  if (montage) {
+    var films = [];
+    try { films = JSON.parse(montage.getAttribute('data-hero-montage')) || []; } catch (e) {}
+    var source = montage.querySelector('source');
+    var clipMs = (parseFloat(montage.getAttribute('data-clip')) || 4) * 1000;
+    var seekTo = parseFloat(montage.getAttribute('data-seek')) || 0;
+    var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var current = 0, timer = null, inView = true, started = false;
+    montage.muted = true;
+
+    var showFilm = function (i) {
+      current = i;
+      if (films[i].poster) montage.setAttribute('poster', films[i].poster);
+      source.setAttribute('src', films[i].src);
+      montage.load();
+    };
+
+    montage.addEventListener('loadedmetadata', function () {
+      montage.currentTime = Math.min(seekTo, Math.max(0, montage.duration / 2 - 2));
+    });
+    montage.addEventListener('seeked', function () {
+      if (!inView) return;
+      var p = montage.play();
+      if (p && p.catch) p.catch(function () {});
+      clearTimeout(timer);
+      if (films.length > 1) timer = setTimeout(function () { showFilm((current + 1) % films.length); }, clipMs);
+    });
+
+    if (films.length && !still) {
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (entries) {
+          inView = entries[0].isIntersecting;
+          if (!inView) {
+            clearTimeout(timer);
+            montage.pause();
+          } else {
+            showFilm(started ? (current + 1) % films.length : 0);
+            started = true;
+          }
+        }).observe(montage);
+      } else {
+        showFilm(0);
+      }
+    }
+  }
+
   var mm = gsap.matchMedia(root);
 
   if (animate) mm.add('(prefers-reduced-motion: no-preference)', function () {
@@ -275,7 +359,85 @@
     },
     {
       "type": "header",
-      "content": "Shop Shrujan cell"
+      "content": "First cell"
+    },
+    {
+      "type": "select",
+      "id": "cell1_mode",
+      "label": "Show",
+      "default": "montage",
+      "options": [
+        {
+          "value": "montage",
+          "label": "Craft film montage"
+        },
+        {
+          "value": "photo",
+          "label": "Photograph (Shop Shrujan)"
+        }
+      ]
+    },
+    {
+      "type": "url",
+      "id": "montage_url",
+      "label": "Montage link",
+      "info": "Defaults to Craft Traditions, the page the films come from."
+    },
+    {
+      "type": "text",
+      "id": "montage_l1",
+      "label": "Montage label, line 1",
+      "default": "Woven in Kutch,"
+    },
+    {
+      "type": "text",
+      "id": "montage_l2",
+      "label": "Montage label, line 2",
+      "default": "Worn by the World"
+    },
+    {
+      "type": "text",
+      "id": "montage_sub",
+      "label": "Montage sub line",
+      "default": "Six living crafts, one desert. Hand-embroidered by the women of Kutch since 1969."
+    },
+    {
+      "type": "text",
+      "id": "montage_em",
+      "label": "Montage signature",
+      "default": "Heritage by Hand"
+    },
+    {
+      "type": "textarea",
+      "id": "montage_films",
+      "label": "Montage films (one per line)",
+      "info": "Film | poster, both theme asset filenames. They play in this order.",
+      "default": "craft-embroidery.mp4 | craft-embroidery-poster.webp\ncraft-ajrakh.mp4 | craft-ajrakh-poster.webp\ncraft-weaving.mp4 | craft-weaving-poster.webp\ncraft-tiedye.mp4 | craft-tiedye-poster.webp\ncraft-discharge.mp4 | craft-discharge-poster.webp\ncraft-pottery.mp4 | craft-pottery-poster.webp"
+    },
+    {
+      "type": "range",
+      "id": "montage_clip",
+      "label": "Seconds of each film",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "montage_seek",
+      "label": "Start each film at",
+      "info": "Seconds in. Short films start nearer their middle instead.",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "s",
+      "default": 6
+    },
+    {
+      "type": "header",
+      "content": "First cell as a photograph"
     },
     {
       "type": "url",

@@ -16,10 +16,10 @@
     desktop ratio all the way down to 320px unless one is chosen here.
   endcomment
   assign v_style = false
-  if cfg.stops_cols != 3 or cfg.stops_cols_m != 1 or cfg.ways_cols_m != 1
+  if cfg.stops_cols != 3 or cfg.stops_cols_m != 2 or cfg.ways_cols_m != 1
     assign v_style = true
   endif
-  if cfg.steps_cols_m != 1 or cfg.stop_ratio_m != 'default' or cfg.way_ratio_m != 'default'
+  if cfg.steps_cols_m != 2 or cfg.stop_ratio_m != 'default' or cfg.way_ratio_m != 'default'
     assign v_style = true
   endif
 -%}
@@ -39,12 +39,12 @@
       {%- endif -%}
     {%- endif -%}
 
-    {%- if cfg.stops_cols_m != 1 or cfg.steps_cols_m != 1 or cfg.stop_ratio_m != 'default' -%}
+    {%- if cfg.stops_cols_m != 2 or cfg.steps_cols_m != 2 or cfg.stop_ratio_m != 'default' -%}
       @media (max-width: 620px) {
-        {%- if cfg.stops_cols_m != 1 -%}
+        {%- if cfg.stops_cols_m != 2 -%}
           {{ sel }} .stops__grid { grid-template-columns: repeat({{ cfg.stops_cols_m }}, minmax(0, 1fr)); }
         {%- endif -%}
-        {%- if cfg.steps_cols_m != 1 -%}
+        {%- if cfg.steps_cols_m != 2 -%}
           {{ sel }} .plan__steps { grid-template-columns: repeat({{ cfg.steps_cols_m }}, minmax(0, 1fr)); }
         {%- endif -%}
         {%- if cfg.stop_ratio_m != 'default' -%}
@@ -407,11 +407,11 @@
       "type": "range",
       "id": "stops_cols_m",
       "label": "Stop columns",
-      "info": "620px and under, where the stops stack one per row. Between 620 and 1080px the theme shows two.",
+      "info": "620px and under. From 1080px down the theme sets the stops two across.",
       "min": 1,
       "max": 3,
       "step": 1,
-      "default": 1
+      "default": 2
     },
     {
       "type": "select",
@@ -477,11 +477,11 @@
       "type": "range",
       "id": "steps_cols_m",
       "label": "How-long-to-stay columns",
-      "info": "620px and under, where the pairs of stay lengths stack.",
+      "info": "620px and under, where the stay lengths sit two across.",
       "min": 1,
       "max": 3,
       "step": 1,
-      "default": 1
+      "default": 2
     },
     {
       "type": "header",

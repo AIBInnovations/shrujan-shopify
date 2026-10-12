@@ -2141,57 +2141,12 @@
   .site-header.nav-open .menu-toggle svg { transform: rotate(90deg); }
 }
 
-/* ---- footer: the sitemap collapses on a phone ---------------------------- */
-@media (max-width: 760px) {
-  .fmap__col.is-collapsible {
-    display: grid;
-    grid-template-rows: auto 0fr;
-    transition: grid-template-rows 300ms var(--ease);
-    border-bottom: 1px solid rgba(242, 237, 224, 0.14);
-  }
-
-  .fmap__col.is-collapsible.is-open { grid-template-rows: auto 1fr; }
-
-  .fmap__col.is-collapsible > .fmap__group {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 14px 0;
-    margin: 0;
-    cursor: pointer;
-    user-select: none;
-  }
-
-  .fmap__col.is-collapsible > .fmap__group::after {
-    content: '';
-    width: 9px;
-    height: 9px;
-    border-right: 1.5px solid currentColor;
-    border-bottom: 1.5px solid currentColor;
-    transform: translateY(-2px) rotate(45deg);
-    transition: transform 260ms var(--ease);
-    opacity: 0.7;
-  }
-
-  .fmap__col.is-collapsible.is-open > .fmap__group::after {
-    transform: translateY(2px) rotate(225deg);
-  }
-
-  .fmap__col.is-collapsible > ul {
-    overflow: hidden;
-    min-height: 0;
-    padding-bottom: 4px;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .site-nav,
   .nav-item,
   .nav-panel,
   .nav-panel__sheet,
   .nav-scrim,
-  .fmap__col.is-collapsible,
   .menu-toggle svg,
   .nav-item__link svg {
     transition-duration: 1ms !important;
@@ -2216,3 +2171,35 @@
 
 /* the tearsheet row has the same shape: mixed frame heights in one row */
 .press__sheets > * { align-self: stretch; }
+
+/* ============================================================
+   Hero, first cell as a photograph
+   ------------------------------------------------------------
+   The site's first cell is now the craft-film montage, and the shared
+   stylesheet dropped the photo crop and label drop with it. The theme keeps
+   the photograph as a setting, so those two rules live on here, scoped so
+   the montage label is left alone.
+   ============================================================ */
+.hero-cell--model > img { object-position: 50% 12%; }
+.hero-cell--model .hero-cell__label:not(.hero-cell__label--montage) { top: 38%; }
+
+/* ============================================================
+   Phone menu sections fold
+   ------------------------------------------------------------
+   The site renders a section's links only while it is open; the theme ships
+   every list in the markup and lets the open state show it.
+   ============================================================ */
+.mobile-nav__group:not(.is-open) > .mobile-nav__sub { display: none; }
+
+/* ============================================================
+   Home edit, an odd last card takes the whole row
+   ------------------------------------------------------------
+   The site renders only the active occasion's cards, so its rule can ask for
+   the grid's last child. The theme ships every occasion and hides the rest,
+   which makes a hidden card the last child; count the visible ones instead.
+   ============================================================ */
+@media (max-width: 720px) {
+  .curated__grid:not(.shop-grid) > .piece:nth-last-child(1 of :not([hidden])):nth-child(odd of :not([hidden])) {
+    grid-column: 1 / -1;
+  }
+}

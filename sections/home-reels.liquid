@@ -108,6 +108,13 @@
   </div>
 
   <div class="reels__rail-wrap">
+    {%- comment -%}
+      The caption sits on the footage rather than under the card: the titles run
+      to different lengths and would push the cards to different heights. Under
+      each card hangs one embroidered pennant, K · U · T · C · H, like a toran.
+    {%- endcomment -%}
+    {%- assign pennants = r.pennants | split: ',' -%}
+    {%- assign pennant_count = pennants | size %}
     <div class="reels__rail" data-reveal-child>
       {%- for block in section.blocks %}
       <a class="reel" href="{{ block.settings.link | default: 'https://www.instagram.com/shrujanindia/reels/' }}" target="_blank" rel="noopener noreferrer" {{ block.shopify_attributes }}>
@@ -115,8 +122,15 @@
           <video src="{{ 'reel-' | append: forloop.index | append: '.mp4' | asset_url }}" poster="{{ 'reel-' | append: forloop.index | append: '-poster.jpg' | asset_url }}" muted {% if r.loop %}loop {% endif %}playsinline preload="none" aria-label="{{ block.settings.title | escape }}"></video>
           <span class="reel__scrim" aria-hidden="true"></span>
           <span class="reel__meta">{{ block.settings.meta | escape }}</span>
+          <p class="reel__title">{{ block.settings.title | escape }}</p>
         </div>
-        <p class="reel__title">{{ block.settings.title | escape }}</p>
+        {%- if r.show_pennants and pennant_count > 0 -%}
+          {%- assign pennant_i = forloop.index0 | modulo: pennant_count -%}
+          {%- assign pennant = pennants[pennant_i] | strip -%}
+          {%- if pennant != blank %}
+        <img class="reel__letter" src="{{ pennant | asset_url }}" alt="" aria-hidden="true" loading="lazy">
+          {%- endif -%}
+        {%- endif %}
       </a>
       {%- endfor %}
     </div>
@@ -134,8 +148,9 @@
      on their posters until the visitor opens the reel. */
   var autoplay = root.getAttribute('data-autoplay') !== 'false';
   var rail = root.querySelector('.reels__rail');
+  var io = null;
   if (autoplay && rail && 'IntersectionObserver' in window) {
-    var io = new IntersectionObserver(
+    io = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (entry) {
           var v = entry.target;
@@ -147,6 +162,62 @@
     );
     rail.querySelectorAll('video').forEach(function (v) { io.observe(v); });
   }
+
+  /* On a phone the rail loops (port of Reels.jsx). Three copies run end to
+     end and the scroll shifts by one copy whenever it drifts out of the middle
+     one: a whole number of card pitches, so the snap lands identically and the
+     jump is invisible. Desktop keeps the single set, which divides its rail
+     exactly. The copies are decorative repeats, hidden from assistive tech. */
+  var phone = window.matchMedia('(max-width: 720px)');
+  var originals = rail ? Array.prototype.slice.call(rail.children) : [];
+  var copies = [];
+  var loopRaf = 0;
+
+  function onLoopScroll() {
+    if (loopRaf) return;
+    loopRaf = requestAnimationFrame(function () {
+      loopRaf = 0;
+      var w = rail.scrollWidth / 3;
+      if (rail.scrollLeft < w * 0.5) rail.scrollLeft += w;
+      else if (rail.scrollLeft > w * 1.5) rail.scrollLeft -= w;
+    });
+  }
+
+  function copyOf(card) {
+    var c = card.cloneNode(true);
+    c.setAttribute('aria-hidden', 'true');
+    c.setAttribute('tabindex', '-1');
+    // a reveal may have left the original mid-fade; the copy starts settled
+    c.style.opacity = '';
+    c.style.transform = '';
+    c.style.visibility = '';
+    return c;
+  }
+
+  function setLoop(on) {
+    if (!rail || originals.length < 2) return;
+    if (on && !copies.length) {
+      // one copy ahead of the originals, one after; each lands in reading order
+      originals.forEach(function (card) { var c = copyOf(card); copies.push(c); rail.insertBefore(c, originals[0]); });
+      originals.forEach(function (card) { var c = copyOf(card); copies.push(c); rail.appendChild(c); });
+      if (io) copies.forEach(function (c) { var v = c.querySelector('video'); if (v) io.observe(v); });
+      // open on the middle copy, so the first swipe can go either way
+      rail.scrollLeft = rail.scrollWidth / 3;
+      rail.addEventListener('scroll', onLoopScroll, { passive: true });
+    } else if (!on && copies.length) {
+      rail.removeEventListener('scroll', onLoopScroll);
+      copies.forEach(function (c) {
+        var v = c.querySelector('video');
+        if (v && io) io.unobserve(v);
+        c.remove();
+      });
+      copies = [];
+      rail.scrollLeft = 0;
+    }
+  }
+
+  setLoop(phone.matches);
+  if (phone.addEventListener) phone.addEventListener('change', function (e) { setLoop(e.matches); });
 
   var mm = gsap.matchMedia();
 
@@ -195,6 +266,23 @@
       "label": "Snap the rail to cards",
       "info": "Scrolling settles on a card rather than stopping between two. Off gives free scrolling.",
       "default": true
+    },
+    {
+      "type": "header",
+      "content": "Pennants"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pennants",
+      "label": "Hang a pennant under each reel",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "pennants",
+      "label": "Pennant assets (comma-separated)",
+      "info": "Theme asset filenames, one per card in order, repeating when the cards outnumber them.",
+      "default": "kutch-k.webp, kutch-u.webp, kutch-t.webp, kutch-c.webp, kutch-h.webp"
     },
     {
       "type": "header",

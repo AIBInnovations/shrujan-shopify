@@ -110,6 +110,24 @@
             "body": "Tie-dye is a term used to describe a number of traditional resist-dyeing techniques. These include stitching, twisting, folding, pleating, crumpling fabric and binding it using string, rubber band, clamp and other devices.\nThe fabric is then dyed. The areas which are tied or constricted resist the penetration of the dye and, when opened up, reveal unique and unusual patterns.",
             "more": "There are three types of tie-dye techniques practised in Kutch: the centuries-old, traditional bandhani; the Japanese-inspired Shibori and the contemporary clamp technique. Shrujan supports innovations in all three techniques.\nShrujan has taken the tie-dye of Kutch to prestigious markets and platforms such as India Art Fair and shown the world that in the hands of master tie-dyers, this craft can be playful and sophisticated; rainbow-hued and monochromatic; traditional and avant garde."
           }
+        },
+        "mashroo": {
+          "type": "craft",
+          "settings": {
+            "name": "Mashroo",
+            "short": "Mashroo",
+            "tag": "Woven in stripes",
+            "video": "",
+            "poster": "sj-mashroo-pant-2.webp",
+            "f1_label": "Fibres",
+            "f1_value": "Silk and cotton",
+            "f2_label": "Design",
+            "f2_value": "Always striped",
+            "f3_label": "Shrujan's part",
+            "f3_value": "Revived, made contemporary",
+            "body": "Traditional mashroo fabric was handwoven from real silk and cotton fabric and always had a striped based design. The stripes ranged from bold and colourful to quiet, muted and even barely visible.\nThis royal and opulent traditional fabric had more or less disappeared. Shrujan not only revived it but also gave it a new and hip look by crafting contemporary products for the young and the young at heart.",
+            "more": ""
+          }
         }
       },
       "block_order": [
@@ -117,6 +135,7 @@
         "ajrakh",
         "discharge",
         "weaving",
+        "mashroo",
         "pottery",
         "tie-dye"
       ]

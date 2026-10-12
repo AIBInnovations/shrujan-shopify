@@ -3,7 +3,7 @@
   assign cfg = section.settings
   assign sel = '#shopify-section-' | append: section.id
   assign has_layout = false
-  if cfg.sw_cols != 4 or cfg.sw_cols_m != 1 or cfg.sw_align != 'center'
+  if cfg.sw_cols != 4 or cfg.sw_cols_m != 2 or cfg.sw_align != 'center'
     assign has_layout = true
   endif
   if cfg.sw_show_divider == false
@@ -29,7 +29,7 @@
         {{ sel }} .manifesto__grid { grid-template-columns: repeat({{ cfg.sw_cols }}, minmax(0, 1fr)); }
       }
     {%- endif -%}
-    {%- if cfg.sw_cols_m != 1 -%}
+    {%- if cfg.sw_cols_m != 2 -%}
       @media (max-width: 600px) {
         {{ sel }} .manifesto__grid { grid-template-columns: repeat({{ cfg.sw_cols_m }}, minmax(0, 1fr)); }
       }
@@ -61,6 +61,21 @@
   </style>
 {%- endif -%}
 <section class="section container manifesto" id="promise">
+  {%- if section.settings.show_arches -%}
+    {%- comment -%}
+      Jharokha tilework flanking the section, pinned to the screen's edges: the
+      right corner as shot, the left one mirrored. Hidden below 1180px, where
+      the sides run out of room.
+    {%- endcomment -%}
+    {%- if section.settings.arch_img -%}
+      {%- assign arch_src = section.settings.arch_img | image_url: width: 600 -%}
+    {%- else -%}
+      {%- assign arch_src = section.settings.arch_asset | asset_url -%}
+    {%- endif %}
+  <img class="manifesto__arch manifesto__arch--left" src="{{ arch_src }}" alt="" aria-hidden="true" loading="lazy">
+  <img class="manifesto__arch manifesto__arch--right" src="{{ arch_src }}" alt="" aria-hidden="true" loading="lazy">
+  {%- endif %}
+
   <div class="section-intro" data-reveal>
     <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
     <h2 class="section-title">
@@ -112,6 +127,28 @@
       "id": "title",
       "label": "Title",
       "default": "Craft that cares: <em>four promises</em> in every piece"
+    },
+    {
+      "type": "header",
+      "content": "Jharokha tilework"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arches",
+      "label": "Flank the section with the tilework",
+      "info": "Shown on screens wider than 1180px.",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "arch_img",
+      "label": "Tilework image"
+    },
+    {
+      "type": "text",
+      "id": "arch_asset",
+      "label": "Tilework theme asset (fallback)",
+      "default": "heritage-arch.webp"
     },
     {
       "type": "textarea",
@@ -168,7 +205,7 @@
       "min": 1,
       "max": 3,
       "step": 1,
-      "default": 1,
+      "default": 2,
       "info": "Applies below 600px."
     },
     {

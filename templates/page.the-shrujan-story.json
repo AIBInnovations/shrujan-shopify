@@ -305,13 +305,37 @@
             "facts": "September 2018\nPages 62–65\n4 pages",
             "sheets": "press-brinda-1.webp, press-brinda-2.webp, press-brinda-3.webp, press-brinda-4.webp"
           }
+        },
+        "b38": {
+          "type": "chapter",
+          "settings": {
+            "label": "Our Founder",
+            "anchor": "founder"
+          }
+        },
+        "b39": {
+          "type": "chapter",
+          "settings": {
+            "label": "Our Journey",
+            "anchor": "journey"
+          }
+        },
+        "b40": {
+          "type": "chapter",
+          "settings": {
+            "label": "Awards & Honours",
+            "anchor": "honours"
+          }
         }
       },
       "block_order": [
         "b1",
+        "b38",
+        "b39",
         "b2",
         "b3",
         "b4",
+        "b40",
         "b5",
         "b6",
         "b7",

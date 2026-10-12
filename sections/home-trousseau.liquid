@@ -44,7 +44,7 @@
     promises row steps 4 → 2 → 1 on 1080 and 600, so its phone count belongs in
     the same 600px band.
   endcomment
-  if cfg.tr_ratio_m != 'default' or cfg.tr_promise_cols_m != 1
+  if cfg.tr_ratio_m != 'default' or cfg.tr_promise_cols_m != 2
     assign has_layout = true
   endif
   if cfg.tr_show_filters and cfg.tr_show_filters_m == false
@@ -67,12 +67,12 @@
       {{ sel }} .piece__media { aspect-ratio: {{ cfg.tr_ratio }}; }
     {%- endif -%}
 
-    {%- if cfg.tr_ratio_m != 'default' or cfg.tr_promise_cols_m != 1 or cfg.tr_show_filters_m == false -%}
+    {%- if cfg.tr_ratio_m != 'default' or cfg.tr_promise_cols_m != 2 or cfg.tr_show_filters_m == false -%}
       @media (max-width: 600px) {
         {%- if cfg.tr_ratio_m != 'default' -%}
           {{ sel }} .piece__media { aspect-ratio: {{ cfg.tr_ratio_m }}; }
         {%- endif -%}
-        {%- if cfg.tr_promise_cols_m != 1 -%}
+        {%- if cfg.tr_promise_cols_m != 2 -%}
           {{ sel }} .curated__promises { grid-template-columns: repeat({{ cfg.tr_promise_cols_m }}, minmax(0, 1fr)); }
           {%- comment -%}
             At one column the theme moves each promise's hairline from its side
@@ -455,11 +455,11 @@
       "type": "range",
       "id": "tr_promise_cols_m",
       "label": "Promise columns",
-      "info": "The row of promises under the grid. 600px and under, where the theme stacks them one per row.",
+      "info": "The row of promises under the grid. 600px and under, where the theme sets them two across.",
       "min": 1,
       "max": 4,
       "step": 1,
-      "default": 1
+      "default": 2
     },
     {
       "type": "checkbox",

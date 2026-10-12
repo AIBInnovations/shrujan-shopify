@@ -4,80 +4,89 @@
   assign sel = '#shopify-section-' | append: section.id
 
   comment
-    Mobile group. The two grids step on different breakpoints in the stylesheet
-    on different breakpoints: the gallery goes two-up to one at 600px, the stat
-    row four-up to two at 900px. So each override sits inside its own query
-    rather than one shared phone width. The stat row is hairline-separated, and
-    the theme's reflow at 900px is tuned for two columns, so a single column
-    repeats what the theme does for the promises row at its narrowest step.
+    Mobile group. Both grids give way at 900px in the stylesheet: the hung wall
+    turns into a plain grid of frames, two across, and the stat row goes four-up
+    to two. The stat row is hairline-separated, and the theme's reflow at 900px
+    is tuned for two columns, so a single column moves the hairline to the top.
   endcomment
   assign cs_style = false
-  if cfg.cs_align == 'center' or cfg.cs_cols_m != 1 or cfg.cs_stat_cols_m != 2
+  if cfg.cs_cols_m != 2 or cfg.cs_stat_cols_m != 2 or cfg.cs_show_captions == false
     assign cs_style = true
   endif
+
+  assign tiles = section.blocks | where: 'type', 'tile'
+  assign tile_count = tiles | size
+  assign row_split = tile_count | plus: 1 | divided_by: 2
 -%}
 {%- if cs_style -%}
   <style>
-    {%- if cfg.cs_align == 'center' -%}
-      {%- comment -%}
-        Only the two heading lines move. The body copy keeps its 46ch measure and
-        its left edge, which is what makes the column readable.
-      {%- endcomment -%}
-      {{ sel }} .craft__body > .eyebrow,
-      {{ sel }} .craft__body > .section-title { text-align: center; }
+    {%- if cfg.cs_show_captions == false -%}
+      {{ sel }} .craft-wall__tile figcaption { display: none; }
     {%- endif -%}
-    {%- if cfg.cs_cols_m != 1 -%}
-      @media (max-width: 600px) {
-        {{ sel }} .craft__gallery { grid-template-columns: repeat({{ cfg.cs_cols_m }}, minmax(0, 1fr)); }
-      }
-    {%- endif -%}
-    {%- if cfg.cs_stat_cols_m != 2 -%}
+    {%- if cfg.cs_cols_m != 2 or cfg.cs_stat_cols_m != 2 -%}
       @media (max-width: 900px) {
-        {{ sel }} .craft__stats { grid-template-columns: repeat({{ cfg.cs_stat_cols_m }}, minmax(0, 1fr)); }
-        {%- if cfg.cs_stat_cols_m == 1 -%}
-          {{ sel }} .craft__stats .stat { border-left: 0; }
-          {{ sel }} .craft__stats .stat + .stat { border-top: 1px solid var(--hairline); }
+        {%- if cfg.cs_cols_m != 2 -%}
+          {{ sel }} .craft-wall { grid-template-columns: repeat({{ cfg.cs_cols_m }}, minmax(0, 1fr)); }
+        {%- endif -%}
+        {%- if cfg.cs_stat_cols_m != 2 -%}
+          {{ sel }} .craft__stats { grid-template-columns: repeat({{ cfg.cs_stat_cols_m }}, minmax(0, 1fr)); }
+          {%- if cfg.cs_stat_cols_m == 1 -%}
+            {{ sel }} .craft__stats .stat { border-left: 0; }
+            {{ sel }} .craft__stats .stat + .stat { border-top: 1px solid var(--hairline); }
+          {%- endif -%}
         {%- endif -%}
       }
     {%- endif -%}
   </style>
 {%- endif -%}
+<!-- Our Craft, a heritage wall — converted from src/components/CraftStory.jsx -->
 <section class="section container" id="craft">
-  <div class="craft">
-    <div class="craft__body">
-      <p class="eyebrow" data-reveal>
-        {{ section.settings.eyebrow | escape }}
-      </p>
-      <h2 class="section-title" data-reveal>
-        {{ section.settings.title_l1 | escape }}
-        <br>
-        <em>{{ section.settings.title_l2 | escape }}</em>
-      </h2>
-      <div class="craft__copy" data-reveal>
-        {{ section.settings.copy }}
-      </div>
+  <div class="section-intro" data-reveal>
+    <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
+    <h2 class="section-title">{{ section.settings.title_l1 | escape }} <em>{{ section.settings.title_l2 | escape }}</em></h2>
+  </div>
 
-      {% if cfg.cs_show_link %}
-      <a class="arrow-link craft__link" href="{{ section.settings.link | default: '/pages/video' }}" data-reveal>
-        {{ section.settings.link_label | escape }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
-      </a>
-      {% endif %}
-    </div>
-
-    <div class="craft__gallery" data-reveal>
-      {%- assign shots = section.blocks | where: 'type', 'shot' -%}
-      {%- for block in shots %}
-      <figure class="craft__shot" {{ block.shopify_attributes }}>
-        <div class="craft__shot-media"{% if forloop.first %} data-parallax{% endif %}>
-          <img src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 900 }}{% else %}{{ block.settings.fallback | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
-        </div>
-        {% if cfg.cs_show_captions %}<figcaption>{{ block.settings.caption | escape }}</figcaption>{% endif %}
+  {%- comment -%}
+    Two hung rows: the first half of the photographs, then the rest inset.
+    One reveal for the whole wall, since per-tile reveals would leave GSAP
+    transforms behind the flex-grow hover.
+  {%- endcomment -%}
+  {%- if tile_count > 0 %}
+  <div class="craft-wall" data-reveal>
+    <div class="craft-wall__row">
+      {%- for block in tiles limit: row_split %}
+      <figure class="craft-wall__tile" {{ block.shopify_attributes }}>
+        <img src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 1000 }}{% else %}{{ block.settings.fallback | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
+        <figcaption>{{ block.settings.caption | escape }}</figcaption>
       </figure>
       {%- endfor %}
     </div>
-  </div>
+    {%- if tile_count > row_split %}
+    <div class="craft-wall__row craft-wall__row--offset">
+      {%- for block in tiles offset: row_split %}
+      <figure class="craft-wall__tile" {{ block.shopify_attributes }}>
+        <img src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 1000 }}{% else %}{{ block.settings.fallback | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
+        <figcaption>{{ block.settings.caption | escape }}</figcaption>
+      </figure>
+      {%- endfor %}
+    </div>
+    {%- endif -%}
+    {%- if cfg.cs_show_dots %}
 
-  {% if cfg.cs_show_stats %}
+    <span class="craft-wall__dot craft-wall__dot--a" aria-hidden="true"></span>
+    <span class="craft-wall__dot craft-wall__dot--b" aria-hidden="true"></span>
+    <span class="craft-wall__dot craft-wall__dot--c" aria-hidden="true"></span>
+    {%- endif %}
+  </div>
+  {%- endif %}
+
+  {%- if cfg.cs_show_link %}
+  <div class="craft-wall__more" data-reveal>
+    <a class="arrow-link" href="{{ section.settings.link | default: '/pages/video' }}">{{ section.settings.link_label | escape }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
+  </div>
+  {%- endif %}
+
+  {%- if cfg.cs_show_stats %}
   <div class="craft__stats" data-reveal-child>
     {%- assign stats = section.blocks | where: 'type', 'stat' -%}
     {%- for block in stats %}
@@ -87,7 +96,7 @@
     </div>
     {%- endfor %}
   </div>
-  {% endif %}
+  {%- endif %}
 </section>
 
 {% schema %}
@@ -103,20 +112,14 @@
     {
       "type": "text",
       "id": "title_l1",
-      "label": "Title line 1",
+      "label": "Title",
       "default": "Every stitch carries"
     },
     {
       "type": "text",
       "id": "title_l2",
-      "label": "Title line 2 (italic)",
+      "label": "Title, italic close",
       "default": "a signature"
-    },
-    {
-      "type": "richtext",
-      "id": "copy",
-      "label": "Story copy",
-      "default": "<p>Shrujan began in 1969 with Chanda Shroff, known as Kaki, who went to Kutch during a drought and found women whose embroidery was extraordinary and whose earnings were not. She turned that skill into a livelihood.</p><p>From her vision to the hands of thousands of women across Kutch, Shrujan has quietly safeguarded the region&rsquo;s living craft traditions for over five decades, preserving the knowledge and the dignity behind it.</p>"
     },
     {
       "type": "text",
@@ -134,32 +137,23 @@
       "content": "Layout"
     },
     {
-      "type": "select",
-      "id": "cs_align",
-      "label": "Heading alignment",
-      "default": "left",
-      "info": "Moves the eyebrow and title only. The story below keeps its left edge and its reading measure.",
-      "options": [
-        {
-          "value": "left",
-          "label": "Left"
-        },
-        {
-          "value": "center",
-          "label": "Centred"
-        }
-      ]
-    },
-    {
       "type": "checkbox",
       "id": "cs_show_link",
-      "label": "Show story link",
+      "label": "Show the craft link",
       "default": true
     },
     {
       "type": "checkbox",
       "id": "cs_show_captions",
       "label": "Show photograph captions",
+      "info": "On a pointer they rise as a frame opens; on touch screens they stay on.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "cs_show_dots",
+      "label": "Show the gerua dots",
+      "info": "The three dots hung in the gaps the second row leaves.",
       "default": true
     },
     {
@@ -167,7 +161,7 @@
       "id": "cs_show_stats",
       "label": "Show figures row",
       "default": true,
-      "info": "The bordered row of numbers under the story."
+      "info": "The bordered row of numbers under the wall."
     },
     {
       "type": "header",
@@ -176,12 +170,12 @@
     {
       "type": "range",
       "id": "cs_cols_m",
-      "label": "Gallery columns",
-      "info": "600px and under, where the theme stacks the two shots into one column.",
+      "label": "Wall columns",
+      "info": "900px and under, where the hung rows give way to a plain grid of frames.",
       "min": 1,
       "max": 3,
       "step": 1,
-      "default": 1
+      "default": 2
     },
     {
       "type": "range",
@@ -368,8 +362,8 @@
   ],
   "blocks": [
     {
-      "type": "shot",
-      "name": "Gallery shot",
+      "type": "tile",
+      "name": "Wall photograph",
       "settings": [
         {
           "type": "image_picker",
@@ -381,19 +375,19 @@
           "id": "fallback",
           "label": "Fallback asset file",
           "info": "Theme asset filename used until an image is picked.",
-          "default": "bottom-left.webp"
+          "default": "story-origin-1.webp"
         },
         {
           "type": "text",
           "id": "alt",
           "label": "Image alt text",
-          "default": "Master weaver working threads at his handloom"
+          "default": "Archive photograph from the founding years of Shrujan"
         },
         {
           "type": "text",
           "id": "caption",
           "label": "Caption",
-          "default": "At the loom, Bhujodi"
+          "default": "The first stitches, 1969"
         }
       ]
     },
@@ -421,19 +415,67 @@
       "name": "Home craft story",
       "blocks": [
         {
-          "type": "shot",
+          "type": "tile",
           "settings": {
-            "fallback": "bottom-left.webp",
-            "alt": "Master weaver working threads at his handloom",
-            "caption": "At the loom, Bhujodi"
+            "fallback": "story-origin-1.webp",
+            "alt": "Archive photograph from the founding years of Shrujan",
+            "caption": "The first stitches, 1969"
           }
         },
         {
-          "type": "shot",
+          "type": "tile",
           "settings": {
-            "fallback": "top-right.webp",
-            "alt": "Artisan hand embroidering mirror-work flowers with a fine needle",
-            "caption": "Suf, stitched from the reverse"
+            "fallback": "story-chanda.webp",
+            "alt": "Chanda Shroff, the founder of Shrujan",
+            "caption": "Chanda “Kaki” Shroff"
+          }
+        },
+        {
+          "type": "tile",
+          "settings": {
+            "fallback": "craft-hero.webp",
+            "alt": "Embroiderers of Kutch working together outside their village",
+            "caption": "The embroiderers of Kutch"
+          }
+        },
+        {
+          "type": "tile",
+          "settings": {
+            "fallback": "story-origin-2.webp",
+            "alt": "Archive photograph of early Shrujan embroidery work",
+            "caption": "From the archive"
+          }
+        },
+        {
+          "type": "tile",
+          "settings": {
+            "fallback": "story-dignity.webp",
+            "alt": "An artisan at work, photographed in her village",
+            "caption": "Dignity in work"
+          }
+        },
+        {
+          "type": "tile",
+          "settings": {
+            "fallback": "story-origin-3.webp",
+            "alt": "Archive photograph of a village workshop",
+            "caption": "Village workshops"
+          }
+        },
+        {
+          "type": "tile",
+          "settings": {
+            "fallback": "story-continuity.webp",
+            "alt": "A younger embroiderer learning the craft",
+            "caption": "Craft, carried forward"
+          }
+        },
+        {
+          "type": "tile",
+          "settings": {
+            "fallback": "story-origin-4.webp",
+            "alt": "Archive photograph of Shrujan artisans",
+            "caption": "Five decades on"
           }
         },
         {
@@ -466,6 +508,7 @@
         }
       ]
     }
-  ]
+  ],
+  "max_blocks": 16
 }
 {% endschema %}
