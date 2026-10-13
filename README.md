@@ -20,8 +20,10 @@ scripts, and the SPA router became real Shopify URLs.
   Customize, repeating items (cards, FAQs, testimonials…) are blocks.
   Interactive behavior lives in an inline `<script>` in the same section.
 - `templates/*.json` — OS 2.0 templates pre-populated with today's real
-  content as section blocks. `404.json` and `page.json` render the home
-  sections because the React app's catch-all route rendered the storefront.
+  content as section blocks. `page.json`, the template every page without a
+  designed one falls back to, renders the page's own title and content
+  (`sections/main-page.liquid`), so policies, size charts and the like show
+  what the merchant wrote.
 - `assets/` — all images/videos from `website/public` (three files renamed:
   `bottom left/bottom right/top right.webp` → hyphenated), the two stylesheets,
   `gsap.min.js`, `ScrollTrigger.min.js`, `lenis.min.js` (self-hosted, per

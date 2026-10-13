@@ -91,16 +91,22 @@
             "collection": "accessories"
           }
         },
+        "c12": {
+          "type": "collection",
+          "settings": {
+            "collection": "necklace"
+          }
+        },
         "c3": {
           "type": "collection",
           "settings": {
-            "collection": "crossbody-and-sling"
+            "collection": "cross-body-bags-and-sling-bags"
           }
         },
         "c4": {
           "type": "collection",
           "settings": {
-            "collection": "hand-bags"
+            "collection": "hand-bag"
           }
         },
         "c5": {
@@ -112,7 +118,7 @@
         "c6": {
           "type": "collection",
           "settings": {
-            "collection": "potlis-and-batwas"
+            "collection": "potlis-batwas"
           }
         },
         "c7": {
@@ -136,13 +142,13 @@
         "c10": {
           "type": "collection",
           "settings": {
-            "collection": "kurtas-and-tops"
+            "collection": "tops-1"
           }
         },
         "c11": {
           "type": "collection",
           "settings": {
-            "collection": "pants-and-palazzos"
+            "collection": "pant"
           }
         }
       },
@@ -157,6 +163,7 @@
         "b8",
         "c1",
         "c2",
+        "c12",
         "c3",
         "c4",
         "c5",

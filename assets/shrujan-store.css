@@ -375,6 +375,19 @@
 .store-article p { margin-top: 1.1em; }
 .store-article img { max-width: 100%; height: auto; border-radius: var(--radius); }
 
+/* What a merchant's own page or article is made of beyond paragraphs: lists,
+   links, and the tables the size charts are. A table scrolls sideways inside
+   the column on a phone rather than pushing the page wider than the screen. */
+.store-article :is(ul, ol) { margin-top: 1.1em; padding-left: 1.3em; list-style: disc; }
+.store-article ol { list-style: decimal; }
+.store-article li + li { margin-top: 0.35em; }
+.store-article a { color: var(--gerua); text-decoration: underline; text-underline-offset: 3px; }
+.store-article table { display: block; max-width: 100%; margin-top: 1.4em; overflow-x: auto; border-collapse: collapse; font-size: 0.94em; }
+.store-article :is(th, td) { padding: 10px 14px; border: 1px solid var(--hairline); text-align: left; vertical-align: top; }
+.store-article th { color: var(--ink); font-weight: 500; }
+.store-article :is(iframe, video) { max-width: 100%; }
+.store-article--page > :first-child { margin-top: 0; }
+
 /* ---- forms (account, password, search) ---------------------- */
 .store-form {
   display: grid;

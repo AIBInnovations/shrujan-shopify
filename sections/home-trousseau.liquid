@@ -5,12 +5,16 @@
   The grid is five cards, as designed. Each occasion tab is its own five-card
   slice, all of them rendered server-side and all but the open one carried with
   the `hidden` attribute, so pressing a tab needs no reload and no catalogue in
-  JavaScript. The occasion itself is the product's `shrujan.occasion` metafield,
-  editable per product in admin; craft, badge and swatches come from the same
-  namespace, and price, compare-at price and availability from the product.
+  JavaScript. Price, compare-at price and availability are the product's.
 
-  Source: the collection picked below, or every product in the store when none
-  is picked. Layout controls stay in the scoped <style>; the card's own parts
+  A tab is filled one of two ways. Give it a collection and it shows that
+  collection, which is how a store whose products carry no occasion still gets
+  five full tabs. Leave the collection empty and the tab keeps its occasion:
+  the products whose `shrujan.occasion` metafield names it. Craft, badge and
+  swatches come from the same namespace where they exist.
+
+  Source for the first tab, and for any occasion tab: the collection picked
+  below, or every product in the store when none is picked. Layout controls stay in the scoped <style>; the card's own parts
   are now Liquid conditions, because Liquid — not a script — builds the cards.
 {%- endcomment -%}
 {%- liquid
@@ -99,7 +103,7 @@
   </div>
 
   {% if cfg.tr_show_filters %}
-  <div class="curated__filters" data-reveal role="tablist" aria-label="Filter by occasion">
+  <div class="curated__filters" data-reveal role="tablist" aria-label="Filter the edit">
     <button type="button" role="tab" aria-selected="true" class="curated__filter is-active">{{ section.settings.tab_1 }}</button>
     <button type="button" role="tab" aria-selected="false" class="curated__filter">{{ section.settings.tab_2 }}</button>
     <button type="button" role="tab" aria-selected="false" class="curated__filter">{{ section.settings.tab_3 }}</button>
@@ -110,11 +114,33 @@
 
   <div class="curated__grid" data-reveal-child>
     {%- for group in groups %}
+    {%- liquid
+      assign tab_col = nil
+      case forloop.index
+        when 2
+          assign tab_col = cfg.tab_2_collection
+        when 3
+          assign tab_col = cfg.tab_3_collection
+        when 4
+          assign tab_col = cfg.tab_4_collection
+        when 5
+          assign tab_col = cfg.tab_5_collection
+      endcase
+      assign tab_src = src
+      assign tab_takes_all = false
+      if group == 'All'
+        assign tab_takes_all = true
+      endif
+      if tab_col != blank
+        assign tab_src = tab_col.products
+        assign tab_takes_all = true
+      endif
+    -%}
     {%- assign taken = 0 %}
-    {%- for product in src %}
+    {%- for product in tab_src %}
     {%- if taken >= 5 %}{% break %}{% endif %}
     {%- assign occasion = product.metafields.shrujan.occasion.value %}
-    {%- if group == 'All' or occasion == group %}
+    {%- if tab_takes_all or occasion == group %}
     {%- liquid
       assign taken = taken | plus: 1
       assign card_img = product.featured_image
@@ -283,10 +309,22 @@
       "default": "Bridal"
     },
     {
+      "type": "collection",
+      "id": "tab_2_collection",
+      "label": "Tab 2 collection",
+      "info": "Shows this collection under the tab. Leave empty to show the products whose Occasion metafield matches the tab instead."
+    },
+    {
       "type": "text",
       "id": "tab_3",
       "label": "Tab 3 label",
       "default": "Festive"
+    },
+    {
+      "type": "collection",
+      "id": "tab_3_collection",
+      "label": "Tab 3 collection",
+      "info": "Shows this collection under the tab. Leave empty to show the products whose Occasion metafield matches the tab instead."
     },
     {
       "type": "text",
@@ -295,10 +333,22 @@
       "default": "Everyday"
     },
     {
+      "type": "collection",
+      "id": "tab_4_collection",
+      "label": "Tab 4 collection",
+      "info": "Shows this collection under the tab. Leave empty to show the products whose Occasion metafield matches the tab instead."
+    },
+    {
       "type": "text",
       "id": "tab_5",
       "label": "Tab 5 label",
       "default": "Gifting"
+    },
+    {
+      "type": "collection",
+      "id": "tab_5_collection",
+      "label": "Tab 5 collection",
+      "info": "Shows this collection under the tab. Leave empty to show the products whose Occasion metafield matches the tab instead."
     },
     {
       "type": "header",

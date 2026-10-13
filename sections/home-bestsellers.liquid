@@ -92,23 +92,67 @@
   </div>
 
   <div class="best__rail" data-reveal-child>
+    {%- assign bs_rank = 0 -%}
     {%- for block in section.blocks %}
-    <a class="best-card" href="{{ block.settings.link | default: '/products/kanchli-copy' }}"{{ block.shopify_attributes }}>
-      <span class="best-card__rank"><span class="best-card__num">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span><span class="best-card__thread" aria-hidden="true"></span></span>
+    {%- liquid
+      comment
+        A card that links to a product is drawn from that product: the name,
+        both prices, the photograph and whether it can be bought are the
+        store's own, so a card cannot drift from what is on sale. The typed
+        values stay as the fallback for a card that links somewhere else. A
+        card whose product has left the store is not drawn at all, which is
+        why the rank is counted here rather than read off the loop.
+      endcomment
+      assign bs_link = block.settings.link | default: '/products/kanchli-copy'
+      assign bs_product = nil
+      assign bs_is_product = false
+      if bs_link contains '/products/'
+        assign bs_is_product = true
+        assign bs_handle = bs_link | split: '/products/' | last | split: '?' | first | split: '#' | first
+        assign bs_product = all_products[bs_handle]
+      endif
+      if bs_is_product and bs_product.id == blank
+        continue
+      endif
+      assign bs_rank = bs_rank | plus: 1
+
+      assign bs_name = block.settings.name
+      assign bs_price = block.settings.price
+      assign bs_was = block.settings.was_price
+      assign bs_note = block.settings.note
+      assign bs_alt = block.settings.alt
+      if bs_product.id != blank
+        assign bs_link = bs_product.url
+        assign bs_name = bs_product.title
+        assign bs_price = bs_product.price | money
+        assign bs_was = ''
+        if bs_product.compare_at_price > bs_product.price
+          assign bs_was = bs_product.compare_at_price | money
+        endif
+        if bs_product.available == false
+          assign bs_note = 'Sold out'
+        endif
+        if bs_product.featured_image.alt != blank
+          assign bs_alt = bs_product.featured_image.alt
+        endif
+      endif
+    -%}
+    <a class="best-card" href="{{ bs_link }}"{{ block.shopify_attributes }}>
+      <span class="best-card__rank"><span class="best-card__num">{% if bs_rank < 10 %}0{% endif %}{{ bs_rank }}</span><span class="best-card__thread" aria-hidden="true"></span></span>
       <div class="best-card__media">
-        <img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1200 }}{% else %}{{ block.settings.img_asset | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
+        <img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1200 }}{% elsif bs_product.featured_image %}{{ bs_product.featured_image | image_url: width: 1200 }}{% else %}{{ block.settings.img_asset | asset_url }}{% endif %}" alt="{{ bs_alt | escape }}" loading="lazy">
         {% if cfg.bs_show_wish %}
-        <button class="best-card__wish" type="button" aria-label="Save {{ block.settings.name | escape }} to wishlist">
+        <button class="best-card__wish" type="button" aria-label="Save {{ bs_name | escape }} to wishlist">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19.8S4.5 15.3 4.5 9.9c0-2.6 2-4.4 4.2-4.4 1.5 0 2.7.8 3.3 2 .6-1.2 1.8-2 3.3-2 2.2 0 4.2 1.8 4.2 4.4 0 5.4-7.5 9.9-7.5 9.9Z"></path></svg>
         </button>
         {% endif %}
-        {% if cfg.bs_show_badge and block.settings.note != blank %}<span class="best-card__note">{{ block.settings.note }}</span>{% endif %}
+        {% if cfg.bs_show_badge and bs_note != blank %}<span class="best-card__note">{{ bs_note }}</span>{% endif %}
       </div>
       <div class="best-card__info">
-        <p class="best-card__name">{{ block.settings.name }}</p>
+        <p class="best-card__name">{{ bs_name }}</p>
         <p class="best-card__craft">{{ block.settings.craft }}</p>
         {% if cfg.bs_show_price %}
-        <p class="best-card__price">{{ block.settings.price }}{% if cfg.bs_show_was and block.settings.was_price != blank %}<span>{{ block.settings.was_price }}</span>{% endif %}</p>
+        <p class="best-card__price">{{ bs_price }}{% if cfg.bs_show_was and bs_was != blank %}<span>{{ bs_was }}</span>{% endif %}</p>
         {% endif %}
         {% if cfg.bs_show_sold %}
         <span class="best-card__meter" style="--fill: {{ block.settings.sold | plus: 0 | times: 100.0 | divided_by: max_sold | round }}%" aria-hidden="true"></span>

@@ -281,7 +281,7 @@
             "alt": "Model in a maroon embroidered kurta with palazzo and dupatta",
             "name": "Kurtas & Tops",
             "copy": "Everyday silhouettes in naturally dyed handloom cloth",
-            "link": "/pages/shop-shrujan?c=kurtas-and-tops"
+            "link": "/pages/shop-shrujan?c=tops-1"
           }
         },
         "b3": {
@@ -301,7 +301,7 @@
             "alt": "Model in a handwoven maroon drape with a gold border",
             "name": "Pants & Palazzos",
             "copy": "Wide, soft legs in cotton and khadi",
-            "link": "/pages/shop-shrujan?c=pants-and-palazzos"
+            "link": "/pages/shop-shrujan?c=pant"
           }
         },
         "b5": {
@@ -453,7 +453,7 @@
             "alt": "Crossbody Bag, hand-embroidered in Kutch",
             "name": "Crossbody & Sling",
             "note": "Small bags for a long day, worn across the body",
-            "link": "/pages/shop-shrujan?c=crossbody-and-sling"
+            "link": "/pages/shop-shrujan?c=cross-body-bags-and-sling-bags"
           }
         },
         "b4": {
@@ -463,7 +463,7 @@
             "alt": "Hand Bag, hand-embroidered in Kutch",
             "name": "Hand Bags",
             "note": "Structured bags, embroidered panel by panel",
-            "link": "/pages/shop-shrujan?c=hand-bags"
+            "link": "/pages/shop-shrujan?c=hand-bag"
           }
         },
         "b5": {
@@ -483,7 +483,7 @@
             "alt": "Potli Bag, hand-embroidered in Kutch",
             "name": "Potlis & Batwas",
             "note": "Drawstring potlis in silk, for the festive months",
-            "link": "/pages/shop-shrujan?c=potlis-and-batwas"
+            "link": "/pages/shop-shrujan?c=potlis-batwas"
           }
         },
         "b7": {
@@ -500,7 +500,7 @@
           "type": "strip_link",
           "settings": {
             "label": "Potlis & Batwas",
-            "link": "/pages/shop-shrujan?c=potlis-and-batwas"
+            "link": "/pages/shop-shrujan?c=potlis-batwas"
           }
         },
         "b9": {
@@ -514,14 +514,14 @@
           "type": "strip_link",
           "settings": {
             "label": "Crossbody & Sling",
-            "link": "/pages/shop-shrujan?c=crossbody-and-sling"
+            "link": "/pages/shop-shrujan?c=cross-body-bags-and-sling-bags"
           }
         },
         "b11": {
           "type": "strip_link",
           "settings": {
             "label": "Hand Bags",
-            "link": "/pages/shop-shrujan?c=hand-bags"
+            "link": "/pages/shop-shrujan?c=hand-bag"
           }
         },
         "b12": {
@@ -660,6 +660,18 @@
     },
     "home-trousseau": {
       "type": "home-trousseau",
+      "settings": {
+        "tr_collection": "new-arrival",
+        "tab_1": "New arrivals",
+        "tab_2": "Clothing",
+        "tab_2_collection": "clothing",
+        "tab_3": "Bags",
+        "tab_3_collection": "bags",
+        "tab_4": "Home decor",
+        "tab_4_collection": "home-decor",
+        "tab_5": "Accessories",
+        "tab_5_collection": "accessories"
+      },
       "blocks": {
         "b1": {
           "type": "promise",

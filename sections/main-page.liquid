@@ -1,0 +1,222 @@
+{%- render 'section-design', section: section -%}
+{%- comment -%}
+  The default page: the page's own title and what the merchant wrote in it, on
+  the same measure as an article.
+
+  Every page that has not been given one of the designed templates (Shop, The
+  Shrujan Story, Craft Traditions and the rest) lands here: policies, size
+  charts, contact, FAQ. The template used to repeat the home page, which was
+  right for the prototype's catch-all route and wrong for a store with real
+  pages in it.
+{%- endcomment -%}
+<article>
+  {%- if section.settings.show_title %}
+  <header class="store-head container" data-reveal>
+    {%- if section.settings.eyebrow != blank %}
+    <p class="store-head__eyebrow">{{ section.settings.eyebrow }}</p>
+    {%- endif %}
+    <h1 class="store-head__title">{{ page.title }}</h1>
+  </header>
+  {%- endif %}
+
+  <div class="container">
+    <div class="store-article store-article--page" data-reveal>
+      {{ page.content }}
+    </div>
+  </div>
+</article>
+{% schema %}
+{
+  "name": "Page",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Page"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Show the page title",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "info": "A short line above the title. Empty hides it."
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "select",
+      "id": "sec_width",
+      "label": "Section width",
+      "info": "Theme default keeps the shared page rail.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow"
+        },
+        {
+          "value": "wide",
+          "label": "Wide"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top",
+      "label": "Extra top spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom",
+      "label": "Extra bottom spacing",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_top_m",
+      "label": "Extra top spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "sec_space_bottom_m",
+      "label": "Extra bottom spacing (mobile)",
+      "min": -120,
+      "max": 240,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "sec_bg",
+      "label": "Background",
+      "info": "Leave empty to keep the section’s own background."
+    },
+    {
+      "type": "color",
+      "id": "sec_text",
+      "label": "Text colour"
+    },
+    {
+      "type": "color",
+      "id": "sec_accent",
+      "label": "Accent colour"
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_animate",
+      "label": "Animate on scroll",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_mobile",
+      "label": "Hide on mobile",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "sec_hide_desktop",
+      "label": "Hide on desktop",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css",
+      "label": "Custom CSS",
+      "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "header",
+      "content": "Design — mobile"
+    },
+    {
+      "type": "select",
+      "id": "sec_width_m",
+      "label": "Section width on mobile",
+      "info": "Only below 768px. Edge-to-edge removes the side gutter entirely.",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Theme default"
+        },
+        {
+          "value": "narrow",
+          "label": "Narrow (wider gutters)"
+        },
+        {
+          "value": "full",
+          "label": "Full width"
+        },
+        {
+          "value": "edge",
+          "label": "Edge to edge"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sec_align_m",
+      "label": "Text alignment on mobile",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Leave as designed"
+        },
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Centre"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "sec_custom_css_m",
+      "label": "Custom CSS (mobile only)",
+      "info": "Wrapped in a max-width: 767px media query for this section."
+    }
+  ]
+}
+{% endschema %}
