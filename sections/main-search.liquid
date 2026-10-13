@@ -183,8 +183,8 @@
               <p class="piece__craft">{{ item.vendor }}</p>
               {%- endif %}
               <p class="piece__price">
-                {%- if item.price_varies %}{{ cfg.price_from }} {% endif %}{{ item.price | money }}
-                {%- if cfg.card_was and item.compare_at_price > item.price %}<span>{{ item.compare_at_price | money }}</span>{% endif %}
+                {%- if item.price_varies %}{{ cfg.price_from }} {% endif %}{{ item.price | money | strip_html }}
+                {%- if cfg.card_was and item.compare_at_price > item.price %}<span>{{ item.compare_at_price | money | strip_html }}</span>{% endif %}
               </p>
               {%- if cfg.card_swatches %}
                 {%- for opt in item.options_with_values %}

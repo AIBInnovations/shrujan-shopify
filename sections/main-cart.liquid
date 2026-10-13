@@ -88,11 +88,11 @@
             {%- endif %}
 
             {%- if cfg.show_unit_price %}
-            <p class="cart-line__price">{{ item.final_price | money }} {{ cfg.unit_suffix }}{% if item.original_price != item.final_price %}<s>{{ item.original_price | money }}</s>{% endif %}</p>
+            <p class="cart-line__price">{{ item.final_price | money | strip_html }} {{ cfg.unit_suffix }}{% if item.original_price != item.final_price %}<s>{{ item.original_price | money | strip_html }}</s>{% endif %}</p>
             {%- endif %}
 
             {%- for alloc in item.line_level_discount_allocations %}
-            <p class="cart-line__discount">{{ alloc.discount_application.title }} · −{{ alloc.amount | money }}</p>
+            <p class="cart-line__discount">{{ alloc.discount_application.title }} · −{{ alloc.amount | money | strip_html }}</p>
             {%- endfor %}
 
             <div class="cart-line__qty">
@@ -112,7 +112,7 @@
             </div>
           </div>
 
-          <p class="cart-line__total">{{ item.final_line_price | money }}{% if item.original_line_price != item.final_line_price %}<s>{{ item.original_line_price | money }}</s>{% endif %}</p>
+          <p class="cart-line__total">{{ item.final_line_price | money | strip_html }}{% if item.original_line_price != item.final_line_price %}<s>{{ item.original_line_price | money | strip_html }}</s>{% endif %}</p>
         </div>
         {%- endfor %}
       </div>
@@ -135,19 +135,19 @@
 
       <div class="cart-aside__row">
         <span>{{ cfg.subtotal_label }}</span>
-        <span>{{ cart.items_subtotal_price | money }}</span>
+        <span>{{ cart.items_subtotal_price | money | strip_html }}</span>
       </div>
 
       {%- for discount in cart.cart_level_discount_applications %}
       <div class="cart-aside__row cart-aside__row--discount">
         <span>{{ discount.title }}</span>
-        <span>−{{ discount.total_allocated_amount | money }}</span>
+        <span>−{{ discount.total_allocated_amount | money | strip_html }}</span>
       </div>
       {%- endfor %}
 
       <div class="cart-aside__total">
         <span>{{ cfg.total_label }}</span>
-        <span>{{ cart.total_price | money }}</span>
+        <span>{{ cart.total_price | money | strip_html }}</span>
       </div>
 
       {%- if cfg.tax_note != blank %}

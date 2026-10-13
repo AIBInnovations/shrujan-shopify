@@ -9,12 +9,1541 @@
  */
 {
   "sections": {
+    "shop": {
+      "type": "page-shop",
+      "blocks": {
+        "b1": {
+          "type": "assure",
+          "settings": {
+            "icon": "needle",
+            "title": "Hand-embroidered",
+            "copy": "No machine touches the cloth"
+          }
+        },
+        "b2": {
+          "type": "assure",
+          "settings": {
+            "icon": "leaf",
+            "title": "Naturally dyed",
+            "copy": "Madder, indigo, pomegranate"
+          }
+        },
+        "b3": {
+          "type": "assure",
+          "settings": {
+            "icon": "tape",
+            "title": "Made to measure",
+            "copy": "Free alterations on request"
+          }
+        },
+        "b4": {
+          "type": "assure",
+          "settings": {
+            "icon": "truck",
+            "title": "Ships in 48 hours",
+            "copy": "From the Bhuj atelier"
+          }
+        },
+        "b5": {
+          "type": "assure",
+          "settings": {
+            "icon": "heart",
+            "title": "Signed by her",
+            "copy": "Every piece carries her name"
+          }
+        },
+        "b6": {
+          "type": "why",
+          "settings": {
+            "img_asset": "bottom-left.webp",
+            "alt": "Master weaver working threads at his handloom",
+            "title": "She is paid per piece, on time",
+            "copy": "Directly, and at a rate she agreed to. That arrangement was rare in 1969 and it still is."
+          }
+        },
+        "b7": {
+          "type": "why",
+          "settings": {
+            "img_asset": "top-right.webp",
+            "alt": "Close crop of mirror-work embroidery in crimson and gold threads",
+            "title": "Nothing is rushed",
+            "copy": "A kanchli takes sixty hours. A bridal odhani takes months. We quote the real time, not a delivery promise."
+          }
+        },
+        "b8": {
+          "type": "why",
+          "settings": {
+            "img_asset": "frame-r3t6.webp",
+            "alt": "Embroidered cloth stretched on a wooden frame",
+            "title": "It is repaired, not replaced",
+            "copy": "Send it back whenever it needs work. Alterations and repairs are free for as long as you own it."
+          }
+        },
+        "c1": {
+          "type": "collection",
+          "settings": {
+            "collection": "kanchli"
+          }
+        },
+        "c2": {
+          "type": "collection",
+          "settings": {
+            "collection": "accessories"
+          }
+        },
+        "c12": {
+          "type": "collection",
+          "settings": {
+            "collection": "necklace"
+          }
+        },
+        "c3": {
+          "type": "collection",
+          "settings": {
+            "collection": "cross-body-bags-and-sling-bags"
+          }
+        },
+        "c4": {
+          "type": "collection",
+          "settings": {
+            "collection": "hand-bag"
+          }
+        },
+        "c5": {
+          "type": "collection",
+          "settings": {
+            "collection": "home-decor"
+          }
+        },
+        "c6": {
+          "type": "collection",
+          "settings": {
+            "collection": "potlis-batwas"
+          }
+        },
+        "c7": {
+          "type": "collection",
+          "settings": {
+            "collection": "pouches"
+          }
+        },
+        "c8": {
+          "type": "collection",
+          "settings": {
+            "collection": "tote-bags"
+          }
+        },
+        "c9": {
+          "type": "collection",
+          "settings": {
+            "collection": "dresses"
+          }
+        },
+        "c10": {
+          "type": "collection",
+          "settings": {
+            "collection": "tops-1"
+          }
+        },
+        "c11": {
+          "type": "collection",
+          "settings": {
+            "collection": "pant"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "c1",
+        "c2",
+        "c12",
+        "c3",
+        "c4",
+        "c5",
+        "c6",
+        "c7",
+        "c8",
+        "c9",
+        "c10",
+        "c11"
+      ],
+      "settings": {
+        "only_handle": "shop-shrujan"
+      }
+    },
+    "story": {
+      "type": "page-story",
+      "blocks": {
+        "b1": {
+          "type": "chapter",
+          "settings": {
+            "label": "Origins",
+            "anchor": "origins"
+          }
+        },
+        "b2": {
+          "type": "chapter",
+          "settings": {
+            "label": "Philosophy & Values",
+            "anchor": "values"
+          }
+        },
+        "b3": {
+          "type": "chapter",
+          "settings": {
+            "label": "The People of Shrujan",
+            "anchor": "people"
+          }
+        },
+        "b4": {
+          "type": "chapter",
+          "settings": {
+            "label": "Photo Journal",
+            "anchor": "journal"
+          }
+        },
+        "b5": {
+          "type": "chapter",
+          "settings": {
+            "label": "In the Media",
+            "anchor": "press"
+          }
+        },
+        "b6": {
+          "type": "origin_par",
+          "settings": {
+            "text": "Shrujan’s journey began in 1969 when Kutch was ravaged by drought. Mumbai-based Chanda Shroff volunteered for drought-relief work in the village of Dhaneti. She observed that the women dressed in exquisitely embroidered traditional clothing were reluctant to accept charity."
+          }
+        },
+        "b7": {
+          "type": "origin_par",
+          "settings": {
+            "text": "It was her genius that recognized that the very skill that the craftswomen possessed could empower them; that, for the first time, embroidery could become an income-generating, dignity-providing resource."
+          }
+        },
+        "b8": {
+          "type": "origin_par",
+          "settings": {
+            "text": "Shrujan’s craftswomen work from home. Our production team reaches fabrics and threads to them in their villages. The women do not have to pay for the materials. Shrujan pays them their fair dues at their doorstep, as soon as they have completed the embroidery."
+          }
+        },
+        "b9": {
+          "type": "origin_shot",
+          "settings": {
+            "asset": "story-origin-2.webp",
+            "alt": "Craftswomen of Kutch at work on embroidery"
+          }
+        },
+        "b10": {
+          "type": "origin_shot",
+          "settings": {
+            "asset": "story-origin-1.webp",
+            "alt": "Embroidery in progress on handloom cloth"
+          }
+        },
+        "b11": {
+          "type": "origin_shot",
+          "settings": {
+            "asset": "story-origin-3.webp",
+            "alt": "Shrujan craftswomen gathered in a village"
+          }
+        },
+        "b12": {
+          "type": "stat",
+          "settings": {
+            "value": "1969",
+            "label": "The year it began"
+          }
+        },
+        "b13": {
+          "type": "stat",
+          "settings": {
+            "value": "2,000+",
+            "label": "Craftswomen today"
+          }
+        },
+        "b14": {
+          "type": "stat",
+          "settings": {
+            "value": "66",
+            "label": "Remote villages"
+          }
+        },
+        "b15": {
+          "type": "stat",
+          "settings": {
+            "value": "50+",
+            "label": "Years of livelihood"
+          }
+        },
+        "b16": {
+          "type": "value",
+          "settings": {
+            "asset": "story-dignity.webp",
+            "alt": "Artisans working together at Shrujan",
+            "title": "Dignity and Respect",
+            "copy": "At Shrujan, dignity is central to how we work. The artisans we collaborate with and the team that supports the work are valued for their skill, commitment and integrity. We believe in fairness, mutual respect and the importance of creating an environment where people can grow through learning and experience. Our work is built on long-term relationships and a shared love for craft."
+          }
+        },
+        "b17": {
+          "type": "value",
+          "settings": {
+            "asset": "story-continuity.webp",
+            "alt": "Hands passing embroidery knowledge between generations",
+            "title": "Continuity of Craft",
+            "copy": "Shrujan works to ensure that the craft traditions of Kutch remain alive, relevant and respected. This is not preservation as nostalgia, but continuity as a living process. Knowledge passes through generations, adapts thoughtfully and finds a place in contemporary life without losing its roots."
+          }
+        },
+        "b18": {
+          "type": "value",
+          "settings": {
+            "asset": "story-conscious.webp",
+            "alt": "Naturally dyed yarn and handwoven cloth",
+            "title": "Conscious Practice",
+            "copy": "At Shrujan, consciousness is expressed through everyday decisions. From the materials we use to the systems we build, care and responsibility guide our choices. We work with natural fibres, minimise waste and pay attention to detail in how we design, produce and present our work. Thoughtfulness, not speed, shapes how we work."
+          }
+        },
+        "b19": {
+          "type": "person",
+          "settings": {
+            "asset": "story-chanda.webp",
+            "name": "Chanda Shroff",
+            "role": "Founder",
+            "copy": "She is the first Indian Laureate to be honoured with the prestigious Rolex Award for Enterprise."
+          }
+        },
+        "b20": {
+          "type": "person",
+          "settings": {
+            "asset": "story-dipesh.webp",
+            "name": "Dipesh Shroff",
+            "role": "Chairman",
+            "copy": "As Chairman, Dipesh provides steady guidance and oversight to the organisation. He supports Shrujan’s long-term direction while upholding the principles on which it was founded."
+          }
+        },
+        "b21": {
+          "type": "person",
+          "settings": {
+            "asset": "story-ami.webp",
+            "name": "Ami Shroff",
+            "role": "Trustee",
+            "copy": "Ami Shroff carries forward Shrujan’s vision with a deep sense of responsibility toward both craft and community."
+          }
+        },
+        "b22": {
+          "type": "person",
+          "settings": {
+            "asset": "story-rajiv.webp",
+            "name": "Rajiv Bhatt",
+            "role": "Chief Executive Officer",
+            "copy": "Rajiv serves as Chief Executive Officer of Shrujan, where he guides the organisation’s strategy and day-to-day functioning."
+          }
+        },
+        "b23": {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-1.webp",
+            "caption": "An early village visit, cloth and bundles laid out under the trees",
+            "span": "wide"
+          }
+        },
+        "b24": {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-4.webp",
+            "caption": "Finished embroidery reviewed together in the Shrujan workroom",
+            "span": "wide"
+          }
+        },
+        "b25": {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-3.webp",
+            "caption": "A craftswoman bent over her embroidery frame",
+            "span": "tall"
+          }
+        },
+        "b26": {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-5.webp",
+            "caption": "A gathering of craftswomen at the Shrujan campus",
+            "span": "wide"
+          }
+        },
+        "b27": {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-7.webp",
+            "caption": "Craftswomen seated in the exhibition hall, textiles hung on the walls",
+            "span": "wide"
+          }
+        },
+        "b28": {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-6.webp",
+            "caption": "A senior craftswoman photographed with her work",
+            "span": "tall"
+          }
+        },
+        "b29": {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-8.webp",
+            "caption": "Embroidered odhanis beside a mirrored mud-work wall",
+            "span": "wide"
+          }
+        },
+        "b30": {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-9.webp",
+            "caption": "Two craftswomen embroidering a length of yellow cloth",
+            "span": "wide"
+          }
+        },
+        "b31": {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-2.webp",
+            "caption": "Craftswomen embroidering together in the courtyard of a village home",
+            "span": "wide"
+          }
+        },
+        "b32": {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-10.webp",
+            "caption": "A craftswoman beside a finished embroidered panel",
+            "span": "wide"
+          }
+        },
+        "b33": {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-11.webp",
+            "caption": "A craftswoman in traditional jewellery with a completed textile",
+            "span": "tall"
+          }
+        },
+        "b34": {
+          "type": "jshot",
+          "settings": {
+            "asset": "journal-12.webp",
+            "caption": "Traditional dress against the carved wall of a Kutch home",
+            "span": "tall"
+          }
+        },
+        "b35": {
+          "type": "press",
+          "settings": {
+            "section_label": "પાંજોકચ્છ · Panjo Kutch",
+            "pub": "Abhiyaan",
+            "head": "‘મશીનો’નું કચ્છી ભરતકામ પર આક્રમણ",
+            "head_lang": "gu",
+            "trans": "‘Machines’ encroach on Kutchi embroidery",
+            "byline": "By સુચિતા બોધાણી કનર · Suchita Bodhani Kanar",
+            "note": "A two-page report in the Gujarati weekly on machine embroidery spreading through Kutch, and what it means for the hand-embroidery traditions the craftswomen still work in.",
+            "facts": "17 February 2018\nIssue No. 1662\n2 pages",
+            "sheets": "press-abhiyaan-1.webp, press-abhiyaan-2.webp"
+          }
+        },
+        "b36": {
+          "type": "press",
+          "settings": {
+            "section_label": "Lifestyle · Fashion",
+            "pub": "The Indian Express",
+            "head": "Wonder weaves: How these Kutchi women wove themselves a successful life and career",
+            "head_lang": "",
+            "trans": "",
+            "byline": "",
+            "note": "On the embroidery traditions of Kutch and the craftswomen who turned them into a livelihood and a career.",
+            "facts": "4 July 2018\n2 pages",
+            "sheets": "press-ie-1.webp, press-ie-2.webp"
+          }
+        },
+        "b37": {
+          "type": "press",
+          "settings": {
+            "section_label": "Brand Profile",
+            "pub": "Apparel",
+            "head": "Inspiring Creativity",
+            "head_lang": "",
+            "trans": "",
+            "byline": "By Brinda Gill",
+            "note": "A four-page profile of Shrujan as a pioneering not-for-profit nurturing traditional Kutchi hand embroidery for the urban market, five decades on from its founding.",
+            "facts": "September 2018\nPages 62–65\n4 pages",
+            "sheets": "press-brinda-1.webp, press-brinda-2.webp, press-brinda-3.webp, press-brinda-4.webp"
+          }
+        },
+        "b38": {
+          "type": "chapter",
+          "settings": {
+            "label": "Our Founder",
+            "anchor": "founder"
+          }
+        },
+        "b39": {
+          "type": "chapter",
+          "settings": {
+            "label": "Our Journey",
+            "anchor": "journey"
+          }
+        },
+        "b40": {
+          "type": "chapter",
+          "settings": {
+            "label": "Awards & Honours",
+            "anchor": "honours"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b38",
+        "b39",
+        "b2",
+        "b3",
+        "b4",
+        "b40",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "b9",
+        "b10",
+        "b11",
+        "b12",
+        "b13",
+        "b14",
+        "b15",
+        "b16",
+        "b17",
+        "b18",
+        "b19",
+        "b20",
+        "b21",
+        "b22",
+        "b23",
+        "b24",
+        "b25",
+        "b26",
+        "b27",
+        "b28",
+        "b29",
+        "b30",
+        "b31",
+        "b32",
+        "b33",
+        "b34",
+        "b35",
+        "b36",
+        "b37"
+      ],
+      "settings": {
+        "only_handle": "the-shrujan-story"
+      }
+    },
+    "craft": {
+      "type": "page-craft-traditions",
+      "blocks": {
+        "embroidery": {
+          "type": "craft",
+          "settings": {
+            "name": "Embroidery",
+            "short": "Embroidery",
+            "tag": "Needle &amp; thread",
+            "video": "craft-embroidery.mp4",
+            "poster": "craft-embroidery-poster.webp",
+            "f1_label": "Practice",
+            "f1_value": "Hand embroidery",
+            "f2_label": "Made in",
+            "f2_value": "Villages across Kutch",
+            "f3_label": "Turning point",
+            "f3_value": "The late 1960s",
+            "body": "Kutch has about forty-six thousand square kilometres of land. The astonishing diversity of crafts found in this relatively small region is perhaps unmatched anywhere in the world. Kutch has a vibrant crafts tradition that has been enriched over the centuries by the communities that have migrated to this region.\nHand embroidery is among the most famous crafts of Kutch. What makes this craft special is its sheer abundance and variety — which is why we speak of the 'embroideries' of Kutch, in the plural. Traditionally embroidery was a personal craft. Women used to decorate day-to-day as well as ceremonial clothing, household items and adornments for animals. Each community had its own distinct embroidery style that was passed on from mother to daughter.",
+            "more": "It was in the late 1960s that a fundamental shift took place in the role of embroidery. In addition to being practised as a personal craft, it also became, for the first time, a means of livelihood for women. Shrujan has been instrumental in this transformation. It has created a market for embroidered products and has provided the embroiderers with a platform to showcase their work and earn a sustainable income."
+          }
+        },
+        "ajrakh": {
+          "type": "craft",
+          "settings": {
+            "name": "Ajrakh block print",
+            "short": "Ajrakh",
+            "tag": "Resist printing",
+            "video": "craft-ajrakh.mp4",
+            "poster": "craft-ajrakh-poster.webp",
+            "f1_label": "Technique",
+            "f1_value": "Resist block print",
+            "f2_label": "Dyes",
+            "f2_value": "Natural indigo &amp; madder",
+            "f3_label": "Reach",
+            "f3_value": "Haute couture collections",
+            "body": "It is a resist block printing technique which uses natural dyes such as indigo and madder.\nKutch is home to some of the most renowned masters of Ajrakh. These living treasures have taken this ancient craft to the world stage. Several international designers have earned fame and prestige by the use of this craft in their haute couture collections.",
+            "more": "Shrujan supports Ajrakh in various ways: it collaborates with this craft sector to expand the Ajrakh design language; promotes its craftspeople not only as skilled technicians but also as creative artists; and provides resources and opportunities to gifted young designers so that they can explore their love of Ajrakh to their hearts' content."
+          }
+        },
+        "discharge": {
+          "type": "craft",
+          "settings": {
+            "name": "Steam discharge block print",
+            "short": "Discharge",
+            "tag": "Bleach &amp; colour",
+            "video": "craft-discharge.mp4",
+            "poster": "craft-discharge-poster.webp",
+            "f1_label": "Technique",
+            "f1_value": "Hand block print",
+            "f2_label": "Paste",
+            "f2_value": "Safolite, soda ash, maize gum",
+            "f3_label": "Finish",
+            "f3_value": "Rolled, then steamed",
+            "body": "Discharge printing is another hand block printing technique. Carved wooden blocks are dipped in a paste and stamped on pre-coloured fabric.\nThe paste is made from safolite, soda ash and maize gum; liquid vat dye is also added to it. The paste thus becomes a bleaching agent as well as a colourant.",
+            "more": "As the paste dries on the fabric, the design is barely visible and this is just one of the reasons that make discharge printing a challenging process.\nAfter the paste has completely dried, the fabric is carefully rolled up and steamed. The heat and moisture from the steam takes away or discharges the fabric colour and, at the same time, adds another colour onto the stamped design.\nMany unpredictable factors such as atmospheric humidity impact this printing technique. The printer himself does not know what the design will actually look like, till the roll of fabric is finally opened up. This uncertainty, this element of surprise, is what makes discharge printing so exciting and challenging."
+          }
+        },
+        "weaving": {
+          "type": "craft",
+          "settings": {
+            "name": "Kutch weaving",
+            "short": "Weaving",
+            "tag": "On the handloom",
+            "video": "craft-weaving.mp4",
+            "poster": "craft-weaving-poster.webp",
+            "f1_label": "Structure",
+            "f1_value": "Basket weave, extra weft",
+            "f2_label": "Worked on",
+            "f2_value": "The handloom",
+            "f3_label": "Shrujan's part",
+            "f3_value": "New fibres and textures",
+            "body": "This craft creates the basic basket weave with an extra weft added for making designs. Shrujan’s contribution has been to introduce a variety of fibres, textures, colours and designs to help create new and contemporary expressions of traditional Kutch hand weaving.",
+            "more": ""
+          }
+        },
+        "pottery": {
+          "type": "craft",
+          "settings": {
+            "name": "Pottery",
+            "short": "Pottery",
+            "tag": "Local clay",
+            "video": "craft-pottery.mp4",
+            "poster": "craft-pottery-poster.webp",
+            "f1_label": "Material",
+            "f1_value": "Unglazed terracotta",
+            "f2_label": "Formed on",
+            "f2_value": "The potter’s wheel",
+            "f3_label": "Signature",
+            "f3_value": "The gowmukh water jug",
+            "body": "Kutch was once famous for its terracotta pottery. Master potters shaped local clay on the potter’s wheel to create unglazed earthenware vessels. These were painted, as was the tradition, by the women in their families. Traditional water carriers as well as large size forms of elephants and camels also featured in the potters’ repertoire. So integral was pottery to Kutch that there was at least one family of potters in every village.\nIn earlier times, Kutch terracotta pottery was also traded with the outside world from the sea ports of Mandvi, Mundra and Lakhpat.",
+            "more": "The role of pottery however began to decline when the centre of sea trade shifted from Kutch to Bombay. It also lost its domestic importance when modernization came to Kutch and a variety of mass-produced materials became easily available.\nWith no local or international markets, only a few families were willing to practice pottery. They focused primarily on creating water carriers. However, a few master potters such as Buddhachhacha Kumbhar continued creating large size animal forms.\nChanda Shroff decided to work with Buddhachhacha’s son and grandson. She wanted Kutch terracotta pottery to regain its stature as one of the renowned crafts of Kutch.\nShe studied the intricacies of the craft and elevated the quality of its every aspect. She inspired and motivated Usmaan Ganni, Buddhachhacha’s grandson, to take up the family craft, and even try his hand at new forms.\nUsmaan is now a sought-after potter who works from Shrujan’s Design Studio. He paints his terracotta creations and has developed an ingenious technique to stone polish them so that they look like glazed pottery.\nSlowly, terracotta pottery is gaining popularity. More and more potters are shaping traditional as well as contemporary forms. The most popular product however, is still the gowmukh water jug that Chanda Shroff had designed more than a decade ago."
+          }
+        },
+        "tie-dye": {
+          "type": "craft",
+          "settings": {
+            "name": "Tie-dye",
+            "short": "Tie-dye",
+            "tag": "Tied, then dyed",
+            "video": "craft-tiedye.mp4",
+            "poster": "craft-tiedye-poster.webp",
+            "f1_label": "Family",
+            "f1_value": "Resist dyeing",
+            "f2_label": "Three ways",
+            "f2_value": "Bandhani, Shibori, clamp",
+            "f3_label": "Shown at",
+            "f3_value": "India Art Fair",
+            "body": "Tie-dye is a term used to describe a number of traditional resist-dyeing techniques. These include stitching, twisting, folding, pleating, crumpling fabric and binding it using string, rubber band, clamp and other devices.\nThe fabric is then dyed. The areas which are tied or constricted resist the penetration of the dye and, when opened up, reveal unique and unusual patterns.",
+            "more": "There are three types of tie-dye techniques practised in Kutch: the centuries-old, traditional bandhani; the Japanese-inspired Shibori and the contemporary clamp technique. Shrujan supports innovations in all three techniques.\nShrujan has taken the tie-dye of Kutch to prestigious markets and platforms such as India Art Fair and shown the world that in the hands of master tie-dyers, this craft can be playful and sophisticated; rainbow-hued and monochromatic; traditional and avant garde."
+          }
+        },
+        "mashroo": {
+          "type": "craft",
+          "settings": {
+            "name": "Mashroo",
+            "short": "Mashroo",
+            "tag": "Woven in stripes",
+            "video": "",
+            "poster": "sj-mashroo-pant-2.webp",
+            "f1_label": "Fibres",
+            "f1_value": "Silk and cotton",
+            "f2_label": "Design",
+            "f2_value": "Always striped",
+            "f3_label": "Shrujan's part",
+            "f3_value": "Revived, made contemporary",
+            "body": "Traditional mashroo fabric was handwoven from real silk and cotton fabric and always had a striped based design. The stripes ranged from bold and colourful to quiet, muted and even barely visible.\nThis royal and opulent traditional fabric had more or less disappeared. Shrujan not only revived it but also gave it a new and hip look by crafting contemporary products for the young and the young at heart.",
+            "more": ""
+          }
+        }
+      },
+      "block_order": [
+        "embroidery",
+        "ajrakh",
+        "discharge",
+        "weaving",
+        "mashroo",
+        "pottery",
+        "tie-dye"
+      ],
+      "settings": {
+        "only_handle": "video"
+      }
+    },
+    "lldc": {
+      "type": "page-lldc",
+      "blocks": {
+        "b1": {
+          "type": "stat",
+          "settings": {
+            "value": "4",
+            "label": "Galleries"
+          }
+        },
+        "b2": {
+          "type": "stat",
+          "settings": {
+            "value": "12",
+            "label": "Kutchi communities"
+          }
+        },
+        "b3": {
+          "type": "stat",
+          "settings": {
+            "value": "126",
+            "label": "Seats in the auditorium"
+          }
+        },
+        "b4": {
+          "type": "stat",
+          "settings": {
+            "value": "16 km",
+            "label": "From Bhuj"
+          }
+        },
+        "b5": {
+          "type": "figure",
+          "settings": {
+            "asset": "lldc-gallery-1.webp",
+            "alt": "Mannequins in the embroidered dress of Kutchi communities, in a museum gallery"
+          }
+        },
+        "b6": {
+          "type": "figure",
+          "settings": {
+            "asset": "lldc-gallery-2.webp",
+            "alt": "Gallery wall of framed embroidery panels beside costumed figures"
+          }
+        },
+        "b7": {
+          "type": "figure",
+          "settings": {
+            "asset": "lldc-gallery-3.webp",
+            "alt": "A curved gallery of Kutchi costume under museum lighting"
+          }
+        },
+        "b8": {
+          "type": "card",
+          "settings": {
+            "asset": "lldc-hero.webp",
+            "alt": "Figures in the ceremonial dress of twelve Kutchi communities, arranged in a circular gallery",
+            "name": "The Museum",
+            "copy": "Four galleries, a library and the crafts studios — the whole complex built around the collection.",
+            "wide": true
+          }
+        },
+        "b9": {
+          "type": "card",
+          "settings": {
+            "asset": "lldc-studio.webp",
+            "alt": "A potter throwing a vessel on the wheel in the LLDC crafts studio",
+            "name": "Crafts Studio",
+            "copy": "A working space for craftspeople — weaving, block-printing, pottery and the metal work of Kutch.",
+            "wide": false
+          }
+        },
+        "b10": {
+          "type": "card",
+          "settings": {
+            "asset": "lldc-auditorium.webp",
+            "alt": "An audience watching a craft film in the LLDC auditorium",
+            "name": "Auditorium",
+            "copy": "A 126-seater, fully equipped with audio-visual facilities.",
+            "wide": false
+          }
+        },
+        "b11": {
+          "type": "card",
+          "settings": {
+            "asset": "lldc-hands-on.webp",
+            "alt": "A child block-printing cloth under an instructor’s hand",
+            "name": "Hands On Area",
+            "copy": "Inspired by the crafts? This is where you try them yourself.",
+            "wide": true
+          }
+        },
+        "b12": {
+          "type": "card",
+          "settings": {
+            "asset": "sj-jat-garasiya-party-bag-1.webp",
+            "alt": "Hand-embroidered Jat Garasiya bag",
+            "name": "The Shop",
+            "copy": "Make sure you take back a little bit of Kutch with you.",
+            "wide": false
+          }
+        },
+        "b13": {
+          "type": "card",
+          "settings": {
+            "asset": "lldc-cafe.webp",
+            "alt": "The LLDC courtyard cafe at dusk, tables under a pergola",
+            "name": "The Cafe",
+            "copy": "Refresh yourself with a hot cup of masala chai.",
+            "wide": true
+          }
+        },
+        "b14": {
+          "type": "plate",
+          "settings": {
+            "label": "Hours",
+            "head": "10 AM – 6 PM",
+            "lines": "Last entry at 5:15 PM\nClosed Mondays and public holidays"
+          }
+        },
+        "b15": {
+          "type": "plate",
+          "settings": {
+            "label": "Admission",
+            "head": "₹ 200",
+            "lines": "Adults\n₹ 50 — children, 5 to 12 years\nA wheelchair is available"
+          }
+        },
+        "b16": {
+          "type": "plate",
+          "settings": {
+            "label": "Getting there",
+            "head": "16 km from Bhuj",
+            "lines": "Ajrakhpur, on the Bhuj–Bhachau highway\nState transport and private buses run there, as do shared chhakada-rickshaws\nBhuj itself: rail from Ahmedabad, Mumbai and Delhi, flights from Mumbai and Delhi"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "b9",
+        "b10",
+        "b11",
+        "b12",
+        "b13",
+        "b14",
+        "b15",
+        "b16"
+      ],
+      "settings": {
+        "only_handle": "lldc"
+      }
+    },
+    "visit": {
+      "type": "page-visit",
+      "blocks": {
+        "b1": {
+          "type": "way",
+          "settings": {
+            "asset": "visit-campus.webp",
+            "image_alt": "The Shrujan studio floor, with racks of finished cloth and staff at work",
+            "kicker": "By appointment",
+            "name": "The Shrujan Campus",
+            "copy": "A behind-the-scenes visit, arranged in advance. You follow a piece from an idea through sampling and into production, and see how the design studio and the artisan communities actually work together. It is a visit about process, not a shop.",
+            "points": "Design studio & sampling\nPre and post production\nThe coordination team",
+            "cta_label": "Enquire about a visit",
+            "cta_link": "mailto:marketing@shrujan.com?subject=Campus%20visit"
+          }
+        },
+        "b2": {
+          "type": "way",
+          "settings": {
+            "asset": "visit-lakhpat.webp",
+            "image_alt": "The walled fort at Lakhpat above the salt flat",
+            "kicker": "Any time in season",
+            "name": "Kutch itself",
+            "copy": "The district the work comes from: craft villages within an hour of Bhuj, a museum built for the embroidery, and a landscape that turns to salt flat and back again. Come for a day, or plan a week around it.",
+            "points": "Craft villages & workshops\nThe LLDC museum\nPalaces, port towns, the Rann",
+            "cta_label": "Plan your trip",
+            "cta_link": "tel:+919099974319"
+          }
+        },
+        "b3": {
+          "type": "stop",
+          "settings": {
+            "asset": "visit-design-studio.webp",
+            "image_alt": "Designers at work on patterns in the Shrujan studio",
+            "where": "Bhuj · by appointment",
+            "name": "The Shrujan Campus",
+            "copy": "The design studio, sampling rooms and production floor, 10am to 7pm."
+          }
+        },
+        "b4": {
+          "type": "stop",
+          "settings": {
+            "asset": "visit-lldc.webp",
+            "image_alt": "A round white gallery building on the design centre campus",
+            "where": "Ajrakhpur · 20 min from Bhuj",
+            "name": "LLDC Museum",
+            "copy": "The Living & Learning Design Centre — galleries, archive and teaching studios.",
+            "link": "/pages/lldc",
+            "go_label": "Read more"
+          }
+        },
+        "b5": {
+          "type": "stop",
+          "settings": {
+            "asset": "bottom-left.webp",
+            "image_alt": "Master weaver working threads at his handloom",
+            "where": "Bhujodi · 8 km east",
+            "name": "Bhujodi Weavers",
+            "copy": "Pit looms in working homes, weaving wool and cotton for the desert winter."
+          }
+        },
+        "b6": {
+          "type": "stop",
+          "settings": {
+            "asset": "visit-ajrakhpur.webp",
+            "image_alt": "A printer working a block along a long table of cloth",
+            "where": "Ajrakhpur",
+            "name": "Ajrakhpur Block Printers",
+            "copy": "Resist printing in madder and indigo, sixteen stages deep, done in the open air."
+          }
+        },
+        "b7": {
+          "type": "stop",
+          "settings": {
+            "asset": "visit-banni.webp",
+            "image_alt": "Artisan women embroidering together at the centre",
+            "where": "Northern Kutch",
+            "name": "The Banni Villages",
+            "copy": "Suf, Mutava and Jat embroidery, in the grasslands the stitches are named after."
+          }
+        },
+        "b8": {
+          "type": "stop",
+          "settings": {
+            "asset": "visit-vijay-vilas.webp",
+            "image_alt": "Vijay Vilas Palace at Mandvi",
+            "where": "Mandvi and the western edge",
+            "name": "Vijay Vilas &amp; Lakhpat",
+            "copy": "A seaside palace and a walled port town the sea left behind."
+          }
+        },
+        "b9": {
+          "type": "stay",
+          "settings": {
+            "len": "Half a day",
+            "what": "The campus in the morning, LLDC in the afternoon."
+          }
+        },
+        "b10": {
+          "type": "stay",
+          "settings": {
+            "len": "One day",
+            "what": "Add the Bhujodi looms and an hour in the Bhuj bazaar."
+          }
+        },
+        "b11": {
+          "type": "stay",
+          "settings": {
+            "len": "Two days",
+            "what": "Ajrakhpur printing and a Banni village, with an interpreter."
+          }
+        },
+        "b12": {
+          "type": "stay",
+          "settings": {
+            "len": "A week",
+            "what": "All of it, plus Mandvi, Lakhpat and the Rann at full moon."
+          }
+        },
+        "b13": {
+          "type": "fact",
+          "settings": {
+            "term": "Open",
+            "detail": "10 AM to 7 PM"
+          }
+        },
+        "b14": {
+          "type": "fact",
+          "settings": {
+            "term": "Campus visits",
+            "detail": "By appointment — email or call ahead"
+          }
+        },
+        "b15": {
+          "type": "fact",
+          "settings": {
+            "term": "Email",
+            "detail": "marketing@shrujan.com"
+          }
+        },
+        "b16": {
+          "type": "fact",
+          "settings": {
+            "term": "Call",
+            "detail": "+91 9099 974319 · +91 90818 99882"
+          }
+        },
+        "b17": {
+          "type": "fact",
+          "settings": {
+            "term": "Nearest airport",
+            "detail": "Bhuj (BHJ)"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "b9",
+        "b10",
+        "b11",
+        "b12",
+        "b13",
+        "b14",
+        "b15",
+        "b16",
+        "b17"
+      ],
+      "settings": {
+        "only_handle": "visit-experience"
+      }
+    },
+    "studio": {
+      "type": "page-studio-collection",
+      "blocks": {
+        "b1": {
+          "type": "strand",
+          "settings": {
+            "link": "/pages/studio-heritage",
+            "asset": "frame-r2t24.webp",
+            "image_alt": "Densely hand-embroidered heritage textile in crimson and gold",
+            "name": "Heritage",
+            "copy": "Heirloom textiles made to be collected, preserved and passed on.",
+            "cta_label": "Open"
+          }
+        },
+        "b2": {
+          "type": "strand",
+          "settings": {
+            "link": "/pages/studio-avinya",
+            "asset": "story-origin-3.webp",
+            "image_alt": "Craftswomen of Kutch working together on embroidery",
+            "name": "Avinya",
+            "copy": "Artisans in teams of two and three, co-creating original work.",
+            "cta_label": "Open"
+          }
+        },
+        "b3": {
+          "type": "strand",
+          "settings": {
+            "link": "/pages/studio-gifting",
+            "asset": "sj-jat-garasiya-party-bag-1.webp",
+            "image_alt": "Hand-embroidered Jat Garasiya party bag",
+            "name": "Gifting &amp; Collaborations",
+            "copy": "Handcrafted gifts and custom commissions, for organisations and occasions.",
+            "cta_label": "Open"
+          }
+        },
+        "b4": {
+          "type": "row",
+          "settings": {
+            "asset": "sj-black-pakko-hand-embroidered-kanchli-1.webp",
+            "image_alt": "Model in a dark embroidered kanchli with a black silk drape",
+            "craft": "Aabhla · Kutch",
+            "name": "The Kanchli, reworked",
+            "copy": "The Kutchi bodice cut for a modern silhouette, the mirror-work kept exactly as it has always been stitched. Sixty hours on the frame before a single seam is closed.",
+            "facts": "Hand-embroidered\n60 hours\nEdition of 24",
+            "link_label": "Enquire about this piece",
+            "link": "mailto:marketing@shrujan.com?subject=Studio%20enquiry%20%E2%80%94%20The%20Kanchli%2C%20reworked"
+          }
+        },
+        "b5": {
+          "type": "row",
+          "settings": {
+            "asset": "sj-dupatta-copy-2-1.webp",
+            "image_alt": "Blue and orange bandhani dupatta over an ivory kurta",
+            "craft": "Bandhani · Kutch",
+            "name": "Bandhani, tied by hand",
+            "copy": "Thousands of points tied one at a time before the cloth ever meets dye. The pattern only reveals itself when the knots come loose — no two lengths finish alike.",
+            "facts": "Natural dye\n3 weeks\nEdition of 18",
+            "link_label": "Enquire about this piece",
+            "link": "mailto:marketing@shrujan.com?subject=Studio%20enquiry%20%E2%80%94%20Bandhani%2C%20tied%20by%20hand"
+          }
+        },
+        "b6": {
+          "type": "row",
+          "settings": {
+            "asset": "sj-green-hand-woven-top-1.webp",
+            "image_alt": "Model in a green embroidered shirt",
+            "craft": "Suf · Kutch",
+            "name": "Suf, counted from the reverse",
+            "copy": "Suf is worked from the back of the cloth, counted thread by thread, with no pattern ever drawn. The embroiderer holds the whole geometry in her head.",
+            "facts": "Counted thread\nNo pattern drawn\nEdition of 12",
+            "link_label": "Enquire about this piece",
+            "link": "mailto:marketing@shrujan.com?subject=Studio%20enquiry%20%E2%80%94%20Suf%2C%20counted%20from%20the%20reverse"
+          }
+        },
+        "b7": {
+          "type": "row",
+          "settings": {
+            "asset": "sj-shawl-copy-3-1.webp",
+            "image_alt": "Pink and grey handwoven stole",
+            "craft": "Handloom · Bhujodi",
+            "name": "Handloom, woven in Bhujodi",
+            "copy": "Woven on pit looms a few kilometres from the atelier, in wool and cotton spun for the desert winter. It softens with every wash rather than fading.",
+            "facts": "Pit loom\nWool & cotton\nEdition of 30",
+            "link_label": "Enquire about this piece",
+            "link": "mailto:marketing@shrujan.com?subject=Studio%20enquiry%20%E2%80%94%20Handloom%2C%20woven%20in%20Bhujodi"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6",
+        "b7"
+      ],
+      "settings": {
+        "only_handle": "studio-collection"
+      }
+    },
+    "heritage": {
+      "type": "page-studio-heritage",
+      "blocks": {
+        "b1": {
+          "type": "strand",
+          "settings": {
+            "label": "Heritage",
+            "link": "/pages/studio-heritage",
+            "current": true
+          }
+        },
+        "b2": {
+          "type": "strand",
+          "settings": {
+            "label": "Avinya",
+            "link": "/pages/studio-avinya",
+            "current": false
+          }
+        },
+        "b3": {
+          "type": "strand",
+          "settings": {
+            "label": "Gifting & Collaborations",
+            "link": "/pages/studio-gifting",
+            "current": false
+          }
+        },
+        "b4": {
+          "type": "stat",
+          "settings": {
+            "value": "12",
+            "label": "Living traditions"
+          }
+        },
+        "b5": {
+          "type": "stat",
+          "settings": {
+            "value": "6–14",
+            "label": "Months on the frame"
+          }
+        },
+        "b6": {
+          "type": "stat",
+          "settings": {
+            "value": "1",
+            "label": "Of its kind"
+          }
+        },
+        "b7": {
+          "type": "mark",
+          "settings": {
+            "title": "One pair of hands",
+            "copy": "A heritage piece is never split across a workshop. One embroiderer carries it from the first counted thread to the last, and her name goes on it."
+          }
+        },
+        "b8": {
+          "type": "mark",
+          "settings": {
+            "title": "The community canon",
+            "copy": "Every motif belongs to a community, and is stitched in the vocabulary that community has kept — not a house style drawn over the top of it."
+          }
+        },
+        "b9": {
+          "type": "mark",
+          "settings": {
+            "title": "Natural cloth, natural dye",
+            "copy": "Handloom cotton, mulberry silk and desert wool, coloured with madder, indigo and pomegranate rind. Nothing synthetic touches the ground cloth."
+          }
+        },
+        "b10": {
+          "type": "mark",
+          "settings": {
+            "title": "Recorded before it leaves",
+            "copy": "Each piece is photographed, measured and documented at the LLDC in Bhuj, so the record of how it was made outlives the cloth itself."
+          }
+        },
+        "b11": {
+          "type": "shot",
+          "settings": {
+            "asset": "frame-r3t26.webp",
+            "alt": "Heritage embroidery worked in fine counted thread"
+          }
+        },
+        "b12": {
+          "type": "shot",
+          "settings": {
+            "asset": "frame-r1t20.webp",
+            "alt": "Mirror-work set into a hand-embroidered panel"
+          }
+        },
+        "b13": {
+          "type": "shot",
+          "settings": {
+            "asset": "frame-r5t25.webp",
+            "alt": "Detail of a heritage textile in indigo and madder"
+          }
+        },
+        "b14": {
+          "type": "shot",
+          "settings": {
+            "asset": "frame-r2t5.webp",
+            "alt": "Border of a hand-embroidered heritage cloth"
+          }
+        },
+        "b15": {
+          "type": "shot",
+          "settings": {
+            "asset": "frame-r1t12.webp",
+            "alt": "Hand-embroidered panel in madder and indigo"
+          }
+        },
+        "b16": {
+          "type": "shot",
+          "settings": {
+            "asset": "frame-r3t6.webp",
+            "alt": "Kutchi mirror-work across a silk ground"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "b9",
+        "b10",
+        "b11",
+        "b12",
+        "b13",
+        "b14",
+        "b15",
+        "b16"
+      ],
+      "settings": {
+        "only_handle": "studio-heritage"
+      }
+    },
+    "avinya": {
+      "type": "page-studio-avinya",
+      "blocks": {
+        "b1": {
+          "type": "strand",
+          "settings": {
+            "label": "Heritage",
+            "link": "/pages/studio-heritage",
+            "current": false
+          }
+        },
+        "b2": {
+          "type": "strand",
+          "settings": {
+            "label": "Avinya",
+            "link": "/pages/studio-avinya",
+            "current": true
+          }
+        },
+        "b3": {
+          "type": "strand",
+          "settings": {
+            "label": "Gifting & Collaborations",
+            "link": "/pages/studio-gifting",
+            "current": false
+          }
+        },
+        "b4": {
+          "type": "meta",
+          "settings": {
+            "value": "2–3",
+            "label": "Artisans per team"
+          }
+        },
+        "b5": {
+          "type": "meta",
+          "settings": {
+            "value": "12",
+            "label": "Craft traditions"
+          }
+        },
+        "b6": {
+          "type": "meta",
+          "settings": {
+            "value": "1969",
+            "label": "Building since"
+          }
+        },
+        "b7": {
+          "type": "step",
+          "settings": {
+            "title": "Pairing",
+            "copy": "Artisans are placed in teams of two or three, often alongside someone from a craft other than their own — an embroiderer with a weaver, a dyer with a printer."
+          }
+        },
+        "b8": {
+          "type": "step",
+          "settings": {
+            "title": "Co-creation",
+            "copy": "The team develops the work together. Nothing is handed down to be executed; the idea is reached between them, and changes as they make it."
+          }
+        },
+        "b9": {
+          "type": "step",
+          "settings": {
+            "title": "Experiment",
+            "copy": "Material, scale and technique are tested against each other. Some of the combinations that come out of it have not been attempted in Kutch before."
+          }
+        },
+        "b10": {
+          "type": "step",
+          "settings": {
+            "title": "Attribution",
+            "copy": "The finished work carries the name of everyone who made it. The artisan’s voice stays attached to the piece after it leaves the studio."
+          }
+        },
+        "b11": {
+          "type": "shot",
+          "settings": {
+            "asset": "journal-4.webp",
+            "alt": "Artisans of Kutch at work on a collaborative piece"
+          }
+        },
+        "b12": {
+          "type": "shot",
+          "settings": {
+            "asset": "journal-9.webp",
+            "alt": "Hands working thread across a shared frame"
+          }
+        },
+        "b13": {
+          "type": "shot",
+          "settings": {
+            "asset": "journal-2.webp",
+            "alt": "Craftswomen comparing embroidery samples"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "b9",
+        "b10",
+        "b11",
+        "b12",
+        "b13"
+      ],
+      "settings": {
+        "only_handle": "studio-avinya"
+      }
+    },
+    "gifting": {
+      "type": "page-studio-gifting",
+      "blocks": {
+        "b1": {
+          "type": "strand",
+          "settings": {
+            "label": "Heritage",
+            "link": "/pages/studio-heritage",
+            "current": false
+          }
+        },
+        "b2": {
+          "type": "strand",
+          "settings": {
+            "label": "Avinya",
+            "link": "/pages/studio-avinya",
+            "current": false
+          }
+        },
+        "b3": {
+          "type": "strand",
+          "settings": {
+            "label": "Gifting & Collaborations",
+            "link": "/pages/studio-gifting",
+            "current": true
+          }
+        },
+        "b4": {
+          "type": "meta",
+          "settings": {
+            "value": "25+",
+            "label": "Minimum order"
+          }
+        },
+        "b5": {
+          "type": "meta",
+          "settings": {
+            "value": "4–12",
+            "label": "Weeks to deliver"
+          }
+        },
+        "b6": {
+          "type": "meta",
+          "settings": {
+            "value": "40",
+            "label": "Villages at work"
+          }
+        },
+        "b7": {
+          "type": "offer",
+          "settings": {
+            "asset": "sj-jat-garasiya-mobile-pouch-31-1.webp",
+            "alt": "Hand-embroidered mobile pouches in Jat Garasiya work",
+            "name": "Corporate & Institutional Gifting",
+            "copy": "Meaningful, high-quality gifts rooted in craft, for organisations marking a milestone, a partnership or an occasion. Chosen for craftsmanship and cultural integrity, so the gift carries depth as well as value.",
+            "fact_1": "From 25 pieces",
+            "fact_2": "4–8 weeks",
+            "fact_3": "Presentation packaging",
+            "link_label": "Enquire about this"
+          }
+        },
+        "b8": {
+          "type": "offer",
+          "settings": {
+            "asset": "sj-jat-garasiya-party-bag-copy-1-1.webp",
+            "alt": "Hand-embroidered party bags arranged together",
+            "name": "Wedding & Occasion Gifting",
+            "copy": "Handcrafted pieces chosen for celebrations — for how they look, and for the artisan skill and the story they carry with them.",
+            "fact_1": "From 50 pieces",
+            "fact_2": "6–10 weeks",
+            "fact_3": "Custom colourways",
+            "link_label": "Enquire about this"
+          }
+        },
+        "b9": {
+          "type": "offer",
+          "settings": {
+            "asset": "sj-handloom-weaving-cushion-cover-5-1.webp",
+            "alt": "Handloom cushion covers in natural dyed cotton",
+            "name": "Custom Collaborations",
+            "copy": "Some projects call for something more specific. We take on custom commissions involving particular colours, materials or craft techniques, developed through dialogue and aligned with Shrujan’s craft values.",
+            "fact_1": "By commission",
+            "fact_2": "12+ weeks",
+            "fact_3": "Developed with the artisans",
+            "link_label": "Enquire about this"
+          }
+        },
+        "b10": {
+          "type": "step",
+          "settings": {
+            "title": "The brief",
+            "copy": "Numbers, budget, occasion and how long you have. We will tell you honestly what is possible in the time."
+          }
+        },
+        "b11": {
+          "type": "step",
+          "settings": {
+            "title": "Selection",
+            "copy": "We put a shortlist together from the crafts that suit the brief, with samples where the order justifies them."
+          }
+        },
+        "b12": {
+          "type": "step",
+          "settings": {
+            "title": "The making",
+            "copy": "The order goes to the villages best suited to it. Artisans are paid per piece, on time, for every unit made."
+          }
+        },
+        "b13": {
+          "type": "step",
+          "settings": {
+            "title": "Delivery",
+            "copy": "Packed, documented and shipped — with a card naming the craft and the community behind the piece."
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "b9",
+        "b10",
+        "b11",
+        "b12",
+        "b13"
+      ],
+      "settings": {
+        "only_handle": "studio-gifting"
+      }
+    },
     "main": {
       "type": "main-page",
-      "settings": {}
+      "settings": {
+        "designed_handles": "shop-shrujan,the-shrujan-story,video,lldc,visit-experience,studio-collection,studio-heritage,studio-avinya,studio-gifting"
+      }
     }
   },
   "order": [
+    "shop",
+    "story",
+    "craft",
+    "lldc",
+    "visit",
+    "studio",
+    "heritage",
+    "avinya",
+    "gifting",
     "main"
   ]
 }

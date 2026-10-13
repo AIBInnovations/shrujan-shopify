@@ -23,9 +23,9 @@
 
     <div class="store-gift">
       <p class="store-gift__label">{{ cfg.balance_label }}</p>
-      <p class="store-gift__value">{{ gift_card.balance | money }}</p>
+      <p class="store-gift__value">{{ gift_card.balance | money | strip_html }}</p>
       {%- if cfg.show_initial and gift_card.balance != gift_card.initial_value %}
-      <p class="store-gift__was">{{ cfg.initial_label }} {{ gift_card.initial_value | money }}</p>
+      <p class="store-gift__was">{{ cfg.initial_label }} {{ gift_card.initial_value | money | strip_html }}</p>
       {%- endif %}
 
       {%- if gift_card.enabled == false %}

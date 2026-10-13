@@ -1,3 +1,9 @@
+{%- comment -%}
+  This section belongs to one page. In the default page template it sits beside
+  the other designed pages and is given its page's handle, so it draws on that
+  page and stays silent on every other. Without a handle it always draws.
+{%- endcomment -%}
+{%- if section.settings.only_handle == blank or page.handle == section.settings.only_handle -%}
 {%- render 'section-design', section: section -%}
 {%- comment -%}
   Region + grid controls. Every default reproduces the built page: the scoped
@@ -138,10 +144,21 @@
   </section>
 {%- endif %}
 </div>
+{%- endif -%}
 {% schema %}
 {
   "name": "Studio Collection",
   "settings": [
+    {
+      "type": "header",
+      "content": "Page"
+    },
+    {
+      "type": "text",
+      "id": "only_handle",
+      "label": "Only on the page with this handle",
+      "info": "The last part of the page address, e.g. lldc for /pages/lldc. Empty draws the section wherever it is placed."
+    },
     {
       "type": "header",
       "content": "Hero"

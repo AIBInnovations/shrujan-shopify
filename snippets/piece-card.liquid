@@ -55,7 +55,7 @@
     {%- if card_craft != blank -%}
       <p class="piece__craft">{{ card_craft }}</p>
     {%- endif -%}
-    <p class="piece__price">{{ product.price | money }}{% if card_was %}<span>{{ product.compare_at_price | money }}</span>{% endif %}</p>
+    <p class="piece__price">{{ product.price | money | strip_html }}{% if card_was %}<span>{{ product.compare_at_price | money | strip_html }}</span>{% endif %}</p>
     {%- if show_swatches and card_swatch_list.size > 0 -%}
       <span class="piece__swatches" aria-hidden="true">{% for card_swatch in card_swatch_list limit: 5 %}<i style="background: {{ card_swatch }}"></i>{% endfor %}</span>
     {%- endif -%}

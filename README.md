@@ -52,20 +52,24 @@ which remain the full-quality masters if a lossless setup is ever wanted
 After installing:
 
 
-1. Create the pages (Online Store → Pages) so the URLs exist. Give each page
-   its matching template; the page body can stay empty:
+1. Create the pages (Online Store → Pages) so the URLs exist. Only the handle
+   matters; the body can stay empty and no template needs assigning. Every
+   designed page lives in the default page template (`templates/page.json`)
+   and draws itself on the page whose handle it has been given, so a page that
+   already exists under another theme's template works as soon as this theme
+   is the one being viewed.
 
-   | Page title | Handle | Template |
-   |---|---|---|
-   | Shop Shrujan | `shop-shrujan` | `page.shop-shrujan` |
-   | Studio Collection | `studio-collection` | `page.studio-collection` |
-   | Heritage | `studio-heritage` | `page.studio-heritage` |
-   | Avinya | `studio-avinya` | `page.studio-avinya` |
-   | Gifting & Collaborations | `studio-gifting` | `page.studio-gifting` |
-   | Craft Traditions of Kutch | `video` | `page.video` |
-   | The Shrujan Story | `the-shrujan-story` | `page.the-shrujan-story` |
-   | Living & Learning Design Centre | `lldc` | `page.lldc` |
-   | Visit & Experience | `visit-experience` | `page.visit-experience` |
+   | Page title | Handle |
+   |---|---|
+   | Shop Shrujan | `shop-shrujan` |
+   | Studio Collection | `studio-collection` |
+   | Heritage | `studio-heritage` |
+   | Avinya | `studio-avinya` |
+   | Gifting & Collaborations | `studio-gifting` |
+   | Craft Traditions of Kutch | `video` |
+   | The Shrujan Story | `the-shrujan-story` |
+   | Living & Learning Design Centre | `lldc` |
+   | Visit & Experience | `visit-experience` |
 
    (The React routes `/pages/studio-collection/heritage|avinya|gifting` became
    flat handles — Shopify page URLs cannot nest.)

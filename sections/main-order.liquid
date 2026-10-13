@@ -78,9 +78,9 @@
                 </span>
               </div>
             </td>
-            <td>{{ line_item.original_price | money }}</td>
+            <td>{{ line_item.original_price | money | strip_html }}</td>
             <td>{{ line_item.quantity }}</td>
-            <td>{{ line_item.final_line_price | money }}</td>
+            <td>{{ line_item.final_line_price | money | strip_html }}</td>
           </tr>
           {%- endfor %}
         </tbody>
@@ -90,29 +90,29 @@
     <div class="store-totals">
       <div class="store-totals__row">
         <span>{{ cfg.subtotal_label }}</span>
-        <span>{{ order.line_items_subtotal_price | money }}</span>
+        <span>{{ order.line_items_subtotal_price | money | strip_html }}</span>
       </div>
       {%- for discount in order.cart_level_discount_applications %}
       <div class="store-totals__row">
         <span>{{ cfg.discount_label }} {{ discount.title }}</span>
-        <span>&minus;{{ discount.total_allocated_amount | money }}</span>
+        <span>&minus;{{ discount.total_allocated_amount | money | strip_html }}</span>
       </div>
       {%- endfor %}
       {%- for method in order.shipping_methods %}
       <div class="store-totals__row">
         <span>{{ cfg.shipping_label }} {{ method.title }}</span>
-        <span>{{ method.price | money }}</span>
+        <span>{{ method.price | money | strip_html }}</span>
       </div>
       {%- endfor %}
       {%- for tax_line in order.tax_lines %}
       <div class="store-totals__row">
         <span>{{ cfg.tax_label }} {{ tax_line.title }}</span>
-        <span>{{ tax_line.price | money }}</span>
+        <span>{{ tax_line.price | money | strip_html }}</span>
       </div>
       {%- endfor %}
       <div class="store-totals__row store-totals__row--grand">
         <span>{{ cfg.total_label }}</span>
-        <span>{{ order.total_price | money }}</span>
+        <span>{{ order.total_price | money | strip_html }}</span>
       </div>
     </div>
   </div>

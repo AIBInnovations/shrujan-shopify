@@ -124,10 +124,10 @@
       if bs_product.id != blank
         assign bs_link = bs_product.url
         assign bs_name = bs_product.title
-        assign bs_price = bs_product.price | money
+        assign bs_price = bs_product.price | money | strip_html
         assign bs_was = ''
         if bs_product.compare_at_price > bs_product.price
-          assign bs_was = bs_product.compare_at_price | money
+          assign bs_was = bs_product.compare_at_price | money | strip_html
         endif
         if bs_product.available == false
           assign bs_note = 'Sold out'

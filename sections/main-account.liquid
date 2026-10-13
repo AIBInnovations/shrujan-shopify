@@ -43,7 +43,7 @@
             <td>{{ order.created_at | date: format: cfg.date_format }}</td>
             <td>{{ order.financial_status_label }}</td>
             <td>{{ order.fulfillment_status_label }}</td>
-            <td>{{ order.total_price | money }}</td>
+            <td>{{ order.total_price | money | strip_html }}</td>
           </tr>
           {%- endfor %}
         </tbody>

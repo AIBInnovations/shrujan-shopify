@@ -167,10 +167,10 @@
   endif
 
   comment
-    Sizes, real ones first: when the product carries the option, each button is a
-    variant and picking it changes what the form posts. Products with only
-    Shopify's default variant keep the built row, presentational, from the
-    setting.
+    Sizes are the product's own: when it carries the option, each button is a
+    variant and picking it changes what the form posts. A product with only
+    Shopify's default variant has no size to choose, so the row is not drawn.
+    A bag or a cushion cover offering XS to XXL was the prototype talking.
   endcomment
   assign size_pos = 0
   for opt in product.options_with_values
@@ -190,8 +190,6 @@
   assign from_variants = true
   if size_pos == 0
     assign from_variants = false
-    assign size_list = cfg.sizes | split: ','
-    assign current_size = cfg.sizes_default | strip
   else
     case size_pos
       when 1
@@ -273,18 +271,22 @@
       </div>
 
       <div class="pdp__buy">
+        {%- if cfg.show_reviews -%}
         <div class="pdp__rating">{{ stars_rating }}<span>{{ cfg.rating }}</span><a href="#reviews">{{ cfg.review_count }} reviews</a></div>
+        {%- endif -%}
         <h1 class="pdp__name">{{ product.title }}</h1>
         {%- if craft != blank -%}
           <p class="pdp__craft">{{ craft }}</p>
         {%- endif -%}
         {%- comment -%}
-          A price line of its own only when the piece is marked down — the price
-          the design shows lives on the ordering option and the button, and a
-          struck-through was has nowhere to sit there.
+          With the ordering options on, the price lives on the option and the
+          button, and a line of its own appears only for a marked-down piece,
+          whose struck-through was has nowhere else to sit. With them off the
+          line is always there: a price that exists only inside a button is too
+          easy to miss.
         {%- endcomment -%}
-        {%- if has_was -%}
-          <p class="pdp__price" data-pdp-was-line>{{ variant.price | money }}<s>{{ variant.compare_at_price | money }}</s></p>
+        {%- if has_was or cfg.show_modes == false -%}
+          <p class="pdp__price" data-pdp-was-line>{{ variant.price | money | strip_html }}{% if has_was %}<s>{{ variant.compare_at_price | money | strip_html }}</s>{% endif %}</p>
         {%- endif -%}
         {%- if cfg.copy != blank -%}
           <p class="pdp__copy">{{ cfg.copy }}</p>
@@ -304,11 +306,15 @@
           </div>
         {%- endif -%}
 
-        {%- if cfg.show_sizes and size_list.size > 0 -%}
+        {%- if cfg.show_sizes and from_variants and size_list.size > 0 -%}
           <div class="pdp__block">
             <div class="pdp__label-row">
               <p class="pdp__label">Size</p>
-              <button type="button" class="pdp__size-guide">Size guide</button>
+              {%- if cfg.size_guide_url != blank -%}
+                <a class="pdp__size-guide" href="{{ cfg.size_guide_url }}">Size guide</a>
+              {%- else -%}
+                <button type="button" class="pdp__size-guide">Size guide</button>
+              {%- endif -%}
             </div>
             <div class="pdp__sizes" role="group" aria-label="Size">
               {%- for sz in size_list -%}
@@ -343,10 +349,10 @@
                       endif
                       if take
                         assign size_id = v.id
-                        assign size_price = v.price | money
+                        assign size_price = v.price | money | strip_html
                         assign size_was = ''
                         if v.compare_at_price > v.price
-                          assign size_was = v.compare_at_price | money
+                          assign size_was = v.compare_at_price | money | strip_html
                         endif
                         assign size_ok = v.available
                       endif
@@ -361,8 +367,8 @@
 
         {%- if cfg.show_modes -%}
           <div class="pdp__options" role="radiogroup" aria-label="How it is made">
-            <label class="pdp__option is-active"><input type="radio" name="pdp-mode" checked><span class="pdp__option-body"><span class="pdp__option-title">{{ cfg.mode1_title }}</span><span class="pdp__option-note">{{ cfg.mode1_note }}</span></span><span class="pdp__option-price">{{ variant.price | money }}</span></label>
-            <label class="pdp__option"><input type="radio" name="pdp-mode"><span class="pdp__option-body"><span class="pdp__option-title">{{ cfg.mode2_title }}</span><span class="pdp__option-note">{{ cfg.mode2_note }}</span></span><span class="pdp__option-price">{% if cfg.mode2_amount > 0 %}+ {{ cfg.mode2_amount | times: 100 | money }}{% endif %}</span></label>
+            <label class="pdp__option is-active"><input type="radio" name="pdp-mode" checked><span class="pdp__option-body"><span class="pdp__option-title">{{ cfg.mode1_title }}</span><span class="pdp__option-note">{{ cfg.mode1_note }}</span></span><span class="pdp__option-price">{{ variant.price | money | strip_html }}</span></label>
+            <label class="pdp__option"><input type="radio" name="pdp-mode"><span class="pdp__option-body"><span class="pdp__option-title">{{ cfg.mode2_title }}</span><span class="pdp__option-note">{{ cfg.mode2_note }}</span></span><span class="pdp__option-price">{% if cfg.mode2_amount > 0 %}+ {{ cfg.mode2_amount | times: 100 | money | strip_html }}{% endif %}</span></label>
           </div>
         {%- endif -%}
 
@@ -375,7 +381,7 @@
           <input type="hidden" name="quantity" value="1">
           <input type="hidden" name="return_to" value="{{ routes.cart_url }}">
           {%- if product.available -%}
-            <button type="submit" class="btn pdp__add" data-add-label="{{ cfg.add_label | escape }}">{{ cfg.add_label }} — {{ variant.price | money }}</button>
+            <button type="submit" class="btn pdp__add" data-add-label="{{ cfg.add_label | escape }}">{{ cfg.add_label }} — {{ variant.price | money | strip_html }}</button>
           {%- else -%}
             <button type="submit" class="btn pdp__add" data-add-label="{{ cfg.add_label | escape }}" disabled>{{ cfg.sold_out_label }}</button>
           {%- endif -%}
@@ -445,6 +451,7 @@
           </div>
         {%- endif -%}
 
+        {%- if cfg.show_reviews -%}
         <div class="pdp__worn">
           <div class="pdp__label-row"><p class="pdp__label">Worn by</p><a href="#reviews">All {{ cfg.review_count }} reviews</a></div>
           <div class="pdp__faces">
@@ -462,6 +469,7 @@
             <blockquote class="pdp__quote">“{{ cfg.quote }}”<cite>{{ cfg.quote_cite }}</cite></blockquote>
           {%- endif -%}
         </div>
+        {%- endif -%}
 
         <a class="arrow-link pdp__back" href="{{ shop_url }}">Back to the catalogue {{ icon_arrow_15 }}</a>
       </div>
@@ -671,12 +679,14 @@
     });
   });
 
-  // "Size guide" opens the fit panel rather than pointing at a page that does
-  // not exist. The panel is marked in the markup, so reordering the accordions
-  // cannot silently open the wrong one.
+  // "Size guide" is a link when the store has a size chart page. Otherwise it
+  // opens the fit panel, which is marked in the markup so reordering the
+  // accordions cannot silently open the wrong one. With neither, there is
+  // nothing for it to do and it is not shown.
   var sizeGuideBtn = root.querySelector('.pdp__size-guide');
   var fitEl = root.querySelector('[data-pdp-fit]');
-  if (sizeGuideBtn && fitEl) {
+  if (sizeGuideBtn && sizeGuideBtn.tagName === 'BUTTON' && !fitEl) sizeGuideBtn.hidden = true;
+  if (sizeGuideBtn && sizeGuideBtn.tagName === 'BUTTON' && fitEl) {
     sizeGuideBtn.addEventListener('click', function () {
       var i = detailEls.indexOf(fitEl);
       if (i < 0) return;
@@ -766,15 +776,13 @@
       "type": "textarea",
       "id": "copy",
       "label": "Intro line",
-      "info": "Shown under the craft line, above the “Made with” pills. The product’s own description is the first detail panel.",
-      "default": "Counted and stitched by hand on naturally dyed handloom cloth, then cut and finished in our Bhuj atelier. Made to be worn often and kept for a long time."
+      "info": "Shown under the craft line, above the “Made with” pills. The product’s own description is the first detail panel."
     },
     {
       "type": "textarea",
       "id": "specs",
       "label": "“Made with” pills",
-      "info": "One per line.",
-      "default": "Hand-embroidered\nNaturally dyed\nHandloom cloth\nMade in Kutch"
+      "info": "One per line."
     },
     {
       "type": "text",
@@ -793,8 +801,7 @@
     {
       "type": "text",
       "id": "reassure",
-      "label": "Free-alterations note",
-      "default": "Free alterations for as long as you own it"
+      "label": "Free-alterations note"
     },
     {
       "type": "header",
@@ -804,22 +811,14 @@
       "type": "checkbox",
       "id": "show_sizes",
       "label": "Show the size picker",
-      "info": "Also hides the “Size guide” link that opens the fit panel. With it hidden, a product with sizes adds its first available one.",
+      "info": "Sizes come from the product: the row appears only for a product that has a Size option.",
       "default": true
     },
     {
-      "type": "text",
-      "id": "sizes",
-      "label": "Sizes shown when the product has none",
-      "info": "Comma separated. A product with a real Size option ignores this and shows its own values, each adding that variant; this row is presentational.",
-      "default": "XS, S, M, L, XL, XXL"
-    },
-    {
-      "type": "text",
-      "id": "sizes_default",
-      "label": "Size marked as chosen",
-      "info": "Only for the presentational row above.",
-      "default": "M"
+      "type": "url",
+      "id": "size_guide_url",
+      "label": "Size guide link",
+      "info": "The page with your size chart. Empty makes the button open the \"fit\" panel instead."
     },
     {
       "type": "header",
@@ -829,7 +828,8 @@
       "type": "checkbox",
       "id": "show_modes",
       "label": "Show the ready-to-ship / made-to-measure options",
-      "default": true
+      "default": false,
+      "info": "Two ways to order, the second with a surcharge. The surcharge is shown, not charged, so leave this off unless the store really offers it."
     },
     {
       "type": "text",
@@ -877,7 +877,7 @@
       "id": "detail1_title",
       "label": "Panel 1 heading",
       "info": "Its copy is the product’s own description, from the admin. The panel is left out when the product has none.",
-      "default": "The craft"
+      "default": "Description"
     },
     {
       "type": "text",
@@ -889,8 +889,7 @@
     {
       "type": "textarea",
       "id": "detail2_body",
-      "label": "Panel 2 copy",
-      "default": "Handloom cotton with a soft, dry handle that softens further with every wash. Cut to drape generously rather than to cling. If you are between sizes, take the smaller one — these relax with wear."
+      "label": "Panel 2 copy"
     },
     {
       "type": "text",
@@ -901,8 +900,7 @@
     {
       "type": "textarea",
       "id": "detail3_body",
-      "label": "Panel 3 copy",
-      "default": "Cold hand wash, separately, for the first three washes. No wringing and no direct sun on the embroidered face. Natural dyes will shift very slightly in the first month and then hold — that settling is the dye, not a fault."
+      "label": "Panel 3 copy"
     },
     {
       "type": "text",
@@ -913,8 +911,7 @@
     {
       "type": "textarea",
       "id": "detail4_body",
-      "label": "Panel 4 copy",
-      "default": "Ready pieces leave Bhuj within 48 hours and arrive in 3–6 days across India, 8–14 days worldwide with duties settled at checkout. Returns and exchanges within 14 days on unworn pieces with tags intact."
+      "label": "Panel 4 copy"
     },
     {
       "type": "text",
@@ -925,8 +922,7 @@
     {
       "type": "textarea",
       "id": "detail5_body",
-      "label": "Panel 5 copy",
-      "default": "Every piece carries the name of the woman who embroidered it, and she is paid per piece, on time, directly. That arrangement was unusual when Shrujan began in 1969 and it still is."
+      "label": "Panel 5 copy"
     },
     {
       "type": "header",
@@ -974,21 +970,19 @@
       "type": "checkbox",
       "id": "show_reviews",
       "label": "Show the review section",
-      "info": "The rating line above the product name stays; its reviews link simply has nothing to jump to.",
-      "default": true
+      "info": "The star rating, the \"Worn by\" row and the review cards. Leave off until the numbers and words in them are real.",
+      "default": false
     },
     {
       "type": "text",
       "id": "rating",
       "label": "Rating",
-      "info": "The star row is this, rounded to whole stars.",
-      "default": "5.0"
+      "info": "The star row is this, rounded to whole stars."
     },
     {
       "type": "text",
       "id": "review_count",
-      "label": "Number of reviews",
-      "default": "126"
+      "label": "Number of reviews"
     },
     {
       "type": "textarea",
@@ -999,14 +993,12 @@
     {
       "type": "textarea",
       "id": "quote",
-      "label": "“Worn by” quote",
-      "default": "Five years on it has not lost a single stitch."
+      "label": "“Worn by” quote"
     },
     {
       "type": "text",
       "id": "quote_cite",
-      "label": "“Worn by” attribution",
-      "default": "Meera S. · Mumbai"
+      "label": "“Worn by” attribution"
     },
     {
       "type": "paragraph",

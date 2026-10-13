@@ -661,8 +661,8 @@
     "home-trousseau": {
       "type": "home-trousseau",
       "settings": {
-        "tr_collection": "new-arrival",
-        "tab_1": "New arrivals",
+        "tr_collection": "kanchli",
+        "tab_1": "Kanchli",
         "tab_2": "Clothing",
         "tab_2_collection": "clothing",
         "tab_3": "Bags",

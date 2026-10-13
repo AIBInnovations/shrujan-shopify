@@ -177,7 +177,7 @@
         <p class="piece__craft">{{ card_craft | escape }}</p>
         {%- endif %}
         {%- if cfg.tr_show_price %}
-        <p class="piece__price">{{ product.price | money }}{% if cfg.tr_show_was and product.compare_at_price > product.price %}<span>{{ product.compare_at_price | money }}</span>{% endif %}</p>
+        <p class="piece__price">{{ product.price | money | strip_html }}{% if cfg.tr_show_was and product.compare_at_price > product.price %}<span>{{ product.compare_at_price | money | strip_html }}</span>{% endif %}</p>
         {%- endif %}
         {%- if cfg.tr_show_swatches and card_swatches != blank %}
         <span class="piece__swatches" aria-hidden="true">

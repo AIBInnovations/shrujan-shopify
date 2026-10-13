@@ -9,6 +9,21 @@
   right for the prototype's catch-all route and wrong for a store with real
   pages in it.
 {%- endcomment -%}
+{%- liquid
+  comment
+    The designed pages share this template and draw themselves by handle, so
+    this section steps aside for them.
+  endcomment
+  assign page_is_designed = false
+  assign designed_list = section.settings.designed_handles | split: ','
+  for designed_handle in designed_list
+    assign designed_key = designed_handle | strip
+    if designed_key == page.handle
+      assign page_is_designed = true
+    endif
+  endfor
+-%}
+{%- unless page_is_designed -%}
 <article>
   {%- if section.settings.show_title %}
   <header class="store-head container" data-reveal>
@@ -25,6 +40,7 @@
     </div>
   </div>
 </article>
+{%- endunless -%}
 {% schema %}
 {
   "name": "Page",
@@ -44,6 +60,12 @@
       "id": "eyebrow",
       "label": "Eyebrow",
       "info": "A short line above the title. Empty hides it."
+    },
+    {
+      "type": "text",
+      "id": "designed_handles",
+      "label": "Pages drawn by their own section",
+      "info": "Handles, comma separated. This section stays hidden on them so the designed layout is not followed by an empty title."
     },
     {
       "type": "header",

@@ -231,7 +231,7 @@
               {%- if card_meta != blank -%}
                 <p class="piece__craft">{{ card_meta }}</p>
               {%- endif -%}
-              <p class="piece__price">{{ product.price | money }}{% if cfg.card_was and product.compare_at_price > product.price %}<span>{{ product.compare_at_price | money }}</span>{% endif %}</p>
+              <p class="piece__price">{{ product.price | money | strip_html }}{% if cfg.card_was and product.compare_at_price > product.price %}<span>{{ product.compare_at_price | money | strip_html }}</span>{% endif %}</p>
               {%- if swatch_values != blank -%}
                 <span class="piece__swatches" aria-hidden="true">
                   {%- assign swatches = swatch_values | split: '~' -%}
