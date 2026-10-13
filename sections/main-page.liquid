@@ -24,19 +24,25 @@
   endfor
 -%}
 {%- unless page_is_designed -%}
-<article>
-  {%- if section.settings.show_title %}
-  <header class="store-head container" data-reveal>
-    {%- if section.settings.eyebrow != blank %}
-    <p class="store-head__eyebrow">{{ section.settings.eyebrow }}</p>
+{%- comment -%}
+  Title and content sit in one column, so the title starts where the words
+  under it do. The empty paragraphs an editor leaves behind as spacing are
+  dropped: the stylesheet spaces the page, and on a long page they add up to
+  screens of nothing.
+{%- endcomment -%}
+<article class="container">
+  <div class="store-page">
+    {%- if section.settings.show_title %}
+    <header class="store-head" data-reveal>
+      {%- if section.settings.eyebrow != blank %}
+      <p class="store-head__eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif %}
+      <h1 class="store-head__title">{{ page.title }}</h1>
+    </header>
     {%- endif %}
-    <h1 class="store-head__title">{{ page.title }}</h1>
-  </header>
-  {%- endif %}
 
-  <div class="container">
     <div class="store-article store-article--page" data-reveal>
-      {{ page.content }}
+      {{ page.content | replace: '<p>&nbsp;</p>', '' | replace: '<p></p>', '' }}
     </div>
   </div>
 </article>
