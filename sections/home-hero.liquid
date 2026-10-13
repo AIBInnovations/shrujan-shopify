@@ -1,13 +1,15 @@
 {%- render 'section-design', section: section -%}
 
 {%- comment -%}
-  The hero is one film: the craft montage, edge to edge and a full screen tall,
-  with the headline set over its middle. Nothing else sits in it.
+  The hero is one film: the craft montage, on the marquee's inset and ending at
+  the bottom of the screen, with the headline set over its middle. Nothing else
+  sits in it.
 
-  Hero-specific controls. The film's height is a share of the screen
-  (--hero-h, 100 packaged) and it plays under a dark wash that keeps the words
-  readable (--hero-scrim, 0.45 packaged). Nothing is emitted unless a setting
-  has moved, so an untouched hero is byte-identical.
+  Hero-specific controls. --hero-h is how far down the screen the film reaches,
+  header included (100 packaged, the bottom of the screen), and it plays under
+  a dark wash that keeps the words readable (--hero-scrim, 0.45 packaged).
+  Nothing is emitted unless a setting has moved, so an untouched hero is
+  byte-identical.
 
   The two heights are each written inside their own width range rather than one
   overriding the other, so changing the desktop height leaves a phone on its own
@@ -181,7 +183,7 @@
       "type": "range",
       "id": "hero_h",
       "label": "Height",
-      "info": "How much of the screen the film fills. 100 is the whole screen. On phones, use the Mobile setting below.",
+      "info": "How far down the screen the film reaches, header included. 100 ends it at the bottom of the screen. On phones, use the Mobile setting below.",
       "min": 50,
       "max": 100,
       "step": 5,

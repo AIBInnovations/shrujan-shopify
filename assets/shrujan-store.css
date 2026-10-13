@@ -2188,27 +2188,40 @@
 /* ============================================================
    Hero, as one film
    ------------------------------------------------------------
-   The theme's home hero is the craft-film montage alone: edge to edge, a full
-   screen tall, with the headline set over its middle. The site still ships
-   the seven-cell bento, and its rules in the shared stylesheet are left
-   exactly as they are so that sheet keeps merging. Everything here is keyed
-   on .hero.hero--film, which outranks every one of them: the grid, the
-   breakpoint heights, and the offer-bar correction above.
+   The theme's home hero is the craft-film montage alone, with the headline
+   set over its middle. The site still ships the seven-cell bento, and its
+   rules in the shared stylesheet are left exactly as they are so that sheet
+   keeps merging. Everything here is keyed on .hero.hero--film, which outranks
+   every one of them: the grid, the breakpoint heights, and the offer-bar
+   correction above.
+
+   The film is a card on the same rail as the marquee under it: the marquee's
+   inset at the top and sides, and its corner radius. The marquee's own top
+   margin is the gap between the two.
+
+   It ends at the bottom of the screen rather than a full screen below the
+   header. The sum is the one the other fold-filling mastheads use: the screen,
+   less the header, less the offer bar, less the inset above the film and the
+   same again beneath it. --hero-inset is that inset, so the margin and the
+   height cannot drift apart.
 
    The height is a floor rather than a fixed height. On a short, wide phone
    the words need more room than the screen has, and a fixed height would
    crop them.
    ============================================================ */
 .hero.hero--film {
+  --hero-inset: 6px;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0;
   padding: 0;
+  margin: var(--hero-inset) var(--hero-inset) 0;
   max-width: none;
   height: auto;
-  min-height: calc(var(--hero-h, 100) * 1vh);
+  min-height: calc(var(--hero-h, 100) * 1vh - var(--header-h, 130px) - var(--offer-h, 0px) - var(--hero-inset) * 2);
+  border-radius: var(--radius);
   overflow: hidden;
   background: var(--ink);
 }
@@ -2217,7 +2230,7 @@
    the browser's own bars */
 @supports (height: 100svh) {
   .hero.hero--film {
-    min-height: calc(var(--hero-h, 100) * 1svh);
+    min-height: calc(var(--hero-h, 100) * 1svh - var(--header-h, 130px) - var(--offer-h, 0px) - var(--hero-inset) * 2);
   }
 }
 
@@ -2305,6 +2318,11 @@
 }
 
 @media (max-width: 720px) {
+  /* the marquee tightens to 5px here, and the film stays on its rail */
+  .hero.hero--film {
+    --hero-inset: 5px;
+  }
+
   .hero-film__message {
     padding-inline: 22px;
   }
