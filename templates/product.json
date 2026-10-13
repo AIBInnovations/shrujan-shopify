@@ -12,7 +12,7 @@
     "main": {
       "type": "product-piece",
       "settings": {
-        "size_guide_url": "shopify://pages/size-chart"
+        "size_guide_page": "size-chart"
       }
     }
   },

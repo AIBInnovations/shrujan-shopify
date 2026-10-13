@@ -435,6 +435,105 @@
   }
 }
 
+/* ---- product page: the size guide, over the product ---------- */
+/* A native dialog, so the page behind is inert, Escape closes it and focus
+   comes back to the button without a line of script. The panel is the chart's
+   width on a desk and nearly the screen's on a phone; its body scrolls, its
+   heading does not. The chart inside is the page's own content, so it takes
+   the same table rules the size chart page does. */
+.pdp-guide {
+  width: min(1180px, calc(100vw - 28px));
+  max-width: none;
+  max-height: min(88vh, 860px);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--ivory);
+  color: var(--ink);
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(26, 12, 10, 0.35);
+}
+
+.pdp-guide[open] {
+  display: flex;
+  flex-direction: column;
+  animation: lb-in 0.22s var(--ease) both;
+}
+
+.pdp-guide::backdrop {
+  background: rgba(26, 12, 10, 0.62);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+.pdp-guide__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: clamp(18px, 2vw, 26px) clamp(18px, 2.4vw, 32px) 14px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.pdp-guide__eyebrow {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gerua);
+}
+
+.pdp-guide__title {
+  margin-top: 6px;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(24px, calc(20px + 0.9vw), 34px);
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.pdp-guide__close {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--hairline);
+  border-radius: 50%;
+  color: var(--ink);
+  transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
+}
+
+.pdp-guide__close:hover {
+  color: var(--gerua);
+  border-color: var(--gerua);
+}
+
+.pdp-guide__body.store-article {
+  max-width: none;
+  margin: 0;
+  padding: 18px clamp(18px, 2.4vw, 32px) clamp(20px, 2.4vw, 32px);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+/* the page's own heading names every garment; the panel's names this one */
+.pdp-guide__body :is(h1, h2):first-of-type { display: none; }
+.pdp-guide__body :is(p, li) { max-width: 78ch; }
+.pdp-guide__body > :first-child,
+.pdp-guide__body > :first-child > :first-child { margin-top: 0; }
+.pdp-guide__body::after { content: ''; display: block; clear: both; }
+
+@media (max-width: 600px) {
+  .pdp-guide { max-height: 90vh; }
+
+  .pdp-guide__body img[style*='float'] {
+    float: none !important;
+    display: block;
+    margin: 0 0 14px !important;
+  }
+}
+
 /* ---- forms (account, password, search) ---------------------- */
 .store-form {
   display: grid;
@@ -1699,6 +1798,38 @@
    `.piece` declares no display of its own, so this only has to out-rank the
    UA sheet; !important keeps it ahead of anything added after it. */
 .piece[hidden] { display: none !important; }
+
+/* Cards in a row are one height, but what each carries is not: a craft line
+   or a row of swatches on one card put its price a line below its
+   neighbour's. The card is a column and the price sits at the foot of it, so
+   the prices in a row share a line whatever is above them. The space the
+   price kept above itself as a margin becomes padding, since the margin is
+   now what does the pushing. */
+.piece {
+  display: flex;
+  flex-direction: column;
+}
+
+.piece__media {
+  flex: none;
+}
+
+.piece__info {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+.piece__price {
+  margin-top: auto;
+  padding-top: 10px;
+}
+
+@media (max-width: 720px) {
+  .piece__price {
+    padding-top: 6px;
+  }
+}
 
 /* A collection with no cover image and no product to borrow one from — sized
    like the photograph it stands in for, inside the medallion's disc. */

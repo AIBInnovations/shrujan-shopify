@@ -147,9 +147,6 @@
 
 
       assign card_craft = product.metafields.shrujan.craft.value
-      if card_craft == blank
-        assign card_craft = product.type
-      endif
 
       assign card_swatches = product.metafields.shrujan.swatches.value
     -%}

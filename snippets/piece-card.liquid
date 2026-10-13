@@ -5,7 +5,7 @@
   colour swatches.
 
   Every value is the real product's. The craft line is the `shrujan.craft`
-  metafield, falling back to the product type; the swatch discs are the
+  metafield, drawn only where a product has one; the swatch discs are the
   `shrujan.swatches` colour list; the badge is decided by snippets/piece-badge,
   which reads the two prices before it reads a metafield.
 
@@ -13,10 +13,13 @@
   sale_badge (false to suppress the computed "N% off").
 {%- endcomment -%}
 {%- liquid
+  comment
+    The craft line is the craft and nothing else. It used to fall back to the
+    product type, which on a real catalogue is "clothing" on some pieces and
+    blank on others: a row of cards with the line on half of them, each price
+    a line lower than its neighbour's.
+  endcomment
   assign card_craft = product.metafields.shrujan.craft.value
-  if card_craft == blank
-    assign card_craft = product.type
-  endif
 
   comment
     Normalised to a real boolean before it travels on: an omitted `sale_badge`

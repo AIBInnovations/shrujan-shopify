@@ -310,11 +310,12 @@
           <div class="pdp__block">
             <div class="pdp__label-row">
               <p class="pdp__label">Size</p>
-              {%- if cfg.size_guide_url != blank -%}
-                <a class="pdp__size-guide" href="{{ cfg.size_guide_url }}" target="_blank" rel="noopener">Size guide</a>
-              {%- else -%}
-                <button type="button" class="pdp__size-guide">Size guide</button>
-              {%- endif -%}
+              {%- comment -%}
+                With a size chart page chosen the button opens that chart over
+                the product, and stays hidden until the script has found this
+                garment's rows in it. Without one it opens the fit panel.
+              {%- endcomment -%}
+              <button type="button" class="pdp__size-guide"{% if cfg.size_guide_page != blank %} data-pdp-guide-open hidden{% endif %}>Size guide</button>
             </div>
             <div class="pdp__sizes" role="group" aria-label="Size">
               {%- for sz in size_list -%}
@@ -568,6 +569,29 @@
         </div>
       </section>
     {%- endif -%}
+
+    {%- comment -%}
+      The size guide, over the product rather than on a page of its own. The
+      store keeps one chart for every garment; the script keeps the rows for
+      this one and hides the rest, matching a row group to the product by name
+      (a group called Top to a product whose title, type, tags or collections
+      say Top). The words the script matches against travel on the element.
+    {%- endcomment -%}
+    {%- if cfg.size_guide_page != blank and from_variants -%}
+      {%- capture guide_context -%}{{ product.title }} | {{ product.type }} | {{ product.tags | join: ' | ' }}{% for guide_coll in product.collections %} | {{ guide_coll.title }}{% endfor %}{%- endcapture -%}
+      <dialog class="pdp-guide" data-pdp-guide data-lenis-prevent aria-labelledby="pdp-guide-title-{{ section.id }}" data-context="{{ guide_context | strip_html | downcase | escape }}">
+        <div class="pdp-guide__head">
+          <div>
+            <p class="pdp-guide__eyebrow">Size guide</p>
+            <h2 class="pdp-guide__title" id="pdp-guide-title-{{ section.id }}" data-pdp-guide-title>{{ cfg.size_guide_page.title }}</h2>
+          </div>
+          <button type="button" class="pdp-guide__close" data-pdp-guide-close aria-label="Close the size guide"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="pdp-guide__body store-article">
+          {{ cfg.size_guide_page.content | replace: '<p>&nbsp;</p>', '' | replace: '<p> </p>', '' | replace: '<p></p>', '' }}
+        </div>
+      </dialog>
+    {%- endif -%}
   </div>
 {%- endif -%}
 
@@ -627,18 +651,28 @@
     else window.scrollTo(0, y);
   }
 
-  // Thumbnails scroll to that shot's band rather than setting state directly,
-  // so scroll position stays the single source of truth for what is showing.
-  function jumpTo(i) {
+  // Which picture the scroll position asks for: the section is divided into as
+  // many bands as there are shots. -1 when the page is too short to have any.
+  function bandNow() {
     var el = pdpEl;
-    if (!el || !shotEls.length) return;
-    var travel = el.offsetHeight - window.innerHeight;
-    if (travel <= 0) return;
-    scrollTo(el.offsetTop + (travel * (i + 0.5)) / shotEls.length);
+    if (!el || !shotEls.length) return -1;
+    var r = el.getBoundingClientRect();
+    var travel = r.height - window.innerHeight;
+    if (travel <= 0) return -1;
+    var progress = Math.min(1, Math.max(0, -r.top / travel));
+    return Math.min(shotEls.length - 1, Math.floor(progress * shotEls.length));
   }
 
+  // A thumbnail shows its picture where the page is. It used to scroll the page
+  // to that picture's band, which moved the buying column out from under the
+  // reader for the sake of a picture. The choice holds while the page stays in
+  // the band it was made in; scroll into another and the scroll decides again.
+  var pinnedBand = -1;
   thumbEls.forEach(function (t, i) {
-    t.addEventListener('click', function () { jumpTo(i); });
+    t.addEventListener('click', function () {
+      pinnedBand = bandNow();
+      setActive(i);
+    });
   });
 
   // A size is a variant when the product has real options — the button carries
@@ -679,14 +713,88 @@
     });
   });
 
-  // "Size guide" is a link when the store has a size chart page. Otherwise it
-  // opens the fit panel, which is marked in the markup so reordering the
-  // accordions cannot silently open the wrong one. With neither, there is
-  // nothing for it to do and it is not shown.
+  // "Size guide" opens the store's size chart over the product when a chart
+  // page has been chosen. Otherwise it opens the fit panel, which is marked in
+  // the markup so reordering the accordions cannot silently open the wrong one.
+  // With neither, there is nothing for it to do and it is not shown.
   var sizeGuideBtn = root.querySelector('.pdp__size-guide');
   var fitEl = root.querySelector('[data-pdp-fit]');
-  if (sizeGuideBtn && sizeGuideBtn.tagName === 'BUTTON' && !fitEl) sizeGuideBtn.hidden = true;
-  if (sizeGuideBtn && sizeGuideBtn.tagName === 'BUTTON' && fitEl) {
+  var guideEl = root.querySelector('[data-pdp-guide]');
+  var guideWanted = sizeGuideBtn && sizeGuideBtn.hasAttribute('data-pdp-guide-open');
+
+  // Keeps this garment's rows of the chart and hides the others. The chart is
+  // read as it is written: the rows before the first one with figures are its
+  // headings; a name in the first column starts a group that runs until the
+  // next name. Returns the group's name, or null when the chart has no rows
+  // for this product, in which case no guide is better than another garment's.
+  function keepGarmentRows(table, context) {
+    var rows = Array.prototype.slice.call(table.rows);
+    var text = function (cell) { return cell ? cell.textContent.replace(/\u00a0/g, ' ').trim() : ''; };
+    var hasFigures = function (row) {
+      for (var c = 2; c < row.cells.length; c++) if (/\d/.test(text(row.cells[c]))) return true;
+      return false;
+    };
+    var first = 0;
+    while (first < rows.length && !hasFigures(rows[first])) first++;
+    if (first === 0 || first >= rows.length) return null;
+
+    var groups = [], current = null, headLabel = null;
+    for (var h = 1; h < first; h++) {
+      if (text(rows[h].cells[0])) { headLabel = rows[h].cells[0]; current = { name: text(headLabel), rows: [] }; }
+    }
+    if (current) groups.push(current);
+    for (var i = first; i < rows.length; i++) {
+      var label = text(rows[i].cells[0]);
+      if (label) { current = { name: label, rows: [] }; groups.push(current); }
+      if (current) current.rows.push(rows[i]);
+    }
+
+    var named = function (haystack) {
+      for (var g = 0; g < groups.length; g++) {
+        var word = groups[g].name.toLowerCase().replace(/[^a-z0-9 ]/g, '');
+        if (word && new RegExp('(^|[^a-z])' + word + 's?([^a-z]|$)').test(haystack)) return groups[g];
+      }
+      return null;
+    };
+    // the title speaks first; the type, tags and collections only if it says nothing
+    var match = named(context.split('|')[0]) || named(context);
+    if (!match) return null;
+    var keep = match.rows.filter(hasFigures);
+    if (!keep.length) return null;
+
+    for (var d = first; d < rows.length; d++) rows[d].hidden = keep.indexOf(rows[d]) < 0;
+    // a group named on a heading row would otherwise sit over another garment's figures
+    if (headLabel && text(headLabel) !== match.name) headLabel.textContent = '';
+    return match.name;
+  }
+
+  if (guideWanted && guideEl) {
+    var chart = guideEl.querySelector('table');
+    var garment = chart ? keepGarmentRows(chart, guideEl.getAttribute('data-context') || '') : null;
+    if (garment) {
+      var guideTitle = guideEl.querySelector('[data-pdp-guide-title]');
+      if (guideTitle) guideTitle.textContent = garment;
+      sizeGuideBtn.hidden = false;
+      sizeGuideBtn.addEventListener('click', function () {
+        if (guideEl.showModal) guideEl.showModal();
+        else guideEl.setAttribute('open', '');
+        if (window.Shrujan && window.Shrujan.stopScroll) window.Shrujan.stopScroll();
+      });
+      var closeGuide = function () {
+        if (guideEl.close) guideEl.close();
+        else guideEl.removeAttribute('open');
+      };
+      guideEl.querySelector('[data-pdp-guide-close]').addEventListener('click', closeGuide);
+      // a click on the dimmed page around the panel closes it; one inside does not
+      guideEl.addEventListener('click', function (e) { if (e.target === guideEl) closeGuide(); });
+      guideEl.addEventListener('close', function () {
+        if (window.Shrujan && window.Shrujan.startScroll) window.Shrujan.startScroll();
+      });
+    }
+  } else if (sizeGuideBtn && !guideWanted && !fitEl) {
+    sizeGuideBtn.hidden = true;
+  }
+  if (sizeGuideBtn && !guideWanted && fitEl) {
     sizeGuideBtn.addEventListener('click', function () {
       var i = detailEls.indexOf(fitEl);
       if (i < 0) return;
@@ -738,13 +846,13 @@
 
     var read = function () {
       queued = false;
-      var el = pdpEl;
-      if (!el) return;
-      var r = el.getBoundingClientRect();
-      var travel = r.height - window.innerHeight;
-      if (travel <= 0) return;
-      var progress = Math.min(1, Math.max(0, -r.top / travel));
-      setActive(Math.min(shotEls.length - 1, Math.floor(progress * shotEls.length)));
+      var band = bandNow();
+      if (band < 0) return;
+      if (pinnedBand > -1) {
+        if (band === pinnedBand) return; // a thumbnail's choice stands until the page moves on
+        pinnedBand = -1;
+      }
+      setActive(band);
     };
 
     var onScroll = function () {
@@ -815,10 +923,10 @@
       "default": true
     },
     {
-      "type": "url",
-      "id": "size_guide_url",
-      "label": "Size guide link",
-      "info": "The page with your size chart. Empty makes the button open the \"fit\" panel instead."
+      "type": "page",
+      "id": "size_guide_page",
+      "label": "Size chart page",
+      "info": "Opens over the product as a pop-up showing only the rows for this garment. A group of rows is matched to a product by its name in the chart’s first column: a group called Top shows on products whose title, type, tags or collections say Top. A product with no group in the chart gets no size guide."
     },
     {
       "type": "header",

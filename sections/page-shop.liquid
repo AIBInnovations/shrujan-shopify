@@ -287,9 +287,6 @@
           assign card_img = product.featured_image
 
           assign card_craft = product.metafields.shrujan.craft.value
-          if card_craft == blank
-            assign card_craft = product.type
-          endif
 
           assign card_swatches = product.metafields.shrujan.swatches.value
         -%}
@@ -484,15 +481,45 @@
     });
   }
 
+  /* Lands on the grid through the theme's own scroller. A native scrollIntoView
+     is undone by the smooth scroller on its next frame, which is why a category
+     link used to leave the visitor on the masthead. Arriving, the jump is
+     immediate and repeated while the page above is still settling, so the
+     pieces are where the visitor starts; it stops the moment they move the
+     page themselves. A filter pressed on the page glides instead. */
+  function landOnGrid(arriving) {
+    var el = document.getElementById('catalogue');
+    if (!el) return;
+    var S = window.Shrujan;
+    if (!S || !S.scrollToY) {
+      el.scrollIntoView({ behavior: arriving ? 'auto' : 'smooth', block: 'start' });
+      return;
+    }
+    if (!arriving) {
+      S.scrollToAnchor(el);
+      return;
+    }
+    var tries = 0;
+    var theirs = false;
+    var release = function () { theirs = true; };
+    ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function (type) {
+      window.addEventListener(type, release, { passive: true, once: true });
+    });
+    var aim = function () {
+      if (theirs) return;
+      S.scrollToY(Math.max(0, el.getBoundingClientRect().top + window.scrollY - (S.HASH_OFFSET || 96)), { immediate: true });
+      tries += 1;
+      if (tries < 12) setTimeout(aim, 150);
+    };
+    aim();
+  }
+
   /* ?c= is the whole URL contract: replaceState, then re-filter. Arriving on a
      filter should land on the grid, not the masthead. */
-  function onParamsChange() {
+  function onParamsChange(arriving) {
     active = readActive();
     render();
-    if (new URLSearchParams(location.search).get('c')) {
-      var el = document.getElementById('catalogue');
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    if (new URLSearchParams(location.search).get('c')) landOnGrid(arriving === true);
   }
 
   function setActive(c) {
@@ -641,7 +668,7 @@
   if (sort && sort !== 'featured') applySort();
 
   /* initial state from the URL (?c=), exactly as useSearchParams read it on mount */
-  onParamsChange();
+  onParamsChange(true);
 })();
 </script>
 
