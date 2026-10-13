@@ -442,7 +442,10 @@
    heading does not. The chart inside is the page's own content, so it takes
    the same table rules the size chart page does. */
 .pdp-guide {
-  width: min(1180px, calc(100vw - 28px));
+  /* the theme resets every margin, and a dialog centres itself with its own */
+  inset: 0;
+  margin: auto;
+  width: min(1240px, calc(100vw - 28px));
   max-width: none;
   max-height: min(88vh, 860px);
   padding: 0;
