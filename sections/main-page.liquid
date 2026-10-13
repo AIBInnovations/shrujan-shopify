@@ -28,7 +28,9 @@
   Title and content sit in one column, so the title starts where the words
   under it do. The empty paragraphs an editor leaves behind as spacing are
   dropped: the stylesheet spaces the page, and on a long page they add up to
-  screens of nothing.
+  screens of nothing. Shopify hands the space back either as the entity or as
+  the character itself, so both are matched; the second replace below holds a
+  real no-break space between its tags, which most editors show as a space.
 {%- endcomment -%}
 <article class="container">
   <div class="store-page">
@@ -42,7 +44,7 @@
     {%- endif %}
 
     <div class="store-article store-article--page" data-reveal>
-      {{ page.content | replace: '<p>&nbsp;</p>', '' | replace: '<p></p>', '' }}
+      {{ page.content | replace: '<p>&nbsp;</p>', '' | replace: '<p> </p>', '' | replace: '<p></p>', '' }}
     </div>
   </div>
 </article>
