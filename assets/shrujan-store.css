@@ -1802,36 +1802,14 @@
    UA sheet; !important keeps it ahead of anything added after it. */
 .piece[hidden] { display: none !important; }
 
-/* Cards in a row are one height, but what each carries is not: a craft line
-   or a row of swatches on one card put its price a line below its
-   neighbour's. The card is a column and the price sits at the foot of it, so
-   the prices in a row share a line whatever is above them. The space the
-   price kept above itself as a margin becomes padding, since the margin is
-   now what does the pushing. */
-.piece {
-  display: flex;
-  flex-direction: column;
-}
-
-.piece__media {
-  flex: none;
-}
-
-.piece__info {
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-}
-
-.piece__price {
-  margin-top: auto;
-  padding-top: 10px;
-}
-
-@media (max-width: 720px) {
-  .piece__price {
-    padding-top: 6px;
-  }
+/* Cards in a row line up because each keeps the same room above its price.
+   The name always holds two lines. Where a grid carries the small line under
+   the name on some cards and not on others, the cards without it keep that
+   line's room: its top margin and one line of its type. A price that needs a
+   second line for its struck-through figure then grows downward, and the
+   first line of every price in the row stays level. */
+:has(> .piece .piece__craft) > .piece:not(:has(.piece__craft)) .piece__name {
+  margin-bottom: calc(5px + 1.6 * clamp(12.3px, calc(11.9px + 0.101vw), 14.6px));
 }
 
 /* A collection with no cover image and no product to borrow one from — sized
