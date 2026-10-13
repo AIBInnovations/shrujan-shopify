@@ -121,7 +121,6 @@
         <div class="reel__media">
           <video src="{{ 'reel-' | append: forloop.index | append: '.mp4' | asset_url }}" poster="{{ 'reel-' | append: forloop.index | append: '-poster.jpg' | asset_url }}" muted {% if r.loop %}loop {% endif %}playsinline preload="none" aria-label="{{ block.settings.title | escape }}"></video>
           <span class="reel__scrim" aria-hidden="true"></span>
-          <span class="reel__meta">{{ block.settings.meta | escape }}</span>
           <p class="reel__title">{{ block.settings.title | escape }}</p>
         </div>
         {%- if r.show_pennants and pennant_count > 0 -%}
@@ -574,12 +573,6 @@
           "default": "Indigo mirror-work jacket"
         },
         {
-          "type": "text",
-          "id": "meta",
-          "label": "Duration",
-          "default": "0:27"
-        },
-        {
           "type": "url",
           "id": "link",
           "label": "Link"
@@ -595,7 +588,6 @@
           "type": "reel",
           "settings": {
             "title": "Indigo mirror-work jacket",
-            "meta": "0:27",
             "link": "https://www.instagram.com/shrujanindia/reels/"
           }
         },
@@ -603,7 +595,6 @@
           "type": "reel",
           "settings": {
             "title": "Coral Kutchi embroidered sari",
-            "meta": "0:33",
             "link": "https://www.instagram.com/shrujanindia/reels/"
           }
         },
@@ -611,7 +602,6 @@
           "type": "reel",
           "settings": {
             "title": "Sheer embroidered kurta",
-            "meta": "0:32",
             "link": "https://www.instagram.com/shrujanindia/reels/"
           }
         },
@@ -619,7 +609,6 @@
           "type": "reel",
           "settings": {
             "title": "Shrujan, since 1969",
-            "meta": "0:11",
             "link": "https://www.instagram.com/shrujanindia/reels/"
           }
         },
@@ -627,7 +616,6 @@
           "type": "reel",
           "settings": {
             "title": "Turquoise Kutchi sari",
-            "meta": "0:30",
             "link": "https://www.instagram.com/shrujanindia/reels/"
           }
         }
