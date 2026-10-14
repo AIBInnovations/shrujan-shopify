@@ -27,12 +27,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     {%- comment -%} the pairing chosen in Theme settings → Typography {%- endcomment -%}
     {%- comment -%}
-      Heritage, the default: Sahitya, a calligraphic serif drawn alongside
-      Devanagari, for every serif line, headlines included (--font-display);
-      only its regular weight is loaded, so a heading that asks for 500 or 600
-      stays regular, and the browser is told not to fake a bold
+      Heritage, the default: Marcellus, flared Roman letters in the manner of
+      carved inscriptions, for every serif line, headlines included
+      (--font-display); it has one weight, so a heading that asks for 500 or
+      600 stays regular and the browser is told not to fake a bold
       (font_synthesis_off; it may still fake the small capitals the stat
       labels use). Hind, from the Indian Type Foundry, for everything in sans.
+      Calligraphic: Sahitya, drawn alongside Devanagari, with Hind.
       Poster: Rozha One, the Indian Type Foundry's high-contrast display face,
       for headlines, with Eczar and Hind; heavier.
       Original is the pairing the site was first designed with.
@@ -58,9 +59,14 @@
         {%- assign font_serif = "'Eczar', 'Iowan Old Style', Georgia, serif" -%}
         {%- assign font_sans = "'Hind', 'Segoe UI', system-ui, sans-serif" -%}
         {%- assign font_synthesis_off = true -%}
-      {%- else -%}
+      {%- when 'calligraphic' -%}
         {%- assign font_families = 'family=Sahitya:wght@400&family=Hind:wght@300;400;500;600' -%}
         {%- assign font_serif = "'Sahitya', 'Iowan Old Style', Georgia, serif" -%}
+        {%- assign font_sans = "'Hind', 'Segoe UI', system-ui, sans-serif" -%}
+        {%- assign font_synthesis_off = true -%}
+      {%- else -%}
+        {%- assign font_families = 'family=Marcellus&family=Hind:wght@300;400;500;600' -%}
+        {%- assign font_serif = "'Marcellus', 'Optima', Georgia, serif" -%}
         {%- assign font_sans = "'Hind', 'Segoe UI', system-ui, sans-serif" -%}
         {%- assign font_synthesis_off = true -%}
     {%- endcase -%}

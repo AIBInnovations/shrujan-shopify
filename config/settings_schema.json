@@ -49,10 +49,11 @@
         "type": "select",
         "id": "font_pairing",
         "label": "Font pairing",
-        "info": "Heritage and Poster are upright faces drawn alongside Indian scripts; Poster sets headlines in the heavier Rozha One. Original is the pairing the site was first designed with.",
+        "info": "Heritage sets headlines in Marcellus, flared Roman letters. Calligraphic and Poster use faces drawn alongside Indian scripts; Poster is the heaviest. Original is the pairing the site was first designed with.",
         "default": "heritage",
         "options": [
-          { "value": "heritage", "label": "Heritage: Sahitya + Hind" },
+          { "value": "heritage", "label": "Heritage: Marcellus + Hind" },
+          { "value": "calligraphic", "label": "Calligraphic: Sahitya + Hind" },
           { "value": "poster", "label": "Poster: Rozha One + Eczar + Hind" },
           { "value": "original", "label": "Original: Cormorant Garamond + Jost" },
           { "value": "classic", "label": "Classic: Playfair Display + Inter" },
