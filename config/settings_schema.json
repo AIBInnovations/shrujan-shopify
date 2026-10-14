@@ -38,8 +38,8 @@
       { "type": "color", "id": "color_gerua", "label": "Primary accent", "default": "#b23127" },
       { "type": "color", "id": "color_gerua_600", "label": "Accent hover", "default": "#90231c" },
       { "type": "color", "id": "color_gerua_300", "label": "Accent on dark", "default": "#c05c50" },
-      { "type": "color", "id": "color_gold", "label": "Gold", "default": "#b99155" },
-      { "type": "color", "id": "color_tan", "label": "Tan", "default": "#c7a56a" }
+      { "type": "color", "id": "color_gold", "label": "Numerals and ornaments", "default": "#b23127" },
+      { "type": "color", "id": "color_tan", "label": "Accent on dark panels", "default": "#e3a08f" }
     ]
   },
   {
@@ -49,11 +49,10 @@
         "type": "select",
         "id": "font_pairing",
         "label": "Font pairing",
-        "info": "Heritage and Kutch are typefaces drawn alongside Indian scripts. Original is the pairing the site was first designed with.",
+        "info": "Heritage is three upright faces drawn alongside Indian scripts: Rozha One for headlines, Eczar for smaller serif text, Hind for the rest. Original is the pairing the site was first designed with.",
         "default": "heritage",
         "options": [
-          { "value": "heritage", "label": "Heritage: Tiro Devanagari + Hind" },
-          { "value": "kutch", "label": "Kutch: Eczar + Mukta" },
+          { "value": "heritage", "label": "Heritage: Rozha One + Eczar + Hind" },
           { "value": "original", "label": "Original: Cormorant Garamond + Jost" },
           { "value": "classic", "label": "Classic: Playfair Display + Inter" },
           { "value": "modern", "label": "Modern: Fraunces + Work Sans" }

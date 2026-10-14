@@ -3218,3 +3218,79 @@ html {
     text-align: left;
   }
 }
+
+/* ============================================================
+   Type and colour: Indian faces, upright, no gold
+   ------------------------------------------------------------
+   The big headlines take the display face (--font-display, Rozha One in the
+   Heritage pairing; the serif in the others). Everything stays upright: the
+   accent words the headings pick out keep their colour, not a slant, and
+   nothing on the site is set in italic or script.
+
+   The gold is gone. Ornaments and numerals on light ground take the madder
+   red the eyebrows use (--gold, set in Theme settings), and the accent on
+   dark panels is a madder rose (--tan). The tints below were written as
+   the old gold's rgba and now follow --tan. The subscribe button, which
+   was a gold slab on the maroon footer, is ivory.
+   ============================================================ */
+:is(h1, .hero-message__title, .section-title, .page-hero__title, .tw__title, .shopcta__title, .atelier__title, .spotlight__title, .store-head__title, .visit-hero__title, .poster__lead, .fletters__title, .navlead__title) {
+  font-family: var(--font-display, var(--font-serif));
+}
+
+*,
+*::before,
+*::after {
+  font-style: normal !important;
+}
+
+.seal__ring {
+  box-shadow: 0 0 0 1px var(--hairline), 0 0 0 7px var(--ivory), 0 0 0 8px color-mix(in srgb, var(--tan) 50%, transparent);
+}
+
+.footer {
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--tan) 32%, transparent);
+}
+
+.fbrand__tag span {
+  color: color-mix(in srgb, var(--tan) 66%, transparent);
+}
+
+.fletters__form {
+  border-color: color-mix(in srgb, var(--tan) 40%, transparent);
+}
+
+.freach__label {
+  color: color-mix(in srgb, var(--tan) 70%, transparent);
+}
+
+.footer__bottom {
+  border-top-color: color-mix(in srgb, var(--tan) 34%, transparent);
+}
+
+.footer__social {
+  border-color: color-mix(in srgb, var(--tan) 34%, transparent);
+}
+
+.marquee {
+  border-color: color-mix(in srgb, var(--tan) 45%, transparent);
+}
+
+.fmap {
+  border-top-color: color-mix(in srgb, var(--tan) 28%, transparent);
+}
+
+@media (max-width: 560px) {
+  .fmap__col {
+    border-bottom-color: color-mix(in srgb, var(--tan) 20%, transparent);
+  }
+}
+
+.fletters__form button {
+  background: var(--ivory);
+  color: var(--maroon);
+}
+
+.fletters__form button:hover {
+  background: var(--tan);
+  color: var(--maroon-deep);
+}

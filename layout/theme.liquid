@@ -27,26 +27,20 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     {%- comment -%} the pairing chosen in Theme settings → Typography {%- endcomment -%}
     {%- comment -%}
-      Heritage, the default: Tiro Devanagari Hindi, the classical Latin Tiro
-      Typeworks drew to sit beside its Devanagari, with its own italic for the
-      accent words; and Hind, from the Indian Type Foundry, for everything set in
-      sans. Tiro comes in one weight, and the stylesheets ask headings for 500
-      and 600, so the browser is told not to fake a bold (font_synthesis_off);
-      it may still fake small capitals, which the stat labels are set in.
-      Kutch: Eczar, Rosetta's display serif drawn alongside Devanagari, loaded
-      at 400 and 500 only so headings asking for 600 get its medium; it has no
-      italic, so the accent words borrow Tiro's. Mukta, from Ek Type, for sans.
-      Original: the pairing the site was first designed with.
+      Heritage, the default, is three faces with Indian roots, all upright:
+      Rozha One, the Indian Type Foundry's high-contrast display face in the
+      manner of Devanagari print and poster lettering, for the big headlines
+      (--font-display); Eczar, Rosetta's serif drawn alongside Devanagari, for
+      the smaller serif text, loaded at 400 and 500 so a heading asking for 600
+      gets its medium; and Hind, also from the Indian Type Foundry, for
+      everything set in sans. Rozha comes in one weight, so the browser is
+      told not to fake a bold (font_synthesis_off); it may still fake small
+      capitals, which the stat labels are set in.
+      Original is the pairing the site was first designed with.
     {%- endcomment -%}
     {%- assign font_synthesis_off = false -%}
-    {%- assign font_italic_from = '' -%}
+    {%- assign font_display = '' -%}
     {%- case settings.font_pairing -%}
-      {%- when 'kutch' -%}
-        {%- assign font_families = 'family=Eczar:wght@400;500&family=Tiro+Devanagari+Hindi:ital@1&family=Mukta:wght@300;400;500;600' -%}
-        {%- assign font_serif = "'Eczar', 'Iowan Old Style', Georgia, serif" -%}
-        {%- assign font_sans = "'Mukta', 'Segoe UI', system-ui, sans-serif" -%}
-        {%- assign font_synthesis_off = true -%}
-        {%- assign font_italic_from = "'Tiro Devanagari Hindi', Georgia, serif" -%}
       {%- when 'original' -%}
         {%- assign font_families = 'family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Jost:wght@300;400;500;600' -%}
         {%- assign font_serif = "'Cormorant Garamond', 'Times New Roman', Georgia, serif" -%}
@@ -60,11 +54,13 @@
         {%- assign font_serif = "'Fraunces', Georgia, serif" -%}
         {%- assign font_sans = "'Work Sans', system-ui, sans-serif" -%}
       {%- else -%}
-        {%- assign font_families = 'family=Tiro+Devanagari+Hindi:ital@0;1&family=Hind:wght@300;400;500;600' -%}
-        {%- assign font_serif = "'Tiro Devanagari Hindi', 'Iowan Old Style', Georgia, serif" -%}
+        {%- assign font_families = 'family=Rozha+One&family=Eczar:wght@400;500&family=Hind:wght@300;400;500;600' -%}
+        {%- assign font_display = "'Rozha One', 'Bodoni 72', Georgia, serif" -%}
+        {%- assign font_serif = "'Eczar', 'Iowan Old Style', Georgia, serif" -%}
         {%- assign font_sans = "'Hind', 'Segoe UI', system-ui, sans-serif" -%}
         {%- assign font_synthesis_off = true -%}
     {%- endcase -%}
+    {%- if font_display == blank -%}{%- assign font_display = font_serif -%}{%- endif -%}
     <link href="https://fonts.googleapis.com/css2?{{ font_families }}&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ 'shrujan-global.css' | asset_url }}">
     <link rel="stylesheet" href="{{ 'shrujan-pages.css' | asset_url }}">
@@ -114,6 +110,7 @@
 
         --font-serif: {{ font_serif }};
         --font-sans: {{ font_sans }};
+        --font-display: {{ font_display }};
 
         --page-max: {{ settings.page_max }}px;
         --header-max: {{ settings.header_max }}px;
@@ -143,9 +140,6 @@
       {%- if font_synthesis_off %}
       html { font-synthesis: style small-caps; }
       {%- endif -%}
-      {%- if font_italic_from != blank %}
-      :is(h1, h2, h3, h4, .section-title, [class*='title'], [class*='__lead'], [class*='__name']) :is(em, i) { font-family: {{ font_italic_from }}; }
-      {%- endif %}
       {%- if settings.type_scale != 100 -%}
         {%- assign ts = settings.type_scale | divided_by: 100.0 -%}
         body { font-size: calc(1rem * {{ ts }}); }
