@@ -49,10 +49,12 @@
         "type": "select",
         "id": "font_pairing",
         "label": "Font pairing",
-        "info": "Heritage is the pairing this site was designed with.",
+        "info": "Heritage and Kutch are typefaces drawn alongside Indian scripts. Original is the pairing the site was first designed with.",
         "default": "heritage",
         "options": [
-          { "value": "heritage", "label": "Heritage: Cormorant Garamond + Jost" },
+          { "value": "heritage", "label": "Heritage: Tiro Devanagari + Hind" },
+          { "value": "kutch", "label": "Kutch: Eczar + Mukta" },
+          { "value": "original", "label": "Original: Cormorant Garamond + Jost" },
           { "value": "classic", "label": "Classic: Playfair Display + Inter" },
           { "value": "modern", "label": "Modern: Fraunces + Work Sans" }
         ]
