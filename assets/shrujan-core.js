@@ -523,6 +523,22 @@
       var open = !item.classList.contains('is-open');
       item.classList.toggle('is-open', open);
       link.setAttribute('aria-expanded', open ? 'true' : 'false');
+      sizePanel(item, open);
+    }
+
+    /* The panel's height runs from where it is now to the content's measured
+       height (or to 0), then hands over to auto, so a picture that settles
+       late is never cut off. */
+    function sizePanel(item, open) {
+      var panel = item.querySelector('.nav-panel');
+      if (!panel) return;
+      clearTimeout(panel.__settle);
+      panel.style.height = panel.getBoundingClientRect().height + 'px';
+      panel.getBoundingClientRect(); // commit the start before the change
+      panel.style.height = (open ? panel.scrollHeight : 0) + 'px';
+      panel.__settle = setTimeout(function () {
+        panel.style.height = open ? 'auto' : '';
+      }, 320);
     }
 
     function initDrawerAccordions() {
@@ -560,6 +576,12 @@
       items.forEach(function (item) {
         if (item === except) return;
         item.classList.remove('is-open');
+        // a drawer panel holds its height inline; closing with the menu drops it
+        var panel = item.querySelector('.nav-panel');
+        if (panel) {
+          clearTimeout(panel.__settle);
+          panel.style.height = '';
+        }
         var link = item.querySelector('.nav-item__link');
         if (link && link.hasAttribute('aria-expanded')) link.setAttribute('aria-expanded', 'false');
       });
@@ -574,6 +596,7 @@
         var link = item.querySelector('.nav-item__link');
         if (link) {
           link.addEventListener('click', function (e) {
+            if (isDrawer()) return; // the drawer's own accordion handles it
             e.preventDefault();
             var open = item.classList.contains('is-open');
             closeAll(null);

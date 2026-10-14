@@ -2197,7 +2197,6 @@
     opacity: 0;
     transform: translateY(-8px);
     transition:
-      grid-template-rows 300ms var(--ease),
       opacity 160ms var(--ease),
       transform 160ms var(--ease);
   }
@@ -2206,7 +2205,6 @@
     opacity: 1;
     transform: none;
     transition:
-      grid-template-rows 300ms var(--ease),
       opacity 320ms var(--ease) calc(60ms + var(--i, 0) * 35ms),
       transform 420ms cubic-bezier(0.22, 1, 0.36, 1) calc(60ms + var(--i, 0) * 35ms);
   }
@@ -2257,16 +2255,18 @@
     transition: opacity 320ms var(--ease), visibility 0s;
   }
 
-  /* each item is its own accordion: the row stays, the panel is the 0fr→1fr
-     row underneath it, so the height animates without measuring anything */
+  /* Each item is its own accordion, and the drawer script animates the
+     panel's real height: from 0 to the measured content and back, then
+     handing over to auto. It used to be a grid row going 0fr → 1fr. With the
+     row in the item's own grid under the link, the browser gave the panel's
+     unused space to the link's row part-way through, so the link grew to five
+     times its height and shrank back and the whole panel dipped 230px and
+     returned; on its own grid, the panel's box ran ahead of what it showed,
+     opening a blank band. A measured height has neither. */
   .nav-item {
-    display: grid;
-    grid-template-rows: auto 0fr;
+    display: block;
     border-bottom: 1px solid var(--hairline);
-    transition: grid-template-rows 300ms var(--ease);
   }
-
-  .nav-item.is-open { grid-template-rows: auto 1fr; }
 
   .nav-item__link {
     display: flex;
@@ -2280,17 +2280,30 @@
   .nav-item__link svg { transition: transform 260ms var(--ease); }
   .nav-item.is-open > .nav-item__link svg { transform: rotate(180deg); }
 
-  .nav-panel {
+  .site-nav .nav-panel {
     position: static;
+    display: block;
+    height: 0;
     opacity: 1;
-    visibility: visible;
+    visibility: hidden;
     transform: none;
     overflow: hidden;
     min-height: 0;
-    transition: none;
+    transition:
+      height 300ms var(--ease),
+      visibility 0s linear 300ms;
+  }
+
+  .site-nav .nav-item.is-open > .nav-panel {
+    visibility: visible;
+    transition:
+      height 300ms var(--ease),
+      visibility 0s;
   }
 
   .nav-panel__sheet {
+    min-height: 0;
+    overflow: hidden;
     position: static;
     transform: none;
     border: 0;
