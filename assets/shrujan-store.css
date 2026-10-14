@@ -3114,3 +3114,94 @@ html {
     scroll-padding-inline: var(--edge, 5px);
   }
 }
+
+/* ---- the Shop page on a phone: assurances and the collection rail ----------
+   The five assurances were boxed cards two to a row, which left the fifth on
+   its own beside an empty cell, and each card ran to a fifth of the screen.
+   They are one compact list inside the panel: the mark on the left, the title
+   and its line on the right, a hairline between.
+
+   The collection rail wrapped twelve pills into five ragged rows. It is a
+   grid of buttons like the bag links on the home page, name on the left and
+   count on the right; Everything takes the top row, and an odd last button
+   takes its row too. */
+@media (max-width: 720px) {
+  .shop-assure {
+    padding-block: 4px;
+  }
+
+  .shop-assure__row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .shop-assure__row li,
+  .shop-assure__row li:nth-child(n) {
+    grid-template-columns: 40px minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    justify-items: start;
+    align-items: center;
+    column-gap: 14px;
+    row-gap: 2px;
+    padding: 14px 4px;
+    text-align: left;
+    background: transparent;
+    box-shadow: none;
+    border: 0;
+    border-top: 1px solid var(--hairline);
+  }
+
+  .shop-assure__row li:first-child {
+    border-top: 0;
+  }
+
+  .shop-assure__mark {
+    grid-row: 1 / span 2;
+    width: 40px;
+    margin: 0;
+    background: var(--ivory);
+  }
+
+  .shop-assure__title {
+    align-self: end;
+    font-size: 17px;
+  }
+
+  .shop-assure__copy {
+    display: block;
+    align-self: start;
+    font-size: 13px;
+  }
+
+  .shop-rail {
+    padding: 16px 12px 12px;
+  }
+
+  .shop-rail__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .shop-rail__list > li {
+    display: flex;
+    min-width: 0;
+  }
+
+  .shop-rail__list > li:first-child,
+  .shop-rail__list > li:last-child:nth-child(even) {
+    grid-column: 1 / -1;
+  }
+
+  .shop-rail__item {
+    flex: 1;
+    align-items: center;
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.25;
+    text-align: left;
+  }
+}
