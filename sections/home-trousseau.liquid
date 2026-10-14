@@ -237,6 +237,8 @@
       btn.setAttribute('aria-selected', active ? 'true' : 'false');
     });
     show(filter);
+    /* on a phone the cards are a swipe row; a new tab starts at its first card */
+    grid.scrollLeft = 0;
   }
 
   buttons.forEach(function (btn, i) {

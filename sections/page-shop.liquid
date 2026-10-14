@@ -434,6 +434,41 @@
     return ALL;
   }
 
+  /* On a phone the whole catalogue in one grid ran to forty screens. There the
+     grid shows a run of cards and a button adds the next run; on wider screens
+     the class it sets does nothing and the button never shows (see the Shop
+     page block in shrujan-store.css). Cards are counted in the grid's own
+     order, so the run follows whichever sort is on. */
+  var STEP = 24;
+  var limit = STEP;
+  var more = null;
+  if (grid) {
+    more = document.createElement('button');
+    more.type = 'button';
+    more.className = 'btn btn--ghost shop-more';
+    more.addEventListener('click', function () {
+      limit += STEP;
+      cap();
+      if (window.ScrollTrigger) window.ScrollTrigger.refresh();
+    });
+    grid.parentNode.insertBefore(more, grid.nextSibling);
+  }
+
+  function cap() {
+    if (!grid || !more) return;
+    var n = 0;
+    Array.prototype.forEach.call(grid.children, function (card) {
+      if (card.hasAttribute('hidden')) {
+        card.classList.remove('is-beyond');
+        return;
+      }
+      card.classList.toggle('is-beyond', n >= limit);
+      n++;
+    });
+    more.hidden = n <= limit;
+    more.textContent = 'Show more · ' + Math.min(limit, n) + ' of ' + n;
+  }
+
   function render() {
     var shown = 0;
 
@@ -471,6 +506,8 @@
       btn.classList.toggle('is-active', on);
       btn.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
+
+    cap();
   }
 
   /* the wish button sits inside the product link — its click must not navigate */
@@ -518,6 +555,7 @@
      filter should land on the grid, not the masthead. */
   function onParamsChange(arriving) {
     active = readActive();
+    limit = STEP;
     render();
     if (new URLSearchParams(location.search).get('c')) landOnGrid(arriving === true);
   }
@@ -624,6 +662,7 @@
 
   function pick(key) {
     sort = key;
+    limit = STEP;
     renderMenu();
     applySort();
     render();

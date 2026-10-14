@@ -102,6 +102,11 @@
         --dur: {{ 0.55 | times: speed }}s;
         --dur-slow: {{ 0.9 | times: speed }}s;
       }
+      /* a phone's own section gap: the shared clamp bottoms out at 56px, which on
+         a 390px screen is a seventh of its width between every two sections *
+      @media (max-width: 720px) {
+        :root { --section-gap: calc(clamp(40px, 11vw, 52px) * {{ gap_f }}); }
+      }
       {%- if settings.type_scale != 100 -%}
         {%- assign ts = settings.type_scale | divided_by: 100.0 -%}
         body { font-size: calc(1rem * {{ ts }}); }

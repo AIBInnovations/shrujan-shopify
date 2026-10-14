@@ -2512,3 +2512,336 @@
   }
 }
 
+
+/* ============================================================
+   Phones: swipe rows instead of card piles, and a working drawer
+   ------------------------------------------------------------
+   On a 390px screen the home page ran to nearly fourteen screens, most of
+   it cards stacked two by two: the seven categories, the four promises, the
+   eight archive photographs, the edit's products, the journal. Each of those
+   is now one row the shopper swipes through, the next card peeking in from
+   the right so the row reads as more-to-come. A row bleeds to the screen's
+   edges and keeps the gutter as its scroll padding, so its first card still
+   lines up with the text above it.
+
+   Reading blocks (intros, FAQ, the shop panel) still stack: a paragraph is
+   not a card.
+   ============================================================ */
+
+/* The drawer is the desktop nav restyled, and on desktop the nav is placed in
+   the header grid's first column. An absolutely placed grid child with a
+   column of its own takes that column as its containing block, so the drawer
+   began 22px in from the left edge and every row in it was shifted. With its
+   placement back to auto it spans the bar from edge to edge. */
+@media (max-width: 1200px) {
+  .site-nav {
+    grid-column: auto;
+    grid-row: auto;
+    max-height: calc(100dvh - var(--header-h, 74px) - var(--offer-h, 0px));
+  }
+
+  .site-header.is-fixed .site-nav {
+    max-height: calc(100dvh - var(--header-h, 74px));
+  }
+  /* the desktop rows pull 6px past their text so a hover tint has room; the
+     drawer takes the padding away, so the pull has to go with it or the rows
+     sit 6px left of the headings above them */
+  .navthumbs li a,
+  .navlinks li a {
+    margin-inline: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  /* ---- header: one bar, not three rows ------------------------------------
+     The currency and language buttons are not wired to anything, and on a
+     phone their row cost 45px on every screen, the fixed bar included. */
+  .topbar {
+    display: none;
+  }
+
+  /* the offer on one line: the phone message and its link fit 390px once the
+     tracking comes down */
+  .offer-bar__inner {
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+
+  .offer-bar__msg--m {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ---- the shared swipe row ---------------------------------------------- */
+  .house__grid,
+  .manifesto__grid,
+  .craft-wall,
+  .curated__grid:not(.shop-grid),
+  .journal-grid,
+  .curated__filters,
+  .house__strip-links {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    /* a centred row that overflows spills off its left edge, where no swipe
+       can reach it; the edit's grid is centred on desktop */
+    justify-content: flex-start;
+    gap: 10px;
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    scroll-padding-inline: var(--gutter);
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .house__grid::-webkit-scrollbar,
+  .manifesto__grid::-webkit-scrollbar,
+  .craft-wall::-webkit-scrollbar,
+  .curated__grid::-webkit-scrollbar,
+  .journal-grid::-webkit-scrollbar,
+  .curated__filters::-webkit-scrollbar,
+  .house__strip-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  .house__grid > *,
+  .manifesto__grid > *,
+  .curated__grid:not(.shop-grid) > *,
+  .journal-grid > * {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+  }
+
+  /* ---- what Shrujan has mastered: seven categories ----------------------- */
+  .house__grid > .house-tile {
+    flex-basis: 64vw;
+    min-height: 0;
+    height: auto;
+    aspect-ratio: 4 / 5;
+  }
+
+  /* the bag links: one row of pills under the cards, not a five-line panel */
+  .house__strip {
+    gap: 12px;
+    padding: 16px var(--gutter) 18px;
+  }
+
+  .house__strip-links {
+    gap: 8px;
+    margin-inline: calc(var(--gutter) * -1);
+    scroll-snap-type: none;
+  }
+
+  .house__strip-links > li {
+    flex: 0 0 auto;
+  }
+
+  .house__strip-links > :last-child:nth-child(odd) {
+    grid-column: auto;
+  }
+
+  .house__strip-links a {
+    display: inline-flex;
+    padding: 9px 14px;
+    border: 1px solid rgba(242, 237, 224, 0.28);
+    border-radius: var(--radius-pill);
+    white-space: nowrap;
+  }
+
+  /* ---- four promises: four seals in a row --------------------------------- */
+  /* two and a bit across, so the third seal shows there is more */
+  .manifesto__grid > .seal {
+    flex-basis: 40vw;
+  }
+
+  .seal__ring {
+    width: clamp(96px, 28vw, 124px);
+  }
+
+  .seal__copy {
+    max-width: none;
+  }
+
+  /* ---- the archive wall: eight photographs in a row -----------------------
+     The rows dissolve so the frames are one list. The desktop scatter gives
+     each frame a height and a drop through selectors two classes heavier
+     than the tablet rule meant to undo them, which is why the phone grid
+     came out with frames of four different sizes; this selector outweighs
+     them. */
+  .craft-wall {
+    height: auto;
+    max-width: none;
+  }
+
+  .craft-wall__row,
+  .craft-wall__row--offset {
+    display: contents;
+  }
+
+  .craft-wall .craft-wall__row:nth-child(n) .craft-wall__tile:nth-child(n) {
+    flex: 0 0 58vw;
+    height: auto;
+    align-self: auto;
+    aspect-ratio: 4 / 5;
+    scroll-snap-align: start;
+  }
+
+  .craft-wall__dot {
+    display: none;
+  }
+
+  /* ---- the edit: filters and products as rows ----------------------------- */
+  .curated__filters {
+    justify-content: flex-start;
+    gap: 8px;
+    scroll-snap-type: none;
+  }
+
+  .curated__filter {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .curated__grid:not(.shop-grid) > .piece {
+    flex-basis: 41vw;
+  }
+
+  /* the odd last card no longer takes a row of its own: there are no rows */
+  .curated__grid:not(.shop-grid) > .piece:nth-last-child(1 of :not([hidden])):nth-child(odd of :not([hidden])) {
+    grid-column: auto;
+  }
+
+  .curated__promises .promise {
+    padding: 12px 8px;
+  }
+
+  /* ---- journal: the feature, then the rest as a row ----------------------- */
+  .journal-feature__media {
+    min-height: 0;
+    aspect-ratio: 16 / 10;
+  }
+
+  .journal-feature__excerpt {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* the byline is the one part of the feature a phone can do without */
+  .journal-feature__foot {
+    display: none;
+  }
+
+  .journal-grid > .journal-card {
+    flex-basis: 60vw;
+  }
+
+  .journal-grid > :last-child:nth-child(odd) {
+    grid-column: auto;
+  }
+
+  .journal-grid .journal-card__media {
+    height: auto;
+    aspect-ratio: 1;
+  }
+
+  /* ---- reviews: a swipe needs no buttons ---------------------------------- */
+  .tw .carousel-arrows {
+    display: none;
+  }
+
+  /* ---- reels: a shorter film, more of the next one showing ---------------- */
+  .reels__rail > .reel {
+    flex: 0 0 min(58vw, 240px);
+  }
+
+  .reel__letter {
+    height: 76px;
+  }
+
+  /* ---- footer: the five link groups as tight rows ------------------------- */
+  .fmap {
+    gap: 0;
+  }
+
+  /* ---- the studio poster: centred like every other intro ----------------- */
+  .poster__note--tr,
+  .poster__note--bl {
+    justify-items: center;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .poster__note--tr .eyebrow::after,
+  .poster__note--bl .eyebrow::after {
+    margin-inline: auto;
+  }
+
+  /* the ink stamp sat on a line of its own and left a band of empty page
+     under the section, and with the notes centred there is no free corner
+     to set it in */
+  .poster__stamp {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) and (prefers-reduced-motion: no-preference) {
+  .house__grid,
+  .manifesto__grid,
+  .craft-wall,
+  .curated__grid,
+  .journal-grid {
+    scroll-behavior: smooth;
+  }
+}
+
+/* ---- the Shop page: a run of pieces at a time on a phone --------------------
+   The page script marks the cards past the current run and adds the button;
+   both only take effect here. */
+.btn.shop-more {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .shop-grid > .is-beyond {
+    display: none;
+  }
+
+  .btn.shop-more:not([hidden]) {
+    display: flex;
+    width: fit-content;
+    margin: 26px auto 0;
+  }
+}
+
+/* ---- prices and the wishlist button on a phone -----------------------------
+   The struck-through price broke between "Rs." and the figure; it moves to
+   the next line whole instead. */
+.piece__price span {
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  /* the heart takes the full width under the bag button here, so it says
+     what it does rather than being a wide bar with a small icon in it */
+  .pdp__wish {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .pdp__wish::after {
+    content: 'Save to wishlist';
+  }
+}
