@@ -513,15 +513,16 @@
        the link on a second tap, so a shopper closing a section was taken off
        to its page instead (and on a store without that page, to a 404). One
        panel open at a time, as on the desktop. */
-    function revealInDrawer(item) {
-      if (!drawer) return;
-      // once the panel has opened, a section that opened low in the drawer is
-      // brought up so what it opened is in view
-      setTimeout(function () {
-        if (!item.classList.contains('is-open')) return;
-        var top = item.offsetTop - drawer.scrollTop;
-        if (top > drawer.clientHeight * 0.35) drawer.scrollTo({ top: item.offsetTop, behavior: 'smooth' });
-      }, 320);
+    /* Each section opens and closes on its own; opening one leaves the others
+       as they are. Closing the others used to shrink the drawer above the row
+       just tapped, so that row slid away from under the finger, and a scroll
+       to bring it back into view moved it again: the bounce. Now the only
+       thing that moves is the tapped section's own panel, unrolling below it.
+       Closing the menu folds every section back. */
+    function openInDrawer(item, link) {
+      var open = !item.classList.contains('is-open');
+      item.classList.toggle('is-open', open);
+      link.setAttribute('aria-expanded', open ? 'true' : 'false');
     }
 
     function initDrawerAccordions() {
@@ -529,12 +530,8 @@
         link.addEventListener('click', function (e) {
           if (!isDrawer()) return;
           e.preventDefault();
-          var item = link.parentElement;
-          var open = !item.classList.contains('is-open');
-          closeAll(open ? item : null);
-          item.classList.toggle('is-open', open);
-          link.setAttribute('aria-expanded', open ? 'true' : 'false');
-          if (open) revealInDrawer(item);
+          link.setAttribute('role', 'button');
+          openInDrawer(link.parentElement, link);
         });
       });
 

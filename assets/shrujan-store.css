@@ -2218,6 +2218,12 @@
   .site-nav > .nav-item:nth-child(6) { --i: 5; }
   .site-nav > .nav-item:nth-child(n + 7) { --i: 6; }
 
+  /* the desktop underline sweeps in on hover; on a phone a tap leaves the
+     hover on, so it swept across the row every time a section opened */
+  .site-nav .nav-item__link::after {
+    display: none;
+  }
+
   /* The header's own rows sit above the scrim, so opening the drawer dims the
      page rather than washing out the bar the shopper is still using. Order:
      page < scrim (70) < bar and offer bar (75) < drawer (80). */
@@ -3039,7 +3045,29 @@ html {
   .visit-bar,
   .craft-atlas__media,
   .craft-atlas__text,
-  .store-reads {
+  .store-reads,
+  .origin__gallery,
+  .founder-story__portrait,
+  .legacy__list,
+  .founder,
+  .value,
+  .honours,
+  .press-also,
+  .shop-rail,
+  .strands__list,
+  .studio-row__media,
+  .gloss,
+  .enquiry__form,
+  .way,
+  .plan__invite {
+    margin-inline: calc(var(--edge, 5px) - var(--gutter));
+  }
+
+  /* a picture set straight in a padded figure fills its width, so it takes
+     the edge by growing as well as moving */
+  figure.container > img {
+    width: calc(100% + 2 * (var(--gutter) - var(--edge, 5px)));
+    max-width: none;
     margin-inline: calc(var(--edge, 5px) - var(--gutter));
   }
 
@@ -3066,8 +3094,13 @@ html {
 
   /* text that came out to the edge with its block goes back to reading
      distance */
-  .craft-credit {
+  .craft-credit,
+  .founder-story__cap {
     padding-inline: calc(var(--gutter) - var(--edge, 5px));
+  }
+
+  .press-also {
+    padding-inline: 14px;
   }
 }
 
