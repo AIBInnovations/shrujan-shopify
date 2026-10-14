@@ -102,10 +102,18 @@
         --dur: {{ 0.55 | times: speed }}s;
         --dur-slow: {{ 0.9 | times: speed }}s;
       }
-      /* a phone's own section gap: the shared clamp bottoms out at 56px, which on
-         a 390px screen is a seventh of its width between every two sections *
+      /* A phone's own section gap: the shared clamp bottoms out at 56px, which on
+         a 390px screen is a seventh of its width between every two sections.
+         And a phone's two side margins: --edge, the 5px inset the hero film and
+         the marquee sit on, which every card, picture and panel down the page
+         shares; and --gutter, the reading margin text keeps from the screen's
+         edge. See the phone block in shrujan-store.css. */
       @media (max-width: 720px) {
-        :root { --section-gap: calc(clamp(40px, 11vw, 52px) * {{ gap_f }}); }
+        :root {
+          --section-gap: calc(clamp(40px, 11vw, 52px) * {{ gap_f }});
+          --gutter: calc(16px * {{ gutter_f }});
+          --edge: 5px;
+        }
       }
       {%- if settings.type_scale != 100 -%}
         {%- assign ts = settings.type_scale | divided_by: 100.0 -%}

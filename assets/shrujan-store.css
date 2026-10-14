@@ -2511,9 +2511,14 @@
 }
 
 @media (max-width: 720px) {
-  /* the marquee tightens to 5px here, and the film stays on its rail */
+  /* the film sits on the phone's --edge, which the marquee and every card
+     below it share (5px, set in layout/theme.liquid) */
   .hero.hero--film {
-    --hero-inset: 5px;
+    --hero-inset: var(--edge, 5px);
+  }
+
+  .marquee {
+    margin-inline: var(--edge, 5px);
   }
 
   .hero-film__message {
@@ -2612,19 +2617,19 @@
   .manifesto__grid,
   .craft-wall,
   .curated__grid:not(.shop-grid),
-  .journal-grid,
-  .curated__filters,
-  .house__strip-links {
+  .curated__filters {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     /* a centred row that overflows spills off its left edge, where no swipe
        can reach it; the edit's grid is centred on desktop */
     justify-content: flex-start;
-    gap: 10px;
+    /* out to the screen, then back in to the edge the hero and marquee sit
+       on; the same 5px between the cards */
+    gap: var(--edge, 5px);
     margin-inline: calc(var(--gutter) * -1);
-    padding-inline: var(--gutter);
-    scroll-padding-inline: var(--gutter);
+    padding-inline: var(--edge, 5px);
+    scroll-padding-inline: var(--edge, 5px);
     overflow-x: auto;
     overflow-y: hidden;
     overscroll-behavior-x: contain;
@@ -2637,16 +2642,13 @@
   .manifesto__grid::-webkit-scrollbar,
   .craft-wall::-webkit-scrollbar,
   .curated__grid::-webkit-scrollbar,
-  .journal-grid::-webkit-scrollbar,
-  .curated__filters::-webkit-scrollbar,
-  .house__strip-links::-webkit-scrollbar {
+  .curated__filters::-webkit-scrollbar {
     display: none;
   }
 
   .house__grid > *,
   .manifesto__grid > *,
-  .curated__grid:not(.shop-grid) > *,
-  .journal-grid > * {
+  .curated__grid:not(.shop-grid) > * {
     flex-shrink: 0;
     scroll-snap-align: start;
   }
@@ -2659,32 +2661,58 @@
     aspect-ratio: 4 / 5;
   }
 
-  /* the bag links: one row of pills under the cards, not a five-line panel */
+  /* The bag links: a set of buttons inside the maroon panel, two to a row
+     and the fifth across the whole row, so every bag is in sight at once
+     rather than off the edge of a sideways scroll. */
   .house__strip {
+    display: grid;
     gap: 12px;
-    padding: 16px var(--gutter) 18px;
+    margin-top: var(--edge, 5px);
+    padding: 16px 12px 12px;
+  }
+
+  .house__strip-label {
+    padding-inline: 2px;
   }
 
   .house__strip-links {
-    gap: 8px;
-    margin-inline: calc(var(--gutter) * -1);
-    scroll-snap-type: none;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
   }
 
   .house__strip-links > li {
-    flex: 0 0 auto;
+    display: flex;
+    min-width: 0;
   }
 
   .house__strip-links > :last-child:nth-child(odd) {
-    grid-column: auto;
+    grid-column: 1 / -1;
   }
 
   .house__strip-links a {
-    display: inline-flex;
-    padding: 9px 14px;
-    border: 1px solid rgba(242, 237, 224, 0.28);
-    border-radius: var(--radius-pill);
-    white-space: nowrap;
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 46px;
+    padding: 10px 12px;
+    border: 1px solid rgba(242, 237, 224, 0.24);
+    border-radius: 8px;
+    font-size: 11px;
+    line-height: 1.3;
+    letter-spacing: 0.1em;
+    transition: background var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
+  }
+
+  .house__strip-links a:active {
+    background: rgba(242, 237, 224, 0.1);
+    border-color: rgba(242, 237, 224, 0.5);
+  }
+
+  .house__strip-links a svg {
+    flex: 0 0 auto;
   }
 
   /* ---- four promises: four seals in a row --------------------------------- */
@@ -2751,38 +2779,131 @@
   }
 
   .curated__promises .promise {
-    padding: 12px 8px;
+    padding: 12px;
   }
 
-  /* ---- journal: the feature, then the rest as a row ----------------------- */
+  /* ---- journal: a bento ---------------------------------------------------
+     The feature is a whole-width picture with its title on it; under it the
+     other pieces take a tall cell and two short ones, on the gutter the hero
+     bento uses. Titles sit on the pictures, so the cells keep their shape
+     whatever the title's length. */
+  .journal-feature {
+    position: relative;
+    display: block;
+    aspect-ratio: 5 / 4;
+    background: var(--ink);
+  }
+
   .journal-feature__media {
+    position: absolute;
+    inset: 0;
     min-height: 0;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: auto;
   }
 
-  .journal-feature__excerpt {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+  .journal-feature__media img,
+  .journal-grid .journal-card__media img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
-  /* the byline is the one part of the feature a phone can do without */
+  .journal-feature__media::after,
+  .journal-grid .journal-card__media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(18, 10, 8, 0) 34%, rgba(18, 10, 8, 0.8) 100%);
+    pointer-events: none;
+  }
+
+  .journal-feature__body {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    padding: 16px 14px;
+    background: transparent;
+  }
+
+  .journal-feature__tag {
+    background: rgba(242, 237, 224, 0.94);
+    color: var(--ink);
+  }
+
+  .journal-feature__title {
+    margin-top: 10px;
+    max-width: 22ch;
+    font-size: clamp(20px, 5.6vw, 24px);
+    color: var(--cream);
+  }
+
+  .journal-feature__excerpt,
   .journal-feature__foot {
     display: none;
   }
 
-  .journal-grid > .journal-card {
-    flex-basis: 60vw;
+  .journal-feature__link {
+    margin-top: 10px;
+    color: var(--cream);
+  }
+
+  .journal-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: 38vw;
+    gap: var(--edge, 5px);
+    margin-top: var(--edge, 5px);
+  }
+
+  .journal-grid > .journal-card:first-child {
+    grid-row: span 2;
   }
 
   .journal-grid > :last-child:nth-child(odd) {
     grid-column: auto;
   }
 
+  .journal-grid > .journal-card:nth-child(4):last-child {
+    grid-column: 1 / -1;
+  }
+
+  .journal-grid > .journal-card {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: var(--radius);
+  }
+
   .journal-grid .journal-card__media {
-    height: auto;
-    aspect-ratio: 1;
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    aspect-ratio: auto;
+  }
+
+  .journal-grid .journal-card__media .journal-pill {
+    top: 10px;
+    bottom: auto;
+    left: 10px;
+    padding: 5px 10px;
+    font-size: 10px;
+  }
+
+  .journal-grid .journal-card__title {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    z-index: 2;
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.25;
+    text-align: left;
+    color: var(--cream);
   }
 
   /* ---- reviews: a swipe needs no buttons ---------------------------------- */
@@ -2829,8 +2950,7 @@
   .house__grid,
   .manifesto__grid,
   .craft-wall,
-  .curated__grid,
-  .journal-grid {
+  .curated__grid {
     scroll-behavior: smooth;
   }
 }
@@ -2891,4 +3011,73 @@
    its own pressed and open states. */
 html {
   -webkit-tap-highlight-color: transparent;
+}
+
+/* ---- phones: one edge for every card, picture and panel --------------------
+   The hero film and the marquee sit 5px from the screen's sides (--edge, set
+   in layout/theme.liquid). Everything that reads as a block takes the same
+   edge: it steps out of its section's reading margin (--gutter, which text
+   keeps) by the difference. The mastheads of the inner pages had their own
+   6px inset and take the 5px too. */
+@media (max-width: 720px) {
+  .poster__art,
+  .house__strip,
+  .craft__stats,
+  .curated__promises,
+  .tw,
+  .journal-feature,
+  .journal-grid,
+  .faq,
+  .shopcta__grid,
+  .store-grid,
+  .shop-grid,
+  .pdp__media,
+  .spotlight-col__media,
+  .why-card__media,
+  .lldc-show,
+  .visit-plates,
+  .visit-bar,
+  .craft-atlas__media,
+  .craft-atlas__text,
+  .store-reads {
+    margin-inline: calc(var(--edge, 5px) - var(--gutter));
+  }
+
+  .poster__art {
+    width: auto;
+  }
+
+  .page-hero--frame,
+  .shop-banner,
+  .visit-hero {
+    margin-inline: var(--edge, 5px);
+  }
+
+  .shop-assure {
+    margin: var(--edge, 5px);
+  }
+
+  /* cards on the edge: their names and prices keep a few pixels of their own
+     so a title does not run to the screen's edge */
+  .store-grid .piece__info,
+  .shop-grid .piece__info {
+    padding-inline: 6px;
+  }
+
+  /* text that came out to the edge with its block goes back to reading
+     distance */
+  .craft-credit {
+    padding-inline: calc(var(--gutter) - var(--edge, 5px));
+  }
+}
+
+/* the reels keep the same 5px between them as every other row, and the first
+   one starts on the same edge */
+@media (max-width: 720px) {
+  .reels__rail {
+    --reel-gap: var(--edge, 5px);
+    gap: var(--edge, 5px);
+    padding-inline: var(--edge, 5px);
+    scroll-padding-inline: var(--edge, 5px);
+  }
 }

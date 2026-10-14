@@ -508,18 +508,33 @@
     }
 
     /* ---- the drawer's accordions ------------------------------------ *
-       Inside the drawer a top-level link opens its own panel on the first tap
-       — the panel's lead card carries the same destination — and follows the
-       link on the second. One panel open at a time, as on the desktop. */
+       Inside the drawer a top-level link only opens and closes its own panel;
+       the panel's lead card carries the same destination. It used to follow
+       the link on a second tap, so a shopper closing a section was taken off
+       to its page instead (and on a store without that page, to a 404). One
+       panel open at a time, as on the desktop. */
+    function revealInDrawer(item) {
+      if (!drawer) return;
+      // once the panel has opened, a section that opened low in the drawer is
+      // brought up so what it opened is in view
+      setTimeout(function () {
+        if (!item.classList.contains('is-open')) return;
+        var top = item.offsetTop - drawer.scrollTop;
+        if (top > drawer.clientHeight * 0.35) drawer.scrollTo({ top: item.offsetTop, behavior: 'smooth' });
+      }, 320);
+    }
+
     function initDrawerAccordions() {
       bar.querySelectorAll('.nav-item.has-menu > .nav-item__link').forEach(function (link) {
         link.addEventListener('click', function (e) {
           if (!isDrawer()) return;
-          var item = link.parentElement;
-          if (item.classList.contains('is-open')) return; // a second tap navigates
           e.preventDefault();
-          closeAll(item);
-          item.classList.add('is-open');
+          var item = link.parentElement;
+          var open = !item.classList.contains('is-open');
+          closeAll(open ? item : null);
+          item.classList.toggle('is-open', open);
+          link.setAttribute('aria-expanded', open ? 'true' : 'false');
+          if (open) revealInDrawer(item);
         });
       });
 
@@ -546,7 +561,10 @@
 
     function closeAll(except) {
       items.forEach(function (item) {
-        if (item !== except) item.classList.remove('is-open');
+        if (item === except) return;
+        item.classList.remove('is-open');
+        var link = item.querySelector('.nav-item__link');
+        if (link && link.hasAttribute('aria-expanded')) link.setAttribute('aria-expanded', 'false');
       });
     }
 
@@ -596,6 +614,7 @@
           item.classList.add('is-open');
         });
         item.addEventListener('focusout', function (e) {
+          if (isDrawer()) return; // in the drawer only a tap opens and closes
           if (!item.contains(e.relatedTarget)) item.classList.remove('is-open');
         });
       });
