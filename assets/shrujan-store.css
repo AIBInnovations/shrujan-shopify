@@ -2456,20 +2456,26 @@
    shot: an even one over the whole frame, a deeper pool behind the words, and
    shading at the top and bottom edges. The edges are where the films carry the
    Design Centre's own mark and caption band, which the old tall cell cropped
-   away and a full screen does not. */
+   away and a full screen does not. The washes are the brand's deep maroon
+   rather than a near-black brown, so the film sits in the site's own colour. */
+.hero.hero--film {
+  --hero-accent: #f0c4b4;
+  --hero-wash: 38, 11, 8;
+}
+
 .hero-film__scrim {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 62% 58% at 50% 50%, rgba(10, 5, 3, calc(var(--hero-scrim, 0.45) * 0.55)) 0%, rgba(10, 5, 3, 0) 100%),
+    radial-gradient(ellipse 60% 56% at 50% 48%, rgba(var(--hero-wash), calc(var(--hero-scrim, 0.45) * 0.6)) 0%, rgba(var(--hero-wash), 0) 100%),
     linear-gradient(
       180deg,
-      rgba(10, 5, 3, calc(var(--hero-scrim, 0.45) * 1.4)) 0%,
-      rgba(10, 5, 3, 0) 24%,
-      rgba(10, 5, 3, 0) 66%,
-      rgba(10, 5, 3, calc(var(--hero-scrim, 0.45) * 1.5)) 100%
+      rgba(var(--hero-wash), calc(var(--hero-scrim, 0.45) * 1.3)) 0%,
+      rgba(var(--hero-wash), 0) 26%,
+      rgba(var(--hero-wash), 0) 58%,
+      rgba(var(--hero-wash), calc(var(--hero-scrim, 0.45) * 1.8)) 100%
     ),
-    rgba(10, 5, 3, var(--hero-scrim, 0.45));
+    rgba(var(--hero-wash), var(--hero-scrim, 0.45));
   pointer-events: none;
 }
 
@@ -2485,8 +2491,30 @@
   text-align: center;
 }
 
+/* where the work comes from, flanked by the phool mark the section intros use */
+.hero-film__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: clamp(16px, 1.7vw, 26px);
+  font-family: var(--font-sans);
+  font-size: clamp(11px, 0.78vw, 13px);
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--hero-accent);
+}
+
+.hero-film__eyebrow span {
+  font-size: 0.9em;
+  letter-spacing: 0;
+  opacity: 0.85;
+}
+
 .hero--film .hero-message__title {
-  font-size: clamp(46px, calc(28px + 3.6vw), 108px);
+  font-size: clamp(44px, calc(22px + 4.4vw), 104px);
+  line-height: 1.06;
+  letter-spacing: 0.01em;
 }
 
 /* The panel was narrow enough to need a word a line. Across the screen the
@@ -2510,23 +2538,99 @@
 }
 
 .hero--film .hero-message__title .t-red {
-  color: var(--tan);
+  color: var(--hero-accent);
+}
+
+/* the stitched rule the section intros close with, in the hero's rose */
+.hero--film .hero-message__rule {
+  width: 120px;
+  height: 10px;
+  margin-top: clamp(20px, 2vw, 30px);
+  background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='10' viewBox='0 0 120 10'><path d='M0 5h44' stroke='%23f0c4b4' stroke-width='1.2' stroke-dasharray='6 5'/><path d='M76 5h44' stroke='%23f0c4b4' stroke-width='1.2' stroke-dasharray='6 5'/><rect x='56' y='1' width='8' height='8' fill='%23f0c4b4' transform='rotate(45 60 5)'/></svg>")
+    no-repeat center / contain;
 }
 
 .hero--film .hero-message__copy {
-  max-width: 46ch;
-  color: var(--cream);
+  max-width: 44ch;
+  margin-top: clamp(16px, 1.6vw, 24px);
+  font-size: clamp(15px, 1vw, 18px);
+  color: rgba(249, 245, 234, 0.86);
 }
 
-.hero--film .hero-message__cta {
-  align-self: center;
+.hero-film__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: clamp(24px, 2.4vw, 36px);
+}
+
+.hero-film__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 26px;
+  border: 1px solid rgba(249, 245, 234, 0.55);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
+  font-size: clamp(12px, 0.8vw, 13.5px);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
   color: var(--ivory);
-  border-bottom-color: var(--ivory);
+  transition:
+    background var(--dur-quick) var(--ease),
+    color var(--dur-quick) var(--ease),
+    border-color var(--dur-quick) var(--ease);
 }
 
-.hero--film .hero-message__cta:hover {
-  color: var(--tan);
-  border-color: var(--tan);
+.hero-film__btn:hover {
+  background: var(--ivory);
+  border-color: var(--ivory);
+  color: var(--maroon);
+}
+
+.hero-film__btn--solid {
+  background: var(--ivory);
+  border-color: var(--ivory);
+  color: var(--maroon);
+}
+
+.hero-film__btn--solid:hover {
+  background: var(--hero-accent);
+  border-color: var(--hero-accent);
+  color: var(--maroon-deep);
+}
+
+/* plain facts along the film's foot */
+.hero-film__facts {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(16px, 2.6vh, 30px);
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  row-gap: 6px;
+  padding-inline: var(--gutter);
+  list-style: none;
+  font-family: var(--font-sans);
+  font-size: clamp(10.5px, 0.74vw, 12.5px);
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(249, 245, 234, 0.74);
+}
+
+.hero-film__facts li + li::before {
+  content: '✦';
+  margin-inline: 16px;
+  letter-spacing: 0;
+  color: var(--hero-accent);
 }
 
 @media (max-width: 720px) {
@@ -2545,7 +2649,56 @@
   }
 
   .hero--film .hero-message__title {
-    font-size: clamp(38px, 11.4vw, 50px);
+    font-size: clamp(32px, 9.6vw, 44px);
+  }
+
+  .hero-film__eyebrow {
+    gap: 10px;
+    font-size: 10.5px;
+    letter-spacing: 0.24em;
+  }
+
+  .hero--film .hero-message__copy {
+    font-size: 14.5px;
+  }
+
+  /* one button above the other, the same width, easy to reach with a thumb */
+  .hero-film__actions {
+    flex-direction: column;
+    align-self: stretch;
+    max-width: 300px;
+    margin-inline: auto;
+    gap: 10px;
+  }
+
+  .hero-film__btn {
+    width: 100%;
+    font-size: 12px;
+  }
+
+  /* side by side in short columns with a hairline between, rather than one
+     line that wraps and starts its second row with a lone star */
+  .hero-film__facts {
+    flex-wrap: nowrap;
+    align-items: stretch;
+    font-size: 9.5px;
+    line-height: 1.5;
+    letter-spacing: 0.18em;
+    text-align: center;
+  }
+
+  .hero-film__facts li {
+    flex: 0 1 auto;
+    max-width: 34%;
+    padding-inline: 10px;
+  }
+
+  .hero-film__facts li + li {
+    border-left: 1px solid color-mix(in srgb, var(--hero-accent) 45%, transparent);
+  }
+
+  .hero-film__facts li + li::before {
+    content: none;
   }
 }
 

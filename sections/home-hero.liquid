@@ -64,18 +64,42 @@
     {%- endif -%}
   {%- endfor -%}
 ]{%- endcapture %}
-<section class="hero hero--film" aria-label="{{ section.settings.title_l1 | strip_html | escape }} {{ section.settings.title_l2 | strip_html | downcase | escape }} {{ section.settings.title_l3 | strip_html | downcase | escape }}"{% if h.hero_animate == false %} data-hero-animate="false"{% endif %}>
+<section class="hero hero--film" aria-label="{{ section.settings.title_l1 | strip_html | escape }} {{ section.settings.title_l2 | strip_html | escape }} {{ section.settings.title_l3 | strip_html | escape }}"{% if h.hero_animate == false %} data-hero-animate="false"{% endif %}>
   {%- if montage_first != blank %}
   <video class="hero-montage__video" poster="{{ montage_first_poster }}" playsinline muted preload="auto" aria-hidden="true" data-hero-montage="{{ montage_json | escape }}" data-clip="{{ h.montage_clip }}" data-seek="{{ h.montage_seek }}"><source src="{{ montage_first }}" type="video/mp4"></video>
   {%- endif %}
   <span class="hero-film__scrim" aria-hidden="true"></span>
 
+  {%- comment -%}
+    Over the film, centred: a small line saying where the work comes from, the
+    title, a stitched rule, one line of copy, and two buttons; along the
+    film's foot, a few plain facts, which also sit over the caption band the
+    craft films carry. Every line is a setting, and a blank one is left out.
+  {%- endcomment %}
   <div class="hero-film__message">
-    <h1 class="hero-message__title"><span class="line"><span class="t-ink">{{ section.settings.title_l1 }}</span></span><span class="line"><span class="t-red">{{ section.settings.title_l2 }}</span></span><span class="line"><span class="t-red">{{ section.settings.title_l3 }}</span></span></h1>
+    {%- if h.eyebrow != blank %}
+    <p class="hero-film__eyebrow" data-hero="eyebrow"><span aria-hidden="true">✦</span>{{ h.eyebrow | escape }}<span aria-hidden="true">✦</span></p>
+    {%- endif %}
+    <h1 class="hero-message__title"><span class="line"><span class="t-ink">{{ h.title_l1 }}</span></span>{% if h.title_l2 != blank %}<span class="line"><span class="t-red">{{ h.title_l2 }}</span></span>{% endif %}{% if h.title_l3 != blank %}<span class="line"><span class="t-red">{{ h.title_l3 }}</span></span>{% endif %}</h1>
     <span class="hero-message__rule" data-hero="rule" aria-hidden="true"></span>
-    <p class="hero-message__copy" data-hero="copy">{{ section.settings.copy }}</p>
-    <a class="hero-message__cta" href="{{ section.settings.cta_url | escape }}" data-hero="cta">{{ section.settings.cta_label | escape }} <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
+    {%- if h.copy != blank %}
+    <p class="hero-message__copy" data-hero="copy">{{ h.copy }}</p>
+    {%- endif %}
+    <div class="hero-film__actions" data-hero="actions">
+      {%- if h.cta_label != blank %}
+      <a class="hero-film__btn hero-film__btn--solid" href="{{ h.cta_url | escape }}">{{ h.cta_label | escape }}<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
+      {%- endif %}
+      {%- if h.cta2_label != blank %}
+      <a class="hero-film__btn" href="{{ h.cta2_url | escape }}">{{ h.cta2_label | escape }}</a>
+      {%- endif %}
+    </div>
   </div>
+  {%- assign hero_facts = h.facts | split: '|' -%}
+  {%- if h.facts != blank %}
+  <ul class="hero-film__facts" data-hero="facts">
+    {%- for fact in hero_facts %}{% assign fact_text = fact | strip %}{% if fact_text != blank %}<li>{{ fact_text | escape }}</li>{% endif %}{% endfor -%}
+  </ul>
+  {%- endif %}
 </section>
 
 <script>
@@ -149,6 +173,9 @@
       defaults: { ease: 'power3.out', duration: 0.9 },
     });
 
+    var has = function (sel) { return root.querySelector(sel); };
+    if (has('[data-hero="eyebrow"]')) tl.fromTo('[data-hero="eyebrow"]', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.7 }, 0.05);
+
     tl.fromTo(
       '.hero-message__title .line > span',
       { yPercent: 110 },
@@ -161,8 +188,9 @@
         { scaleX: 1, duration: 0.6 },
         0.6
       )
-      .fromTo('[data-hero="copy"]', { opacity: 0, y: 16 }, { opacity: 1, y: 0 }, 0.7)
-      .fromTo('[data-hero="cta"]', { opacity: 0, y: 14 }, { opacity: 1, y: 0 }, 0.82);
+      .fromTo('[data-hero="actions"]', { opacity: 0, y: 14 }, { opacity: 1, y: 0 }, 0.82);
+    if (has('[data-hero="copy"]')) tl.fromTo('[data-hero="copy"]', { opacity: 0, y: 16 }, { opacity: 1, y: 0 }, 0.7);
+    if (has('[data-hero="facts"]')) tl.fromTo('[data-hero="facts"]', { opacity: 0 }, { opacity: 1, duration: 1.1 }, 1);
   });
 
   mm.add('(prefers-reduced-motion: reduce)', function () {
@@ -245,40 +273,67 @@
       "content": "Centre message"
     },
     {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Small line above the title",
+      "default": "Hand embroidery from Kutch"
+    },
+    {
       "type": "inline_richtext",
       "id": "title_l1",
       "label": "Title line 1",
-      "default": "Tradition,"
+      "default": "Every stitch"
     },
     {
       "type": "inline_richtext",
       "id": "title_l2",
       "label": "Title line 2",
-      "default": "Styled"
+      "info": "Set in the accent colour. Leave empty for a one-line title.",
+      "default": "carries her name"
     },
     {
       "type": "inline_richtext",
       "id": "title_l3",
-      "label": "Title line 3",
-      "default": "Forward"
+      "label": "Title line 3 (optional)",
+      "info": "Also in the accent colour, beside line 2 where it fits."
     },
     {
       "type": "textarea",
       "id": "copy",
       "label": "Copy",
-      "default": "Where centuries-old craftsmanship meets contemporary design. Timeless pieces for today&rsquo;s tastemakers."
+      "default": "Embroidered by the craftswomen of Kutch, in stitches their villages have kept for generations."
     },
     {
       "type": "text",
       "id": "cta_label",
-      "label": "Button label",
-      "default": "Shop the Collection"
+      "label": "Main button label",
+      "default": "Shop the collection"
     },
     {
       "type": "text",
       "id": "cta_url",
-      "label": "Button link (URL or #anchor)",
-      "default": "#categories"
+      "label": "Main button link (URL or #anchor)",
+      "default": "/pages/shop-shrujan"
+    },
+    {
+      "type": "text",
+      "id": "cta2_label",
+      "label": "Second button label",
+      "info": "Leave empty for one button.",
+      "default": "Explore the crafts"
+    },
+    {
+      "type": "text",
+      "id": "cta2_url",
+      "label": "Second button link",
+      "default": "/pages/video"
+    },
+    {
+      "type": "text",
+      "id": "facts",
+      "label": "Facts along the bottom",
+      "info": "Separate them with |. Leave empty to hide the line.",
+      "default": "Since 1969 | 12 living crafts | Made by craftswomen"
     },
     {
       "type": "header",
