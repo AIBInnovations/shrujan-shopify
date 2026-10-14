@@ -49,10 +49,11 @@
         "type": "select",
         "id": "font_pairing",
         "label": "Font pairing",
-        "info": "Heritage is three upright faces drawn alongside Indian scripts: Rozha One for headlines, Eczar for smaller serif text, Hind for the rest. Original is the pairing the site was first designed with.",
+        "info": "Heritage and Poster are upright faces drawn alongside Indian scripts; Poster sets headlines in the heavier Rozha One. Original is the pairing the site was first designed with.",
         "default": "heritage",
         "options": [
-          { "value": "heritage", "label": "Heritage: Rozha One + Eczar + Hind" },
+          { "value": "heritage", "label": "Heritage: Sahitya + Hind" },
+          { "value": "poster", "label": "Poster: Rozha One + Eczar + Hind" },
           { "value": "original", "label": "Original: Cormorant Garamond + Jost" },
           { "value": "classic", "label": "Classic: Playfair Display + Inter" },
           { "value": "modern", "label": "Modern: Fraunces + Work Sans" }
