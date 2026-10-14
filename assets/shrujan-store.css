@@ -2172,24 +2172,51 @@
     background: var(--ivory);
     border-top: 1px solid var(--hairline);
     box-shadow: 0 26px 44px -28px rgba(43, 29, 25, 0.5);
-    opacity: 0;
+    /* The sheet unrolls from the bar's lower edge rather than fading in. A
+       fade left it see-through for most of the opening, with the hero's film
+       and headline showing through the menu; a clip keeps it solid from the
+       first frame and never lets it overlap the bar. The open clip runs 40px
+       past the bottom so the shadow is not cut off. */
     visibility: hidden;
-    transform: translateY(-10px);
+    clip-path: inset(0 0 100% 0);
     transition:
-      opacity 200ms var(--ease),
-      transform 200ms var(--ease),
-      visibility 0s linear 200ms;
+      clip-path 260ms cubic-bezier(0.4, 0, 1, 1),
+      visibility 0s linear 260ms;
   }
 
   .site-header.nav-open .site-nav {
-    opacity: 1;
     visibility: visible;
-    transform: translateY(0);
+    clip-path: inset(0 0 -40px 0);
     transition:
-      opacity 320ms var(--ease),
-      transform 320ms var(--ease),
+      clip-path 420ms cubic-bezier(0.22, 1, 0.36, 1),
       visibility 0s;
   }
+
+  /* the rows follow the sheet down, one a beat after the other */
+  .site-nav > .nav-item {
+    opacity: 0;
+    transform: translateY(-8px);
+    transition:
+      grid-template-rows 300ms var(--ease),
+      opacity 160ms var(--ease),
+      transform 160ms var(--ease);
+  }
+
+  .site-header.nav-open .site-nav > .nav-item {
+    opacity: 1;
+    transform: none;
+    transition:
+      grid-template-rows 300ms var(--ease),
+      opacity 320ms var(--ease) calc(60ms + var(--i, 0) * 35ms),
+      transform 420ms cubic-bezier(0.22, 1, 0.36, 1) calc(60ms + var(--i, 0) * 35ms);
+  }
+
+  .site-nav > .nav-item:nth-child(2) { --i: 1; }
+  .site-nav > .nav-item:nth-child(3) { --i: 2; }
+  .site-nav > .nav-item:nth-child(4) { --i: 3; }
+  .site-nav > .nav-item:nth-child(5) { --i: 4; }
+  .site-nav > .nav-item:nth-child(6) { --i: 5; }
+  .site-nav > .nav-item:nth-child(n + 7) { --i: 6; }
 
   /* The header's own rows sit above the scrim, so opening the drawer dims the
      page rather than washing out the bar the shopper is still using. Order:
@@ -2309,8 +2336,10 @@
   .navfeat__title { font-size: 17px; }
 
   /* the toggle itself, so opening and closing reads as one gesture */
-  .menu-toggle svg { transition: transform 260ms var(--ease), opacity 160ms var(--ease); }
-  .site-header.nav-open .menu-toggle svg { transform: rotate(90deg); }
+  /* The script swaps the icon's svg, so a transition on it never played: the
+     new one was simply there, already turned. It arrives with a short turn of
+     its own instead, on open and on close alike. */
+  .site-header.menu-used .menu-toggle svg { animation: menu-icon-in 280ms cubic-bezier(0.22, 1, 0.36, 1); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2322,6 +2351,11 @@
   .menu-toggle svg,
   .nav-item__link svg {
     transition-duration: 1ms !important;
+    transition-delay: 0s !important;
+  }
+
+  .menu-toggle svg {
+    animation: none;
   }
 }
 
@@ -2844,4 +2878,17 @@
   .pdp__wish::after {
     content: 'Save to wishlist';
   }
+}
+
+@keyframes menu-icon-in {
+  from {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.7);
+  }
+}
+
+/* No grey or blue flash on a tapped link or button: every control here has
+   its own pressed and open states. */
+html {
+  -webkit-tap-highlight-color: transparent;
 }

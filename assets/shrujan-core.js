@@ -309,6 +309,16 @@
       scrim.addEventListener('click', function () { setMenuOpen(false); });
     }
 
+    /* An open drawer stops the page behind it (stopScroll), and a stopped Lenis
+       cancels every wheel and touch move on the page, the drawer's own
+       included, so a drawer taller than the screen could not be scrolled.
+       Lenis leaves alone anything marked data-lenis-prevent: while open, the
+       drawer scrolls natively and the page behind it stays still. Only while
+       open, because on desktop the same element is the nav row, and a wheel
+       over it should glide the page like anywhere else. */
+    var drawer = bar.querySelector('.site-nav');
+    var drawerReset = 0;
+
     /* Sections collapse. Expanded, the six groups run to thirty-five links,
        a wall of small caps that buries Craft, LLDC and Visit below three
        screens of scrolling. One open at a time. */
@@ -348,8 +358,18 @@
         toggle.innerHTML = v ? CLOSE_SVG : MENU_SVG;
       }
       // the page must not scroll under an open drawer
+      if (drawer) {
+        if (v) drawer.setAttribute('data-lenis-prevent', '');
+        else drawer.removeAttribute('data-lenis-prevent');
+      }
       if (v) stopScroll(); else startScroll();
       if (!v) closeAll(null);
+      // the icon's turn plays only once the menu has been used, not on load
+      bar.classList.add('menu-used');
+      // once it has rolled away, the drawer goes back to its top, so the next
+      // open starts at Story rather than wherever the last one was left
+      clearTimeout(drawerReset);
+      if (!v && drawer) drawerReset = setTimeout(function () { drawer.scrollTop = 0; }, 320);
     }
 
     function setFixed(v) {
