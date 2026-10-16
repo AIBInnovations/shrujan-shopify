@@ -116,7 +116,7 @@ html.sj-pre body {
   height: 0;
   translate: -50% -50%;
   border-radius: 4px;
-  box-shadow: 0 0 0 200vmax var(--page-bg, #ece2d6);
+  box-shadow: 0 0 0 200vmax var(--page-bg, #f3f0ed);
 }
 
 .sj-loader__top,
@@ -321,7 +321,7 @@ html.sj-pre .offer-bar {
   right: 0;
   bottom: 0;
   height: 22vh;
-  background: linear-gradient(rgba(236, 226, 214, 0), var(--page-bg, #ece2d6) 85%);
+  background: linear-gradient(rgba(243, 240, 237, 0), var(--page-bg, #f3f0ed) 85%);
   pointer-events: none;
 }
 
@@ -2747,14 +2747,5 @@ section[aria-label="What our customers say"],
 /* the footer starts on a straight edge, with no rule along its top */
 .footer {
   box-shadow: none !important;
-}
-
-/* the reviews' panel, lighter than the beige page it sits on */
-.tq__panel {
-  background: #f6f1ea;
-}
-
-.tq__dot {
-  border-color: #f6f1ea;
 }
 

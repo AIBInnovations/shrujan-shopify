@@ -34,8 +34,10 @@
   --hairline: rgba(24, 22, 21, 0.14);
   --hairline-strong: rgba(24, 22, 21, 0.4);
   /* the ground of every page, and its grain */
-  --page-bg: #eee4d8;
-  --page-bg-2: #e5d8ca;
+  /* the beige behind the logo in the header, so the header, the logo's box
+     and every page are one colour */
+  --page-bg: #f3f0ed;
+  --page-bg-2: #e6d8cc;
   /* the grain as dark specks of varying strength over whatever is under it:
      a plain background, with no blend mode, so it costs nothing to scroll */
   --grain-a: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.13 0 0 0 -0.035'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -58,11 +60,9 @@ body {
   background: var(--page-bg);
 }
 
-/* cards that were sand stand off the beige in a lighter ivory */
-.faq,
-.tq__panel,
-.shopcta__panel {
-  background: #f6f1ea;
+/* the box behind the logo is the page itself */
+.site-header .brand {
+  background: var(--page-bg);
 }
 
 /* No ornament dividers. The stitched dash-and-diamond rules under the hero
