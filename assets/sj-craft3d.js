@@ -13,11 +13,15 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const root = document.querySelector('.craft3d');
 if (root) {
-  // built once the loader has gone, so the loader never waits on the cloths
-  const start = () => (window.requestIdleCallback || setTimeout)(init);
-  if (window.__sjRevealed || !document.querySelector('.sj-loader')) start();
-  else document.addEventListener('sj:revealed', start, { once: true });
+  // built at once, behind the loader, which waits for it, so the section is
+  // ready the moment the page opens; if anything fails the loader is let go
+  const fail = (e) => { console.error(e); window.__sjCraftReady = true; document.dispatchEvent(new CustomEvent('sj:craft-ready')); };
+  const go = () => { try { init().catch(fail); } catch (e) { fail(e); } };
+  if (window.requestIdleCallback) requestIdleCallback(go, { timeout: 200 }); else setTimeout(go, 0);
 }
+
+// phones build the sculpted shapes a little coarser: quicker to make and to draw
+const COARSE = window.matchMedia('(max-width: 720px)').matches ? 1.3 : 1;
 
 const TOP = 3.46; // height of the form, hem at 0
 
@@ -296,13 +300,16 @@ function blouseSDF(x, y, z) {
 // passes through, a quad across every grid edge it crosses; normals and
 // occlusion come from the field itself. `shade(x, y, z)` darkens a vertex
 // further (shadows one piece lays on another).
-async function netMesh(sdf, box, h, shade) {
+// `slice` is how long it may run before letting the page breathe (0 in a
+// worker, which never needs to)
+async function netArrays(sdf, box, h, shade, slice) {
+  h *= COARSE;
   const [X0, X1, Y0, Y1, Z0, Z1] = box;
   const nx = Math.ceil((X1 - X0) / h) + 1, ny = Math.ceil((Y1 - Y0) / h) + 1, nz = Math.ceil((Z1 - Z0) / h) + 1;
   const idx = (i, j, k) => i + nx * (j + ny * k);
   const f = new Float32Array(nx * ny * nz);
   let t0 = performance.now();
-  const breathe = async () => { if (performance.now() - t0 > 8) { await new Promise((r) => setTimeout(r, 0)); t0 = performance.now(); } };
+  const breathe = async () => { if (slice && performance.now() - t0 > slice) { await new Promise((r) => setTimeout(r, 0)); t0 = performance.now(); } };
 
   for (let k = 0; k < nz; k++) {
     const z = Z0 + k * h;
@@ -388,20 +395,22 @@ async function netMesh(sdf, box, h, shade) {
     if (dot < 0) { const s = I[t + 1]; I[t + 1] = I[t + 2]; I[t + 2] = s; }
   }
 
+  return { P: new Float32Array(P), N, COL, I: new Uint32Array(I) };
+}
+
+function toGeo(r) {
   const g = new THREE.BufferGeometry();
-  g.setAttribute('position', new THREE.Float32BufferAttribute(P, 3));
-  g.setAttribute('normal', new THREE.BufferAttribute(N, 3));
-  g.setAttribute('color', new THREE.BufferAttribute(COL, 3));
-  g.setIndex(new THREE.Uint32BufferAttribute(I, 1));
+  g.setAttribute('position', new THREE.BufferAttribute(r.P, 3));
+  g.setAttribute('normal', new THREE.BufferAttribute(r.N, 3));
+  g.setAttribute('color', new THREE.BufferAttribute(r.COL, 3));
+  g.setIndex(new THREE.BufferAttribute(r.I, 1));
   return g;
 }
 
 // the plaster form; the blouse lays a soft shadow along the skin under its hem
-async function buildForm() {
-  return netMesh(formSDF, [-0.9, 0.9, 1.84, 3.56, -0.5, 0.62], 0.0092, (x, y, z) => {
-    const below = hemY(x, z) - y;
-    return below > -0.01 && below < 0.1 ? 1 - 0.24 * (1 - Math.max(0, below) / 0.1) : 1;
-  });
+function formShade(x, y, z) {
+  const below = hemY(x, z) - y;
+  return below > -0.01 && below < 0.1 ? 1 - 0.24 * (1 - Math.max(0, below) / 0.1) : 1;
 }
 
 // cloth mapped round the body and up it, so a new piece rises through it from
@@ -418,10 +427,6 @@ function wrapUV(g) {
 
 const BOX = [-0.92, 0.92, 1.96, 3.3, -0.52, 0.64];
 
-// the kanchli
-async function buildBlouse() {
-  return wrapUV(await netMesh(blouseSDF, [-0.86, 0.86, 2.06, 3.28, -0.48, 0.6], 0.0088));
-}
 
 // the long jacket, above the waist: loose over the body and the arm stubs,
 // open down the front in a V that becomes a narrow gap, round the back of
@@ -434,9 +439,6 @@ function jacketSDF(x, y, z) {
   d = smax(d, -Math.min(front, back), 0.02);
   return smax(d, 2.0 - y, 0.015);
 }
-async function buildJacket() {
-  return wrapUV(await netMesh(jacketSDF, BOX, 0.0095));
-}
 
 // the plain dress under the jacket: sleeveless, a round neck
 function innerSDF(x, y, z) {
@@ -444,9 +446,6 @@ function innerSDF(x, y, z) {
   const yOpen = 3.0 - 0.12 * smooth(-0.1, 0.2, z) + 1.6 * x * x;
   d = smax(d, -smax(Math.abs(x) - 0.22, yOpen - y, 0.04), 0.02);
   return smax(d, 2.0 - y, 0.015);
-}
-async function buildInner() {
-  return wrapUV(await netMesh(innerSDF, [-0.72, 0.72, 1.96, 3.26, -0.5, 0.62], 0.0095));
 }
 
 // the kurta above the waist: sleeves to the end of the arm stubs, a round
@@ -459,8 +458,151 @@ function kurtaSDF(x, y, z) {
   d = smax(d, -Math.min(neck, slit), 0.015);
   return smax(d, 2.0 - y, 0.015);
 }
-async function buildKurta() {
-  return wrapUV(await netMesh(kurtaSDF, BOX, 0.0095));
+
+// ---------- the sculpted shapes, built off the page ----------
+// The form and the four fitted pieces are fields turned into meshes. The
+// work is done in background workers, several at once, so the page and its
+// loader keep moving while they are made; then they are kept in the browser
+// (IndexedDB) under a key made from the code that shapes them, so the next
+// visit draws them at once, and any change to that code builds them afresh.
+const SHAPES = {
+  form: { sdf: 'formSDF', box: [-0.9, 0.9, 1.84, 3.56, -0.5, 0.62], h: 0.0092, shade: 'formShade' },
+  jacket: { sdf: 'jacketSDF', box: BOX, h: 0.0095, uv: true },
+  kurta: { sdf: 'kurtaSDF', box: BOX, h: 0.0095, uv: true },
+  blouse: { sdf: 'blouseSDF', box: [-0.86, 0.86, 2.06, 3.28, -0.48, 0.6], h: 0.0088, uv: true },
+  inner: { sdf: 'innerSDF', box: [-0.72, 0.72, 1.96, 3.26, -0.5, 0.62], h: 0.0095, uv: true },
+};
+const SDFN = { formSDF, jacketSDF, kurtaSDF, blouseSDF, innerSDF, formShade };
+
+// everything a worker needs to shape the fields, written out as source
+function workerSource() {
+  const arrows = { smooth, gauss, smin, smax, hemY };
+  const fns = [bodyR, shapeAt, radAt, brFast, capsule, torsoSDF, armSDF, formSDF, blouseSDF, jacketSDF, innerSDF, kurtaSDF, formShade, netArrays];
+  return [
+    `const TOP = ${TOP}, COARSE = ${COARSE}, BLOUSE_T = ${BLOUSE_T}, BR_Y0 = ${BR_Y0}, BR_DY = ${BR_DY};`,
+    'let BR_TABLE = null;',
+    `const NECKC = ${JSON.stringify(NECKC)}, RIDGE = ${JSON.stringify(RIDGE)}, ARM = ${JSON.stringify(ARM)}, CUT = ${JSON.stringify(CUT)}, NECK = ${JSON.stringify(NECK)};`,
+    `const PROFILE_SAMPLES = ${JSON.stringify(PROFILE_SAMPLES.map((q) => ({ x: q.x, y: q.y })))};`,
+    ...Object.entries(arrows).map(([n, f]) => `const ${n} = ${String(f)};`),
+    ...fns.map(String),
+    `const FN = { formSDF, jacketSDF, kurtaSDF, blouseSDF, innerSDF, formShade };`,
+    `self.onmessage = async (e) => {
+      const { name, sdf, box, h, shade } = e.data;
+      const r = await netArrays(FN[sdf], box, h, shade ? FN[shade] : null, 0);
+      self.postMessage({ name, r }, [r.P.buffer, r.N.buffer, r.COL.buffer, r.I.buffer]);
+    };`,
+  ].join('\n');
+}
+
+// the shapes shared out among a few workers, the largest first
+function buildInWorkers(names) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(new Blob([workerSource()], { type: 'text/javascript' }));
+    const n = Math.max(1, Math.min(3, (navigator.hardwareConcurrency || 2) - 1, names.length));
+    const queue = names.slice(), out = {}, workers = [];
+    let left = names.length;
+    const finish = (err) => { workers.forEach((w) => w.terminate()); URL.revokeObjectURL(url); clearTimeout(timer); if (err) reject(err); else resolve(out); };
+    const timer = setTimeout(() => finish(new Error('the shapes took too long')), 30000);
+    const next = (w) => { const name = queue.shift(); if (name) w.postMessage({ name, ...SHAPES[name] }); };
+    for (let i = 0; i < n; i++) {
+      const w = new Worker(url);
+      w.onmessage = (e) => { out[e.data.name] = e.data.r; left--; if (!left) finish(); else next(w); };
+      w.onerror = (e) => finish(e.error || new Error('worker failed'));
+      workers.push(w);
+      next(w);
+    }
+  });
+}
+
+function shapesKey() {
+  const src = [smooth, gauss, bodyR, shapeAt, radAt, brFast, smin, smax, capsule, torsoSDF, armSDF, formSDF, hemY, blouseSDF,
+    jacketSDF, innerSDF, kurtaSDF, formShade, netArrays, wrapUV].map(String).join('|')
+    + JSON.stringify([PROFILE, NECKC, RIDGE, ARM, CUT, NECK, BLOUSE_T, SHAPES, TOP, COARSE]);
+  let h = 2166136261;
+  for (let i = 0; i < src.length; i++) { h ^= src.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return 'shapes-' + (h >>> 0).toString(36);
+}
+
+function shapesDB() {
+  const open = new Promise((res) => {
+    try {
+      const r = indexedDB.open('sj-craft3d', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('shapes');
+      r.onsuccess = () => res(r.result);
+      r.onerror = r.onblocked = () => res(null);
+    } catch (e) { res(null); }
+  });
+  // a browser that never answers (some private modes) is not waited on
+  return Promise.race([open, new Promise((res) => setTimeout(() => res(null), 1500))]);
+}
+
+async function loadShapes(key) {
+  const db = await shapesDB();
+  if (!db) return null;
+  return new Promise((res) => {
+    try {
+      const q = db.transaction('shapes', 'readonly').objectStore('shapes').get(key);
+      q.onsuccess = () => res(q.result || null);
+      q.onerror = () => res(null);
+    } catch (e) { res(null); }
+  });
+}
+
+async function saveShapes(key, val) {
+  const db = await shapesDB();
+  if (!db) return;
+  try {
+    const st = db.transaction('shapes', 'readwrite').objectStore('shapes');
+    st.clear();
+    st.put(val, key);
+  } catch (e) { /* no room or no storage: they are simply built again next time */ }
+}
+
+// kept compactly: normals as 16-bit, the shade as one byte
+function packGeo(g) {
+  const n = g.attributes.normal.array, c = g.attributes.color.array;
+  const nq = new Int16Array(n.length);
+  for (let i = 0; i < n.length; i++) nq[i] = Math.round(n[i] * 32767);
+  const cq = new Uint8Array(c.length / 3);
+  for (let i = 0; i < cq.length; i++) cq[i] = Math.round(c[i * 3] * 255);
+  return { p: g.attributes.position.array, n: nq, c: cq, i: g.index.array, uv: g.attributes.uv ? g.attributes.uv.array : null };
+}
+
+function unpackGeo(o) {
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(o.p, 3));
+  const n = new Float32Array(o.n.length);
+  for (let i = 0; i < n.length; i++) n[i] = o.n[i] / 32767;
+  g.setAttribute('normal', new THREE.BufferAttribute(n, 3));
+  const c = new Float32Array(o.c.length * 3);
+  for (let i = 0; i < o.c.length; i++) c[i * 3] = c[i * 3 + 1] = c[i * 3 + 2] = o.c[i] / 255;
+  g.setAttribute('color', new THREE.BufferAttribute(c, 3));
+  if (o.uv) g.setAttribute('uv', new THREE.BufferAttribute(o.uv, 2));
+  g.setIndex(new THREE.BufferAttribute(o.i, 1));
+  return g;
+}
+
+// the form and the four sculpted pieces, from the browser's store if they
+// are there, else built and stored
+async function buildShapes() {
+  const key = shapesKey();
+  const kept = await loadShapes(key);
+  if (kept && kept.form && kept.kurta) {
+    try { return Object.fromEntries(Object.entries(kept).map(([k, v]) => [k, unpackGeo(v)])); } catch (e) { /* build again */ }
+  }
+  const names = Object.keys(SHAPES);
+  let made = null;
+  try { made = await buildInWorkers(names); } catch (e) { made = null; }
+  const shapes = {};
+  for (const name of names) {
+    const spec = SHAPES[name];
+    // no workers (or one failed): built here, a slice at a time
+    const r = made && made[name] ? made[name] : await netArrays(SDFN[spec.sdf], spec.box, spec.h, spec.shade ? SDFN[spec.shade] : null, 12);
+    const g = toGeo(r);
+    shapes[name] = spec.uv ? wrapUV(g) : g;
+  }
+  saveShapes(key, Object.fromEntries(Object.entries(shapes).map(([k, g]) => [k, packGeo(g)])));
+  return shapes;
 }
 
 async function init() {
@@ -493,8 +635,11 @@ async function init() {
   });
 
   // ---------- renderer ----------
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  // fewer pixels and no extra smoothing on a sharp phone screen, where it is
+  // not seen; the drawing only happens when something has changed (below)
+  const small = window.matchMedia('(max-width: 720px)').matches;
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: !(small && window.devicePixelRatio >= 2), alpha: true, powerPreference: 'high-performance' });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.0;
@@ -514,7 +659,7 @@ async function init() {
   const key = new THREE.DirectionalLight(0xffffff, 2.1);
   key.position.set(-3.6, 6.2, 4.6);
   key.castShadow = true;
-  key.shadow.mapSize.set(2048, 2048);
+  key.shadow.mapSize.set(small ? 1024 : 2048, small ? 1024 : 2048);
   key.shadow.camera.left = -2.2; key.shadow.camera.right = 2.2;
   key.shadow.camera.top = 4; key.shadow.camera.bottom = -0.6;
   key.shadow.camera.near = 1; key.shadow.camera.far = 16;
@@ -624,7 +769,8 @@ async function init() {
     parent.add(mesh);
     return mesh;
   };
-  const formGeo = await buildForm();
+  const shapes = await buildShapes();
+  const formGeo = shapes.form;
   addMesh(dress, formGeo, skin);
   buildStand().forEach((g) => addMesh(dress, g, wood));
 
@@ -640,17 +786,19 @@ async function init() {
     dress.add(grp);
     states[k].group = grp;
   };
-  const blouseGeo = await buildBlouse();
+  const blouseGeo = shapes.blouse;
   const palazzo = buildPalazzo();
   const charcoal = plainTex('#2b2624'), cream = plainTex('#e8dccb'), olive = plainTex('#8b8f3e');
   dressIn(0, [[blouseGeo, textures[0]], ...palazzo.map((g) => [g, textures[0]])]);
   dressIn(1, [[blouseGeo, textures[1]], ...palazzo.map((g) => [g, charcoal])]);
-  (async () => {
-    dressIn(2, [[await buildJacket(), textures[2]], [buildJacketLower(), textures[2]], [await buildInner(), olive], [buildInnerLower(), olive]]);
-    const kurtaTop = await buildKurta();
-    dressIn(3, [[kurtaTop, textures[3]], [buildKurtiLower(), textures[3]], ...palazzo.map((g) => [g, cream])]);
-    dressIn(4, [[kurtaTop, textures[4]], ...buildKurtaLower().map((g) => [g, textures[4]])]);
-  })();
+  dressIn(2, [[shapes.jacket, textures[2]], [buildJacketLower(), textures[2]], [shapes.inner, olive], [buildInnerLower(), olive]]);
+  dressIn(3, [[shapes.kurta, textures[3]], [buildKurtiLower(), textures[3]], ...palazzo.map((g) => [g, cream])]);
+  dressIn(4, [[shapes.kurta, textures[4]], ...buildKurtaLower().map((g) => [g, textures[4]])]);
+  // every piece's shaders compiled now, behind the loader, so no change of
+  // cloth stalls the page later
+  states.forEach((st) => { st.group.visible = true; });
+  renderer.compile(scene, camera);
+  states.forEach((st) => { st.group.visible = false; });
 
   // ---------- points on each piece ----------
   const pAt = (a, y, extra) => { const [x, z] = bodyXZ(a, y, extra); return new THREE.Vector3(x, y, z); };
@@ -701,7 +849,9 @@ async function init() {
   const SWEEP = 0.07;
 
   let phone = false;
+  let dirty = true;
   function resize() {
+    dirty = true;
     const w = stage.clientWidth, h = stage.clientHeight;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
@@ -759,11 +909,12 @@ async function init() {
   const clock = new THREE.Clock();
   const v = new THREE.Vector3(), nW = new THREE.Vector3(), toCam = new THREE.Vector3(), look = new THREE.Vector3();
 
-  function frame() {
-    requestAnimationFrame(frame);
-    if (!visible) return;
+  // A frame is drawn only when something on it moves: the scroll, the cursor's
+  // pull, or a piece rising over the last. Standing still, nothing is drawn.
+  function frame(force) {
     const t = clock.getElapsedTime();
     uniforms.uTime.value = t;
+    const moving = Math.abs(target - prog) > 0.00005 || Math.abs(pxTarget - px) > 0.0005;
     prog += (target - prog) * 0.07;
 
     // camera down the dress; the dress turns slowly as it goes
@@ -782,7 +933,7 @@ async function init() {
     px += (pxTarget - px) * 0.06;
     const slide = px * 0.02 * d;
     dress.position.set(Math.cos(yaw) * slide, 0, -Math.sin(yaw) * slide);
-    dress.rotation.y = -0.35 + prog * 1.9 + px * 0.16 + (reduced ? 0 : Math.sin(t * 0.5) * 0.03);
+    dress.rotation.y = -0.35 + prog * 1.9 + px * 0.16;
 
     // which cloth, and how far the next has risen
     let s = 0;
@@ -807,6 +958,8 @@ async function init() {
       st.group.children.forEach((c) => { c.castShadow = cast; });
     });
     const shown = mix > 0.5 ? cur + 1 : cur;
+    if (!force && !moving && !dirty && !(mix > 0.001 && mix < 0.999)) return;
+    dirty = false;
     setActive(mix > 0.5 ? s + 1 : s);
     if (hint) hint.classList.toggle('is-gone', prog > 0.06);
     if (progressBar) progressBar.style.transform = `scaleY(${Math.min(1, Math.max(0, (prog - EDGES[1]) / (1 - EDGES[1])))})`;
@@ -838,7 +991,12 @@ async function init() {
       el.classList.toggle('is-on', facing && settled && onScreen);
     });
   }
-  frame();
+  // the first frame, then the loader may open the page
+  frame(true);
+  window.__sjCraftReady = true;
+  document.dispatchEvent(new CustomEvent('sj:craft-ready'));
+  const loop = () => { requestAnimationFrame(loop); if (visible) frame(false); };
+  loop();
 }
 
 // undyed kora cotton worked with lace, white on white: a fine net, and

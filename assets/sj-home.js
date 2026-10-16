@@ -20,9 +20,15 @@
   var gsap = window.gsap;
 
   var MIN_MS = reduced ? 400 : 2400;
-  var MAX_MS = 7000;
+  // the page opens once the film, the type and the 3D form are ready, but
+  // never makes anyone wait longer than this
+  var MAX_MS = 9000;
   var t0 = performance.now();
-  var ready = { film: false, fonts: false };
+  var ready = { film: false, fonts: false, craft: !document.querySelector('.craft3d') };
+  // the Wear-the-craft section builds its pieces behind the loader and says
+  // when it has drawn them (craft3d.js)
+  if (window.__sjCraftReady) ready.craft = true;
+  document.addEventListener('sj:craft-ready', function () { ready.craft = true; }, { once: true });
   var shown = 0;
   var done = false;
 
@@ -72,7 +78,7 @@
     if (done) return;
     var elapsed = now - t0;
     var timeShare = Math.min(1, elapsed / MIN_MS);
-    var loaded = (ready.film ? 0.6 : 0) + (ready.fonts ? 0.4 : 0);
+    var loaded = (ready.film ? 0.3 : 0) + (ready.fonts ? 0.15 : 0) + (ready.craft ? 0.55 : 0);
     var target = Math.min(timeShare, Math.max(loaded, 0.9 * timeShare));
     if (elapsed > MAX_MS) target = 1;
     shown += (target - shown) * 0.08;

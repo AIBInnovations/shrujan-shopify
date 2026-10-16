@@ -33,38 +33,10 @@
   /* and every section has this much room above its first line and below
      its last, so the space between any two is the same */
   --sec-pad: clamp(48px, 5vw, 80px);
-  --ivory: #f3f0ed;
-  --ivory-2: #e6d8cc;
-  --sand: #e6d8cc;
-  --cream: #f3f0ed;
-  --cream-dim: rgba(243, 240, 237, 0.72);
-  --ink: #181615;
-  --ink-deep: #181615;
-  --ink-soft: #6f6b68;
-  /* one accent, from Kutch itself: ajrakh indigo for the accents, a deep
-     indigo for the dark bars and the footer; text stays near-black */
-  --indigo: #2b3f6b;
-  --indigo-deep: #1b2744;
-  --maroon: #1b2744;
-  --maroon-deep: #121a30;
-  --tan: #e6d8cc;
-  --gerua: #2b3f6b;
-  --gerua-600: #1b2744;
-  --gerua-300: #8d9ac0;
-  --gerua-100: #e4e3e6;
-  --mehendi-200: #e8e3dd;
-  --gold: #2b3f6b;
-  --hairline: rgba(24, 22, 21, 0.14);
-  --hairline-strong: rgba(24, 22, 21, 0.4);
   /* the content column every section shares: the page width up to 1580px,
      less the gutter on each side, exactly as the header and the theme's own
      sections (.container) lay out */
   --col: calc(min(var(--page-max, 1580px), 100vw) - 2 * var(--gutter));
-}
-
-body {
-  background: var(--ivory);
-  color: var(--ink);
 }
 
 /* the hero film without the maroon: a light neutral wash, just enough for the
@@ -113,53 +85,9 @@ body {
   }
 }
 
-/* No ornament dividers. The stitched dash-and-diamond rules under the hero
-   title and every section title, the sparkle marks flanking the small
-   titles, the striped band across the top of the page and the ink stamp all
-   go; dashed borders become plain hairlines. */
-.hero--film .hero-message__rule,
-.hero-film__eyebrow > span,
-.poster__caption > span[aria-hidden='true'],
-.poster__stamp,
-.topbar::before {
-  display: none !important;
-}
-
-.section-intro::after,
-.section-intro .eyebrow::before,
-.section-intro .eyebrow::after,
-.fletters__eyebrow::before,
-.ornament-rule::before,
-.ornament-rule::after {
-  content: none !important;
-  display: none !important;
-}
-
-/* only the side that had the dashed line: setting every side solid turned
-   the borders that were never drawn into 3px outlines */
-.best-card__thread,
-.footer__bottom,
-.fmap,
-.route__stop {
-  border-top-style: solid !important;
-}
-
-.tl {
-  border-left-style: solid !important;
-}
-
-.store-gift__code {
-  border-style: solid !important;
-}
-
 /* without the rule, the copy sits a little closer under the hero title */
 .hero--film .hero-message__copy {
   margin-top: clamp(18px, 1.8vw, 26px);
-}
-
-/* the footer's ground was a fixed maroon gradient; it takes Vero's near-black */
-.footer {
-  --footer-bg: radial-gradient(118% 82% at 50% 0%, #2d3f66 0%, #1b2744 42%, #111a30 100%);
 }
 
 /* ---------- 1. loader ---------- */
@@ -188,7 +116,7 @@ html.sj-pre body {
   height: 0;
   translate: -50% -50%;
   border-radius: 4px;
-  box-shadow: 0 0 0 200vmax var(--ivory, #f9f5ea);
+  box-shadow: 0 0 0 200vmax var(--page-bg, #ece2d6);
 }
 
 .sj-loader__top,
@@ -326,7 +254,7 @@ html.sj-pre .offer-bar {
   position: relative;
   height: 560vh;
   margin-top: 5px;
-  background: var(--ivory, #f9f5ea);
+  background: transparent;
 }
 
 .craft3d__stage {
@@ -335,8 +263,7 @@ html.sj-pre .offer-bar {
   height: 100vh;
   height: 100svh;
   overflow: hidden;
-  background:
-    var(--ivory, #f9f5ea);
+  background: transparent;
 }
 
 .craft3d__canvas {
@@ -394,7 +321,7 @@ html.sj-pre .offer-bar {
   right: 0;
   bottom: 0;
   height: 22vh;
-  background: linear-gradient(rgba(243, 240, 237, 0), var(--ivory, #f3f0ed) 85%);
+  background: linear-gradient(rgba(236, 226, 214, 0), var(--page-bg, #ece2d6) 85%);
   pointer-events: none;
 }
 
@@ -747,7 +674,7 @@ html.sj-pre .offer-bar {
   /* every part of the section shares the prints' row, edge for edge */
   --arch-max: var(--col);
   padding: clamp(96px, 11vw, 176px) var(--gutter) clamp(80px, 9vw, 140px);
-  background: var(--ivory);
+  background: transparent;
   color: var(--ink);
 }
 
@@ -1037,7 +964,7 @@ html.sj-pre .offer-bar {
   --idx-max: var(--col);
   position: relative;
   padding: clamp(40px, 6vw, 96px) var(--gutter) clamp(96px, 10vw, 160px);
-  background: var(--ivory);
+  background: transparent;
   color: var(--ink);
 }
 
@@ -1349,7 +1276,7 @@ html.sj-pre .offer-bar {
   position: relative;
   overflow-x: clip;
   padding: clamp(40px, 6vw, 96px) var(--gutter) clamp(96px, 10vw, 160px);
-  background: var(--ivory);
+  background: transparent;
   color: var(--ink);
 }
 
@@ -2813,14 +2740,21 @@ section[aria-label="What our customers say"],
 }
 
 .prm::after {
-  background-image: var(--grain);
+  background-image: var(--grain-a);
   background-size: 240px 240px;
-  mix-blend-mode: soft-light;
-  opacity: 0.55;
 }
 
 /* the footer starts on a straight edge, with no rule along its top */
 .footer {
   box-shadow: none !important;
+}
+
+/* the reviews' panel, lighter than the beige page it sits on */
+.tq__panel {
+  background: #f6f1ea;
+}
+
+.tq__dot {
+  border-color: #f6f1ea;
 }
 

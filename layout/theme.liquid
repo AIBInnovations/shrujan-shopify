@@ -181,11 +181,13 @@
       loader until sj-home.js lets it go.
     {%- endcomment %}
     <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
-    {%- comment -%} If sj-home.js never lets the page go (blocked, failed), it lets itself go after 10 seconds; without JavaScript there is no loader at all. {%- endcomment %}
-    <script>setTimeout(function(){if(window.__sjRevealed)return;var h=document.documentElement;h.classList.remove('sj-pre','sj-hero-full');var l=document.querySelector('.sj-loader');if(l)l.remove();if(window.Shrujan&&window.Shrujan.startScroll)window.Shrujan.startScroll();window.__sjRevealed=true;document.dispatchEvent(new CustomEvent('sj:revealed'));},10000);</script>
+    {%- comment -%} If sj-home.js never lets the page go (blocked, failed), it lets itself go after 14 seconds (the loader's own limit is 9); without JavaScript there is no loader at all. {%- endcomment %}
+    <script>setTimeout(function(){if(window.__sjRevealed)return;var h=document.documentElement;h.classList.remove('sj-pre','sj-hero-full');var l=document.querySelector('.sj-loader');if(l)l.remove();if(window.Shrujan&&window.Shrujan.startScroll)window.Shrujan.startScroll();window.__sjRevealed=true;document.dispatchEvent(new CustomEvent('sj:revealed'));},14000);</script>
     <noscript><style>.sj-loader{display:none!important}html.sj-pre,html.sj-pre body{overflow:visible!important}html.sj-pre .hero-film__message,html.sj-pre .site-header,html.sj-pre .offer-bar{opacity:1!important}</style></noscript>
     {%- endif %}
     {{ content_for_header }}
+    {%- comment -%} the site's colours and beige ground, on every page (awwwards-preview/src/site.css) {%- endcomment %}
+    <link rel="stylesheet" href="{{ 'sj-site.css' | asset_url }}">
     {%- if template.name == 'index' %}
     <link rel="stylesheet" href="{{ 'sj-home.css' | asset_url }}">
     {%- endif %}
