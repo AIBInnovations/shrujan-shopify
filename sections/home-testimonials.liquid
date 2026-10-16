@@ -39,104 +39,66 @@
     }
   </style>
 {%- endif -%}
+{%- comment -%}
+  The reviews, one at a time and large, beside a photograph of what she took
+  home, with the reviewers' faces and a pair of arrows to move between them
+  (assets/sj-home.js, styled by sj-home.css). Each review is a block: its
+  quote, name, place and piece; its face is the block's image and the
+  photograph is its first "took home" piece. The head is snippets/sj-hx.liquid.
+{%- endcomment -%}
+{%- liquid
+  assign tm_meta_l = cfg.tm_meta_l | escape
+  assign tm_meta_r = 'Reviews'
+  if cfg.tm_show_rating
+    assign tm_meta_r = section.settings.rating_count | strip
+    if tm_meta_r == blank
+      assign tm_meta_r = 'Reviews'
+    endif
+  endif
+  assign tm_l1 = cfg.tm_line_1 | escape
+  assign tm_l2 = cfg.tm_line_2 | escape
+  assign tm_lede = section.settings.intro | newline_to_br | replace: '<br />', ' ' | strip_newlines | strip
+  assign tm_count = section.blocks.size
+  assign tm_total = tm_count
+  if tm_count < 10
+    assign tm_total = '0' | append: tm_count
+  endif
+  assign tm_link = section.settings.picks_url | default: '/pages/shop-shrujan#catalogue'
+  assign tm_star = '<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.6L12 17.6 6.1 20.7l1.2-6.6L2.5 9.5l6.6-.9Z"/></svg>'
+-%}
 <section class="section container" aria-label="{{ section.settings.title | escape }}">
-  <div class="tw__intro" data-reveal>
-    <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
-    <h2 class="section-title">{{ section.settings.title }}</h2>
-    <p class="tw__intro-copy">
-      {{ section.settings.intro }}
-    </p>
-  </div>
+  {% render 'sj-hx', meta_l: tm_meta_l, meta_r: tm_meta_r, l1: tm_l1, l2: tm_l2, lede: tm_lede %}
 
-  <div class="tw" data-reveal{% if cfg.tm_step != 'page' %} data-step="{{ cfg.tm_step }}"{% endif %}{% if cfg.tm_autoplay %} data-autoplay="{{ cfg.tm_interval | times: 1000 }}"{% endif %}>
-    <header class="tw__head">
-      <p class="tw__title">
-        {{ section.settings.kind_title }}
-      </p>
-
-      <div class="tw__meta">
-        {% if cfg.tm_show_rating %}
-        <div class="tw-rating">
-          <span class="tw-rating__stars" aria-label="5 out of 5 stars">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.6L12 17.6 6.1 20.7l1.2-6.6L2.5 9.5l6.6-.9Z"></path></svg>
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.6L12 17.6 6.1 20.7l1.2-6.6L2.5 9.5l6.6-.9Z"></path></svg>
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.6L12 17.6 6.1 20.7l1.2-6.6L2.5 9.5l6.6-.9Z"></path></svg>
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.6L12 17.6 6.1 20.7l1.2-6.6L2.5 9.5l6.6-.9Z"></path></svg>
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.6L12 17.6 6.1 20.7l1.2-6.6L2.5 9.5l6.6-.9Z"></path></svg>
-          </span>
-          <span class="tw-rating__count">{{ section.settings.rating_count }}</span>
-        </div>
-        {% endif %}
-
-        <div class="tw-loved">
-          <span class="tw-loved__stack" aria-hidden="true">
-            <img src="{% if section.settings.stack_img_1 %}{{ section.settings.stack_img_1 | image_url: width: 1200 }}{% else %}{{ 'cat-c1.webp' | asset_url }}{% endif %}" alt="" loading="lazy">
-            <img src="{% if section.settings.stack_img_2 %}{{ section.settings.stack_img_2 | image_url: width: 1200 }}{% else %}{{ 'cat-c5.webp' | asset_url }}{% endif %}" alt="" loading="lazy">
-            <img src="{% if section.settings.stack_img_3 %}{{ section.settings.stack_img_3 | image_url: width: 1200 }}{% else %}{{ 'frame-r5t25.webp' | asset_url }}{% endif %}" alt="" loading="lazy">
-          </span>
-          <span class="tw-loved__label">
-            {{ section.settings.loved_line_1 }}
-            <br>
-            {{ section.settings.loved_line_2 }}
-          </span>
-        </div>
-
-        {% if cfg.tm_show_arrows %}
-        <div class="carousel-arrows">
-          <button type="button" aria-label="Previous testimonials">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5 8 12l6.5 6.5"></path></svg>
-          </button>
-          <button type="button" aria-label="Next testimonials">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9.5 5.5 6.5 6.5-6.5 6.5"></path></svg>
-          </button>
-        </div>
-        {% endif %}
-      </div>
-    </header>
-
-    <div class="tw__grid">
+  <div class="tq" aria-roledescription="carousel" aria-label="Customer reviews">
+    <div class="tq__panel">
+      <div class="tq__top"><span class="tq__rating"><span class="tq__stars" aria-label="5 out of 5 stars">{{ tm_star }}{{ tm_star }}{{ tm_star }}{{ tm_star }}{{ tm_star }}</span>{{ section.settings.rating_count | strip }}</span><span class="tq__count" aria-live="polite"><b>01</b> / {{ tm_total }}</span></div>
+      <div class="tq__slides">
       {%- for block in section.blocks %}
-      {%- assign twmod = forloop.index0 | modulo: 2 %}
-      <article class="tw-cell{% if cfg.tm_alternate and twmod == 1 %} tw-cell--flip{% endif %}" {{ block.shopify_attributes }}>
-        <div class="tw-cell__inner">
-          <div class="tw-cell__face tw-cell__face--front">
-            <div class="tw-cell__person">
-              <img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1200 }}{% else %}{{ block.settings.image_asset | asset_url }}{% endif %}" alt="" loading="lazy">
-              <div>
-                <p class="tw-cell__name">{{ block.settings.name }}</p>
-                <p class="tw-cell__role">{{ block.settings.place }}</p>
-              </div>
-            </div>
-
-            <p class="tw-cell__label">{{ block.settings.label }}</p>
-
-            <blockquote class="tw-cell__quote">“{{ block.settings.quote }}”</blockquote>
-          </div>
-
-          <div class="tw-cell__face tw-cell__face--back">
-            <p class="tw-buys__eyebrow">{{ block.settings.name | split: ' ' | first }} {{ section.settings.took_home_label }}</p>
-
-            <ul class="tw-buys">
-              <li class="tw-buys__item">
-                <span class="tw-buys__frame">
-                  <img src="{% if block.settings.buy1_image %}{{ block.settings.buy1_image | image_url: width: 1200 }}{% else %}{{ block.settings.buy1_asset | asset_url }}{% endif %}" alt="{{ block.settings.buy1_name | escape }}" loading="lazy">
-                </span>
-                <span class="tw-buys__name">{{ block.settings.buy1_name }}</span>
-              </li>
-              <li class="tw-buys__item">
-                <span class="tw-buys__frame">
-                  <img src="{% if block.settings.buy2_image %}{{ block.settings.buy2_image | image_url: width: 1200 }}{% else %}{{ block.settings.buy2_asset | asset_url }}{% endif %}" alt="{{ block.settings.buy2_name | escape }}" loading="lazy">
-                </span>
-                <span class="tw-buys__name">{{ block.settings.buy2_name }}</span>
-              </li>
-            </ul>
-
-            <a class="tw-buys__link" href="{{ section.settings.picks_url | default: '/pages/shop-shrujan#catalogue' }}">
-              {{ section.settings.picks_label }}
-            </a>
-          </div>
+      {%- capture tm_face %}{% if block.settings.image %}{{ block.settings.image | image_url: width: 1200 }}{% else %}{{ block.settings.image_asset | asset_url }}{% endif %}{% endcapture %}
+      <figure class="tq__slide{% if forloop.first %} is-active{% endif %}" data-i="{{ forloop.index0 }}"{% unless forloop.first %} aria-hidden="true"{% endunless %} {{ block.shopify_attributes }}>
+        <blockquote class="tq__quote">“{{ block.settings.quote | strip }}”</blockquote>
+        <figcaption class="tq__who"><img class="tq__face" src="{{ tm_face }}" alt="" loading="lazy"><span><b class="tq__name">{{ block.settings.name | strip }}</b><span class="tq__city">{{ block.settings.place | strip }} · {{ block.settings.label | strip }}</span></span></figcaption>
+      </figure>
+      {%- endfor %}
+      </div>
+      <div class="tq__nav">
+        <div class="tq__dots">
+          {%- for block in section.blocks -%}
+          {%- capture tm_face %}{% if block.settings.image %}{{ block.settings.image | image_url: width: 1200 }}{% else %}{{ block.settings.image_asset | asset_url }}{% endif %}{% endcapture -%}
+          <button class="tq__dot{% if forloop.first %} is-active{% endif %}" type="button" data-i="{{ forloop.index0 }}" aria-label="Review by {{ block.settings.name | strip | escape }}"><img src="{{ tm_face }}" alt="" loading="lazy"></button>
+          {%- endfor -%}
         </div>
-      </article>
+        <span class="tq__loved">{{ section.settings.loved_line_1 | strip }} {{ section.settings.loved_line_2 | strip }}</span>
+        <div class="tq__arrows"><button class="tq__arrow tq__arrow--prev" type="button" aria-label="Previous review">←</button><button class="tq__arrow tq__arrow--next" type="button" aria-label="Next review">→</button></div>
+      </div>
+    </div>
+    <div class="tq__photo">
+      {%- for block in section.blocks %}
+      {%- capture tm_shot %}{% if block.settings.buy1_image %}{{ block.settings.buy1_image | image_url: width: 1200 }}{% else %}{{ block.settings.buy1_asset | asset_url }}{% endif %}{% endcapture %}
+      <a class="tq__shot{% if forloop.first %} is-active{% endif %}" data-i="{{ forloop.index0 }}" href="{{ tm_link }}"{% unless forloop.first %} aria-hidden="true" tabindex="-1"{% endunless %}>
+        <img src="{{ tm_shot }}" alt="{{ block.settings.buy1_name | escape }}" loading="lazy">
+        <span class="tq__cap"><span class="tq__took">{{ block.settings.name | strip | split: ' ' | first }} {{ section.settings.took_home_label }}</span><span class="tq__item">{{ block.settings.buy1_name | escape }}</span><span class="tq__go">{{ section.settings.picks_label | strip }} <span aria-hidden="true">→</span></span></span>
+      </a>
       {%- endfor %}
     </div>
   </div>
@@ -229,6 +191,25 @@
       "id": "intro",
       "label": "Intro copy",
       "default": "Two thousand women, sixty-six villages and one promise: cloth that is made slowly and kept for a lifetime."
+    },
+    {
+      "type": "text",
+      "id": "tm_meta_l",
+      "label": "Small line, left",
+      "info": "The rating count sits on the right.",
+      "default": "Loved & worn"
+    },
+    {
+      "type": "text",
+      "id": "tm_line_1",
+      "label": "Title, line 1",
+      "default": "What our"
+    },
+    {
+      "type": "text",
+      "id": "tm_line_2",
+      "label": "Title, line 2",
+      "default": "customers say"
     },
     {
       "type": "header",

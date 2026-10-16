@@ -38,7 +38,7 @@
   </style>
 {%- endif -%}
 <section class="shopcta" aria-label="{{ section.settings.cta_label | escape }}">
-  <div class="shopcta__grid" data-reveal>
+  <div class="shopcta__grid">
     <div class="shopcta__media">
       <img src="{% if section.settings.image %}{{ section.settings.image | image_url: width: 1200 }}{% else %}{{ 'cta-band.webp' | asset_url }}{% endif %}" alt="{{ section.settings.image_alt | escape }}" loading="lazy">
     </div>

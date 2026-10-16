@@ -59,16 +59,33 @@
     {%- endif -%}
   </style>
 {%- endif -%}
+{%- comment -%}
+  The home page's version (assets/sj-home.css / sj-home.js): a meta row over
+  the head, the title in two lines, the seal's words fitted to its ring, a
+  number and a "Watch" line on every reel, and a "Watch" disc that follows the
+  cursor. The theme's own reveal attributes are left off, since sj-home.js
+  brings these blocks in itself.
+{%- endcomment -%}
+{%- liquid
+  assign reel_count = section.blocks.size
+  assign reel_total = reel_count
+  if reel_count < 10
+    assign reel_total = '0' | append: reel_count
+  endif
+  assign count_words = 'One,Two,Three,Four,Five,Six,Seven,Eight,Nine,Ten,Eleven,Twelve' | split: ','
+  assign count_word = reel_count
+  if reel_count > 0 and reel_count <= count_words.size
+    assign count_i = reel_count | minus: 1
+    assign count_word = count_words[count_i]
+  endif
+-%}
 <section class="section reels" id="reels" aria-label="Shrujan in motion"{% if r.autoplay == false %} data-autoplay="false"{% endif %}>
   <div class="container">
+    <div class="reels__meta"><span>{{ r.rl_meta_l | escape }}</span><span>{{ count_word }} {% if reel_count == 1 %}reel{% else %}reels{% endif %}{% if r.rl_meta_r != blank %} · {{ r.rl_meta_r | escape }}{% endif %}</span></div>
     <div class="reels__head">
-      <div class="reels__titles" data-reveal>
+      <div class="reels__titles">
         <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
-        <h2 class="section-title">
-          {{ section.settings.title_l1 | escape }}
-          <br>
-          <em>{{ section.settings.title_l2 | escape }}</em>
-        </h2>
+        <h2 class="section-title rl__title"><span class="rl__line">{{ section.settings.title_l1 | escape }}</span><span class="rl__line rl__line--soft">{{ section.settings.title_l2 | escape }}</span></h2>
       </div>
 
       {%- if r.show_seal %}
@@ -84,7 +101,7 @@
             <defs>
               <path id="reel-arc" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"></path>
             </defs>
-            <text>
+            <text textLength="270" lengthAdjust="spacing">
               <textPath href="#reel-arc" startOffset="0">WATCH THE CRAFT · SHRUJAN IN MOTION ·</textPath>
             </text>
           </svg>
@@ -99,7 +116,7 @@
       </a>
       {%- endif %}
 
-      <div class="reels__note" data-reveal>
+      <div class="reels__note">
         <p>
           {{ section.settings.note | escape }}
         </p>
@@ -115,13 +132,15 @@
     {%- endcomment -%}
     {%- assign pennants = r.pennants | split: ',' -%}
     {%- assign pennant_count = pennants | size %}
-    <div class="reels__rail" data-reveal-child>
+    <div class="reels__rail">
       {%- for block in section.blocks %}
       <a class="reel" href="{{ block.settings.link | default: 'https://www.instagram.com/shrujanindia/reels/' }}" target="_blank" rel="noopener noreferrer" {{ block.shopify_attributes }}>
         <div class="reel__media">
           <video src="{{ 'reel-' | append: forloop.index | append: '.mp4' | asset_url }}" poster="{{ 'reel-' | append: forloop.index | append: '-poster.jpg' | asset_url }}" muted {% if r.loop %}loop {% endif %}playsinline preload="none" aria-label="{{ block.settings.title | escape }}"></video>
           <span class="reel__scrim" aria-hidden="true"></span>
+          <span class="reel__no" aria-hidden="true">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}<span> / {{ reel_total }}</span></span>
           <p class="reel__title">{{ block.settings.title | escape }}</p>
+          <span class="reel__go" aria-hidden="true">Watch on Instagram <span>↗</span></span>
         </div>
         {%- if r.show_pennants and pennant_count > 0 -%}
           {%- assign pennant_i = forloop.index0 | modulo: pennant_count -%}
@@ -134,6 +153,7 @@
       {%- endfor %}
     </div>
   </div>
+  <div class="rl__cursor" aria-hidden="true">Watch</div>
 </section>
 
 <script>
@@ -304,6 +324,19 @@
       "id": "title_l2",
       "label": "Title line 2 (italic)",
       "default": "come alive"
+    },
+    {
+      "type": "text",
+      "id": "rl_meta_l",
+      "label": "Small line above the head",
+      "default": "Shrujan in motion"
+    },
+    {
+      "type": "text",
+      "id": "rl_meta_r",
+      "label": "Small line, right",
+      "info": "Follows the number of reels, e.g. “Five reels · @shrujanindia”.",
+      "default": "@shrujanindia"
     },
     {
       "type": "checkbox",

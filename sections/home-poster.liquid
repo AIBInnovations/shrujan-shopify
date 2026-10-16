@@ -1,79 +1,74 @@
 {%- render 'section-design', section: section -%}
-<!-- Kaarigar, from the studio archive — converted from src/components/CraftPoster.jsx -->
-<section class="section poster" id="kaarigar" aria-label="{{ section.settings.caption | strip | escape }}"{% if section.settings.colour_on_scroll %} data-poster-colour{% endif %}>
-  <div class="container poster__stage">
-    {%- comment -%} curator's note, top right {%- endcomment %}
-    <div class="poster__note poster__note--tr" data-reveal>
-      <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
-      <p class="poster__lead">{{ section.settings.lead_l1 | escape }}{% if section.settings.lead_l2 != blank %}<br><em>{{ section.settings.lead_l2 | escape }}</em>{% endif %}</p>
-      {%- if section.settings.copy != blank %}
-      <p class="poster__copy">{{ section.settings.copy | escape }}</p>
-      {%- endif %}
-    </div>
-
-    {%- comment -%} the art, centred on the page ground {%- endcomment %}
-    <figure class="poster__art">
-      <img src="{% if section.settings.art_img %}{{ section.settings.art_img | image_url: width: 1640 }}{% else %}{{ section.settings.art_asset | asset_url }}{% endif %}" alt="{{ section.settings.art_alt | escape }}" loading="lazy">
-      {%- if section.settings.caption != blank %}
-      <figcaption class="poster__caption"><span aria-hidden="true">—</span> {{ section.settings.caption | escape }} <span aria-hidden="true">—</span></figcaption>
-      {%- endif %}
+{%- comment -%}
+  Kaarigar, from the studio archive: the poster hung as six prints, one per
+  craft, each cut from the painting at its own panel, turning into that craft's
+  film on hover or focus (assets/sj-home.js, styled by sj-home.css). A print
+  is "name | film | width | centre": its width in pixels of the 860px-wide
+  painting and its centre in % across it, so a replacement artwork has to keep
+  its six panels where these are. The films and their posters are the hero's
+  craft montage.
+{%- endcomment -%}
+{%- liquid
+  assign ps = section.settings
+  if ps.art_img
+    assign paint = ps.art_img | image_url: width: 1640
+  else
+    assign paint = ps.art_asset | default: 'kaarigar-art.webp' | asset_url
+  endif
+  assign prints = 'Kadhai|craft-embroidery|139|8.547,Ajrakh|craft-ajrakh|138|25.116,Discharge|craft-discharge|137|41.337,Bunai|craft-weaving|141|57.849,Mitti kala|craft-pottery|139|74.477,Tie-dye|craft-tiedye|141|91.337' | split: ','
+-%}
+<section class="arch" id="kaarigar" aria-label="From the studio archive: the makers of Kutch">
+  <div class="arch__meta"><span>{{ ps.arch_meta_l | escape }}</span><span>{{ ps.arch_meta_r | escape }}</span></div>
+  <h2 class="arch__title"><span class="arch__line">{{ ps.lead_l1 | escape }}</span><span class="arch__line arch__line--soft">{{ ps.lead_l2 | escape }}</span></h2>
+  <div class="arch__strips" role="list" aria-label="Kaarigar, the six crafts of the poster">
+    {% for p in prints -%}
+    {%- assign f = p | split: '|' -%}
+    <figure class="arch__item" role="listitem" tabindex="0" style="--w:{{ f[2] }};--c:{{ f[3] }}" data-film="{{ f[1] | append: '.mp4' | asset_url }}">
+      <div class="arch__strip"><img class="arch__paint" src="{{ paint }}" alt="" loading="lazy"><video class="arch__film" muted loop playsinline preload="none" poster="{{ f[1] | append: '-poster.webp' | asset_url }}" aria-hidden="true"></video></div>
+      <figcaption class="arch__label"><span>0{{ forloop.index }}</span>{{ f[0] }}</figcaption>
     </figure>
-
-    {%- comment -%} plate line, bottom left {%- endcomment %}
-    <div class="poster__note poster__note--bl" data-reveal>
-      {%- if section.settings.plate != blank %}
-      <p class="poster__plate">{{ section.settings.plate | escape }}</p>
-      {%- endif -%}
-      {%- if section.settings.quiet != blank %}
-      <p class="poster__lead poster__lead--quiet"><em>{{ section.settings.quiet | escape }}</em></p>
-      {%- endif -%}
-      {%- if section.settings.link_label != blank %}
-      <a class="arrow-link poster__link" href="{{ section.settings.link | default: '/pages/video' }}">{{ section.settings.link_label | escape }} <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
-      {%- endif %}
+    {%- endfor %}
+  </div>
+  <ol class="arch__names" aria-hidden="true">
+    {%- for p in prints -%}
+    {%- assign f = p | split: '|' -%}
+    <li><span>0{{ forloop.index }}</span>{{ f[0] }}</li>
+    {%- endfor -%}
+  </ol>
+  <div class="arch__foot">
+    <p class="arch__say">{{ ps.quiet | escape }}</p>
+    <div class="arch__side">
+      {%- comment -%} "tie-dye —" is kept on one line, so the dash never starts a line {%- endcomment %}
+      <p class="arch__copy">{{ ps.copy | escape | replace: 'tie-dye —', '<span class="arch__keep">tie-dye —</span>' }}</p>
+      <a class="arch__btn" href="{{ ps.link | default: '/pages/video' }}">{{ ps.link_label | escape }} <span aria-hidden="true">→</span></a>
     </div>
-
-    {%- if section.settings.show_stamp %}
-    <span class="poster__stamp" aria-hidden="true">
-      <svg viewBox="0 0 120 120">
-        <defs><path id="poster-arc-{{ section.id }}" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0"></path></defs>
-        <circle cx="60" cy="60" r="56" fill="none" stroke="currentColor" stroke-width="1.6"></circle>
-        <circle cx="60" cy="60" r="31" fill="none" stroke="currentColor" stroke-width="1"></circle>
-        <text><textPath href="#poster-arc-{{ section.id }}" startOffset="0">{{ section.settings.stamp_text | escape }}</textPath></text>
-        <text x="60" y="65" text-anchor="middle" class="poster-stamp__glyph">✦</text>
-      </svg>
-    </span>
-    {%- endif %}
   </div>
 </section>
-
-<script>
-(function () {
-  /* One move on scroll: the art arrives black-and-white and takes its colour
-     back as the section passes through, scrubbed to the scroll. With reduced
-     motion, or the setting off, it is simply there in colour. */
-  var root = document.querySelector('[data-poster-colour]');
-  if (!root || root.__shrujanInit || !window.gsap || !window.ScrollTrigger) return;
-  root.__shrujanInit = true;
-  var art = root.querySelector('.poster__art img');
-  if (!art) return;
-  var mm = gsap.matchMedia();
-  mm.add('(prefers-reduced-motion: no-preference)', function () {
-    gsap.fromTo(art, { filter: 'grayscale(1)' }, {
-      filter: 'grayscale(0)',
-      ease: 'none',
-      scrollTrigger: { trigger: art.parentElement, start: 'top 88%', end: 'center 48%', scrub: 0.6 }
-    });
-  });
-  mm.add('(prefers-reduced-motion: reduce)', function () {
-    gsap.set(art, { clearProps: 'filter' });
-  });
-})();
-</script>
 
 {% schema %}
 {
   "name": "Home Kaarigar poster",
   "settings": [
+    {
+      "type": "header",
+      "content": "Archive prints"
+    },
+    {
+      "type": "paragraph",
+      "content": "The six prints are cut from the painting below at fixed panels, and each plays its craft's film from the hero montage. The title is the lead, lines 1 and 2; under it, the closing line, the copy and the link."
+    },
+    {
+      "type": "text",
+      "id": "arch_meta_l",
+      "label": "Small line, left",
+      "default": "From the studio archive"
+    },
+    {
+      "type": "text",
+      "id": "arch_meta_r",
+      "label": "Small line, right",
+      "default": "Archive print no. 07 · Hand-lettered, Bhuj"
+    },
     {
       "type": "header",
       "content": "Curator’s note"

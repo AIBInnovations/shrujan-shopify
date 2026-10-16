@@ -64,7 +64,11 @@
     {%- endif -%}
   {%- endfor -%}
 ]{%- endcapture %}
-<section class="hero hero--film" aria-label="{{ section.settings.title_l1 | strip_html | escape }} {{ section.settings.title_l2 | strip_html | escape }} {{ section.settings.title_l3 | strip_html | escape }}"{% if h.hero_animate == false %} data-hero-animate="false"{% endif %}>
+{%- comment -%}
+  The hold: the wrapper the home page layer (assets/sj-home.css and
+  sj-home.js) keeps around the film while its frame draws in on scroll.
+{%- endcomment %}
+<div class="sj-hero-hold"><section class="hero hero--film" aria-label="{{ section.settings.title_l1 | strip_html | escape }} {{ section.settings.title_l2 | strip_html | escape }} {{ section.settings.title_l3 | strip_html | escape }}"{% if h.hero_animate == false %} data-hero-animate="false"{% endif %}>
   {%- if montage_first != blank %}
   <video class="hero-montage__video" poster="{{ montage_first_poster }}" playsinline muted preload="auto" aria-hidden="true" data-hero-montage="{{ montage_json | escape }}" data-clip="{{ h.montage_clip }}" data-seek="{{ h.montage_seek }}"><source src="{{ montage_first }}" type="video/mp4"></video>
   {%- endif %}
@@ -100,7 +104,7 @@
     {%- for fact in hero_facts %}{% assign fact_text = fact | strip %}{% if fact_text != blank %}<li>{{ fact_text | escape }}</li>{% endif %}{% endfor -%}
   </ul>
   {%- endif %}
-</section>
+</section></div>
 
 <script>
 (function () {

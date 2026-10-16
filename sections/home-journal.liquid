@@ -61,60 +61,51 @@
     {%- endif -%}
   </style>
 {%- endif -%}
+{%- comment -%}
+  The journal: the feature story and the cards after it as one grid of
+  photographs with their words inside, and a "Read" disc that follows the
+  cursor over them (assets/sj-home.js, styled by sj-home.css). The feature is
+  the section's settings, the rest are its card blocks. The head is
+  snippets/sj-hx.liquid.
+{%- endcomment -%}
+{%- liquid
+  assign jr_meta_l = cfg.jr_meta_l | escape
+  assign jr_meta_r = cfg.jr_meta_r | escape
+  assign jr_l1 = section.settings.title_line_1 | strip
+  assign jr_l2 = section.settings.title_line_2 | strip
+  assign jr_lead = section.settings.feature_url | default: '/pages/the-shrujan-story#journal'
+-%}
 <section class="section container journal" id="journal">
-  <div class="journal__head" data-reveal>
-    <p class="eyebrow">{{ section.settings.eyebrow }}</p>
-    <h2 class="section-title">
-      {{ section.settings.title_line_1 }}
-      <br>
-      {{ section.settings.title_line_2 }}
-    </h2>
-  </div>
+  {% render 'sj-hx', meta_l: jr_meta_l, meta_r: jr_meta_r, l1: jr_l1, l2: jr_l2 %}
 
-  <a class="journal-feature" href="{{ section.settings.feature_url | default: '/pages/the-shrujan-story#journal' }}" data-reveal>
-    <div class="journal-feature__media">
-      <img src="{% if section.settings.feature_img %}{{ section.settings.feature_img | image_url: width: 1600 }}{% else %}{{ 'top-right.webp' | asset_url }}{% endif %}" alt="{{ section.settings.feature_alt | escape }}" loading="lazy">
-    </div>
-
-    <div class="journal-feature__body">
-      {% if cfg.jr_show_tags %}<span class="journal-pill journal-pill--dark journal-feature__tag">{{ section.settings.feature_tag }}</span>{% endif %}
-      <h3 class="journal-feature__title">{{ section.settings.feature_title }}</h3>
-      <p class="journal-feature__excerpt">{{ section.settings.feature_excerpt }}</p>
-
-      <span class="arrow-link journal-feature__link">
-        {{ section.settings.feature_link_label }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
+  <div class="jr__grid">
+    <a class="jr__tile jr__tile--lead" href="{{ jr_lead }}">
+      <span class="jr__media"><img class="jr__img" src="{% if section.settings.feature_img %}{{ section.settings.feature_img | image_url: width: 1600 }}{% else %}{{ 'top-right.webp' | asset_url }}{% endif %}" alt="{{ section.settings.feature_alt | escape }}" loading="lazy"></span>
+      {%- if cfg.jr_show_tags %}
+      <span class="jr__tag">{{ section.settings.feature_tag | strip }}</span>
+      {%- endif %}
+      <span class="jr__cap">
+        <span class="jr__title">{{ section.settings.feature_title | strip }}</span>
+        <span class="jr__ex">{{ section.settings.feature_excerpt | strip }}</span>
+        <span class="jr__by">
+          {%- if cfg.jr_show_author -%}
+          <img src="{% if section.settings.author_img %}{{ section.settings.author_img | image_url: width: 1200 }}{% else %}{{ 'cat-c4.webp' | asset_url }}{% endif %}" alt="" loading="lazy"><span><b>{{ section.settings.author_name | strip }}</b><span>{{ section.settings.author_role | strip }}</span></span>
+          {%- endif -%}
+          <span class="jr__read">{{ section.settings.feature_link_label | strip }} <span aria-hidden="true">→</span></span></span>
       </span>
-
-      <div class="journal-feature__foot">
-        {% if cfg.jr_show_author %}
-        <div class="journal-author">
-          <img src="{% if section.settings.author_img %}{{ section.settings.author_img | image_url: width: 1200 }}{% else %}{{ 'cat-c4.webp' | asset_url }}{% endif %}" alt="" loading="lazy">
-          <div>
-            <p class="journal-author__name">{{ section.settings.author_name }}</p>
-            <p class="journal-author__role">{{ section.settings.author_role }}</p>
-          </div>
-        </div>
-        {% endif %}
-      </div>
-    </div>
-  </a>
-
-  <div class="journal-grid" data-reveal-child>
+    </a>
     {%- for block in section.blocks %}
-    <a class="journal-card" href="{{ block.settings.url | default: '/pages/the-shrujan-story#journal' }}" {{ block.shopify_attributes }}>
-      <div class="journal-card__media">
-        <img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1600 }}{% else %}{{ block.settings.image_asset | asset_url }}{% endif %}" alt="{{ block.settings.image_alt | escape }}" loading="lazy">
-        {% if cfg.jr_show_tags %}<span class="journal-pill">{{ block.settings.pill }}</span>{% endif %}
-        {% if cfg.jr_show_arrow %}
-        <span class="journal-card__arrow" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
-        </span>
-        {% endif %}
-      </div>
-      <h3 class="journal-card__title">{{ block.settings.title }}</h3>
+    <a class="jr__tile" href="{{ block.settings.url | default: '/pages/the-shrujan-story#journal' }}" {{ block.shopify_attributes }}>
+      <span class="jr__media"><img class="jr__img" src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1600 }}{% else %}{{ block.settings.image_asset | asset_url }}{% endif %}" alt="{{ block.settings.image_alt | escape }}" loading="lazy"></span>
+      {%- if cfg.jr_show_tags %}
+      <span class="jr__tag">{{ block.settings.pill | strip }}</span>
+      {%- endif %}
+      <span class="jr__cap"><span class="jr__title">{{ block.settings.title | strip }}</span><span class="jr__read">Read <span aria-hidden="true">→</span></span></span>
     </a>
     {%- endfor %}
   </div>
+  <div class="jr__foot"><a class="arch__btn" href="{{ jr_lead }}">{{ cfg.jr_more_label | escape }} <span aria-hidden="true">→</span></a></div>
+  <div class="jr__cursor" aria-hidden="true">Read</div>
 </section>
 {% schema %}
 {
@@ -141,6 +132,25 @@
       "id": "title_line_2",
       "label": "Title line 2",
       "default": "straight from the villages"
+    },
+    {
+      "type": "text",
+      "id": "jr_meta_l",
+      "label": "Small line, left",
+      "default": "The journal"
+    },
+    {
+      "type": "text",
+      "id": "jr_meta_r",
+      "label": "Small line, right",
+      "default": "Craft notes · lookbooks · care"
+    },
+    {
+      "type": "text",
+      "id": "jr_more_label",
+      "label": "Button under the grid",
+      "info": "Links to the featured story's link.",
+      "default": "Read the journal"
     },
     {
       "type": "header",

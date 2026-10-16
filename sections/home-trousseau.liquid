@@ -93,17 +93,23 @@
     {%- endif -%}
   </style>
 {%- endif -%}
+{%- liquid
+  comment
+    The home page's head (snippets/sj-hx.liquid): a meta row, the title in two
+    lines and the intro beside it. The theme's reveal attributes are left off
+    this section, since assets/sj-home.js brings its blocks in itself.
+  endcomment
+  assign tr_meta_l = cfg.tr_meta_l | escape
+  assign tr_meta_r = cfg.tr_meta_r | escape
+  assign tr_l1 = cfg.tr_line_1 | escape
+  assign tr_l2 = cfg.tr_line_2 | escape
+  assign tr_lede = section.settings.intro | newline_to_br | replace: '<br />', ' ' | strip_newlines | strip
+-%}
 <section class="section container" id="curated">
-  <div class="section-intro" data-reveal>
-    <p class="eyebrow">{{ section.settings.eyebrow }}</p>
-    <h2 class="section-title">{{ section.settings.title }}</h2>
-    <p class="section-intro__copy">
-      {{ section.settings.intro }}
-    </p>
-  </div>
+  {% render 'sj-hx', meta_l: tr_meta_l, meta_r: tr_meta_r, l1: tr_l1, l2: tr_l2, lede: tr_lede %}
 
   {% if cfg.tr_show_filters %}
-  <div class="curated__filters" data-reveal role="tablist" aria-label="Filter the edit">
+  <div class="curated__filters" role="tablist" aria-label="Filter the edit">
     <button type="button" role="tab" aria-selected="true" class="curated__filter is-active">{{ section.settings.tab_1 }}</button>
     <button type="button" role="tab" aria-selected="false" class="curated__filter">{{ section.settings.tab_2 }}</button>
     <button type="button" role="tab" aria-selected="false" class="curated__filter">{{ section.settings.tab_3 }}</button>
@@ -112,7 +118,7 @@
   </div>
   {% endif %}
 
-  <div class="curated__grid" data-reveal-child>
+  <div class="curated__grid">
     {%- for group in groups %}
     {%- liquid
       assign tab_col = nil
@@ -188,13 +194,13 @@
     {%- endfor %}
   </div>
 
-  <div class="curated__more" data-reveal>
+  <div class="curated__more">
     <a class="btn btn--ghost" href="{{ section.settings.more_url | default: '/pages/shop-shrujan#catalogue' }}">
       {{ section.settings.more_label }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
     </a>
   </div>
 
-  <div class="curated__promises" data-reveal-child>
+  <div class="curated__promises">
     {%- for block in section.blocks %}
     <div class="promise" {{ block.shopify_attributes }}>
       <p class="promise__title">{{ block.settings.title }}</p>
@@ -276,6 +282,30 @@
       "id": "intro",
       "label": "Intro copy",
       "default": "Timeless silhouettes, handcrafted details, edited by our Bhuj studio for the moments that matter."
+    },
+    {
+      "type": "text",
+      "id": "tr_meta_l",
+      "label": "Small line, left",
+      "default": "Handpicked for you"
+    },
+    {
+      "type": "text",
+      "id": "tr_meta_r",
+      "label": "Small line, right",
+      "default": "The Bhuj studio edit"
+    },
+    {
+      "type": "text",
+      "id": "tr_line_1",
+      "label": "Title, line 1",
+      "default": "Curated pieces,"
+    },
+    {
+      "type": "text",
+      "id": "tr_line_2",
+      "label": "Title, line 2",
+      "default": "chosen with care"
     },
     {
       "type": "header",

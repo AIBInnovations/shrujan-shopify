@@ -39,12 +39,20 @@
     {%- endif -%}
   </style>
 {%- endif -%}
+{%- liquid
+  assign cs_meta_l = section.settings.cs_meta_l | escape
+  assign cs_meta_r = section.settings.cs_meta_r | escape
+  assign cs_l1 = section.settings.title_l1 | escape
+  assign cs_l2 = section.settings.title_l2 | escape
+-%}
 <!-- Our Craft, a heritage wall — converted from src/components/CraftStory.jsx -->
 <section class="section container" id="craft">
-  <div class="section-intro" data-reveal>
-    <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
-    <h2 class="section-title">{{ section.settings.title_l1 | escape }} <em>{{ section.settings.title_l2 | escape }}</em></h2>
-  </div>
+  {%- comment -%}
+    The home page's head (snippets/sj-hx.liquid): a meta row, then the title
+    in two lines. The theme's reveal attributes are left off this section,
+    since assets/sj-home.js brings its blocks in itself.
+  {%- endcomment %}
+  {% render 'sj-hx', meta_l: cs_meta_l, meta_r: cs_meta_r, l1: cs_l1, l2: cs_l2 %}
 
   {%- comment -%}
     Two hung rows: the first half of the photographs, then the rest inset.
@@ -52,7 +60,7 @@
     transforms behind the flex-grow hover.
   {%- endcomment -%}
   {%- if tile_count > 0 %}
-  <div class="craft-wall" data-reveal>
+  <div class="craft-wall">
     <div class="craft-wall__row">
       {%- for block in tiles limit: row_split %}
       <figure class="craft-wall__tile" {{ block.shopify_attributes }}>
@@ -81,13 +89,13 @@
   {%- endif %}
 
   {%- if cfg.cs_show_link %}
-  <div class="craft-wall__more" data-reveal>
+  <div class="craft-wall__more">
     <a class="arrow-link" href="{{ section.settings.link | default: '/pages/video' }}">{{ section.settings.link_label | escape }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
   </div>
   {%- endif %}
 
   {%- if cfg.cs_show_stats %}
-  <div class="craft__stats" data-reveal-child>
+  <div class="craft__stats">
     {%- assign stats = section.blocks | where: 'type', 'stat' -%}
     {%- for block in stats %}
     <div class="stat" {{ block.shopify_attributes }}>
@@ -120,6 +128,18 @@
       "id": "title_l2",
       "label": "Title, italic close",
       "default": "a signature"
+    },
+    {
+      "type": "text",
+      "id": "cs_meta_l",
+      "label": "Small line, left",
+      "default": "Our craft"
+    },
+    {
+      "type": "text",
+      "id": "cs_meta_r",
+      "label": "Small line, right",
+      "default": "Kutch · since 1969"
     },
     {
       "type": "text",

@@ -1,15 +1,22 @@
 {%- render 'section-design', section: section -%}
 {%- assign cfg = section.settings -%}
+{%- liquid
+  comment
+    The home page's head (snippets/sj-hx.liquid): a meta row with the number
+    of questions, the title in two lines and the intro beside it. The theme's
+    reveal attributes are left off this section, since assets/sj-home.js
+    brings its blocks in itself.
+  endcomment
+  assign faq_meta_l = cfg.faq_meta_l | escape
+  assign faq_meta_r = section.blocks.size | append: ' ' | append: cfg.faq_count_label | escape
+  assign faq_l1 = cfg.faq_line_1 | escape
+  assign faq_l2 = cfg.faq_line_2 | escape
+  assign faq_lede = section.settings.intro | newline_to_br | replace: '<br />', ' ' | strip_newlines | strip
+-%}
 <section class="section container faq-section" id="support"{% if cfg.faq_multi %} data-multiple="true"{% endif %}>
-  <div class="section-intro" data-reveal>
-    <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
-    <h2 class="section-title">{{ section.settings.title }}</h2>
-    <p class="section-intro__copy">
-      {{ section.settings.intro }}
-    </p>
-  </div>
+  {% render 'sj-hx', meta_l: faq_meta_l, meta_r: faq_meta_r, l1: faq_l1, l2: faq_l2, lede: faq_lede %}
 
-  <div class="faq" data-reveal>
+  <div class="faq">
     {%- for block in section.blocks %}
     <div class="faq__item{% if forloop.index == cfg.faq_open %} is-open{% endif %}" {{ block.shopify_attributes }}>
       <button class="faq__summary" type="button" aria-expanded="{% if forloop.index == cfg.faq_open %}true{% else %}false{% endif %}" aria-controls="faq-panel-{{ forloop.index0 }}">
@@ -88,6 +95,30 @@
       "id": "intro",
       "label": "Intro copy",
       "default": "Thoughtful answers for a seamless shopping experience."
+    },
+    {
+      "type": "text",
+      "id": "faq_meta_l",
+      "label": "Small line, left",
+      "default": "Help & support"
+    },
+    {
+      "type": "text",
+      "id": "faq_count_label",
+      "label": "After the number of questions",
+      "default": "questions"
+    },
+    {
+      "type": "text",
+      "id": "faq_line_1",
+      "label": "Title, line 1",
+      "default": "Everything you"
+    },
+    {
+      "type": "text",
+      "id": "faq_line_2",
+      "label": "Title, line 2",
+      "default": "need to know"
     },
     {
       "type": "header",

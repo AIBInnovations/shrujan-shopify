@@ -60,56 +60,53 @@
     {%- endif -%}
   </style>
 {%- endif -%}
-<section class="section container manifesto" id="promise">
-  {%- if section.settings.show_arches -%}
-    {%- comment -%}
-      Jharokha tilework flanking the section, pinned to the screen's edges: the
-      right corner as shot, the left one mirrored. Hidden below 1180px, where
-      the sides run out of room.
-    {%- endcomment -%}
-    {%- if section.settings.arch_img -%}
-      {%- assign arch_src = section.settings.arch_img | image_url: width: 600 -%}
-    {%- else -%}
-      {%- assign arch_src = section.settings.arch_asset | asset_url -%}
+{%- comment -%}
+  Craft that cares: the four round seals between the jharokha arches. With
+  motion (assets/sj-home.js, styled by sj-home.css) the arches close in from
+  the screen's edges, each seal's ring draws itself and its photograph opens,
+  and a ring of words, the seal's name and Shrujan, turns around it. The seals
+  are the section's blocks.
+{%- endcomment -%}
+{%- liquid
+  if section.settings.arch_img
+    assign arch_src = section.settings.arch_img | image_url: width: 600
+  else
+    assign arch_src = section.settings.arch_asset | asset_url
+  endif
+  assign prm_label = cfg.prm_line_1 | append: ' ' | append: cfg.prm_line_2
+-%}
+<section class="prm" id="promise" aria-label="{{ prm_label | escape }}">
+  <div class="prm__meta"><span>{{ section.settings.eyebrow | escape }}</span><span>{{ cfg.prm_meta_r | escape }}</span></div>
+  <div class="prm__head">
+    <h2 class="prm__title"><span class="prm__line">{{ cfg.prm_line_1 | escape }}</span><span class="prm__line prm__line--soft">{{ cfg.prm_line_2 | escape }}</span></h2>
+    <p class="prm__lede">{{ section.settings.copy | escape }}</p>
+  </div>
+  <div class="prm__stage">
+    {%- if section.settings.show_arches %}
+    <span class="prm__arch prm__arch--left" aria-hidden="true"><img src="{{ arch_src }}" alt="" decoding="async"></span>
+    <span class="prm__arch prm__arch--right" aria-hidden="true"><img src="{{ arch_src }}" alt="" decoding="async"></span>
     {%- endif %}
-  <img class="manifesto__arch manifesto__arch--left" src="{{ arch_src }}" alt="" aria-hidden="true" loading="lazy">
-  <img class="manifesto__arch manifesto__arch--right" src="{{ arch_src }}" alt="" aria-hidden="true" loading="lazy">
+    <ol class="prm__seals">
+      {% for block in section.blocks -%}
+      {%- assign seal_name = block.settings.title | strip | escape -%}
+      <li class="prm__seal" style="--i:{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+        {%- if cfg.sw_show_number %}
+        <span class="prm__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
+        {%- endif %}
+        <span class="prm__ring">
+          <span class="prm__orbit"><svg class="prm__spin" viewBox="0 0 200 200" aria-hidden="true" data-name="{{ seal_name }}"><defs><path id="prm-orbit-{{ forloop.index0 }}" d="M14,100 a86,86 0 1,1 172,0 a86,86 0 1,1 -172,0"/></defs><text textLength="536" lengthAdjust="spacing"><textPath href="#prm-orbit-{{ forloop.index0 }}">{{ seal_name }} · Shrujan · {{ seal_name }} · Shrujan · </textPath></text></svg></span>
+          <svg class="prm__draw" viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="75" pathLength="1" transform="rotate(-90 100 100)"/></svg>
+          <span class="prm__photo"><img src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 900 }}{% else %}{{ block.settings.fallback | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy"></span>
+        </span>
+        <h3 class="prm__name">{{ seal_name }}</h3>
+        <p class="prm__copy">{{ block.settings.copy | strip | escape }}</p>
+      </li>
+      {%- endfor %}
+    </ol>
+  </div>
+  {%- if cfg.sw_show_more %}
+  <div class="prm__more"><a class="arch__btn" href="{{ section.settings.more_link | default: '#craft' }}">{{ section.settings.more_label | default: 'How we make it' | escape }} <span aria-hidden="true">→</span></a></div>
   {%- endif %}
-
-  <div class="section-intro" data-reveal>
-    <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
-    <h2 class="section-title">
-      {{ section.settings.title }}
-    </h2>
-    <p class="section-intro__copy">
-      {{ section.settings.copy | escape }}
-    </p>
-  </div>
-
-  <ol class="manifesto__grid" data-reveal-child>
-    {%- for block in section.blocks %}
-    <li class="seal" {{ block.shopify_attributes }}>
-      {% if cfg.sw_show_number %}<span class="seal__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>{% endif %}
-
-      {% if cfg.sw_show_ring %}
-      <span class="seal__ring">
-        <img src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 900 }}{% else %}{{ block.settings.fallback | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
-      </span>
-      {% endif %}
-
-      <h3 class="seal__title">{{ block.settings.title | escape }}</h3>
-      <p class="seal__copy">{{ block.settings.copy | escape }}</p>
-    </li>
-    {%- endfor %}
-  </ol>
-
-  {% if cfg.sw_show_more %}
-  <div class="manifesto__more" data-reveal>
-    <a class="arrow-link" href="{{ section.settings.more_link }}">
-      {{ section.settings.more_label | escape }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
-    </a>
-  </div>
-  {% endif %}
 </section>
 
 {% schema %}
@@ -167,6 +164,32 @@
       "id": "more_link",
       "label": "Link",
       "default": "#craft"
+    },
+    {
+      "type": "header",
+      "content": "Seals between the arches"
+    },
+    {
+      "type": "paragraph",
+      "content": "The small line above is the eyebrow; the lede is the copy; the seals are the blocks, each with a ring of its name turning around it."
+    },
+    {
+      "type": "text",
+      "id": "prm_meta_r",
+      "label": "Small line, right",
+      "default": "Four promises · since 1969"
+    },
+    {
+      "type": "text",
+      "id": "prm_line_1",
+      "label": "Title, line 1",
+      "default": "Craft that cares:"
+    },
+    {
+      "type": "text",
+      "id": "prm_line_2",
+      "label": "Title, line 2",
+      "default": "four promises in every piece"
     },
     {
       "type": "header",

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en"{% if template.name == 'index' %} class="sj-pre sj-hero-full"{% endif %}>
   <head>
     <meta charset="UTF-8">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 6 L44 32 L32 58 L20 32 Z' fill='%23B05C3B'/%3E%3Cpath d='M32 20 L38 32 L32 44 L26 32 Z' fill='%23F5F1E6'/%3E%3C/svg%3E">
@@ -172,13 +172,34 @@
     <script src="{{ 'lenis.min.js' | asset_url }}"></script>
     <script src="{{ 'shrujan-catalogue.js' | asset_url }}"></script>
     <script src="{{ 'shrujan-core.js' | asset_url }}"></script>
+    {%- if template.name == 'index' %}
+    {%- comment -%}
+      The home page's own layer (awwwards-preview/export_theme.py writes its
+      files): three.js for the Wear-the-craft form, mapped before any module
+      script on the page loads, and its stylesheet, last in the head so it
+      wins over the theme's. The html classes above hold the page behind the
+      loader until sj-home.js lets it go.
+    {%- endcomment %}
+    <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+    {%- comment -%} If sj-home.js never lets the page go (blocked, failed), it lets itself go after 10 seconds; without JavaScript there is no loader at all. {%- endcomment %}
+    <script>setTimeout(function(){if(window.__sjRevealed)return;var h=document.documentElement;h.classList.remove('sj-pre','sj-hero-full');var l=document.querySelector('.sj-loader');if(l)l.remove();if(window.Shrujan&&window.Shrujan.startScroll)window.Shrujan.startScroll();window.__sjRevealed=true;document.dispatchEvent(new CustomEvent('sj:revealed'));},10000);</script>
+    <noscript><style>.sj-loader{display:none!important}html.sj-pre,html.sj-pre body{overflow:visible!important}html.sj-pre .hero-film__message,html.sj-pre .site-header,html.sj-pre .offer-bar{opacity:1!important}</style></noscript>
+    {%- endif %}
     {{ content_for_header }}
+    {%- if template.name == 'index' %}
+    <link rel="stylesheet" href="{{ 'sj-home.css' | asset_url }}">
+    {%- endif %}
   </head>
   <body>
+    {%- if template.name == 'index' %}{% render 'sj-loader' %}{% endif %}
     <div id="root">
       {% sections 'header-group' %}
       <main>{{ content_for_layout }}</main>
       {% sections 'footer-group' %}
     </div>
+    {%- if template.name == 'index' %}
+    <script src="{{ 'sj-home.js' | asset_url }}"></script>
+    <script type="module" src="{{ 'sj-craft3d.js' | asset_url }}"></script>
+    {%- endif %}
   </body>
 </html>

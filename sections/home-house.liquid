@@ -50,51 +50,41 @@
     {%- endif -%}
   </style>
 {%- endif -%}
-<section class="section container house" id="house">
-  <div class="section-intro" data-reveal>
-    <p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>
-    <h2 class="section-title">
-      {{ section.settings.title }}
-    </h2>
-    <p class="section-intro__copy">
-      {{ section.settings.copy | escape }}
-    </p>
+{%- comment -%}
+  What Shrujan has mastered: the collections as an index, each a photograph
+  with its number, name and line, and a "View" disc that follows the cursor
+  over them (assets/sj-home.js, styled by sj-home.css). The collections are the
+  section's tile blocks; the strip-link blocks no longer show here.
+{%- endcomment -%}
+{%- liquid
+  assign tiles = section.blocks | where: 'type', 'tile'
+  assign count_words = 'One,Two,Three,Four,Five,Six,Seven,Eight,Nine,Ten,Eleven,Twelve' | split: ','
+  assign count_word = tiles.size
+  if tiles.size > 0 and tiles.size <= count_words.size
+    assign count_i = tiles.size | minus: 1
+    assign count_word = count_words[count_i]
+  endif
+-%}
+<section class="idx" id="house" aria-label="{{ cfg.idx_line_1 | append: ' ' | append: cfg.idx_line_2 | escape }}">
+  <div class="idx__meta"><span>{{ section.settings.eyebrow | escape }}</span><span>{{ count_word }} {{ cfg.idx_count_label | escape }}</span></div>
+  <div class="idx__head">
+    <h2 class="idx__title"><span class="idx__line">{{ cfg.idx_line_1 | escape }}</span><span class="idx__line idx__line--soft">{{ cfg.idx_line_2 | escape }}</span></h2>
+    <p class="idx__lede">{{ section.settings.copy | escape }}</p>
   </div>
-
-  <div class="house__grid">
-    {%- assign tiles = section.blocks | where: 'type', 'tile' -%}
-    {%- for block in tiles %}
-    <a class="house-tile" href="{{ block.settings.link | default: '/pages/shop-shrujan?c=kanchli' }}" {{ block.shopify_attributes }}>
-      <img src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 1200 }}{% else %}{{ block.settings.fallback | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
-      {% if cfg.house_show_scrim %}<span class="house-tile__scrim" aria-hidden="true"></span>{% endif %}
-      <span class="house-tile__body">
-        <span class="house-tile__name">{{ block.settings.name | escape }}</span>
-        {% if cfg.house_show_note %}<span class="house-tile__note">{{ block.settings.note | escape }}</span>{% endif %}
-      </span>
-      {% if cfg.house_show_arrow %}
-      <span class="house-tile__arrow" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
-      </span>
-      {% endif %}
+  <div class="col__grid">
+    {% for block in tiles -%}
+    <a class="col__tile" href="{{ block.settings.link | default: '/pages/shop-shrujan?c=kanchli' }}" {{ block.shopify_attributes }}>
+      <span class="col__media"><img class="col__img" src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 1200 }}{% else %}{{ block.settings.fallback | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy"></span>
+      <span class="col__cap"><span class="col__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span><span class="col__name">{{ block.settings.name | escape }}</span><span class="col__go" aria-hidden="true">→</span><span class="col__note">{{ block.settings.note | escape }}</span></span>
     </a>
     {%- endfor %}
   </div>
-
-  {% if cfg.house_show_strip %}
-  <div class="house__strip" data-reveal>
-    <span class="house__strip-label">{{ section.settings.strip_label | escape }}</span>
-    <ul class="house__strip-links">
-      {%- assign strip_links = section.blocks | where: 'type', 'strip_link' -%}
-      {%- for block in strip_links %}
-      <li {{ block.shopify_attributes }}>
-        <a href="{{ block.settings.link | default: '/pages/shop-shrujan?c=potlis-batwas' }}">
-          {{ block.settings.label | escape }} <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
-        </a>
-      </li>
-      {%- endfor %}
-    </ul>
+  <div class="idx__foot"><a class="arch__btn" href="{{ cfg.idx_cta_link | default: '/pages/shop-shrujan' }}">{{ cfg.idx_cta_label | escape }} <span aria-hidden="true">→</span></a>
+    {%- if cfg.house_show_strip and section.settings.strip_label != blank -%}
+    <a class="idx__more" href="{{ cfg.idx_more_link | default: '/pages/shop-shrujan?c=bags' }}">{{ section.settings.strip_label | escape }} <span aria-hidden="true">→</span></a>
+    {%- endif -%}
   </div>
-  {% endif %}
+  <div class="col__cursor" aria-hidden="true">View</div>
 </section>
 
 {% schema %}
@@ -124,6 +114,50 @@
       "id": "strip_label",
       "label": "Strip label",
       "default": "All bags"
+    },
+    {
+      "type": "header",
+      "content": "Collections index"
+    },
+    {
+      "type": "paragraph",
+      "content": "The small line above is the eyebrow, with the number of collections beside it; the lede is the intro copy; the collections are the tile blocks. The strip label is the second link under the index."
+    },
+    {
+      "type": "text",
+      "id": "idx_line_1",
+      "label": "Title, line 1",
+      "default": "What Shrujan"
+    },
+    {
+      "type": "text",
+      "id": "idx_line_2",
+      "label": "Title, line 2",
+      "default": "has mastered"
+    },
+    {
+      "type": "text",
+      "id": "idx_count_label",
+      "label": "After the number of collections",
+      "default": "collections"
+    },
+    {
+      "type": "text",
+      "id": "idx_cta_label",
+      "label": "Button label",
+      "default": "Shop everything"
+    },
+    {
+      "type": "text",
+      "id": "idx_cta_link",
+      "label": "Button link",
+      "default": "/pages/shop-shrujan"
+    },
+    {
+      "type": "text",
+      "id": "idx_more_link",
+      "label": "Strip label link",
+      "default": "/pages/shop-shrujan?c=bags"
     },
     {
       "type": "header",

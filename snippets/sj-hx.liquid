@@ -1,0 +1,12 @@
+{%- comment -%}
+  The home page's section head, as the awwwards preview draws it (hx() in
+  awwwards-preview/build.py): a meta row, then the title in two lines, the
+  second in the soft colour, with the lede beside it. Without a lede the head
+  is the solo version. Styled and animated by assets/sj-home.css / sj-home.js.
+
+  Usage: {% render 'sj-hx', meta_l: '…', meta_r: '…', l1: '…', l2: '…', lede: '…' %}
+  Every value is printed as given, so escape plain-text settings before
+  passing them in.
+{%- endcomment -%}
+<div class="hx__meta"><span>{{ meta_l }}</span><span>{{ meta_r }}</span></div>
+  <div class="hx__head{% if lede == blank %} hx__head--solo{% endif %}"><h2 class="hx__title"><span class="hx__line">{{ l1 }}</span><span class="hx__line hx__line--soft">{{ l2 }}</span></h2>{% if lede != blank %}<p class="hx__lede">{{ lede }}</p>{% endif %}</div>

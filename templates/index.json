@@ -3,8 +3,13 @@
     "home-hero": {
       "type": "home-hero"
     },
+    "home-craft3d": {
+      "type": "home-craft3d",
+      "settings": {}
+    },
     "home-marquee": {
       "type": "home-marquee",
+      "disabled": true,
       "blocks": {
         "b1": {
           "type": "craft",
@@ -1013,6 +1018,7 @@
   },
   "order": [
     "home-hero",
+    "home-craft3d",
     "home-marquee",
     "home-poster",
     "home-spotlight",
