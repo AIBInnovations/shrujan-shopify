@@ -2,9 +2,9 @@
 /* Wear the craft — a dress form, dressed in what Shrujan makes.
    A smooth white headless form on a slim stand. Each craft dresses it in a
    different piece: undyed kora and then mirror-work embroidery as a kanchli
-   (the fitted blouse with short sleeves and a deep rounded neck), ajrakh as
-   a long open jacket over a plain dress, bandhani as a sari (blouse, pleats
-   to the floor and the pallu over the shoulder), and handloom as a kurta.
+   (the fitted blouse with short sleeves and a deep rounded neck) over wide
+   palazzos, ajrakh as a long open jacket over a plain dress, bandhani as a
+   short flared kurti over palazzos, and handloom as a kurta.
    All of it is sculpted here in code. As the section scrolls the camera
    travels from the shoulder down the figure and back out, and each new piece
    rises over the last from the hem, like dye taking. */
@@ -149,13 +149,34 @@ function buildKurtaLower() {
   return [ring, panel(-Math.PI / 2 + 0.1, Math.PI / 2 - 0.1), panel(Math.PI / 2 + 0.1, Math.PI * 1.5 - 0.1)];
 }
 
-// the sari below the blouse: wrapped close at the waist and falling almost
-// straight to the floor, the pleats fanned at the centre front
-function buildSariSkirt() {
-  return hang({ y0: 1.98, y1: 0.06, t: 0.042, flare: 0.22, fold: 0.018, nu: 520, pleats: (a, q) => {
-    const w = Math.exp(-Math.pow(Math.atan2(Math.sin(a), Math.cos(a)) / 0.42, 2));
-    return w * (0.008 + 0.05 * q) * Math.sign(Math.sin(a * 64)) * Math.pow(Math.abs(Math.sin(a * 64)), 0.6);
-  } });
+// palazzos: wide Kutchi trousers, close over the hips and then two full legs
+// to the floor, in soft folds
+function buildPalazzo() {
+  const hips = hang({ y0: 2.02, y1: 1.48, t: 0.04, flare: 0.05, fold: 0.008, nv: 40, yHem: 0.9 });
+  const leg = (s) => grid(140, 90, (u, v) => {
+    const a = u * Math.PI * 2 - Math.PI;
+    const y = 1.56 + (0.08 - 1.56) * v;
+    const q = Math.pow(v, 1.1);
+    // the legs part a little as they fall, so the split between them shows
+    const rx = 0.212 + 0.05 * q, rz = 0.29 + 0.05 * q;
+    const f = 1 + (0.012 + 0.05 * q) * (Math.sin(a * 6 + s * 1.3 + v * 1.4) * 0.6 + Math.sin(a * 11 + 0.7) * 0.4);
+    return [s * (0.216 + 0.1 * q) + Math.sin(a) * rx * f, y, Math.cos(a) * rz * f];
+  }, (u, v) => [u * 0.8, (1.56 + (0.08 - 1.56) * v) / TOP], (u, v) => {
+    const a = u * Math.PI * 2 - Math.PI;
+    // darker where the two legs face each other
+    return (1 - 0.3 * smooth(0.4, 1, -Math.sin(a) * s)) * (0.85 + 0.15 * smooth(0, 0.05, v));
+  });
+  return [hips, leg(1), leg(-1)];
+}
+// a point on the front of the right leg, for the labels
+function palazzoAt(a, y) {
+  const q = Math.pow((1.56 - y) / (1.56 - 0.08), 1.1);
+  return [-(0.216 + 0.1 * q) + Math.sin(a) * (0.212 + 0.05 * q) * 1.03, y, Math.cos(a) * (0.29 + 0.05 * q) * 1.03];
+}
+
+// a short kurti's flared skirt, to the hip, for wearing over palazzos
+function buildKurtiLower() {
+  return hang({ y0: 2.02, y1: 1.4, t: 0.048, flare: 0.26, fold: 0.03, nv: 60 });
 }
 
 // the stand: a slim dark pole from the form to a round foot
@@ -442,47 +463,6 @@ async function buildKurta() {
   return wrapUV(await netMesh(kurtaSDF, BOX, 0.0095));
 }
 
-// the sari's pallu: from the right hip up across the blouse to the left
-// shoulder, over it, and down the back, lying on the body in a few soft
-// pleats. Each point of the band is laid off the body and pulled onto it.
-function buildPallu() {
-  const W = 0.3, OFF = 0.062;
-  const fr = [-0.877, 0.481, 0], bk = [0.996, -0.087, 0], top = [1, 0, 0];
-  const guide = (s) => {
-    if (s <= 0.6) { const q = s / 0.6; return [-0.34 + q * 0.62, 1.99 + q * 1.13, 0.9]; }
-    if (s <= 0.74) { const q = (s - 0.6) / 0.14, ang = q * Math.PI; return [0.28 + 0.04 * q, 3.12 + 0.5 * Math.sin(ang), 0.9 * Math.cos(ang)]; }
-    const q = (s - 0.74) / 0.26; return [0.32 - q * 0.1, 3.1 - q * 1.15, -0.9];
-  };
-  const across = (s) => {
-    const k1 = smooth(0.54, 0.64, s), k2 = smooth(0.7, 0.8, s);
-    const v = [0, 1, 2].map((i) => fr[i] * (1 - k1) + top[i] * k1);
-    const w = [0, 1, 2].map((i) => v[i] * (1 - k2) + bk[i] * k2);
-    const l = Math.hypot(...w) || 1;
-    return w.map((c) => c / l);
-  };
-  const grad = (x, y, z) => {
-    const e = 0.004;
-    const g = [formSDF(x + e, y, z) - formSDF(x - e, y, z), formSDF(x, y + e, z) - formSDF(x, y - e, z), formSDF(x, y, z + e) - formSDF(x, y, z - e)];
-    const l = Math.hypot(...g) || 1;
-    return g.map((c) => c / l);
-  };
-  let lastY = 0;
-  return grid(150, 18, (u, v) => {
-    const gp = guide(u), ac = across(u);
-    let p = [gp[0] + ac[0] * (v - 0.5) * W, gp[1] + ac[1] * (v - 0.5) * W, gp[2]];
-    const off = OFF + 0.012 * Math.sin(v * Math.PI * 5);
-    for (let it = 0; it < 18; it++) {
-      const d = formSDF(p[0], p[1], p[2]) - off;
-      if (Math.abs(d) < 0.0005) break;
-      const g = grad(p[0], p[1], p[2]);
-      p = [p[0] - g[0] * d, p[1] - g[1] * d, p[2] - g[2] * d];
-    }
-    lastY = p[1];
-    return p;
-  }, (u) => [u * 2.4, lastY / TOP], (u, v) => 0.86 + 0.14 * Math.sin(v * Math.PI * 5 + 1.57) * 0.5 + 0.07);
-}
-
-
 async function init() {
   const stage = root.querySelector('.craft3d__stage');
   const canvas = root.querySelector('.craft3d__canvas');
@@ -563,7 +543,7 @@ async function init() {
   weave.wrapS = weave.wrapT = THREE.RepeatWrapping;
   weave.repeat.set(10, 6);
 
-  // two plain cottons: the dress under the jacket, and the sari's blouse
+  // plain cottons: the dress under the jacket, and palazzos
   const plainTex = (hex) => {
     const c = document.createElement('canvas');
     c.width = c.height = 256;
@@ -648,9 +628,9 @@ async function init() {
   addMesh(dress, formGeo, skin);
   buildStand().forEach((g) => addMesh(dress, g, wood));
 
-  // the five pieces, one per state: kora and embroidery as the kanchli, ajrakh
-  // as the long jacket over a plain dress, bandhani as the sari, handloom as
-  // the kurta. The kanchli is built first; the rest follow while the section
+  // the five pieces, one per state: kora and embroidery as the kanchli over
+  // palazzos, ajrakh as the long jacket over a plain dress, bandhani as a
+  // short kurti over palazzos, handloom as the kurta. The kanchli is built first; the rest follow while the section
   // is read, and a state whose piece is not built yet keeps the last one.
   const states = textures.map(() => ({ group: null, U: { uFront: { value: 9 }, uDir: { value: 1 }, uEdge: { value: 0 } } }));
   const dressIn = (k, parts) => {
@@ -661,13 +641,15 @@ async function init() {
     states[k].group = grp;
   };
   const blouseGeo = await buildBlouse();
-  dressIn(0, [[blouseGeo, textures[0]]]);
-  dressIn(1, [[blouseGeo, textures[1]]]);
+  const palazzo = buildPalazzo();
+  const charcoal = plainTex('#2b2624'), cream = plainTex('#e8dccb'), olive = plainTex('#8b8f3e');
+  dressIn(0, [[blouseGeo, textures[0]], ...palazzo.map((g) => [g, textures[0]])]);
+  dressIn(1, [[blouseGeo, textures[1]], ...palazzo.map((g) => [g, charcoal])]);
   (async () => {
-    const olive = plainTex('#8b8f3e'), madder = plainTex('#7c1f27');
     dressIn(2, [[await buildJacket(), textures[2]], [buildJacketLower(), textures[2]], [await buildInner(), olive], [buildInnerLower(), olive]]);
-    dressIn(3, [[blouseGeo, madder], [buildSariSkirt(), textures[3]], [buildPallu(), textures[3]]]);
-    dressIn(4, [[await buildKurta(), textures[4]], ...buildKurtaLower().map((g) => [g, textures[4]])]);
+    const kurtaTop = await buildKurta();
+    dressIn(3, [[kurtaTop, textures[3]], [buildKurtiLower(), textures[3]], ...palazzo.map((g) => [g, cream])]);
+    dressIn(4, [[kurtaTop, textures[4]], ...buildKurtaLower().map((g) => [g, textures[4]])]);
   })();
 
   // ---------- points on each piece ----------
@@ -677,9 +659,9 @@ async function init() {
   // grown by `out` at that height
   const hAt = (a, y, t, out) => { const [x, z] = bodyXZ(a, 1.9, t); const r0 = Math.hypot(x, z); return new THREE.Vector3(x / r0 * (r0 + out), y, z / r0 * (r0 + out)); };
   const POIS = [
-    { at: [pAt(0.32, 2.36, 0.05), pAt(0.32, 2.36, 0.05), pAt(0.34, 2.36, 0.07), pAt(0.4, 2.62, 0.05), pAt(0.32, 2.36, 0.06)], n: [0.32, 0.32, 0.34, 0.4, 0.32].map(nAt),
+    { at: [pAt(0.32, 2.36, 0.05), pAt(0.32, 2.36, 0.05), pAt(0.34, 2.36, 0.07), pAt(0.32, 2.36, 0.06), pAt(0.32, 2.36, 0.06)], n: [0.32, 0.32, 0.34, 0.32, 0.32].map(nAt),
       labels: ['Kora · undyed cotton', 'Aabhla · a mirror caged in thread', 'Madder red, printed by block', 'Each dot is a knot', 'Kala cotton, spun in Kutch'] },
-    { at: [pAt(-0.6, 2.24, 0.05), pAt(-0.6, 2.24, 0.05), hAt(-0.6, 1.15, 0.054, 0.12), hAt(-0.3, 0.9, 0.042, 0.13), hAt(-0.5, 1.05, 0.048, 0.07)], n: [-0.6, -0.6, -0.6, -0.3, -0.5].map(nAt),
+    { at: [new THREE.Vector3(...palazzoAt(-0.5, 1.0)), new THREE.Vector3(...palazzoAt(-0.5, 1.0)), hAt(-0.6, 1.15, 0.054, 0.12), new THREE.Vector3(...palazzoAt(-0.5, 0.95)), hAt(-0.5, 1.05, 0.048, 0.07)], n: [-0.5, -0.5, -0.6, -0.5, -0.5].map(nAt),
       labels: ['Before the first stitch', 'Suf · counted from the reverse', 'Indigo, held back by resist', 'Tied before it is dyed', 'Extra-weft border'] },
   ];
 
