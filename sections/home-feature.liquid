@@ -66,7 +66,7 @@
       <a class="ft__c-photo ft__c-photo--{{ forloop.index }}" href="{{ c.btn_link | escape }}" tabindex="-1" aria-hidden="true"{% if c.btn_link contains 'http' %} target="_blank" rel="noopener"{% endif %}><img src="{{ pic }}" alt="{{ pic_alt | escape }}" loading="lazy"></a><article class="ft__c-card ft__c-card--{{ forloop.index }}" {{ b.shopify_attributes }}><p class="ft__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</p><h3 class="ft__name">{{ c.name | escape }}</h3><p class="ft__text">{{ c.text | escape }}</p>{%- if c.btn_label != blank -%}<a class="ft__btn" href="{{ c.btn_link | escape }}"{% if c.btn_link contains 'http' %} target="_blank" rel="noopener"{% endif %}>{{ c.btn_label | escape }} {{ arrow }}</a>{%- endif -%}</article>
     {%- endfor -%}
     <img class="ft__c-sprig" src="{{ 'sj-visit-sprig.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><img class="ft__c-thread" src="{{ 'sj-visit-thread.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><img class="ft__c-flower" src="{{ 'sj-visit-flower.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><svg class="ft__c-lines" viewBox="0 0 1448 1086" aria-hidden="true"><path d="M1020,76 C1062,50 1122,30 1178,36" /><path d="M0,762 C28,752 52,738 80,733" /><path class="ft__c-route" d="M1062,836 C1122,848 1204,832 1322,795" /><circle class="ft__c-ring" cx="1020" cy="76" r="5" /><circle class="ft__c-ring" cx="80" cy="733" r="5" /><circle class="ft__c-pin" cx="1326" cy="794" r="5.5" /></svg>
-    {%- assign tw = s.tags | split: ',' -%}{%- if s.tags != blank -%}<p class="ft__c-tags">{%- for w in tw -%}{%- assign ww = w | strip -%}{%- if ww != blank -%}<span>{{ ww | escape }}</span>{%- endif -%}{%- endfor -%}</p>{%- endif -%}
+    {%- assign tw = s.collage_tags | split: ',' -%}{%- if s.collage_tags != blank -%}<p class="ft__c-tags">{%- for w in tw -%}{%- assign ww = w | strip -%}{%- if ww != blank -%}<span>{{ ww | escape }}</span>{%- endif -%}{%- endfor -%}</p>{%- endif -%}
     {%- if s.map_label != blank -%}<p class="ft__c-label">{{ s.map_label | escape }}</p>{%- endif -%}
     {%- assign mw = s.map_words | split: ',' -%}{%- if s.map_words != blank -%}<p class="ft__c-words">{%- for w in mw -%}{%- assign ww = w | strip -%}{%- if ww != blank -%}<span>{{ ww | escape }}</span>{%- endif -%}{%- endfor -%}</p>{%- endif -%}
     </div>
@@ -227,7 +227,7 @@
     },
     {
       "type": "text",
-      "id": "tags",
+      "id": "collage_tags",
       "label": "Words at the top right (comma separated)",
       "default": "People, Craft, Place"
     },
