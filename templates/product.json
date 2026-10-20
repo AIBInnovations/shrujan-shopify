@@ -25,7 +25,9 @@
     },
     "visit": {
       "type": "product-visit",
-      "settings": {}
+      "settings": {
+        "show_stores": true
+      }
     }
   },
   "order": [
