@@ -1038,9 +1038,11 @@ async function init() {
     px += (pxTarget - px) * 0.06;
     const slide = px * 0.02 * d;
     dress.position.set(Math.cos(yaw) * slide, 0, -Math.sin(yaw) * slide);
-    // the form keeps its front to the reader: a slight three-quarter turn
-    // close up, easing to face the camera, with a gentle sway between
-    const facing = 0.4 - 0.3 * prog + 0.1 * Math.sin(prog * Math.PI * 4);
+    // the form turns once right round as the crafts change, from a slight
+    // three-quarter view close up, and comes to rest facing the reader for
+    // the last of the scroll (the user: rotating, but ending in front)
+    const turn = THREE.MathUtils.smoothstep(prog, 0.04, 0.88);
+    const facing = 0.4 * (1 - turn) - Math.PI * 2 * turn;
     dress.rotation.y = yaw - facing + px * 0.16;
 
     // which cloth, and how far the next has risen

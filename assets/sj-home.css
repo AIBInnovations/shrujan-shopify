@@ -3140,7 +3140,8 @@ html.sj-pre .dh__strip {
   --wine: #6b1d20;
   --paper-ink: #6c6458;
   isolation: isolate;
-  overflow: clip;
+  /* clipped at the sides only, so the edge lines can reach up out of it */
+  overflow-x: clip;
   padding-top: clamp(16px, 1.6vw, 28px);
   padding-bottom: clamp(48px, 5vw, 92px);
   background: transparent;
@@ -3163,10 +3164,12 @@ html.sj-pre .dh__strip {
   opacity: 0.92;
 }
 
-/* the thin gold lines down the edges, each with its flower */
+/* the thin gold lines down the edges, each with its flower; they start at
+   the foot of the section above (up through its bottom padding), so they
+   hang from it */
 .ft__edge {
   position: absolute;
-  top: 0;
+  top: calc(-1 * var(--sec-pad, 48px));
   bottom: 10%;
   width: 1px;
   background: linear-gradient(var(--gold-line), var(--gold-line) 82%, rgba(167, 120, 66, 0));
@@ -3259,6 +3262,7 @@ html.sj-pre .dh__strip {
 
 .ft__scene {
   position: relative;
+  container-type: inline-size;
   aspect-ratio: 750 / 704;
   overflow: hidden;
   border-radius: 4px;
@@ -3372,7 +3376,7 @@ html.sj-pre .dh__strip {
 /* the words, on the left */
 .ft__copy {
   position: absolute;
-  top: 13%;
+  top: 11%;
   left: 7.5%;
   z-index: 2;
   width: 37%;
@@ -3384,7 +3388,7 @@ html.sj-pre .dh__strip {
 
 .ft__no {
   margin: 0;
-  font: 500 12px/1 var(--font-sans);
+  font: 500 max(10px, 1.6cqi) / 1 var(--font-sans);
   letter-spacing: 0.3em;
 }
 
@@ -3393,14 +3397,14 @@ html.sj-pre .dh__strip {
   display: block;
   width: 22px;
   height: 1px;
-  margin-top: 12px;
+  margin-top: 1.6cqi;
   background: currentColor;
   opacity: 0.6;
 }
 
 .ft__scene .ft__name {
-  margin: clamp(10px, 1.1vw, 18px) 0 0;
-  font: 400 clamp(32px, 3.9vw, 64px) / 1.04 var(--font-display);
+  margin: 1.8cqi 0 0;
+  font: 400 8.4cqi / 1.04 var(--font-display);
   letter-spacing: -0.01em;
   color: inherit;
 }
@@ -3412,22 +3416,24 @@ html.sj-pre .dh__strip {
 .ft__scene .ft__name::after {
   content: '';
   display: block;
-  width: clamp(28px, 2.6vw, 42px);
+  width: 5.4cqi;
   height: 1px;
-  margin-top: clamp(8px, 0.9vw, 14px);
+  margin-top: 1.6cqi;
   background: currentColor;
   opacity: 0.55;
 }
 
 .ft__scene .ft__text {
   max-width: 28ch;
-  margin: clamp(10px, 1vw, 16px) 0 0;
-  font: 400 clamp(13.5px, 1.06vw, 17px) / 1.5 var(--font-sans);
+  margin: 2cqi 0 0;
+  font: 400 2.2cqi / 1.5 var(--font-sans);
   color: inherit;
   opacity: 0.92;
 }
 
 .ft__scene .ft__btn {
+  margin-top: 3cqi;
+  font-size: max(10px, 1.55cqi);
   color: inherit;
   border-color: currentColor;
 }
@@ -3442,7 +3448,7 @@ html.sj-pre .dh__strip {
   grid-template-columns: 1fr 1fr;
   align-items: stretch;
   width: 51%;
-  height: 33.5%;
+  height: 31%;
   padding: 1.2%;
   border-radius: 4px;
   background: var(--paper) center / cover, #efe6d3;
@@ -3463,7 +3469,7 @@ html.sj-pre .dh__strip {
   justify-content: center;
   margin: 0;
   padding: 0 6% 0 11%;
-  font: 500 clamp(8.5px, 0.64vw, 10.5px) / 2.1 var(--font-sans);
+  font: 500 max(8.5px, 1.4cqi) / 2.1 var(--font-sans);
   letter-spacing: 0.18em;
   text-transform: uppercase;
 }
@@ -3484,7 +3490,8 @@ html.sj-pre .dh__strip {
   height: 22px;
 }
 
-/* ---- tablets and phones: each scene stacked ---- */
+/* ---- below 1200px each scene is stacked: the words, the scene, the
+   small card; two side by side down to 1025px, then one ---- */
 @media (max-width: 1024px) {
   .ft__edge,
   .ft__pillar {
@@ -3496,7 +3503,9 @@ html.sj-pre .dh__strip {
     gap: 28px;
     max-width: 760px;
   }
+}
 
+@media (max-width: 1199px) {
   .ft__scene {
     display: flex;
     flex-direction: column;
@@ -3525,8 +3534,33 @@ html.sj-pre .dh__strip {
     height: 82%;
   }
 
+  .ft__no {
+    font-size: 11px;
+  }
+
+  .ft__no::after {
+    margin-top: 10px;
+  }
+
+  .ft__scene .ft__name {
+    margin-top: 12px;
+    font-size: clamp(32px, 6vw, 46px);
+  }
+
+  .ft__scene .ft__name::after {
+    width: 32px;
+    margin-top: 10px;
+  }
+
   .ft__scene .ft__text {
     max-width: 46ch;
+    margin-top: 12px;
+    font-size: 15px;
+  }
+
+  .ft__scene .ft__btn {
+    margin-top: 18px;
+    font-size: 11px;
   }
 
   .ft__back {
