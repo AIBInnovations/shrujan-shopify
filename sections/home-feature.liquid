@@ -27,7 +27,7 @@
   {%- if s.lede != blank %}<p class="ft__lede">{{ s.lede | escape }}</p>{% endif -%}
 {%- endcapture -%}
 {%- capture motif -%}<svg class="ft__motif" viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(32 32)"><path d="M0-25 C4-20 7-17 5-12 C3-8 0-8 0-4 C0-8-3-8-5-12 C-7-17-4-20 0-25Z"/><path d="M0 25 C4 20 7 17 5 12 C3 8 0 8 0 4 C0 8-3 8-5 12 C-7 17-4 20 0 25Z"/><path d="M-25 0 C-20-4-17-7-12-5 C-8-3-8 0-4 0 C-8 0-8 3-12 5 C-17 7-20 4-25 0Z"/><path d="M25 0 C20-4 17-7 12-5 C8-3 8 0 4 0 C8 0 8 3 12 5 C17 7 20 4 25 0Z"/><path d="M-17-17 C-10-19-7-14-9-9 C-14-7-19-10-17-17Z"/><path d="M17-17 C10-19 7-14 9-9 C14-7 19-10 17-17Z"/><path d="M-17 17 C-10 19-7 14-9 9 C-14 7-19 10-17 17Z"/><path d="M17 17 C10 19 7 14 9 9 C14 7 19 10 17 17Z"/><circle r="5"/><circle r="2"/><path d="M0-18V-8 M0 8V18 M-18 0h10 M8 0h10"/></g></svg>{%- endcapture -%}
-<section class="ft ft--{{ s.layout }}{% if s.flip %} ft--flip{% endif %}" id="{{ s.anchor | escape }}" aria-labelledby="ft-title-{{ sid }}" data-v="test-a"{% if s.layout == 'studio' %} style="--paper:url({{ s.paper_asset | default: 'sj-studio-paper.webp' | asset_url }})"{% endif %}>
+<section class="ft ft--{{ s.layout }}{% if s.flip %} ft--flip{% endif %}" id="{{ s.anchor | escape }}" aria-labelledby="ft-title-{{ sid }}" data-v="test-b"{% if s.layout == 'studio' %} style="--paper:url({{ s.paper_asset | default: 'sj-studio-paper.webp' | asset_url }})"{% endif %}>
   {%- if s.layout == 'studio' -%}
     <div class="ft__decor" aria-hidden="true">{% if s.pillar_asset != blank %}<img class="ft__pillar" src="{{ s.pillar_asset | asset_url }}" alt="" loading="lazy">{% endif %}<i class="ft__edge ft__edge--l">{{ motif }}</i><i class="ft__edge ft__edge--r">{{ motif }}</i></div><div class="ft__head">{{ motif }}{{ head }}</div><div class="ft__scenes">
     {%- for b in section.blocks -%}
@@ -112,10 +112,6 @@
         {
           "value": "studio",
           "label": "A scene for each card (Studio Collection)"
-        },
-        {
-          "value": "collage",
-          "label": "A collage of the two cards (Visit & Experience)"
         }
       ]
     },
