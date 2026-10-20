@@ -786,7 +786,7 @@
     var gsap = window.gsap;
     if (!gsap || !window.ScrollTrigger || reduced) return;
     roots.forEach(function (root) {
-      var words = root.querySelectorAll('.ft__head > *, .ft__side > *');
+      var words = root.querySelectorAll('.ft__head > *, .ft__side > *, .ft__over > *');
       gsap.fromTo(words, { y: 22, opacity: 0 }, {
         y: 0, opacity: 1, duration: 1.1, stagger: 0.08, ease: 'expo.out',
         scrollTrigger: { trigger: root, start: 'top 80%' },
@@ -798,7 +798,7 @@
           scrollTrigger: { trigger: root.querySelector('.ft__cards'), start: 'top 85%' },
         });
       }
-      [].forEach.call(root.querySelectorAll('.ft__media img'), function (img) {
+      [].forEach.call(root.querySelectorAll('.ft__media img, .ft__bg'), function (img) {
         gsap.fromTo(img, { scale: 1.12 }, {
           scale: 1, duration: 1.6, ease: 'expo.out', clearProps: 'transform',
           scrollTrigger: { trigger: img, start: 'top 88%' },
@@ -836,6 +836,7 @@
     var run = function () { if (!raf) raf = requestAnimationFrame(tick); };
     tiles.forEach(function (t) {
       var media = t.querySelector('.col__media');
+      if (!media) return;   // the shop's two lines are words only
       media.addEventListener('pointerenter', function (e) {
         if (!on) { x = tx = e.clientX; y = ty = e.clientY; }
         on = true;
@@ -872,6 +873,12 @@
     // each tile's frame opens from the bottom, its photograph settling as it
     // does, then its caption; tiles further down the grid follow on
     tiles.forEach(function (t, i) {
+      if (!t.querySelector('.col__media')) {
+        // a card of words (Shrujan Classic, Raahi) rises in
+        gsap.fromTo(t, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 1.1, ease: 'expo.out', delay: (i % 2) * 0.1,
+          scrollTrigger: { trigger: t, start: 'top 92%' } });
+        return;
+      }
       var tl = gsap.timeline({ scrollTrigger: { trigger: t, start: 'top 90%' } });
       tl.fromTo(t.querySelector('.col__media'), { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.25, ease: 'expo.out', delay: (i % 3) * 0.08 })
         .fromTo(t.querySelector('.col__img'), { scale: 1.22 }, { scale: 1, duration: 1.6, ease: 'expo.out' }, '<')

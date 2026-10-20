@@ -2980,6 +2980,93 @@ html.sj-pre .dh__strip {
   align-items: flex-start;
 }
 
+/* ---- words over a full-width picture (the LLDC): the picture's own plain
+   wall on the left carries the words ---- */
+.ft--banner {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.ft__banner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1672 / 941;
+  max-height: 94vh;
+  overflow: hidden;
+  background: #d9cdbb;
+}
+
+.ft__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: 50% 50%;
+  color: transparent;
+}
+
+.ft__over {
+  position: absolute;
+  left: 4.9vw;
+  top: 52%;
+  z-index: 1;
+  width: min(37vw, 640px);
+  translate: 0 -50%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.ft__over .ft__eyebrow {
+  margin-bottom: clamp(14px, 1.3vw, 22px);
+  font-size: clamp(11px, 1vw, 16px);
+  letter-spacing: 0.24em;
+  color: var(--ink-soft);
+}
+
+.ft__over .ft__title {
+  font-size: clamp(32px, 3.4vw, 60px);
+  line-height: 1.12;
+}
+
+.ft__over .ft__lede {
+  max-width: 34ch;
+  margin-top: clamp(18px, 1.9vw, 32px);
+  font-size: clamp(15px, 1.42vw, 24px);
+  line-height: 1.62;
+}
+
+.ft__rule {
+  display: block;
+  width: clamp(64px, 6.6vw, 112px);
+  height: 1px;
+  margin: clamp(28px, 3.6vw, 60px) 0 clamp(26px, 3.2vw, 52px);
+  background: var(--indigo);
+}
+
+.ft__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font: 500 clamp(12px, 1.05vw, 17px) / 1 var(--font-sans);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--indigo);
+  text-decoration: none;
+}
+
+.ft__link svg {
+  width: 1.2em;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
+.ft__link:hover svg {
+  transform: translateX(5px);
+}
+
 /* ---- phones: the cards one under the other, the picture over the words ---- */
 @media (max-width: 720px) {
   .ft__lede {
@@ -2999,6 +3086,34 @@ html.sj-pre .dh__strip {
 
   .ft--flip .ft__media {
     order: 0;
+  }
+
+  /* the banner: the words first, the gallery under them */
+  .ft__banner {
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: auto;
+    max-height: none;
+    background: transparent;
+  }
+
+  .ft__over {
+    position: static;
+    order: -1;
+    width: auto;
+    translate: none;
+    padding: 0 var(--gutter, 16px) 26px;
+  }
+
+  .ft__bg {
+    position: static;
+    aspect-ratio: 4 / 3;
+    height: auto;
+    object-position: 78% 50%;
+  }
+
+  .ft__rule {
+    margin: 22px 0 18px;
   }
 }
 
@@ -3121,7 +3236,7 @@ section.idx {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   grid-template-rows: clamp(220px, 19.4vw, 330px) clamp(190px, 16.7vw, 285px) clamp(185px, 16.2vw, 275px);
-  grid-auto-rows: clamp(220px, 19vw, 320px);
+  grid-auto-rows: auto;
   gap: clamp(6px, 0.6vw, 10px);
   max-width: var(--idx-max);
   margin: clamp(16px, 1.5vw, 24px) auto 0;
@@ -3147,40 +3262,44 @@ section.idx {
 /* the shop's two lines, Shrujan Classic and Raahi, side by side across the
    foot of the mosaic */
 .col__tile--shop { grid-column: span 6; grid-row: auto; }
-.col__tile:nth-child(8) .col__img { object-position: 50% 55%; }
-.col__tile:nth-child(9) .col__img { object-position: 50% 6%; }
-
-/* their caption: a small "Shop", the name, the line, and the way on */
-.col__tile--shop .col__cap {
-  grid-template-columns: minmax(0, 1fr) auto;
-  row-gap: 0;
-  padding: 0 clamp(18px, 2.2vw, 34px) clamp(18px, 2vw, 30px);
+.col__tile--shop {
+  border-radius: 6px;
+  background: var(--page-bg-2);
+  box-shadow: inset 0 0 0 1px var(--hairline);
 }
 
-.col__tile--shop .col__media::after {
-  background: linear-gradient(180deg, rgba(30, 20, 14, 0) 30%, rgba(30, 20, 14, 0.78) 100%);
+/* their words: a small "Shop", the name, the line, and the way on */
+.col__tile--shop .col__cap {
+  position: static;
+  grid-template-columns: minmax(0, 1fr) auto;
+  row-gap: 0;
+  padding: clamp(22px, 2.4vw, 38px) clamp(22px, 2.6vw, 40px);
+  color: var(--ink);
+  pointer-events: auto;
 }
 
 .col__kick {
   grid-column: 1;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   font: 500 10.5px/1 var(--font-sans);
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: rgba(246, 244, 230, 0.75);
+  color: var(--ink-soft);
 }
 
 .col__tile--shop .col__name {
   grid-column: 1;
   font-size: clamp(26px, 2.3vw, 38px);
+  color: var(--ink);
 }
 
 .col__tile--shop .col__note {
   grid-column: 1;
   display: block;
   max-width: 44ch;
-  margin-top: 8px;
+  margin-top: 10px;
   -webkit-line-clamp: none;
+  color: var(--ink-soft);
 }
 
 .col__cta {
@@ -3191,12 +3310,12 @@ section.idx {
   align-items: center;
   gap: 10px;
   padding: 12px 22px;
-  border: 1px solid rgba(246, 244, 230, 0.6);
+  border: 1px solid var(--hairline-strong);
   border-radius: 999px;
   font: 500 11px/1 var(--font-sans);
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #f6f4e6;
+  color: var(--ink);
   white-space: nowrap;
   transition: background 0.3s ease, color 0.3s ease;
 }
@@ -3209,8 +3328,13 @@ section.idx {
 
 .col__tile--shop:hover .col__cta,
 .col__tile--shop:focus-visible .col__cta {
-  background: #f6f4e6;
-  color: #2f2f30;
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--page-bg);
+}
+
+.col__tile--shop:hover .col__name {
+  color: var(--ink);
 }
 
 .col__tile--shop:hover .col__cta svg {
@@ -3218,7 +3342,7 @@ section.idx {
 }
 
 /* where each photograph's subject sits in its frame */
-.col__tile:nth-child(1) .col__img { object-position: 50% 30%; }
+.col__tile:nth-child(1) .col__img { object-position: 50% 20%; }
 .col__tile:nth-child(3) .col__img { object-position: 50% 35%; }
 .col__tile:nth-child(5) .col__img { object-position: 50% 62%; }
 

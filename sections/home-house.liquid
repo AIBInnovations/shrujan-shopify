@@ -83,7 +83,7 @@
     {% for block in tiles -%}
     {%- assign cta = block.settings.cta_label -%}
     <a class="col__tile{% if cta != blank %} col__tile--shop{% endif %}" href="{{ block.settings.link | default: '/pages/shop-shrujan?c=kanchli' }}" {{ block.shopify_attributes }}>
-      <span class="col__media"><img class="col__img" src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 1200 }}{% else %}{{ block.settings.fallback | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy"></span>
+      {%- if cta == blank -%}<span class="col__media"><img class="col__img" src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 1200 }}{% else %}{{ block.settings.fallback | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy"></span>{%- endif -%}
       {%- if cta != blank -%}<span class="col__cap"><span class="col__kick">Shop</span><span class="col__name">{{ block.settings.name | escape }}</span><span class="col__note">{{ block.settings.note | escape }}</span><span class="col__cta">{{ cta | escape }} <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 10h14M11 4.5l5.5 5.5-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></span></span>{%- else -%}<span class="col__cap"><span class="col__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span><span class="col__name">{{ block.settings.name | escape }}</span><span class="col__go" aria-hidden="true"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 10h14M11 4.5l5.5 5.5-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></span><span class="col__note">{{ block.settings.note | escape }}</span></span>{%- endif -%}
     </a>
     {%- endfor %}

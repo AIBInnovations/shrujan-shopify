@@ -420,7 +420,7 @@
           "type": "tile",
           "settings": {
             "fallback": "sj-col-kanchli.webp",
-            "alt": "A woman in a black hand-embroidered kanchli and maroon dupatta, seated by a carved stone window",
+            "alt": "A smiling woman in a black hand-embroidered kanchli, resting her chin on her hand",
             "name": "Kanchli",
             "note": "The Kutch bodice, cut and stitched the traditional way.",
             "link": "/pages/shop-shrujan?c=kanchli"
@@ -524,8 +524,8 @@
         "b13": {
           "type": "tile",
           "settings": {
-            "fallback": "sj-col-classic.webp",
-            "alt": "Folded hand-embroidered textiles and a shawl stacked on a carved stone ledge",
+            "fallback": "",
+            "alt": "",
             "name": "Shrujan Classic",
             "note": "Clothing, textiles and objects shaped by the craft traditions of Kutch, made for occasions and for the home.",
             "link": "/pages/shop-shrujan",
@@ -535,8 +535,8 @@
         "b14": {
           "type": "tile",
           "settings": {
-            "fallback": "sj-col-raahi.webp",
-            "alt": "A smiling woman in easy black clothing with hand-embroidered borders",
+            "fallback": "",
+            "alt": "",
             "name": "Raahi",
             "note": "Easy, contemporary clothing shaped by craft and made for comfort, movement and daily life.",
             "link": "/collections/clothing",
@@ -1037,15 +1037,15 @@
     "feature-lldc": {
       "type": "home-feature",
       "settings": {
-        "layout": "split",
+        "layout": "banner",
         "flip": false,
         "anchor": "lldc",
         "eyebrow": "Ajrakhpur, Kutch",
         "title_1": "Living & Learning",
         "title_2": "Design Centre (LLDC)",
         "lede": "A museum and cultural institution dedicated to the crafts of Kutch, with galleries, research programmes and archives that explore the region’s living traditions.",
-        "image_asset": "lldc-hero.webp",
-        "image_alt": "Figures in the ceremonial dress of twelve Kutchi communities, arranged in a circular gallery",
+        "image_asset": "sj-lldc-banner.webp",
+        "image_alt": "Figures in the ceremonial dress of Kutchi communities in an LLDC gallery, seen past a carved stone pillar",
         "btn_label": "Visit the LLDC Website",
         "btn_link": "https://shrujanlldc.org"
       }
@@ -1161,25 +1161,25 @@
   },
   "order": [
     "home-hero",
-    "home-craft3d",
-    "home-marquee",
-    "home-poster",
     "home-legacy",
-    "feature-lldc",
-    "home-spotlight",
-    "home-bestsellers",
-    "home-categories",
     "home-house",
+    "home-poster",
+    "home-craft3d",
+    "home-trousseau",
+    "feature-lldc",
     "feature-studio",
     "home-showcase",
     "feature-gifting",
     "home-reels",
     "feature-visit",
     "home-craft-story",
-    "home-trousseau",
-    "home-testimonials",
     "home-journal",
     "home-faq",
-    "home-shop-cta"
+    "home-shop-cta",
+    "home-marquee",
+    "home-spotlight",
+    "home-bestsellers",
+    "home-categories",
+    "home-testimonials"
   ]
 }

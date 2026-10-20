@@ -24,7 +24,18 @@
   {%- if s.lede != blank %}<p class="ft__lede">{{ s.lede | escape }}</p>{% endif -%}
 {%- endcapture -%}
 <section class="ft ft--{{ s.layout }}{% if s.flip %} ft--flip{% endif %}" id="{{ s.anchor | escape }}" aria-labelledby="ft-title-{{ sid }}">
-  {%- if s.layout == 'split' -%}
+  {%- if s.layout == 'banner' -%}
+    {%- liquid
+      if s.image != blank
+        assign pic = s.image | image_url: width: 2000
+        assign pic_alt = s.image_alt | default: s.image.alt
+      else
+        assign pic = s.image_asset | asset_url
+        assign pic_alt = s.image_alt
+      endif
+    -%}
+    <div class="ft__banner"><img class="ft__bg" src="{{ pic }}" alt="{{ pic_alt | escape }}" loading="lazy"><div class="ft__over">{{ head }}<i class="ft__rule" aria-hidden="true"></i>{%- if s.btn_label != blank -%}<a class="ft__link" href="{{ s.btn_link | escape }}"{% if s.btn_link contains 'http' %} target="_blank" rel="noopener"{% endif %}>{{ s.btn_label | escape }} {{ arrow }}</a>{%- endif -%}</div></div>
+  {%- elsif s.layout == 'split' -%}
     {%- liquid
       if s.image != blank
         assign pic = s.image | image_url: width: 1600
@@ -72,6 +83,10 @@
         {
           "value": "split",
           "label": "One picture beside the words"
+        },
+        {
+          "value": "banner",
+          "label": "Words over a full-width picture"
         }
       ]
     },
