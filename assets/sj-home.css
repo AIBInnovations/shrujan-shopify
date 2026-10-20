@@ -3635,6 +3635,425 @@ html.sj-pre .dh__strip {
 }
 
 /* ============================================================
+   Visit & Experience: a collage ("collage")
+   ------------------------------------------------------------
+   The user's mock-up, every piece placed as a share of its own frame
+   (1448 x 1086) and the words sized by the collage's width (cqi), so it
+   keeps its proportions at any desktop width: the head at the top left,
+   the campus photograph over torn paper with the Visit Shrujan card
+   beside it, the palace photograph across the foot with the Visit Kutch
+   card over an olive arch, a sprig and a thread with its flower drawn
+   across, an embroidered swatch at the right edge and the paper map of
+   Kutch with its dotted way. Below 1200px: the head, then each
+   photograph with its card over its foot; the loose pieces stay out.
+   ============================================================ */
+.ft--collage {
+  overflow-x: clip;
+  padding-top: clamp(16px, 1.6vw, 28px);
+}
+
+.ft__collage {
+  position: relative;
+  container-type: inline-size;
+  max-width: 1448px;
+  aspect-ratio: 1448 / 1086;
+  margin: 0 auto;
+  overflow: clip;
+}
+
+.ft__collage > * {
+  position: absolute;
+  margin: 0;
+}
+
+.ft__collage > img {
+  display: block;
+  height: auto;
+  max-width: none;
+}
+
+.ft__c-paper--a {
+  left: 42.6%;
+  top: 2.6%;
+  z-index: 1;
+  width: 41%;
+}
+
+.ft__c-paper--b {
+  left: 15%;
+  top: 61%;
+  z-index: 1;
+  width: 60%;
+  transform: scaleX(-1);
+}
+
+.ft__c-arch {
+  left: 4%;
+  top: 42.4%;
+  z-index: 2;
+  width: 29.1%;
+}
+
+.ft__c-swatch {
+  left: 92.4%;
+  top: 44%;
+  z-index: 2;
+  width: 7.6%;
+}
+
+.ft__c-map {
+  left: 71.6%;
+  top: 63%;
+  z-index: 2;
+  width: 28.4%;
+}
+
+/* the head */
+.ft__collage .ft__head {
+  left: 5.9%;
+  top: 5.6%;
+  z-index: 4;
+  width: 40%;
+  max-width: none;
+  margin: 0;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.ft__collage .ft__eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1.3cqi;
+  margin: 0;
+  font-size: max(9.5px, 0.76cqi);
+}
+
+.ft__collage .ft__eyebrow::after {
+  content: '';
+  flex: 0 0 8.6cqi;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.45;
+}
+
+.ft__collage .ft__title {
+  margin-top: 2.6cqi;
+  font-size: 7.9cqi;
+  line-height: 0.93;
+}
+
+.ft__collage .ft__title .ft__line {
+  display: block;
+}
+
+.ft__amp {
+  color: #6d6648;
+}
+
+.ft__collage .ft__lede {
+  max-width: 24em;
+  margin: 3.2cqi 0 0;
+  font-size: 1.32cqi;
+  line-height: 1.5;
+}
+
+/* the photographs */
+.ft__c-photo {
+  z-index: 3;
+  display: block;
+  overflow: hidden;
+  box-shadow: 0 22px 40px -30px rgba(40, 28, 18, 0.55);
+}
+
+.ft__c-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ft__c-photo:hover img {
+  scale: 1.04;
+}
+
+.ft__c-photo--1 {
+  left: 45.9%;
+  top: 7.2%;
+  width: 26.9%;
+  height: 48.7%;
+}
+
+.ft__c-photo--2 {
+  left: 22%;
+  top: 56.4%;
+  width: 50.9%;
+  height: 39.4%;
+}
+
+/* the cards, paper laid over the collage */
+.ft__c-card {
+  z-index: 4;
+  padding: 3.1cqi 2.7cqi;
+  background: linear-gradient(165deg, #efe8d9, #e6decb);
+  box-shadow: 0 16px 30px -22px rgba(40, 28, 18, 0.45), inset 0 0 0 1px rgba(120, 96, 66, 0.08);
+  color: var(--ink);
+}
+
+.ft__c-card--1 {
+  left: 75.1%;
+  top: 15%;
+  width: 19.5%;
+  height: 40.7%;
+}
+
+.ft__c-card--2 {
+  left: 5.5%;
+  top: 49.4%;
+  width: 21.3%;
+  height: 43.6%;
+}
+
+.ft__collage .ft__no {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  font: 500 max(10px, 0.95cqi) / 1 var(--font-sans);
+  letter-spacing: 0.2em;
+  color: var(--ink-soft);
+}
+
+.ft__collage .ft__no::after {
+  content: '';
+  width: 3cqi;
+  height: 1px;
+  margin-left: 1.1cqi;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+.ft__collage .ft__name {
+  margin: 2.2cqi 0 0;
+  font: 400 3.55cqi / 1 var(--font-display);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.ft__collage .ft__text {
+  margin: 2cqi 0 0;
+  font: 400 1.08cqi / 1.6 var(--font-sans);
+  color: var(--ink-soft);
+}
+
+.ft__collage .ft__btn {
+  margin-top: 2.6cqi;
+  font-size: max(10px, 0.82cqi);
+}
+
+/* the drawn pieces, over everything */
+/* the sprig behind the photographs and the cards (the user's wish), over
+   the paper and the arch */
+.ft__c-sprig {
+  left: 24%;
+  top: 35.5%;
+  z-index: 2;
+  width: 21.4%;
+}
+
+/* the thread runs behind the Visit Shrujan card, as a drawn line under paper */
+.ft__c-thread {
+  left: 81.5%;
+  top: 0.4%;
+  z-index: 3;
+  width: 15%;
+}
+
+.ft__c-flower {
+  left: 78.2%;
+  top: 77.3%;
+  z-index: 5;
+  width: 6.1%;
+}
+
+.ft__c-lines {
+  inset: 0;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.ft__c-lines path {
+  fill: none;
+  stroke: #5c4234;
+  stroke-width: 1.3;
+  stroke-linecap: round;
+}
+
+.ft__c-lines .ft__c-route {
+  stroke: #7a5a46;
+  stroke-dasharray: 4 6;
+}
+
+.ft__c-ring {
+  fill: var(--page-bg, #f6f4e6);
+  stroke: #b0613a;
+  stroke-width: 1.6;
+}
+
+.ft__c-pin {
+  fill: #b86b3c;
+}
+
+.ft__c-tags,
+.ft__c-words {
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font: 500 max(9px, 0.74cqi) / 2.1 var(--font-sans);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.ft__c-tags {
+  left: 87.8%;
+  top: 7.8%;
+  width: 9%;
+}
+
+.ft__c-words {
+  left: 84.8%;
+  top: 77.5%;
+  width: 12%;
+  font-size: max(8.5px, 0.72cqi);
+  color: #7a6f60;
+}
+
+.ft__c-label {
+  left: 78.6%;
+  top: 71.6%;
+  z-index: 5;
+  font: 500 max(9px, 0.76cqi) / 1 var(--font-sans);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: #4a4038;
+}
+
+/* ---- below 1200px: the head, then each photograph with its card ---- */
+@media (max-width: 1199px) {
+  .ft__collage {
+    display: flex;
+    flex-direction: column;
+    max-width: 760px;
+    aspect-ratio: auto;
+    overflow: visible;
+  }
+
+  .ft__collage > * {
+    position: relative;
+    inset: auto;
+    width: auto;
+    height: auto;
+  }
+
+  .ft__c-paper,
+  .ft__c-arch,
+  .ft__c-swatch,
+  .ft__c-map,
+  .ft__c-sprig,
+  .ft__c-thread,
+  .ft__c-flower,
+  .ft__c-lines,
+  .ft__c-tags,
+  .ft__c-label,
+  .ft__c-words {
+    display: none !important;
+  }
+
+  .ft__collage .ft__head {
+    left: auto;
+    top: auto;
+    width: auto;
+    padding-bottom: 28px;
+  }
+
+  .ft__collage .ft__eyebrow {
+    gap: 14px;
+    font-size: 11px;
+  }
+
+  .ft__collage .ft__eyebrow::after {
+    flex-basis: 64px;
+  }
+
+  .ft__collage .ft__title {
+    margin-top: 16px;
+    font-size: clamp(46px, 11vw, 92px);
+  }
+
+  .ft__collage .ft__lede {
+    margin-top: 16px;
+    font-size: 16px;
+  }
+
+  .ft__c-photo--1 {
+    left: auto;
+    top: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .ft__c-photo--2 {
+    left: auto;
+    top: auto;
+    margin-top: 40px;
+    aspect-ratio: 16 / 10;
+  }
+
+  .ft__c-card {
+    left: auto;
+    top: auto;
+    width: min(86%, 460px);
+    padding: 26px 24px 28px;
+  }
+
+  .ft__c-card--1 {
+    margin: -52px 14px 0 auto;
+  }
+
+  .ft__c-card--2 {
+    margin: -52px auto 0 14px;
+  }
+
+  .ft__collage .ft__no {
+    font-size: 11px;
+  }
+
+  .ft__collage .ft__no::after {
+    width: 32px;
+    margin-left: 12px;
+  }
+
+  .ft__collage .ft__name {
+    margin-top: 14px;
+    font-size: clamp(30px, 7vw, 42px);
+  }
+
+  .ft__collage .ft__text {
+    margin-top: 12px;
+    font-size: 15px;
+  }
+
+  .ft__collage .ft__btn {
+    margin-top: 18px;
+    font-size: 11px;
+  }
+}
+
+/* ============================================================
    What Shrujan has mastered
    ------------------------------------------------------------
    The seven collections as a mosaic: Kanchli large on the left, Accessories

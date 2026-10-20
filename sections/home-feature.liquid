@@ -8,8 +8,11 @@
   right), the words over a full-width picture ("banner"), or a composed
   scene for each card ("studio": a wall, sandstone, the textile and its
   props cut out over it, the words, and a small card with a close-up of the
-  craft and four words). The Studio Collection, LLDC, Gifting and Visit
-  sections of templates/index.json all use it.
+  craft and four words), or a collage ("collage": the two photographs and
+  their cards over torn paper, an olive arch, a sprig, a thread with its
+  flower, an embroidered swatch and the paper map of Kutch, the pictures
+  fixed as theme files sj-visit-*.webp). The Studio Collection, LLDC,
+  Gifting and Visit sections of templates/index.json all use it.
 
   Styles and behaviour are the home page layer's (assets/sj-home.css and
   sj-home.js, from awwwards-preview/src/feature.css and feature.js). Written
@@ -44,6 +47,27 @@
       -%}
       <article class="ft__scene ft__scene--{{ c.look }}" style="--wall:url({{ c.wall_asset | default: 'sj-studio-wall-red.webp' | asset_url }})" {{ b.shopify_attributes }}><div class="ft__stage">{% if c.back_asset != blank %}<img class="ft__back" src="{{ c.back_asset | asset_url }}" alt="" loading="lazy">{% endif %}<img class="ft__cloth" src="{{ pic }}" alt="{{ pic_alt | escape }}" loading="lazy">{% if c.front_asset != blank %}<span class="ft__front ft__front--{{ c.front_crop }}"><img src="{{ c.front_asset | asset_url }}" alt="" loading="lazy"></span>{% endif %}</div><div class="ft__copy"><p class="ft__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</p><h3 class="ft__name">{{ c.name | escape }}</h3><p class="ft__text">{{ c.text | escape }}</p>{%- if c.btn_label != blank -%}<a class="ft__btn" href="{{ c.btn_link | escape }}"{% if c.btn_link contains 'http' %} target="_blank" rel="noopener"{% endif %}>{{ c.btn_label | escape }} {{ arrow }}</a>{%- endif -%}</div>{%- if c.detail_asset != blank -%}<aside class="ft__detail"><img src="{{ c.detail_asset | asset_url }}" alt="{{ c.detail_alt | escape }}" loading="lazy"><p class="ft__words">{%- for w in words -%}{%- assign ww = w | strip -%}{%- if ww != blank -%}<span>{{ ww | escape }}</span>{%- endif -%}{%- endfor -%}</p>{{ motif }}</aside>{%- endif -%}</article>
     {%- endfor -%}
+    </div>
+  {%- elsif s.layout == 'collage' -%}
+    {%- assign t1 = s.title_1 | escape | replace: '&amp;', '<span class="ft__amp">&amp;</span>' -%}
+    <div class="ft__collage"><img class="ft__c-paper ft__c-paper--a" src="{{ 'sj-visit-paper.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><img class="ft__c-paper ft__c-paper--b" src="{{ 'sj-visit-paper.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><img class="ft__c-arch" src="{{ 'sj-visit-arch.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><img class="ft__c-swatch" src="{{ 'sj-visit-swatch.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><img class="ft__c-map" src="{{ 'sj-visit-map.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><div class="ft__head">{% if s.eyebrow != blank %}<p class="ft__eyebrow">{{ s.eyebrow | escape }}</p>{% endif %}<h2 class="ft__title" id="ft-title-{{ sid }}"><span class="ft__line">{{ t1 }}</span>{% if s.title_2 != blank %}<span class="ft__line">{{ s.title_2 | escape }}</span>{% endif %}</h2>{% if s.lede != blank %}<p class="ft__lede">{{ s.lede | escape }}</p>{% endif %}</div>
+    {%- for b in section.blocks -%}
+      {%- liquid
+        assign c = b.settings
+        if c.image != blank
+          assign pic = c.image | image_url: width: 1400
+          assign pic_alt = c.image_alt | default: c.image.alt
+        else
+          assign pic = c.image_asset | asset_url
+          assign pic_alt = c.image_alt
+        endif
+      -%}
+      <a class="ft__c-photo ft__c-photo--{{ forloop.index }}" href="{{ c.btn_link | escape }}" tabindex="-1" aria-hidden="true"{% if c.btn_link contains 'http' %} target="_blank" rel="noopener"{% endif %}><img src="{{ pic }}" alt="{{ pic_alt | escape }}" loading="lazy"></a><article class="ft__c-card ft__c-card--{{ forloop.index }}" {{ b.shopify_attributes }}><p class="ft__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</p><h3 class="ft__name">{{ c.name | escape }}</h3><p class="ft__text">{{ c.text | escape }}</p>{%- if c.btn_label != blank -%}<a class="ft__btn" href="{{ c.btn_link | escape }}"{% if c.btn_link contains 'http' %} target="_blank" rel="noopener"{% endif %}>{{ c.btn_label | escape }} {{ arrow }}</a>{%- endif -%}</article>
+    {%- endfor -%}
+    <img class="ft__c-sprig" src="{{ 'sj-visit-sprig.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><img class="ft__c-thread" src="{{ 'sj-visit-thread.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><img class="ft__c-flower" src="{{ 'sj-visit-flower.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><svg class="ft__c-lines" viewBox="0 0 1448 1086" aria-hidden="true"><path d="M1020,76 C1062,50 1122,30 1178,36" /><path d="M0,762 C28,752 52,738 80,733" /><path class="ft__c-route" d="M1062,836 C1122,848 1204,832 1322,795" /><circle class="ft__c-ring" cx="1020" cy="76" r="5" /><circle class="ft__c-ring" cx="80" cy="733" r="5" /><circle class="ft__c-pin" cx="1326" cy="794" r="5.5" /></svg>
+    {%- assign tw = s.tags | split: ',' -%}{%- if s.tags != blank -%}<p class="ft__c-tags">{%- for w in tw -%}{%- assign ww = w | strip -%}{%- if ww != blank -%}<span>{{ ww | escape }}</span>{%- endif -%}{%- endfor -%}</p>{%- endif -%}
+    {%- if s.map_label != blank -%}<p class="ft__c-label">{{ s.map_label | escape }}</p>{%- endif -%}
+    {%- assign mw = s.map_words | split: ',' -%}{%- if s.map_words != blank -%}<p class="ft__c-words">{%- for w in mw -%}{%- assign ww = w | strip -%}{%- if ww != blank -%}<span>{{ ww | escape }}</span>{%- endif -%}{%- endfor -%}</p>{%- endif -%}
     </div>
   {%- elsif s.layout == 'banner' -%}
     {%- liquid
@@ -112,6 +136,10 @@
         {
           "value": "studio",
           "label": "A scene for each card (Studio Collection)"
+        },
+        {
+          "value": "collage",
+          "label": "A collage of the two cards (Visit & Experience)"
         }
       ]
     },
@@ -191,6 +219,28 @@
       "type": "text",
       "id": "pillar_asset",
       "label": "Sandstone at the top right (theme image file, e.g. sj-studio-stone.webp; empty for none)"
+    },
+    {
+      "type": "header",
+      "content": "Collage layout"
+    },
+    {
+      "type": "text",
+      "id": "tags",
+      "label": "Words at the top right (comma separated)",
+      "default": "People, Craft, Place"
+    },
+    {
+      "type": "text",
+      "id": "map_label",
+      "label": "Name on the map",
+      "default": "Kutch"
+    },
+    {
+      "type": "text",
+      "id": "map_words",
+      "label": "Words on the map (comma separated)",
+      "default": "Landscapes, Traditions, Communities"
     }
   ],
   "blocks": [

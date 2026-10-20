@@ -833,6 +833,21 @@
           });
         });
       }
+      // the Visit collage: the photographs open from the foot, the cards
+      // rise after them, then the drawn pieces and the paper come in
+      var col = root.querySelector('.ft__collage');
+      if (col) {
+        var at = { trigger: col, start: 'top 72%' };
+        gsap.fromTo(col.querySelectorAll('.ft__c-photo'), { clipPath: 'inset(100% 0% 0% 0%)' }, {
+          clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4, stagger: 0.16, ease: 'expo.out', scrollTrigger: at,
+        });
+        gsap.fromTo(col.querySelectorAll('.ft__c-card'), { y: 30, opacity: 0 }, {
+          y: 0, opacity: 1, duration: 1.1, stagger: 0.16, delay: 0.3, ease: 'expo.out', scrollTrigger: at,
+        });
+        gsap.fromTo(col.querySelectorAll('.ft__c-paper, .ft__c-arch, .ft__c-swatch, .ft__c-map, .ft__c-sprig, .ft__c-thread, .ft__c-flower, .ft__c-lines, .ft__c-tags, .ft__c-label, .ft__c-words'), { opacity: 0 }, {
+          opacity: 1, duration: 1.6, stagger: 0.06, delay: 0.2, ease: 'power2.out', scrollTrigger: at,
+        });
+      }
       // the banner's photograph drifts inside its frame as the page scrolls,
       // slower than the page (desktops: on phones it sits under the words)
       var bg = root.querySelector('.ft__bg');
