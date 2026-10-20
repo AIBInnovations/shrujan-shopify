@@ -124,7 +124,7 @@ function hang({ y0, y1, t, flare, fold = 0.02, open = null, a0 = -Math.PI, a1 = 
     if (pleats) r += pleats(a, q);
     lastY = y;
     return [bx / r0 * r, y, bz / r0 * r];
-  }, (u) => [u * 1.6, lastY / TOP], (u, v) => 0.8 + 0.2 * smooth(0, 0.06, v));
+  }, (u) => [(open ? u : (a0 + u * (a1 - a0) + Math.PI) / (Math.PI * 2)), lastY / TOP], (u, v) => 0.8 + 0.2 * smooth(0, 0.06, v));
 }
 
 // the long jacket's skirts, open at the front, and the plain dress under it
@@ -150,7 +150,7 @@ function buildKurtaLower() {
     const r0 = Math.hypot(bx, bz) || 1;
     const r = r0 + k.flare * q + k.fold * q * (Math.sin(a * 7 + 0.6) * 0.6 + Math.sin(a * 12 + 2.1) * 0.4);
     return [bx / r0 * r, y, bz / r0 * r];
-  }, (u, v) => [u * 0.8, (yA + (y1 - yA) * v) / TOP]);
+  }, (u, v) => [(a0 + u * (a1 - a0) + Math.PI) / (Math.PI * 2), (yA + (y1 - yA) * v) / TOP]);
   return [ring, panel(-Math.PI / 2 + 0.1, Math.PI / 2 - 0.1), panel(Math.PI / 2 + 0.1, Math.PI * 1.5 - 0.1)];
 }
 
@@ -181,7 +181,7 @@ function buildGhagra(from = 0, to = 1, out = 0) {
   return grid(440, Math.max(8, Math.round(120 * (to - from))), (u, v) => {
     const p = ghagraAt(-Math.PI + u * Math.PI * 2, vAt(v), out);
     return [p[0], p[1], p[2]];
-  }, (u, v) => [u * (from === 0 ? 2.2 : 6), (GHAGRA.y0 + (GHAGRA.y1 - GHAGRA.y0) * vAt(v)) / TOP], (u, v) => {
+  }, (u, v) => [u * (from === 0 ? 1 : 2), (GHAGRA.y0 + (GHAGRA.y1 - GHAGRA.y0) * vAt(v)) / TOP], (u, v) => {
     const a = -Math.PI + u * Math.PI * 2;
     const q = ghagraAt(a, vAt(v))[3];
     // darker in the valleys of the gathers, more so toward the hem, and
@@ -661,7 +661,6 @@ async function init() {
   const ghosts = [...root.querySelectorAll('.craft3d__ghost')];
   const items = [...root.querySelectorAll('.craft3d__item')];
   const progressBar = root.querySelector('.craft3d__progress');
-  const fadeEl = root.querySelector('.craft3d__fade');
   const intro = root.querySelector('.craft3d__intro');
   const rise = root.querySelector('.craft3d__rise');
   const hint = root.querySelector('.craft3d__hint');
@@ -669,17 +668,17 @@ async function init() {
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // ---------- cloth: kora first, then the four crafts ----------
+  // a tile of 1024 px is about 22 cm of cloth on the form, finer than the
+  // screen ever shows it, even close up
   const S = 1024;
-  const fabrics = [drawKora, drawEmbroidery, drawAjrakh, drawBandhani, drawWeaving].map((draw) => {
-    const c = document.createElement('canvas');
-    c.width = c.height = S;
-    draw(c.getContext('2d'), S);
-    return c;
-  });
+  const koraC = canvasOf(S);
+  drawKora(koraC.getContext('2d'), S);
+  // kora's white work stands out of it by its own lightness
+  const cloths = [{ color: koraC, height: koraC }, embroideryCloth(S), ajrakhCloth(S), bandhaniCloth(S), weavingCloth(S)];
   items.forEach((item, i) => {
     const sw = document.createElement('canvas');
     sw.width = sw.height = 96;
-    sw.getContext('2d').drawImage(fabrics[i + 1], 0, 0, S / 4, S / 4, 0, 0, 96, 96);
+    sw.getContext('2d').drawImage(cloths[i + 1].color, 0, 0, S / 4, S / 4, 0, 0, 96, 96);
     const dot = item.querySelector('i');
     if (dot) dot.style.backgroundImage = `url(${sw.toDataURL()})`;
   });
@@ -726,14 +725,24 @@ async function init() {
   scene.add(rim);
 
   const maxAniso = renderer.capabilities.getMaxAnisotropy();
-  const textures = fabrics.map((c, i) => {
+  const clothTex = (c, srgb) => {
     const t = new THREE.CanvasTexture(c);
-    t.colorSpace = THREE.SRGBColorSpace;
+    if (srgb) t.colorSpace = THREE.SRGBColorSpace;
     t.wrapS = t.wrapT = THREE.RepeatWrapping;
-    t.repeat.set(4, 2.4);
+    // square on the body: four tiles round the bust, each about 0.7 units,
+    // and as tall (a tile that is twice as tall as wide, twice as tall)
+    t.repeat.set(4, (4.8 * c.width) / c.height);
     t.anisotropy = maxAniso;
     return t;
-  });
+  };
+  const textures = cloths.map((c) => clothTex(c.color, true));
+  // ajrakh's blocks are larger than one tile's eighth: about 4 cm a star
+  textures[2].repeat.set(4 / 1.5, 4.8 / 1.5);
+  const heights = cloths.map((c) => clothTex(c.height, false));
+  const shine = clothTex(cloths[1].shine, false);
+  // plain cloth has only the weave in its surface
+  const FLAT = new THREE.DataTexture(new Uint8Array([0, 0, 0, 255]), 1, 1);
+  FLAT.needsUpdate = true;
   // a weave in the cloth's surface, the same for every craft
   const weave = new THREE.CanvasTexture(weaveBump());
   weave.wrapS = weave.wrapT = THREE.RepeatWrapping;
@@ -757,10 +766,12 @@ async function init() {
   // way to the next, the leaving one shows only above a line and the coming
   // one only below it, and the line rises from the hem with a soft glow.
   const uniforms = { uTime: { value: 0 }, uSway: { value: reduced ? 0 : 1 } };
-  // how far the cloth's own pattern stands out of it: embroidery is raised,
-  // kora's white work a little, a print not at all
-  const RELIEF = [0.6, 1, 0.06, 0.22, 0.4];
-  const makeCloth = (map, U) => {
+  // each craft's cloth with its height picture and how far it stands out:
+  // embroidery's threads well up from the cloth, kora's white work a little,
+  // bandhani's crinkles and the handloom's yarn a little, a print only by
+  // the cotton it is printed on; the embroidery's silk and mirrors shine
+  const craft = (k, relief) => ({ height: heights[k], relief, shine: k === 1 ? shine : null });
+  const makeCloth = (map, U, opts = {}) => {
     const m = new THREE.MeshPhysicalMaterial({
       map,
       bumpMap: weave,
@@ -773,8 +784,15 @@ async function init() {
       vertexColors: true,
       side: THREE.DoubleSide,
     });
+    if (opts.shine) {
+      m.roughnessMap = m.metalnessMap = opts.shine;
+      m.roughness = 1;
+      m.metalness = 1;
+      m.envMapIntensity = 0.42;
+    }
+    const H = { uHeightMap: { value: opts.height || FLAT }, uRelief: { value: opts.relief || 0 } };
     m.onBeforeCompile = (shader) => {
-      Object.assign(shader.uniforms, uniforms, U);
+      Object.assign(shader.uniforms, uniforms, U, H);
       shader.vertexShader = shader.vertexShader
         .replace('#include <common>', '#include <common>\nvarying vec2 vBaseUv;\nuniform float uTime;\nuniform float uSway;')
         .replace('#include <uv_vertex>', '#include <uv_vertex>\nvBaseUv = uv;')
@@ -783,11 +801,10 @@ async function init() {
           transformed.x += sin( uTime * 1.1 + position.y * 2.2 + position.z * 1.4 ) * 0.012 * hem * uSway;
           transformed.z += cos( uTime * 0.9 + position.y * 1.8 + position.x * 1.3 ) * 0.012 * hem * uSway;`);
       shader.fragmentShader = shader.fragmentShader
-        .replace('#include <common>', '#include <common>\nvarying vec2 vBaseUv;\nuniform float uFront;\nuniform float uDir;\nuniform float uEdge;\nuniform float uTime;\nuniform float uRelief;')
-        // the relief: the cloth's own pattern, brighter parts raised
+        .replace('#include <common>', '#include <common>\nvarying vec2 vBaseUv;\nuniform float uFront;\nuniform float uDir;\nuniform float uEdge;\nuniform float uTime;\nuniform float uRelief;\nuniform sampler2D uHeightMap;')
+        // the relief: the cloth's height picture, and the weave
         .replace('#include <bumpmap_pars_fragment>', THREE.ShaderChunk.bumpmap_pars_fragment.replace(/vec2 dHdxy_fwd\(\) \{[\s\S]*?return vec2\( dBx, dBy \);\s*\}/, `float sjHeight( vec2 uvM, vec2 uvB ) {
-            float lum = dot( texture2D( map, uvM ).rgb, vec3( 0.299, 0.587, 0.114 ) );
-            return lum * 0.85 * uRelief + texture2D( bumpMap, uvB ).x * 0.15;
+            return texture2D( uHeightMap, uvM ).r * uRelief + texture2D( bumpMap, uvB ).x * 0.15;
           }
           vec2 dHdxy_fwd() {
             vec2 dMx = dFdx( vMapUv ), dMy = dFdy( vMapUv );
@@ -864,22 +881,23 @@ async function init() {
   // the long jacket over a plain dress, bandhani as a kurta to the knee,
   // handloom as the kurta. The kanchli is built first; the rest follow while the section
   // is read, and a state whose piece is not built yet keeps the last one.
-  const states = textures.map((t, k) => ({ group: null, U: { uFront: { value: 9 }, uDir: { value: 1 }, uEdge: { value: 0 }, uRelief: { value: RELIEF[k] } } }));
+  const states = textures.map(() => ({ group: null, U: { uFront: { value: 9 }, uDir: { value: 1 }, uEdge: { value: 0 } } }));
   const dressIn = (k, parts) => {
     const grp = new THREE.Group();
     grp.visible = false;
-    parts.forEach(([g, tex]) => addMesh(grp, g, makeCloth(tex, states[k].U)));
+    parts.forEach(([g, tex, opts]) => addMesh(grp, g, makeCloth(tex, states[k].U, opts)));
     dress.add(grp);
     states[k].group = grp;
   };
   const blouseGeo = shapes.blouse;
   const ghagra = buildGhagra();
   const charcoal = plainTex('#25201e'), kora = plainTex('#ece2cf'), ecru = plainTex('#d3c5ab');
-  dressIn(0, [[blouseGeo, textures[0]], [ghagra, kora]]);
-  dressIn(1, [[blouseGeo, textures[1]], [ghagra, charcoal], [buildGhagra(0.86, 0.95, 0.006), textures[1]]]);
-  dressIn(2, [[shapes.jacket, textures[2]], [buildJacketLower(), textures[2]], [shapes.inner, ecru], [buildInnerLower(), ecru]]);
-  dressIn(3, [[shapes.kurta, textures[3]], [buildKurtiLower(), textures[3]]]);
-  dressIn(4, [[shapes.kurta, textures[4]], ...buildKurtaLower().map((g) => [g, textures[4]])]);
+  const KORA = craft(0, 0.5), EMB = craft(1, 1), AJR = craft(2, 0.45), BAN = craft(3, 0.8), WEA = craft(4, 0.9);
+  dressIn(0, [[blouseGeo, textures[0], KORA], [ghagra, kora]]);
+  dressIn(1, [[blouseGeo, textures[1], EMB], [ghagra, charcoal], [buildGhagra(0.86, 0.95, 0.006), textures[1], EMB]]);
+  dressIn(2, [[shapes.jacket, textures[2], AJR], [buildJacketLower(), textures[2], AJR], [shapes.inner, ecru], [buildInnerLower(), ecru]]);
+  dressIn(3, [[shapes.kurta, textures[3], BAN], [buildKurtiLower(), textures[3], BAN]]);
+  dressIn(4, [[shapes.kurta, textures[4], WEA], ...buildKurtaLower().map((g) => [g, textures[4], WEA])]);
   // every piece's shaders compiled now, behind the loader, so no change of
   // cloth stalls the page later
   states.forEach((st) => { st.group.visible = true; });
@@ -905,9 +923,9 @@ async function init() {
   const PATH = [
     [0.0, 2.72, 3.6, -0.1],
     [0.22, 2.35, 4.7, 0.04],
-    [0.42, 1.8, 6.6, 0.32],
-    [0.62, 1.8, 7.9, 0.5],
-    [1.0, 1.8, 8.1, 0.52],
+    [0.42, 1.95, 5.6, 0.3],
+    [0.62, 2.0, 6.2, 0.4],
+    [1.0, 2.0, 6.4, 0.42],
   ];
   // the top of the form (the neck's cut) always stays in the frame
   const FORM_TOP = 3.62;
@@ -1004,7 +1022,7 @@ async function init() {
     const moving = Math.abs(target - prog) > 0.00005 || Math.abs(pxTarget - px) > 0.0005;
     prog += (target - prog) * 0.07;
 
-    // camera down the dress; the dress turns slowly as it goes
+    // camera down the dress, the form facing it as it goes
     const [ly, dist, rise] = along(prog);
     const d = dist * (phone ? 1.55 : 1);
     const halfH = d * HALF_FOV;
@@ -1020,7 +1038,10 @@ async function init() {
     px += (pxTarget - px) * 0.06;
     const slide = px * 0.02 * d;
     dress.position.set(Math.cos(yaw) * slide, 0, -Math.sin(yaw) * slide);
-    dress.rotation.y = -0.35 + prog * 1.9 + px * 0.16;
+    // the form keeps its front to the reader: a slight three-quarter turn
+    // close up, easing to face the camera, with a gentle sway between
+    const facing = 0.4 - 0.3 * prog + 0.1 * Math.sin(prog * Math.PI * 4);
+    dress.rotation.y = yaw - facing + px * 0.16;
 
     // which cloth, and how far the next has risen
     let s = 0;
@@ -1049,9 +1070,6 @@ async function init() {
     dirty = false;
     setActive(mix > 0.5 ? s + 1 : s);
     if (hint) hint.classList.toggle('is-gone', prog > 0.06);
-    // the hem melts into the page only while the camera is close; once the
-    // whole form shows, it stands on the floor
-    if (fadeEl) fadeEl.style.opacity = String(1 - THREE.MathUtils.smoothstep(prog, 0.3, 0.5));
     if (progressBar) progressBar.style.transform = `scaleY(${Math.min(1, Math.max(0, (prog - EDGES[1]) / (1 - EDGES[1])))})`;
 
     renderer.render(scene, camera);
@@ -1203,227 +1221,549 @@ function grain(ctx, S, alpha, seed) {
   ctx.restore();
 }
 
-// satin stitches: a filled shape, then fine lines across it
-function satin(ctx, path, fill, angle, gap) {
-  ctx.save();
-  ctx.fillStyle = fill;
-  ctx.fill(path);
-  ctx.clip(path);
-  ctx.strokeStyle = 'rgba(0,0,0,0.22)';
-  ctx.lineWidth = 0.8;
-  const c = Math.cos(angle), s = Math.sin(angle);
-  for (let d = -80; d <= 80; d += gap) {
-    ctx.beginPath();
-    ctx.moveTo(-80 * c - d * s, -80 * s + d * c);
-    ctx.lineTo(80 * c - d * s, 80 * s + d * c);
-    ctx.stroke();
+// ---------- the four crafts, drawn at the scale of their threads ----------
+// Each cloth is a square tile of S×S pixels that repeats without a seam. On
+// the form one tile is about 22 cm of cloth (S/22 px to the centimetre), so a
+// satin stitch is a few pixels wide and a bandhani dot a couple of
+// millimetres. With every colour picture comes a height picture (stitches
+// stand up from the cloth, a print lies flat in it), which the cloth shader
+// turns into relief; the embroidery also has a shine picture, so its silk
+// floss has a sheen and its mirrors catch the light (green = roughness,
+// blue = metalness).
+
+const canvasOf = (S) => { const c = document.createElement('canvas'); c.width = c.height = S; return c; };
+
+// a colour a little lighter (t > 0) or darker (t < 0)
+function shade(hex, t) {
+  const n = parseInt(hex.slice(1), 16);
+  const ch = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => Math.round(t >= 0 ? v + (255 - v) * t : v * (1 + t)));
+  return `rgb(${ch[0]},${ch[1]},${ch[2]})`;
+}
+
+// a smooth noise that repeats every n cells
+function periodicNoise(n, seed) {
+  const r = rng(seed), g = new Float32Array(n * n);
+  for (let i = 0; i < g.length; i++) g[i] = r();
+  const at = (x, y) => g[(((y % n) + n) % n) * n + (((x % n) + n) % n)];
+  return (u, v) => {
+    const x0 = Math.floor(u), y0 = Math.floor(v), fx = u - x0, fy = v - y0;
+    const sx = fx * fx * (3 - 2 * fx), sy = fy * fy * (3 - 2 * fy);
+    const a = at(x0, y0), b = at(x0 + 1, y0), c = at(x0, y0 + 1), d = at(x0 + 1, y0 + 1);
+    return a + (b - a) * sx + (c - a) * sy + (a - b - c + d) * sx * sy;
+  };
+}
+
+// uneven dye: a soft cloud of light and dark laid over the whole tile, made
+// small and drawn large (with a border of its own wrapped pixels, so the
+// enlargement leaves no seam at the tile's edges)
+function mottle(ctx, S, cells, seed, alpha, op = 'soft-light') {
+  const n = 64, octs = [[cells, 1], [cells * 2, 0.5], [cells * 4, 0.25]].map(([c, w], i) => [periodicNoise(c, seed + i * 31), c, w]);
+  const m = canvasOf(n + 2), mc = m.getContext('2d'), img = mc.createImageData(n + 2, n + 2);
+  for (let y = 0; y < n + 2; y++) {
+    for (let x = 0; x < n + 2; x++) {
+      let s = 0, w = 0;
+      for (const [f, c, wt] of octs) { s += f(((x - 1) / n) * c, ((y - 1) / n) * c) * wt; w += wt; }
+      const g = Math.round((s / w) * 255), i = (y * (n + 2) + x) * 4;
+      img.data[i] = img.data[i + 1] = img.data[i + 2] = g;
+      img.data[i + 3] = 255;
+    }
   }
+  mc.putImageData(img, 0, 0);
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.globalCompositeOperation = op;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(m, -S / n, -S / n, (S * (n + 2)) / n, (S * (n + 2)) / n);
   ctx.restore();
 }
 
-function drawEmbroidery(ctx, S) {
-  ctx.fillStyle = '#1f0e0b';
-  ctx.fillRect(0, 0, S, S);
-  grain(ctx, S, 0.05, 11);
-  const P = 128;
-  const threads = ['#d6246e', '#ef7d22', '#2f8f5b', '#e8c13a', '#8f2bb0'];
-  // chain-stitch lattice
+// a fine plain weave, laid over the whole tile as a repeating pattern
+function weaveOver(ctx, S, pitch, light, dark) {
+  const p = Math.max(2, Math.round(pitch)), t = canvasOf(p * 2), x = t.getContext('2d');
+  x.fillStyle = light; x.fillRect(0, 0, p, p * 0.55); x.fillRect(p, p, p, p * 0.55);
+  x.fillStyle = dark; x.fillRect(p, 0, p * 0.5, p); x.fillRect(0, p, p * 0.5, p);
   ctx.save();
-  ctx.strokeStyle = 'rgba(245, 236, 222, 0.75)';
-  ctx.lineWidth = 2;
-  ctx.setLineDash([5, 4]);
-  for (let k = -S; k <= 2 * S; k += P) {
-    ctx.beginPath(); ctx.moveTo(k, 0); ctx.lineTo(k + S, S); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(k, S); ctx.lineTo(k + S, 0); ctx.stroke();
-  }
+  ctx.fillStyle = ctx.createPattern(t, 'repeat');
+  ctx.fillRect(0, 0, S, S);
   ctx.restore();
-  for (let j = 0; j < S / P; j++) {
-    for (let i = 0; i < S / P; i++) {
-      const cx = i * P + P / 2, cy = j * P + P / 2;
+}
+
+// draws fn at (x, y) and again wherever it would cross the tile's edge
+function around(S, x, y, rad, fn) {
+  for (const ox of [-S, 0, S]) {
+    for (const oy of [-S, 0, S]) {
+      const X = x + ox, Y = y + oy;
+      if (X + rad < 0 || X - rad > S || Y + rad < 0 || Y - rad > S) continue;
+      fn(X, Y);
+    }
+  }
+}
+
+// the pictures of one cloth, drawn together: colour, height and (if asked)
+// shine, each with the same transform
+function layers(S, ground, groundH, withShine) {
+  const L = { S, canv: {} };
+  for (const key of withShine ? ['c', 'h', 's'] : ['c', 'h']) {
+    L.canv[key] = canvasOf(S);
+    L[key] = L.canv[key].getContext('2d');
+  }
+  L.c.fillStyle = ground; L.c.fillRect(0, 0, S, S);
+  L.h.fillStyle = groundH; L.h.fillRect(0, 0, S, S);
+  if (L.s) { L.s.fillStyle = 'rgb(0,245,0)'; L.s.fillRect(0, 0, S, S); }
+  L.all = (fn) => { fn(L.c, 'c'); fn(L.h, 'h'); if (L.s) fn(L.s, 's'); };
+  L.push = (x, y, sc = 1, rot = 0) => L.all((x2) => { x2.save(); x2.translate(x, y); x2.rotate(rot); x2.scale(sc, sc); });
+  L.pop = () => L.all((x2) => x2.restore());
+  return L;
+}
+
+const seg = (ctx, x1, y1, x2, y2) => { ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); };
+
+// points every `step` along a polyline
+function resample(pts, closed, step) {
+  const P = closed ? [...pts, pts[0]] : pts, out = [];
+  let carry = 0;
+  for (let i = 0; i < P.length - 1; i++) {
+    const [ax, ay] = P[i], [bx, by] = P[i + 1], len = Math.hypot(bx - ax, by - ay);
+    for (let d = carry; d < len; d += step) out.push([ax + ((bx - ax) * d) / len, ay + ((by - ay) * d) / len]);
+    carry = (carry - len) % step; if (carry < 0) carry += step;
+  }
+  if (!closed) out.push(P[P.length - 1]);
+  return out;
+}
+const ringPts = (R, n = 96) => Array.from({ length: n }, (_, i) => [Math.cos((i / n) * Math.PI * 2) * R, Math.sin((i / n) * Math.PI * 2) * R]);
+
+// satin stitch: the shape filled with threads laid side by side across it,
+// each with its own shade, a highlight along its crown and a shadow between
+// it and the next; the floss is silk, so it is less rough than the cloth.
+// `span` is how far the shape reaches from the current origin.
+function satin(L, path, angle, pitch, col, seed, span) {
+  L.all((ctx, k) => {
+    const r = rng(seed);
+    ctx.save();
+    if (k === 'c') { ctx.strokeStyle = 'rgba(0,0,0,0.4)'; ctx.lineWidth = pitch * 1.3; ctx.stroke(path); }
+    if (k === 's') { ctx.fillStyle = 'rgb(0,175,0)'; ctx.fill(path); ctx.restore(); return; }
+    ctx.clip(path);
+    ctx.rotate(angle);
+    for (let d = -span; d <= span; d += pitch) {
+      const j = (r() - 0.5) * 0.14;
+      if (k === 'h') {
+        ctx.strokeStyle = '#9c9c9c'; ctx.lineWidth = pitch; seg(ctx, -span, d, span, d);
+        ctx.strokeStyle = '#e4e4e4'; ctx.lineWidth = pitch * 0.45; seg(ctx, -span, d - pitch * 0.06, span, d - pitch * 0.06);
+      } else {
+        ctx.strokeStyle = shade(col, j); ctx.lineWidth = pitch; seg(ctx, -span, d, span, d);
+        ctx.strokeStyle = shade(col, 0.3 + j); ctx.lineWidth = pitch * 0.3; seg(ctx, -span, d - pitch * 0.18, span, d - pitch * 0.18);
+        ctx.strokeStyle = 'rgba(0,0,0,0.3)'; ctx.lineWidth = pitch * 0.14; seg(ctx, -span, d + pitch * 0.46, span, d + pitch * 0.46);
+      }
+    }
+    ctx.restore();
+  });
+}
+
+// chain stitch (sankli): a run of linked loops along a line
+function chain(L, pts, closed, size, col, seed) {
+  const P = resample(pts, closed, size);
+  L.all((ctx, k) => {
+    if (k === 's') return;
+    const r = rng(seed);
+    for (let i = 0; i < P.length - (closed ? 0 : 1); i++) {
+      const a = P[i], b = P[(i + 1) % P.length];
+      const j = (r() - 0.5) * 0.12;
       ctx.save();
-      ctx.translate(cx, cy);
-      const main = threads[(i + j) % 2 ? 0 : 1];
-      const second = threads[2 + ((i + 2 * j) % 3)];
-      // four long petals (suf triangles)
-      for (let q = 0; q < 4; q++) {
-        ctx.save();
-        ctx.rotate((q * Math.PI) / 2);
-        const tri = new Path2D();
-        tri.moveTo(-11, -18); tri.lineTo(11, -18); tri.lineTo(0, -50); tri.closePath();
-        satin(ctx, tri, main, Math.PI / 2, 2.2);
-        ctx.restore();
+      ctx.translate((a[0] + b[0]) / 2, (a[1] + b[1]) / 2);
+      ctx.rotate(Math.atan2(b[1] - a[1], b[0] - a[0]));
+      ctx.beginPath(); ctx.ellipse(0, 0, size * 0.64, size * 0.3, 0, 0, Math.PI * 2);
+      if (k === 'h') { ctx.strokeStyle = '#d6d6d6'; ctx.lineWidth = size * 0.26; ctx.stroke(); }
+      else {
+        ctx.strokeStyle = 'rgba(0,0,0,0.38)'; ctx.lineWidth = size * 0.36; ctx.stroke();
+        ctx.strokeStyle = shade(col, j); ctx.lineWidth = size * 0.22; ctx.stroke();
+        ctx.beginPath(); ctx.ellipse(0, -size * 0.06, size * 0.56, size * 0.25, 0, Math.PI * 1.08, Math.PI * 1.92);
+        ctx.strokeStyle = shade(col, 0.35 + j); ctx.lineWidth = size * 0.08; ctx.stroke();
       }
-      // four short petals between
-      for (let q = 0; q < 4; q++) {
-        ctx.save();
-        ctx.rotate((q * Math.PI) / 2 + Math.PI / 4);
-        const tri = new Path2D();
-        tri.moveTo(-7, -17); tri.lineTo(7, -17); tri.lineTo(0, -34); tri.closePath();
-        satin(ctx, tri, second, 0, 2.2);
-        ctx.restore();
-      }
-      // the mirror, caged in buttonhole stitch
-      ctx.strokeStyle = '#f6efe2';
-      ctx.lineWidth = 1.6;
-      for (let a = 0; a < 26; a++) {
-        const ang = (a / 26) * Math.PI * 2;
-        ctx.beginPath();
-        ctx.moveTo(Math.cos(ang) * 12, Math.sin(ang) * 12);
-        ctx.lineTo(Math.cos(ang) * 18, Math.sin(ang) * 18);
-        ctx.stroke();
-      }
-      const g = ctx.createRadialGradient(-4, -4, 1, 0, 0, 13);
-      g.addColorStop(0, '#ffffff');
-      g.addColorStop(0.45, '#c9cfd6');
-      g.addColorStop(0.8, '#7d858e');
-      g.addColorStop(1, '#e7ebef');
-      ctx.fillStyle = g;
-      ctx.beginPath(); ctx.arc(0, 0, 12, 0, Math.PI * 2); ctx.fill();
       ctx.restore();
-      // french knots at the corners
-      ctx.fillStyle = '#f6efe2';
-      ctx.beginPath(); ctx.arc(i * P, j * P, 3.2, 0, Math.PI * 2); ctx.fill();
     }
-  }
+  });
 }
 
-function drawAjrakh(ctx, S) {
-  ctx.fillStyle = '#1b2650';
-  ctx.fillRect(0, 0, S, S);
-  grain(ctx, S, 0.06, 23);
-  const P = 128;
-  // resist dots along every tile edge
-  ctx.fillStyle = 'rgba(244, 238, 226, 0.85)';
-  for (let k = 0; k <= S; k += P) {
-    for (let d = 0; d < S; d += 8) {
-      ctx.beginPath(); ctx.arc(k, d, 1.6, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(d, k, 1.6, 0, Math.PI * 2); ctx.fill();
+// a French knot: a small tight dome of thread
+function knot(L, x, y, rad, col) {
+  L.all((ctx, k) => {
+    if (k === 's') return;
+    ctx.save();
+    if (k === 'h') {
+      const g = ctx.createRadialGradient(x, y, 0, x, y, rad);
+      g.addColorStop(0, '#f0f0f0'); g.addColorStop(1, '#7a7a7a');
+      ctx.fillStyle = g;
+    } else {
+      ctx.fillStyle = 'rgba(0,0,0,0.4)'; ctx.beginPath(); ctx.arc(x, y + rad * 0.15, rad * 1.18, 0, Math.PI * 2); ctx.fill();
+      const g = ctx.createRadialGradient(x - rad * 0.35, y - rad * 0.35, rad * 0.1, x, y, rad);
+      g.addColorStop(0, shade(col, 0.35)); g.addColorStop(0.6, col); g.addColorStop(1, shade(col, -0.35));
+      ctx.fillStyle = g;
+    }
+    ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  });
+}
+
+// an aabhla: a small round mirror held down by a cage of buttonhole stitch,
+// ringed with chain stitch
+function mirror(L, R, cageCol, ringCol, seed) {
+  const r = rng(seed);
+  L.all((ctx, k) => {
+    ctx.save();
+    ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2);
+    // half metal: the silvering shows, and a sharp glint where the light falls
+    if (k === 's') { ctx.fillStyle = 'rgb(0,50,140)'; ctx.fill(); ctx.restore(); return; }
+    if (k === 'h') { ctx.fillStyle = '#9a9a9a'; ctx.fill(); ctx.restore(); return; }
+    // the glass: silvered, a little domed, with the room in it
+    const g = ctx.createRadialGradient(-R * 0.35, -R * 0.4, R * 0.05, 0, 0, R);
+    g.addColorStop(0, '#f4f7f9'); g.addColorStop(0.35, '#b9c1c8'); g.addColorStop(0.75, '#6f7880'); g.addColorStop(1, '#a9b1b8');
+    ctx.fillStyle = g; ctx.fill();
+    ctx.restore();
+  });
+  // the cage: threads from under the rim out over the cloth, a ring of them
+  const n = Math.round(R * 1.7);
+  L.all((ctx, k) => {
+    if (k === 's') return;
+    const rr = rng(seed + 1);
+    ctx.save();
+    ctx.lineCap = 'round';
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * Math.PI * 2 + (rr() - 0.5) * 0.04;
+      const c = Math.cos(a), s = Math.sin(a);
+      const w = R * 0.14;
+      if (k === 'h') { ctx.strokeStyle = '#dedede'; ctx.lineWidth = w; seg(ctx, c * R * 0.8, s * R * 0.8, c * R * 1.38, s * R * 1.38); }
+      else {
+        ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.lineWidth = w * 1.5; seg(ctx, c * R * 0.8, s * R * 0.8, c * R * 1.38, s * R * 1.38);
+        ctx.strokeStyle = shade(cageCol, (rr() - 0.5) * 0.12); ctx.lineWidth = w; seg(ctx, c * R * 0.8, s * R * 0.8, c * R * 1.38, s * R * 1.38);
+      }
+    }
+    // the buttonhole's twisted edge round the glass
+    ctx.beginPath(); ctx.arc(0, 0, R * 0.84, 0, Math.PI * 2);
+    ctx.strokeStyle = k === 'h' ? '#e8e8e8' : shade(cageCol, -0.1); ctx.lineWidth = R * 0.12; ctx.stroke();
+    ctx.restore();
+  });
+  if (ringCol) chain(L, ringPts(R * 1.62, 64), true, R * 0.34, ringCol, seed + 2);
+  return r;
+}
+
+// a petal pointing up from r0 to r1, at most w across
+function petalPath(r0, r1, w) {
+  const p = new Path2D(), l = r1 - r0;
+  p.moveTo(0, -r0);
+  p.bezierCurveTo(w * 1.05, -r0 - l * 0.18, w * 0.75, -r1 + l * 0.22, 0, -r1);
+  p.bezierCurveTo(-w * 0.75, -r1 + l * 0.22, -w * 1.05, -r0 - l * 0.18, 0, -r0);
+  return p;
+}
+const petalOutline = (r0, r1, w) => {
+  const pts = [], l = r1 - r0;
+  const bez = (p0, p1, p2, p3, t) => { const u = 1 - t; return u * u * u * p0 + 3 * u * u * t * p1 + 3 * u * t * t * p2 + t * t * t * p3; };
+  for (let i = 0; i <= 24; i++) { const t = i / 24; pts.push([bez(0, w * 1.05, w * 0.75, 0, t), bez(-r0, -r0 - l * 0.18, -r1 + l * 0.22, -r1, t)]); }
+  for (let i = 1; i < 24; i++) { const t = i / 24; pts.push([bez(0, -w * 0.75, -w * 1.05, 0, t), bez(-r1, -r1 + l * 0.22, -r0 - l * 0.18, -r0, t)]); }
+  return pts;
+};
+
+// ---- embroidery: Kutchi mirror work on black cotton ----
+// a flower round a large mirror, eight satin-stitch petals ringed in chain
+// stitch, in a lattice of white chain stitch, with a small mirror and four
+// leaves where the lattice meets; magenta, saffron, gold, green and white,
+// the colours of Ahir and Rabari work
+function embroideryCloth(S) {
+  const L = layers(S, '#1e0f0d', '#262626', true);
+  weaveOver(L.c, S, S / 512, 'rgba(255,225,205,0.05)', 'rgba(0,0,0,0.22)');
+  weaveOver(L.h, S, S / 512, 'rgba(255,255,255,0.08)', 'rgba(0,0,0,0.12)');
+  mottle(L.c, S, 5, 1102, 0.14);
+  const U = S / 4, sc = U / 256;            // a cell is 256 units, about 5.5 cm
+  const MAG = '#c41f5c', SAF = '#e2702a', GOLD = '#e2ad33', GRN = '#2f8a56', WHT = '#efe5d3', RED = '#b5222c';
+  const PITCH = 3.1;                         // one satin thread, about 0.7 mm
+  for (let j = 0; j < 4; j++) {
+    for (let i = 0; i < 4; i++) {
+      L.push(i * U, j * U, sc);
+      // the lattice: a diamond of white chain stitch through the cell's edges
+      chain(L, [[128, 0], [256, 128], [128, 256], [0, 128]], true, 4.6, WHT, 100 + i + j * 4);
+      // a small mirror where the lattice's lines meet, caged in gold
+      for (const [mx, my] of [[128, 0], [0, 128]]) { L.push(mx, my); mirror(L, 6.5, GOLD, null, 700 + i + 4 * j + mx); L.pop(); }
+      L.pop();
+      // the flower
+      const alt = (i + j) % 2;
+      L.push(i * U + U / 2, j * U + U / 2, sc);
+      for (let q = 0; q < 8; q++) {
+        const rot = (q / 8) * Math.PI * 2;
+        L.push(0, 0, 1, rot);
+        const col = (q % 2) ^ alt ? SAF : MAG;
+        satin(L, petalPath(30, 82, 16), 0.32 * (q % 2 ? 1 : -1), PITCH, col, 200 + q + 8 * (i + 4 * j), 90);
+        chain(L, petalOutline(30, 82, 16), true, 4.2, GOLD, 300 + q);
+        L.pop();
+        // a knot in the gap between petals
+        const a = rot + Math.PI / 8;
+        knot(L, Math.sin(a) * 74, -Math.cos(a) * 74, 3.4, WHT);
+      }
+      mirror(L, 17, WHT, GRN, 400 + i + 4 * j);
+      L.pop();
     }
   }
-  const star = (r) => {
+  // where the lattice meets: a small mirror and four leaves, wrapped at the tile's edges
+  for (let j = 0; j < 4; j++) {
+    for (let i = 0; i < 4; i++) {
+      around(S, i * U, j * U, 68 * sc, (X, Y) => {
+        L.push(X, Y, sc);
+        // eight leaves, long ones toward the flowers' gaps and short between
+        for (let q = 0; q < 8; q++) {
+          L.push(0, 0, 1, (q / 8) * Math.PI * 2);
+          if (q % 2) satin(L, petalPath(20, 44, 8), 0.5, PITCH, MAG, 500 + q, 50);
+          else { satin(L, petalPath(20, 62, 11), -0.4, PITCH, GRN, 500 + q, 66); chain(L, petalOutline(20, 62, 11), true, 3.8, WHT, 520 + q); }
+          L.pop();
+        }
+        mirror(L, 11, GOLD, SAF, 600 + i + 4 * j);
+        L.pop();
+      });
+    }
+  }
+  return { color: L.canv.c, height: L.canv.h, shine: L.canv.s };
+}
+
+// ---- ajrakh: block print, resist and dye ----
+// The cloth is printed with a resist where it is to stay white, with iron
+// black and with alum where madder is to turn it red, then dyed in indigo:
+// eight-pointed stars (taaro) in madder with black centres and white
+// rosettes, small black crosses where four blocks meet, every edge drawn in
+// black and followed by a thin white line of resist. Each colour is a
+// separate printing, so each lands a little off the last; the indigo vat
+// dyes unevenly; the resist cracks here and there and lets specks show.
+function ajrakhCloth(S) {
+  const L = layers(S, '#1b2650', '#000000', false), c = L.c;
+  mottle(c, S, 4, 2301, 0.55);
+  const P = S / 8, sc = P / 128;             // a block is 128 units, about 2.7 cm
+  const r = rng(2302);
+  const IND = '#1b2650', MAD = '#9a2622', BLK = '#18110f', WHT = '#ebe1cd';
+  const star = (R) => {
     const p = new Path2D();
-    for (let k = 0; k < 16; k++) {
-      const ang = (k / 16) * Math.PI * 2 - Math.PI / 2;
-      const rr = k % 2 ? r * 0.58 : r;
-      const x = Math.cos(ang) * rr, y = Math.sin(ang) * rr;
-      if (k) p.lineTo(x, y); else p.moveTo(x, y);
+    for (let i = 0; i < 16; i++) {
+      // two squares, one turned 45°: their outline alternates between the
+      // squares' corners (R√2 out) and where their edges cross (1.0824 R)
+      const a = (i / 16) * Math.PI * 2 - Math.PI / 2;
+      const rr = i % 2 ? R * 1.0824 : R * Math.SQRT2;
+      const x = Math.cos(a) * rr, y = Math.sin(a) * rr;
+      if (i) p.lineTo(x, y); else p.moveTo(x, y);
     }
     p.closePath();
     return p;
   };
-  for (let j = 0; j < S / P; j++) {
-    for (let i = 0; i < S / P; i++) {
-      ctx.save();
-      ctx.translate(i * P + P / 2, j * P + P / 2);
-      ctx.fillStyle = '#a3262a';
-      ctx.strokeStyle = '#f4eee2';
-      ctx.lineWidth = 3;
-      const st = star(46);
-      ctx.fill(st); ctx.stroke(st);
-      ctx.fillStyle = '#1a1210';
-      ctx.beginPath(); ctx.arc(0, 0, 16, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = '#f4eee2';
-      for (let a = 0; a < 12; a++) {
-        const ang = (a / 12) * Math.PI * 2;
-        ctx.beginPath(); ctx.arc(Math.cos(ang) * 10, Math.sin(ang) * 10, 1.8, 0, Math.PI * 2); ctx.fill();
-      }
-      ctx.beginPath(); ctx.arc(0, 0, 3, 0, Math.PI * 2); ctx.fill();
-      ctx.restore();
-    }
+  const STAR = star(40), STAR_OUT = star(44.5), STAR_IN = star(36);
+  const blocks = (fn) => { for (let j = 0; j < 8; j++) for (let i = 0; i < 8; i++) fn(i, j); };
+  const corners = (fn) => { for (let j = 0; j < 8; j++) for (let i = 0; i < 8; i++) around(S, i * P, j * P, 30 * sc, (X, Y) => fn(X, Y, i, j)); };
+  // each printing a little off register
+  const reg = () => [(r() - 0.5) * 2.4 * sc, (r() - 0.5) * 2.4 * sc];
+  // madder: the stars, and dots round the crosses
+  let [ox, oy] = reg();
+  blocks((i, j) => {
+    c.save(); c.translate(i * P + P / 2 + ox, j * P + P / 2 + oy); c.scale(sc, sc);
+    c.fillStyle = 'rgba(154,38,34,0.35)'; c.strokeStyle = 'rgba(154,38,34,0.35)'; c.lineWidth = 2.2; c.stroke(STAR); // the dye creeps
+    c.fillStyle = MAD; c.fill(STAR);
+    c.restore();
+  });
+  corners((X, Y) => { c.save(); c.translate(X + ox, Y + oy); c.scale(sc, sc); c.fillStyle = MAD; for (let q = 0; q < 4; q++) { const a = (q / 4) * Math.PI * 2 + Math.PI / 4; c.beginPath(); c.arc(Math.cos(a) * 15, Math.sin(a) * 15, 4.2, 0, Math.PI * 2); c.fill(); } c.restore(); });
+  // iron black: the star's outline, its centre, and the crosses
+  [ox, oy] = reg();
+  blocks((i, j) => {
+    c.save(); c.translate(i * P + P / 2 + ox, j * P + P / 2 + oy); c.scale(sc, sc);
+    c.globalAlpha = 0.86 + r() * 0.14;
+    c.strokeStyle = BLK; c.lineWidth = 3.2; c.lineJoin = 'round'; c.stroke(STAR);
+    c.lineWidth = 1.3; c.stroke(STAR_IN);
+    c.fillStyle = BLK; c.beginPath(); c.arc(0, 0, 22, 0, Math.PI * 2); c.fill();
+    c.restore();
+  });
+  corners((X, Y) => {
+    c.save(); c.translate(X + ox, Y + oy); c.scale(sc, sc); c.fillStyle = BLK;
+    for (let q = 0; q < 4; q++) { c.save(); c.rotate((q / 4) * Math.PI * 2); c.beginPath(); c.ellipse(0, -10, 5.2, 10, 0, 0, Math.PI * 2); c.fill(); c.restore(); }
+    c.beginPath(); c.arc(0, 0, 5, 0, Math.PI * 2); c.fill();
+    c.restore();
+  });
+  // the resist, white where the dyes never reached: a fine line round each
+  // star, a rosette in its black centre, dots where the star tips meet, and
+  // the eye of each cross
+  [ox, oy] = reg();
+  blocks((i, j) => {
+    c.save(); c.translate(i * P + P / 2 + ox, j * P + P / 2 + oy); c.scale(sc, sc);
+    c.strokeStyle = 'rgba(235,225,205,0.4)'; c.lineWidth = 2.6; c.stroke(STAR_OUT);
+    c.strokeStyle = WHT; c.lineWidth = 1.4; c.stroke(STAR_OUT);
+    c.fillStyle = WHT;
+    for (let q = 0; q < 8; q++) { c.save(); c.rotate((q / 8) * Math.PI * 2); c.beginPath(); c.ellipse(0, -12.5, 2.6, 6, 0, 0, Math.PI * 2); c.fill(); c.restore(); }
+    c.beginPath(); c.arc(0, 0, 3.2, 0, Math.PI * 2); c.fill();
+    for (let q = 0; q < 16; q++) { const a = (q / 16) * Math.PI * 2; c.beginPath(); c.arc(Math.cos(a) * 26, Math.sin(a) * 26, 1.25, 0, Math.PI * 2); c.fill(); }
+    // where two star tips meet across the block's edge
+    for (const [x, y] of [[64, 0], [0, 64]]) { c.beginPath(); c.arc(x, y, 2.4, 0, Math.PI * 2); c.fill(); }
+    c.restore();
+  });
+  corners((X, Y) => { c.save(); c.translate(X + ox, Y + oy); c.scale(sc, sc); c.fillStyle = WHT; c.beginPath(); c.arc(0, 0, 2.2, 0, Math.PI * 2); c.fill(); for (let q = 0; q < 12; q++) { const a = (q / 12) * Math.PI * 2; c.beginPath(); c.arc(Math.cos(a) * 24, Math.sin(a) * 24, 1.1, 0, Math.PI * 2); c.fill(); } c.restore(); });
+  // the resist cracked: specks of white in the indigo, and a few worn spots
+  for (let i = 0; i < 1400 * (S / 1024) ** 2; i++) {
+    c.fillStyle = `rgba(235,225,205,${0.12 + r() * 0.35})`;
+    c.beginPath(); c.arc(r() * S, r() * S, (0.4 + r() * 0.9) * (S / 1024), 0, Math.PI * 2); c.fill();
   }
-  // quatrefoils where four tiles meet
-  for (let j = 0; j <= S / P; j++) {
-    for (let i = 0; i <= S / P; i++) {
-      ctx.save();
-      ctx.translate(i * P, j * P);
-      ctx.fillStyle = '#a3262a';
-      ctx.strokeStyle = '#f4eee2';
-      ctx.lineWidth = 2;
-      for (let q = 0; q < 4; q++) {
-        const ang = (q * Math.PI) / 2;
-        ctx.beginPath(); ctx.arc(Math.cos(ang) * 9, Math.sin(ang) * 9, 8, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-      }
-      ctx.fillStyle = '#1a1210';
-      ctx.beginPath(); ctx.arc(0, 0, 5, 0, Math.PI * 2); ctx.fill();
-      ctx.restore();
-    }
-  }
+  mottle(c, S, 9, 2310, 0.22);
+  // the cotton it is printed on, and only that in the height
+  weaveOver(c, S, S / 512, 'rgba(255,245,230,0.05)', 'rgba(0,0,0,0.12)');
+  L.h.fillStyle = '#7a7a7a'; L.h.fillRect(0, 0, S, S);
+  weaveOver(L.h, S, S / 512, 'rgba(255,255,255,0.35)', 'rgba(0,0,0,0.35)');
+  return { color: c.canvas, height: L.canv.h };
 }
 
-function drawBandhani(ctx, S) {
-  ctx.fillStyle = '#9c1426';
-  ctx.fillRect(0, 0, S, S);
-  const r = rng(37);
-  // uneven dye
-  for (let i = 0; i < 40; i++) {
-    const x = r() * S, y = r() * S, rad = 60 + r() * 140;
-    const g = ctx.createRadialGradient(x, y, 0, x, y, rad);
-    g.addColorStop(0, 'rgba(70, 0, 12, 0.18)');
-    g.addColorStop(1, 'rgba(70, 0, 12, 0)');
-    ctx.fillStyle = g;
-    ctx.fillRect(x - rad, y - rad, rad * 2, rad * 2);
-  }
-  grain(ctx, S, 0.05, 41);
-  const dot = (x, y, col, rad) => {
-    const jx = (r() - 0.5) * 1.2, jy = (r() - 0.5) * 1.2;
-    // the dye creeps a little under the thread: a faint halo round each dot
-    ctx.fillStyle = 'rgba(240, 190, 185, 0.22)';
-    ctx.beginPath(); ctx.arc(x + jx, y + jy, rad * 1.55, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = col;
-    ctx.beginPath(); ctx.ellipse(x + jx, y + jy, rad * (0.9 + r() * 0.2), rad * (0.9 + r() * 0.2), r() * Math.PI, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = 'rgba(110, 10, 25, 0.75)';
-    ctx.beginPath(); ctx.arc(x + jx, y + jy, rad * 0.28, 0, Math.PI * 2); ctx.fill();
-  };
-  // the dots at the size they are tied, a few millimetres across
-  const P = 64;
-  for (let j = 0; j < S / P; j++) {
-    for (let i = 0; i < S / P; i++) {
-      const cx = i * P + P / 2, cy = j * P + P / 2;
-      // a diamond of white dots
-      for (let k = 0; k < 12; k++) {
-        const t = k / 12;
-        const side = Math.floor(t * 4), f = (t * 4) % 1;
-        const pts = [[0, -21], [21, 0], [0, 21], [-21, 0], [0, -21]];
-        const [x1, y1] = pts[side], [x2, y2] = pts[side + 1];
-        dot(cx + x1 + (x2 - x1) * f, cy + y1 + (y2 - y1) * f, '#f8efe2', 2.1);
+// ---- bandhani: tied and dyed ----
+// Every dot is a pinch of cloth tied tight with thread before the dyeing, so
+// it stays the colour beneath: a little irregular, with the dark point where
+// the pinch was and fine streaks where the dye crept into its folds, a pale
+// halo round it, and the cloth keeps the crinkles of its tying. Dots make a
+// lattice of diamonds with a flower (saffron heart, white petals) in each,
+// and a single dot where four diamonds meet.
+function bandhaniCloth(S) {
+  const L = layers(S, '#a5172b', '#5a5a5a', false), c = L.c, h = L.h;
+  mottle(c, S, 3, 3101, 0.55);
+  mottle(c, S, 11, 3105, 0.18);
+  const k = S / 1024, r = rng(3102);
+  // the crinkles, in the height and faintly in the colour
+  for (let i = 0; i < 5200 * k * k; i++) {
+    const x = r() * S, y = r() * S, a = r() * Math.PI, len = (5 + r() * 18) * k, bend = (r() - 0.5) * len * 0.6;
+    around(S, x, y, len, (X, Y) => {
+      const dx = Math.cos(a) * len / 2, dy = Math.sin(a) * len / 2, mx = -Math.sin(a) * bend, my = Math.cos(a) * bend;
+      for (const [ctx, colA, colB, w] of [[h, 'rgba(255,255,255,0.22)', 'rgba(0,0,0,0.26)', 1.6 * k], [c, 'rgba(255,220,215,0.035)', 'rgba(40,0,5,0.06)', 1.2 * k]]) {
+        ctx.lineWidth = w;
+        ctx.strokeStyle = colB; ctx.beginPath(); ctx.moveTo(X - dx + w, Y - dy + w); ctx.quadraticCurveTo(X + mx + w, Y + my + w, X + dx + w, Y + dy + w); ctx.stroke();
+        ctx.strokeStyle = colA; ctx.beginPath(); ctx.moveTo(X - dx, Y - dy); ctx.quadraticCurveTo(X + mx, Y + my, X + dx, Y + dy); ctx.stroke();
       }
-      // a saffron cluster at the centre
-      [[0, 0], [4.4, 0], [-4.4, 0], [0, 4.4], [0, -4.4]].forEach(([x, y]) => dot(cx + x, cy + y, '#e9ad22', 1.8));
-      // a white dot on each corner
-      dot(i * P, j * P, '#f8efe2', 2.3);
+    });
+  }
+  const dot = (x, y, R, col) => {
+    const pts = Array.from({ length: 7 }, (_, i) => { const a = (i / 7) * Math.PI * 2 + r() * 0.5, rr = R * (0.8 + r() * 0.32); return [Math.cos(a) * rr, Math.sin(a) * rr]; });
+    const px = (r() - 0.5) * R * 0.3, py = (r() - 0.5) * R * 0.3;
+    const streaks = Array.from({ length: 3 + Math.floor(r() * 3) }, () => r() * Math.PI * 2);
+    around(S, x, y, R * 2, (X, Y) => {
+      c.save(); c.translate(X, Y);
+      c.fillStyle = 'rgba(236,160,150,0.2)'; c.beginPath(); c.arc(0, 0, R * 1.7, 0, Math.PI * 2); c.fill();
+      c.beginPath();
+      pts.forEach(([qx, qy], i) => { const [nx, ny] = pts[(i + 1) % pts.length]; const mx = (qx + nx) / 2, my = (qy + ny) / 2; if (!i) c.moveTo((pts[pts.length - 1][0] + qx) / 2, (pts[pts.length - 1][1] + qy) / 2); c.quadraticCurveTo(qx, qy, mx, my); });
+      c.closePath();
+      c.fillStyle = 'rgba(245,215,200,0.5)'; c.lineWidth = R * 0.35; c.strokeStyle = 'rgba(240,190,180,0.35)'; c.stroke();
+      c.fillStyle = col; c.fill();
+      c.save(); c.clip();
+      c.strokeStyle = 'rgba(165,30,45,0.5)'; c.lineWidth = R * 0.11;
+      streaks.forEach((a) => seg(c, px, py, px + Math.cos(a) * R * 1.1, py + Math.sin(a) * R * 1.1));
+      c.restore();
+      c.fillStyle = 'rgba(120,18,30,0.8)'; c.beginPath(); c.arc(px, py, R * 0.2, 0, Math.PI * 2); c.fill();
+      c.restore();
+      // the pinch stays a little raised
+      const g = h.createRadialGradient(X + px, Y + py, 0, X + px, Y + py, R * 1.3);
+      g.addColorStop(0, 'rgba(255,255,255,0.75)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+      h.fillStyle = g; h.beginPath(); h.arc(X + px, Y + py, R * 1.3, 0, Math.PI * 2); h.fill();
+    });
+  };
+  const U = S / 8, R = U * 0.04;             // a figure is about 2.7 cm, a dot 2 mm
+  const WHT = '#f3e8d4', SAF = '#eab12c';
+  for (let j = 0; j < 8; j++) {
+    for (let i = 0; i < 8; i++) {
+      const cx = i * U + U / 2, cy = j * U + U / 2, hd = U * 0.43;
+      const D = [[0, -hd], [hd, 0], [0, hd], [-hd, 0], [0, -hd]];
+      for (let s = 0; s < 4; s++) for (let t = 0; t < 5; t++) {
+        const f = t / 5, [x1, y1] = D[s], [x2, y2] = D[s + 1];
+        dot(cx + x1 + (x2 - x1) * f + (r() - 0.5) * R * 0.5, cy + y1 + (y2 - y1) * f + (r() - 0.5) * R * 0.5, R * (0.9 + r() * 0.2), WHT);
+      }
+      dot(cx, cy, R * 1.15, SAF);
+      for (let q = 0; q < 8; q++) { const a = (q / 8) * Math.PI * 2; dot(cx + Math.cos(a) * U * 0.12, cy + Math.sin(a) * U * 0.12, R * 0.95, WHT); }
+      dot(i * U, j * U, R * 1.1, WHT);
     }
   }
+  return { color: c.canvas, height: h.canvas };
 }
 
-function drawWeaving(ctx, S) {
-  ctx.fillStyle = '#e8dcc6';
-  ctx.fillRect(0, 0, S, S);
-  // the weave itself
-  ctx.save();
-  for (let y = 0; y < S; y += 3) { ctx.fillStyle = y % 6 ? 'rgba(90, 70, 50, 0.05)' : 'rgba(255, 255, 255, 0.12)'; ctx.fillRect(0, y, S, 1); }
-  for (let x = 0; x < S; x += 3) { ctx.fillStyle = x % 6 ? 'rgba(90, 70, 50, 0.04)' : 'rgba(255, 255, 255, 0.08)'; ctx.fillRect(x, 0, 1, S); }
-  ctx.restore();
-  grain(ctx, S, 0.07, 53);
-  const band = (y0) => {
-    ctx.fillStyle = '#1b1715'; ctx.fillRect(0, y0, S, 30);
-    ctx.fillStyle = '#9e2a22'; ctx.fillRect(0, y0 - 12, S, 5); ctx.fillRect(0, y0 + 37, S, 5);
-    // extra-weft lozenges between the lines
-    for (let x = 0; x < S; x += 32) {
-      for (const [yy, col] of [[y0 - 34, '#9e2a22'], [y0 + 64, '#1b1715']]) {
-        ctx.fillStyle = col;
-        ctx.beginPath(); ctx.moveTo(x + 16, yy - 9); ctx.lineTo(x + 25, yy); ctx.lineTo(x + 16, yy + 9); ctx.lineTo(x + 7, yy); ctx.closePath(); ctx.fill();
-        ctx.fillStyle = '#e8dcc6';
-        ctx.fillRect(x + 14.5, yy - 1.5, 3, 3);
-      }
+// ---- weaving: Bhujodi handloom ----
+// A plain weave, thread by thread: the warp in natural kala cotton, each end
+// its own shade; the weft handspun, thicker and thinner along its length
+// (slubs); bands of black wool and madder-red, and between them a border of
+// stepped diamonds in extra weft, the supplementary yarn floating over two
+// warps at a time on the face of the cloth; small diamond buttis on the body.
+function weavingCloth(S) {
+  // twice as tall as wide: one border, then a long plain body
+  const t = Math.max(4, Math.round(S / 256)), n = S / t, m = 2 * n, SH = 2 * S;    // a thread is about 0.9 mm
+  const r = rng(4101);
+  const NAT = [224, 212, 188], BLK = [33, 28, 25], RED = [143, 43, 34];
+  const warpTone = Array.from({ length: n }, () => 0.94 + r() * 0.09);
+  // the weft, row by row: a ground colour and the extra weft's pattern
+  const rows = Array.from({ length: m }, () => ({ col: NAT, tone: 0.95 + r() * 0.08, sup: null }));
+  const solid = (a, b, col) => { for (let w = a; w <= b; w++) rows[w].col = col; };
+  // a border: black, natural, red, the diamonds, red, natural, black
+  const border = (top) => {
+    solid(top, top + 3, BLK); solid(top + 7, top + 8, RED);
+    // stepped diamonds: a cell is two warps; the repeat is 16 cells (32 warps)
+    for (let dy = -7; dy <= 7; dy++) {
+      const w = top + 19 + dy;
+      rows[w].sup = (cell) => {
+        const dx = (cell % 16) - 8, v = Math.abs(dx) + Math.abs(dy);
+        if (v <= 1) return BLK;
+        if (v <= 3) return RED;
+        if (v === 4) return null;
+        if (v <= 7) return BLK;
+        return null;
+      };
     }
-    // a woven step line in the black band
-    ctx.fillStyle = '#e8dcc6';
-    for (let x = 0; x < S; x += 16) ctx.fillRect(x + (x % 32 ? 0 : 4), y0 + 13, 8, 4);
+    solid(top + 30, top + 31, RED); solid(top + 35, top + 38, BLK);
   };
-  band(140); band(140 + S / 2);
-  // fine red pinstripes
-  ctx.fillStyle = 'rgba(158, 42, 34, 0.55)';
-  for (let y = 300; y < S; y += S / 2) { ctx.fillRect(0, y, S, 2); ctx.fillRect(0, y + 40, S, 2); ctx.fillRect(0, y + 80, S, 2); }
+  border(0);
+  // the body: red pinstripes, and buttis in staggered rows
+  solid(128, 129, RED); solid(320, 320, RED); solid(448, 449, RED);
+  const butti = (mid, shift) => {
+    for (let dy = -2; dy <= 2; dy++) {
+      rows[mid + dy].sup = (cell) => {
+        const dx = ((cell + shift) % 32) - 16, v = Math.abs(dx) + Math.abs(dy);
+        return v === 0 ? RED : v <= 2 ? BLK : null;
+      };
+    }
+  };
+  butti(84, 0); butti(196, 16); butti(270, 0); butti(384, 16); butti(490, 0);
+  const slubs = rows.map((_, w) => periodicNoise(12, 4200 + w));
+  const color = canvasOf(S), height = canvasOf(S);
+  color.height = height.height = SH;
+  const cc = color.getContext('2d'), hc = height.getContext('2d');
+  const ci = cc.createImageData(S, SH), hi = hc.createImageData(S, SH);
+  const supRow = rows.map((row) => (row.sup ? Array.from({ length: n / 2 }, (_, cell) => row.sup(cell)) : null));
+  const fuzz = rng(4400);
+  for (let y = 0; y < SH; y++) {
+    const w = Math.floor(y / t), py = ((y % t) + 0.5) / t, row = rows[w], sup = supRow[w];
+    const across = Math.sin(Math.PI * py);
+    for (let x = 0; x < S; x++) {
+      const e = Math.floor(x / t), px = ((x % t) + 0.5) / t;
+      const i = (y * S + x) * 4;
+      let col, k, hgt;
+      const cell = e >> 1, fl = sup && sup[cell];
+      if (fl) {
+        // the float: a round yarn over two warps, darker where it dives under
+        const first = !sup[(cell - 1 + n / 2) % (n / 2)] && (e % 2 === 0) && px < 0.3;
+        const last = !sup[(cell + 1) % (n / 2)] && (e % 2 === 1) && px > 0.7;
+        k = (0.7 + 0.3 * across) * (first || last ? 0.72 : 1) * (0.96 + 0.08 * slubs[w](x / S * 12, 0.5));
+        col = fl; hgt = 0.62 + 0.38 * across;
+      } else if ((w + e) % 2 === 0) {
+        // the weft over the warp
+        const s = slubs[w](x / S * 12, 0.5);
+        k = (0.76 + 0.24 * across) * row.tone * (0.93 + 0.14 * s);
+        col = row.col; hgt = 0.35 + 0.35 * across * (0.85 + 0.3 * s);
+      } else {
+        // the warp over the weft
+        const along = Math.sin(Math.PI * px);
+        k = (0.8 + 0.2 * along) * warpTone[e] * 0.97;
+        // a soft handspun weft spreads over the warp it crosses: a coloured
+        // row reads nearly solid, with the warp only glinting through
+        col = row.col === NAT ? NAT : [0, 1, 2].map((q) => row.col[q] * 0.78 + NAT[q] * 0.22);
+        hgt = 0.3 + 0.32 * along;
+      }
+      // the fuzz of handspun yarn
+      k *= 0.95 + fuzz() * 0.1;
+      ci.data[i] = Math.min(255, col[0] * k); ci.data[i + 1] = Math.min(255, col[1] * k); ci.data[i + 2] = Math.min(255, col[2] * k); ci.data[i + 3] = 255;
+      const hv = Math.round(hgt * 255);
+      hi.data[i] = hi.data[i + 1] = hi.data[i + 2] = hv; hi.data[i + 3] = 255;
+    }
+  }
+  cc.putImageData(ci, 0, 0); hc.putImageData(hi, 0, 0);
+  mottle(cc, S, 5, 4300, 0.15);
+  cc.save(); cc.translate(0, S); mottle(cc, S, 5, 4300, 0.15); cc.restore();
+  return { color, height };
 }
 
 // teak's grain, running along the turned parts

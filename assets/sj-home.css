@@ -302,11 +302,12 @@ html.sj-pre .offer-bar {
 
 /* each word of the title rises inside its own clipping box */
 .sj-word {
+  /* room under the baseline for the serif's long tails (g, y, p) */
   display: inline-block;
   overflow: hidden;
   vertical-align: top;
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
+  padding-bottom: 0.26em;
+  margin-bottom: -0.26em;
 }
 
 .sj-word__in {
@@ -934,10 +935,11 @@ html.sj-pre .dh__strip {
 }
 
 .dh__line {
+  /* room under the baseline for the serif's long tails (g, y, p) */
   display: block;
   overflow: clip;
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
+  padding-bottom: 0.26em;
+  margin-bottom: -0.26em;
   white-space: nowrap;
 }
 
@@ -1543,11 +1545,9 @@ html.sj-pre .dh__strip {
     line-height: 1.35;
   }
 
+  /* the line under each title in full, however many lines it takes */
   .dh__tcopy span:last-child {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    overflow: hidden;
+    display: block;
   }
 
   .dh__tcopy span:last-child br {
@@ -1613,11 +1613,12 @@ html.sj-pre .dh__strip {
 
 /* each word rises inside its own clipping box */
 .arch__w {
+  /* room under the baseline for the serif's long tails (g, y, p) */
   display: inline-block;
   overflow: hidden;
   vertical-align: top;
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
+  padding-bottom: 0.26em;
+  margin-bottom: -0.26em;
 }
 
 .arch__wi {
@@ -3212,11 +3213,12 @@ section.idx {
 }
 
 .idx__w {
+  /* room under the baseline for the serif's long tails (g, y, p) */
   display: inline-block;
   overflow: hidden;
   vertical-align: top;
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
+  padding-bottom: 0.26em;
+  margin-bottom: -0.26em;
 }
 
 .idx__wi {
@@ -3301,7 +3303,6 @@ section.idx {
   display: block;
   max-width: 44ch;
   margin-top: 10px;
-  -webkit-line-clamp: none;
   color: var(--ink-soft);
 }
 
@@ -3436,14 +3437,12 @@ section.idx {
   font-size: clamp(24px, 2.1vw, 36px);
 }
 
+/* the note in full, never cut short */
 .col__note {
   grid-column: 2;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  display: block;
   max-width: 34ch;
   margin-top: 5px;
-  overflow: hidden;
   font: 400 clamp(11.5px, 0.86vw, 13.5px)/1.5 var(--font-sans);
   color: rgba(246, 244, 230, 0.86);
 }
@@ -3642,7 +3641,7 @@ section.idx {
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 7'%3E%3Cpath d='M0.18 3.18L0.82 3.82M0.82 3.18L0.18 3.82M1.18 3.18L1.82 3.82M1.82 3.18L1.18 3.82M2.18 1.18L2.82 1.82M2.82 1.18L2.18 1.82M2.18 3.18L2.82 3.82M2.82 3.18L2.18 3.82M2.18 5.18L2.82 5.82M2.82 5.18L2.18 5.82M3.18 0.18L3.82 0.82M3.82 0.18L3.18 0.82M3.18 1.18L3.82 1.82M3.82 1.18L3.18 1.82M3.18 2.18L3.82 2.82M3.82 2.18L3.18 2.82M3.18 3.18L3.82 3.82M3.82 3.18L3.18 3.82M3.18 4.18L3.82 4.82M3.82 4.18L3.18 4.82M3.18 5.18L3.82 5.82M3.82 5.18L3.18 5.82M3.18 6.18L3.82 6.82M3.82 6.18L3.18 6.82M4.18 1.18L4.82 1.82M4.82 1.18L4.18 1.82M4.18 3.18L4.82 3.82M4.82 3.18L4.18 3.82M4.18 5.18L4.82 5.82M4.82 5.18L4.18 5.82M5.18 3.18L5.82 3.82M5.82 3.18L5.18 3.82M6.18 3.18L6.82 3.82M6.82 3.18L6.18 3.82' fill='none' stroke='%23924241' stroke-opacity='0.3' stroke-width='0.17' stroke-linecap='round'/%3E%3C/svg%3E");
   background-position: left 1.52vw top 4.56vw, left 2.76vw top 6.63vw, left -3.18vw top 6.35vw, right 12.57vw top 0.41vw, right 3.18vw top -1.10vw, right -0.41vw top -0.14vw, right 10.08vw top 5.52vw;
   background-size: 2.56vw 2.56vw, 2.56vw 2.56vw, 6.22vw 6.22vw, 1.83vw 1.83vw, 6.22vw 6.22vw, 13.18vw 13.18vw, 2.56vw 2.56vw;
-}}
+}
 
 .idx::after {
   content: '';
@@ -3659,7 +3658,7 @@ section.idx {
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 25 25'%3E%3Cpath d='M0.18 12.18L0.82 12.82M0.82 12.18L0.18 12.82M1.18 11.18L1.82 11.82M1.82 11.18L1.18 11.82M1.18 13.18L1.82 13.82M1.82 13.18L1.18 13.82M2.18 10.18L2.82 10.82M2.82 10.18L2.18 10.82M2.18 12.18L2.82 12.82M2.82 12.18L2.18 12.82M2.18 14.18L2.82 14.82M2.82 14.18L2.18 14.82M3.18 9.18L3.82 9.82M3.82 9.18L3.18 9.82M3.18 11.18L3.82 11.82M3.82 11.18L3.18 11.82M3.18 13.18L3.82 13.82M3.82 13.18L3.18 13.82M3.18 15.18L3.82 15.82M3.82 15.18L3.18 15.82M4.18 8.18L4.82 8.82M4.82 8.18L4.18 8.82M4.18 10.18L4.82 10.82M4.82 10.18L4.18 10.82M4.18 14.18L4.82 14.82M4.82 14.18L4.18 14.82M4.18 16.18L4.82 16.82M4.82 16.18L4.18 16.82M5.18 7.18L5.82 7.82M5.82 7.18L5.18 7.82M5.18 9.18L5.82 9.82M5.82 9.18L5.18 9.82M5.18 15.18L5.82 15.82M5.82 15.18L5.18 15.82M5.18 17.18L5.82 17.82M5.82 17.18L5.18 17.82M6.18 6.18L6.82 6.82M6.82 6.18L6.18 6.82M6.18 8.18L6.82 8.82M6.82 8.18L6.18 8.82M6.18 12.18L6.82 12.82M6.82 12.18L6.18 12.82M6.18 16.18L6.82 16.82M6.82 16.18L6.18 16.82M6.18 18.18L6.82 18.82M6.82 18.18L6.18 18.82M7.18 5.18L7.82 5.82M7.82 5.18L7.18 5.82M7.18 7.18L7.82 7.82M7.82 7.18L7.18 7.82M7.18 17.18L7.82 17.82M7.82 17.18L7.18 17.82M7.18 19.18L7.82 19.82M7.82 19.18L7.18 19.82M8.18 4.18L8.82 4.82M8.82 4.18L8.18 4.82M8.18 6.18L8.82 6.82M8.82 6.18L8.18 6.82M8.18 18.18L8.82 18.82M8.82 18.18L8.18 18.82M8.18 20.18L8.82 20.82M8.82 20.18L8.18 20.82M9.18 3.18L9.82 3.82M9.82 3.18L9.18 3.82M9.18 5.18L9.82 5.82M9.82 5.18L9.18 5.82M9.18 9.18L9.82 9.82M9.82 9.18L9.18 9.82M9.18 12.18L9.82 12.82M9.82 12.18L9.18 12.82M9.18 15.18L9.82 15.82M9.82 15.18L9.18 15.82M9.18 19.18L9.82 19.82M9.82 19.18L9.18 19.82M9.18 21.18L9.82 21.82M9.82 21.18L9.18 21.82M10.18 2.18L10.82 2.82M10.82 2.18L10.18 2.82M10.18 4.18L10.82 4.82M10.82 4.18L10.18 4.82M10.18 20.18L10.82 20.82M10.82 20.18L10.18 20.82M10.18 22.18L10.82 22.82M10.82 22.18L10.18 22.82M11.18 1.18L11.82 1.82M11.82 1.18L11.18 1.82M11.18 3.18L11.82 3.82M11.82 3.18L11.18 3.82M11.18 21.18L11.82 21.82M11.82 21.18L11.18 21.82M11.18 23.18L11.82 23.82M11.82 23.18L11.18 23.82M12.18 0.18L12.82 0.82M12.82 0.18L12.18 0.82M12.18 2.18L12.82 2.82M12.82 2.18L12.18 2.82M12.18 6.18L12.82 6.82M12.82 6.18L12.18 6.82M12.18 9.18L12.82 9.82M12.82 9.18L12.18 9.82M12.18 12.18L12.82 12.82M12.82 12.18L12.18 12.82M12.18 15.18L12.82 15.82M12.82 15.18L12.18 15.82M12.18 18.18L12.82 18.82M12.82 18.18L12.18 18.82M12.18 22.18L12.82 22.82M12.82 22.18L12.18 22.82M12.18 24.18L12.82 24.82M12.82 24.18L12.18 24.82M13.18 1.18L13.82 1.82M13.82 1.18L13.18 1.82M13.18 3.18L13.82 3.82M13.82 3.18L13.18 3.82M13.18 21.18L13.82 21.82M13.82 21.18L13.18 21.82M13.18 23.18L13.82 23.82M13.82 23.18L13.18 23.82M14.18 2.18L14.82 2.82M14.82 2.18L14.18 2.82M14.18 4.18L14.82 4.82M14.82 4.18L14.18 4.82M14.18 20.18L14.82 20.82M14.82 20.18L14.18 20.82M14.18 22.18L14.82 22.82M14.82 22.18L14.18 22.82M15.18 3.18L15.82 3.82M15.82 3.18L15.18 3.82M15.18 5.18L15.82 5.82M15.82 5.18L15.18 5.82M15.18 9.18L15.82 9.82M15.82 9.18L15.18 9.82M15.18 12.18L15.82 12.82M15.82 12.18L15.18 12.82M15.18 15.18L15.82 15.82M15.82 15.18L15.18 15.82M15.18 19.18L15.82 19.82M15.82 19.18L15.18 19.82M15.18 21.18L15.82 21.82M15.82 21.18L15.18 21.82M16.18 4.18L16.82 4.82M16.82 4.18L16.18 4.82M16.18 6.18L16.82 6.82M16.82 6.18L16.18 6.82M16.18 18.18L16.82 18.82M16.82 18.18L16.18 18.82M16.18 20.18L16.82 20.82M16.82 20.18L16.18 20.82M17.18 5.18L17.82 5.82M17.82 5.18L17.18 5.82M17.18 7.18L17.82 7.82M17.82 7.18L17.18 7.82M17.18 17.18L17.82 17.82M17.82 17.18L17.18 17.82M17.18 19.18L17.82 19.82M17.82 19.18L17.18 19.82M18.18 6.18L18.82 6.82M18.82 6.18L18.18 6.82M18.18 8.18L18.82 8.82M18.82 8.18L18.18 8.82M18.18 12.18L18.82 12.82M18.82 12.18L18.18 12.82M18.18 16.18L18.82 16.82M18.82 16.18L18.18 16.82M18.18 18.18L18.82 18.82M18.82 18.18L18.18 18.82M19.18 7.18L19.82 7.82M19.82 7.18L19.18 7.82M19.18 9.18L19.82 9.82M19.82 9.18L19.18 9.82M19.18 15.18L19.82 15.82M19.82 15.18L19.18 15.82M19.18 17.18L19.82 17.82M19.82 17.18L19.18 17.82M20.18 8.18L20.82 8.82M20.82 8.18L20.18 8.82M20.18 10.18L20.82 10.82M20.82 10.18L20.18 10.82M20.18 14.18L20.82 14.82M20.82 14.18L20.18 14.82M20.18 16.18L20.82 16.82M20.82 16.18L20.18 16.82M21.18 9.18L21.82 9.82M21.82 9.18L21.18 9.82M21.18 11.18L21.82 11.82M21.82 11.18L21.18 11.82M21.18 13.18L21.82 13.82M21.82 13.18L21.18 13.82M21.18 15.18L21.82 15.82M21.82 15.18L21.18 15.82M22.18 10.18L22.82 10.82M22.82 10.18L22.18 10.82M22.18 12.18L22.82 12.82M22.82 12.18L22.18 12.82M22.18 14.18L22.82 14.82M22.82 14.18L22.18 14.82M23.18 11.18L23.82 11.82M23.82 11.18L23.18 11.82M23.18 13.18L23.82 13.82M23.82 13.18L23.18 13.82M24.18 12.18L24.82 12.82M24.82 12.18L24.18 12.82' fill='none' stroke='%23924241' stroke-opacity='0.3' stroke-width='0.17' stroke-linecap='round'/%3E%3C/svg%3E");
   background-position: right -3.18vw bottom 14.50vw, left -3.18vw bottom 7.73vw, left 6.35vw bottom 1.66vw, right 23.76vw bottom 1.24vw, right 14.23vw bottom -4.83vw;
   background-size: 6.22vw 6.22vw, 6.22vw 6.22vw, 1.83vw 1.83vw, 2.56vw 2.56vw, 9.15vw 9.15vw;
-}}
+}
 /* deco:end */
 
 /* ============================================================
@@ -3717,11 +3716,12 @@ section.idx {
 }
 
 .prm__w {
+  /* room under the baseline for the serif's long tails (g, y, p) */
   display: inline-block;
   overflow: hidden;
   vertical-align: top;
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
+  padding-bottom: 0.26em;
+  margin-bottom: -0.26em;
 }
 
 .prm__wi {
@@ -3814,7 +3814,7 @@ section.idx {
   margin-top: 14px;
 }
 
-/* the frame of words; prm.js runs them round it
+/* the frame of words; prm.js runs them round it */
 .prm__orbit {
   position: absolute;
   inset: 0;
@@ -4016,11 +4016,12 @@ section.idx {
 }
 
 .rl__w {
+  /* room under the baseline for the serif's long tails (g, y, p) */
   display: inline-block;
   overflow: hidden;
   vertical-align: top;
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
+  padding-bottom: 0.26em;
+  margin-bottom: -0.26em;
 }
 
 .rl__wi {
@@ -4323,11 +4324,12 @@ section[aria-label="What our customers say"],
 }
 
 .hx__w {
+  /* room under the baseline for the serif's long tails (g, y, p) */
   display: inline-block;
   overflow: hidden;
   vertical-align: top;
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
+  padding-bottom: 0.26em;
+  margin-bottom: -0.26em;
 }
 
 .hx__wi {
@@ -4633,11 +4635,12 @@ section[aria-label="What our customers say"],
 }
 
 .tq__w {
+  /* room under the baseline for the serif's long tails (g, y, p) */
   display: inline-block;
   overflow: hidden;
   vertical-align: top;
-  padding-bottom: 0.1em;
-  margin-bottom: -0.1em;
+  padding-bottom: 0.26em;
+  margin-bottom: -0.26em;
 }
 
 .tq__wi {

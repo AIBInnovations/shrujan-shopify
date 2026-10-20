@@ -303,7 +303,7 @@
       // then the bar and header come down, and the film gives way to them
       .fromTo('.offer-bar, .site-header', { yPercent: -100, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 1, stagger: 0.08, ease: 'power3.out', clearProps: 'transform,opacity' }, 'open')
       // the title rises line by line, the button after it
-      .fromTo(H + '.dh__slide.is-active .dh__line > span', { yPercent: 115 }, { yPercent: 0, duration: 1.4, stagger: 0.1, ease: 'expo.out' }, 'open+=0.15')
+      .fromTo(H + '.dh__slide.is-active .dh__line > span', { yPercent: 150 }, { yPercent: 0, duration: 1.4, stagger: 0.1, ease: 'expo.out' }, 'open+=0.15')
       .fromTo(H + '.dh__slide.is-active .dh-btn', { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.9, ease: 'sine.out', clearProps: 'transform,opacity' }, 'open+=0.45')
       // the glass cards, one after another, then the stories along the foot
       .fromTo(H + '.dh__cell', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 1, stagger: 0.08, ease: 'expo.out', clearProps: 'transform,opacity' }, 'open+=0.3')
@@ -440,7 +440,7 @@
       gsap.to(tOut, { x: -10, autoAlpha: 0, duration: 0.45, ease: 'power2.in', onComplete: function () { tOut.classList.remove('is-active'); gsap.set(tOut, { x: 0 }); } });
       tIn.classList.add('is-active');
       gsap.set(tIn, { autoAlpha: 1, x: 0 });
-      gsap.fromTo(tIn.querySelectorAll('.dh__line > span'), { yPercent: 110 }, { yPercent: 0, duration: 1.15, stagger: 0.09, ease: 'expo.out', delay: 0.35 });
+      gsap.fromTo(tIn.querySelectorAll('.dh__line > span'), { yPercent: 150 }, { yPercent: 0, duration: 1.15, stagger: 0.09, ease: 'expo.out', delay: 0.35 });
       gsap.fromTo(tIn.querySelector('.dh-btn'), { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.9, ease: 'expo.out', delay: 0.6 });
     } else {
       outM.classList.remove('is-active');
@@ -596,7 +596,7 @@
       opacity: 1, y: 0, duration: 1, ease: 'power3.out',
       scrollTrigger: { trigger: root.querySelector('.arch__meta'), start: 'top 90%' },
     });
-    gsap.fromTo(root.querySelectorAll('.arch__wi'), { yPercent: 112 }, {
+    gsap.fromTo(root.querySelectorAll('.arch__wi'), { yPercent: 150 }, {
       yPercent: 0, duration: 1.35, stagger: 0.07, ease: 'expo.out',
       scrollTrigger: { trigger: root.querySelector('.arch__title'), start: 'top 84%' },
     });
@@ -871,7 +871,7 @@
       opacity: 1, y: 0, duration: 1, ease: 'power3.out',
       scrollTrigger: { trigger: root.querySelector('.idx__meta'), start: 'top 90%' },
     });
-    gsap.fromTo(root.querySelectorAll('.idx__wi'), { yPercent: 112 }, {
+    gsap.fromTo(root.querySelectorAll('.idx__wi'), { yPercent: 150 }, {
       yPercent: 0, duration: 1.35, stagger: 0.07, ease: 'expo.out',
       scrollTrigger: { trigger: root.querySelector('.idx__title'), start: 'top 85%' },
     });
@@ -965,7 +965,7 @@
       opacity: 1, y: 0, duration: 1, ease: 'power3.out',
       scrollTrigger: { trigger: root.querySelector('.prm__meta'), start: 'top 90%' },
     });
-    gsap.fromTo(root.querySelectorAll('.prm__wi'), { yPercent: 112 }, {
+    gsap.fromTo(root.querySelectorAll('.prm__wi'), { yPercent: 150 }, {
       yPercent: 0, duration: 1.35, stagger: 0.06, ease: 'expo.out',
       scrollTrigger: { trigger: root.querySelector('.prm__title'), start: 'top 85%' },
     });
@@ -1147,7 +1147,7 @@
       opacity: 1, y: 0, duration: 1, ease: 'power3.out',
       scrollTrigger: { trigger: root.querySelector('.reels__meta'), start: 'top 90%' },
     });
-    gsap.fromTo(root.querySelectorAll('.rl__wi'), { yPercent: 112 }, {
+    gsap.fromTo(root.querySelectorAll('.rl__wi'), { yPercent: 150 }, {
       yPercent: 0, duration: 1.35, stagger: 0.07, ease: 'expo.out',
       scrollTrigger: { trigger: root.querySelector('.rl__title'), start: 'top 85%' },
     });
@@ -1245,7 +1245,7 @@
       gsap.fromTo(m, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: m, start: 'top 90%' } });
     });
     $('.hx__title').forEach(function (t) {
-      gsap.fromTo(t.querySelectorAll('.hx__wi'), { yPercent: 112 }, { yPercent: 0, duration: 1.35, stagger: 0.06, ease: 'expo.out', scrollTrigger: { trigger: t, start: 'top 86%' } });
+      gsap.fromTo(t.querySelectorAll('.hx__wi'), { yPercent: 150 }, { yPercent: 0, duration: 1.35, stagger: 0.06, ease: 'expo.out', scrollTrigger: { trigger: t, start: 'top 86%' } });
     });
     $('.hx__lede').forEach(function (l) {
       gsap.fromTo(l, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: l.parentNode, start: 'top 78%' } });
@@ -1366,7 +1366,7 @@
       } });
       gsap.set(newS, { opacity: 1, y: 0, visibility: 'visible' });
       newS.classList.add('is-active');
-      gsap.fromTo(newS.querySelectorAll('.tq__wi'), { yPercent: 110 }, { yPercent: 0, duration: 1.05, stagger: 0.014, ease: 'expo.out', delay: 0.3 });
+      gsap.fromTo(newS.querySelectorAll('.tq__wi'), { yPercent: 150 }, { yPercent: 0, duration: 1.05, stagger: 0.014, ease: 'expo.out', delay: 0.3 });
       gsap.fromTo(newS.querySelector('.tq__who'), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.8, delay: 0.55, ease: 'power3.out', clearProps: 'transform' });
       // the photograph: the next one wipes up over the last (down, going back)
       oldP.classList.add('is-leaving');
@@ -1446,7 +1446,7 @@
       tl.fromTo(tq.querySelector('.tq__panel'), { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.3, ease: 'expo.out', clearProps: 'clipPath' }, 0)
         .fromTo(tq.querySelector('.tq__photo'), { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.3, ease: 'expo.out', clearProps: 'clipPath' }, 0.1)
         .fromTo(tq.querySelector('.tq__shot.is-active img'), { scale: 1.22 }, { scale: 1, duration: 1.8, ease: 'expo.out', clearProps: 'transform,scale' }, 0.1)
-        .fromTo(first.querySelectorAll('.tq__wi'), { yPercent: 110 }, { yPercent: 0, duration: 1.2, stagger: 0.016, ease: 'expo.out' }, 0.45)
+        .fromTo(first.querySelectorAll('.tq__wi'), { yPercent: 150 }, { yPercent: 0, duration: 1.2, stagger: 0.016, ease: 'expo.out' }, 0.45)
         .fromTo([first.querySelector('.tq__who'), tq.querySelector('.tq__top'), tq.querySelector('.tq__shot.is-active .tq__cap')], { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.9, stagger: 0.08, ease: 'power3.out', clearProps: 'transform' }, 0.7)
         .fromTo(tq.querySelectorAll('.tq__dot, .tq__loved, .tq__arrow'), { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.7, stagger: 0.03, ease: 'power3.out', clearProps: 'transform' }, 0.85);
     }
