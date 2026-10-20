@@ -420,7 +420,7 @@
           "type": "tile",
           "settings": {
             "fallback": "sj-col-kanchli.webp",
-            "alt": "A smiling woman in a black hand-embroidered kanchli, resting her chin on her hand",
+            "alt": "A model in the Black Pakko hand-embroidered kanchli and a black and gold sari",
             "name": "Kanchli",
             "note": "The Kutch bodice, cut and stitched the traditional way.",
             "link": "/pages/shop-shrujan?c=kanchli"
@@ -430,7 +430,7 @@
           "type": "tile",
           "settings": {
             "fallback": "sj-col-accessories.webp",
-            "alt": "Hand-embroidered shawls and dupattas draped over a carved wooden bench",
+            "alt": "A model in an orange and blue tie-dyed dupatta over white",
             "name": "Accessories",
             "note": "Dupattas, stoles and shawls finished with hand borders.",
             "link": "/pages/shop-shrujan?c=accessories"
@@ -440,7 +440,7 @@
           "type": "tile",
           "settings": {
             "fallback": "sj-col-crossbody.webp",
-            "alt": "A woman in a hand-embroidered kanchli with a patchwork crossbody bag",
+            "alt": "A hand-embroidered crossbody bag worn across a white kurta",
             "name": "Crossbody & Sling",
             "note": "Small bags for a long day, worn across the body.",
             "link": "/pages/shop-shrujan?c=cross-body-bags-and-sling-bags"
@@ -450,7 +450,7 @@
           "type": "tile",
           "settings": {
             "fallback": "sj-col-handbags.webp",
-            "alt": "A patchwork hand-embroidered handbag on a carved stone ledge",
+            "alt": "A dark hand-embroidered handbag carried by its handles",
             "name": "Hand Bags",
             "note": "Structured bags, embroidered panel by panel.",
             "link": "/pages/shop-shrujan?c=hand-bag"
@@ -460,7 +460,7 @@
           "type": "tile",
           "settings": {
             "fallback": "sj-col-totes.webp",
-            "alt": "A striped handwoven tote bag hanging on a wooden chair",
+            "alt": "A hand-embroidered black and teal tote bag carried over the shoulder",
             "name": "Tote Bags",
             "note": "Roomy totes in handwoven cotton.",
             "link": "/pages/shop-shrujan?c=tote-bags"
@@ -470,7 +470,7 @@
           "type": "tile",
           "settings": {
             "fallback": "sj-col-potlis.webp",
-            "alt": "Three hand-embroidered drawstring potlis with tasselled cords",
+            "alt": "A dark blue hand-embroidered potli bag with a drawstring",
             "name": "Potlis & Batwas",
             "note": "Drawstring potlis in silk, for the festive months.",
             "link": "/pages/shop-shrujan?c=potlis-batwas"
@@ -480,7 +480,7 @@
           "type": "tile",
           "settings": {
             "fallback": "sj-col-pouches.webp",
-            "alt": "Hand-embroidered pouches and purses stacked on a stone ledge",
+            "alt": "A cross-stitched mobile pouch beside a phone",
             "name": "Pouches",
             "note": "Pouches and purses in offcuts, too good to waste.",
             "link": "/pages/shop-shrujan?c=pouches"

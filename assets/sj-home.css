@@ -391,7 +391,7 @@ html.sj-pre .offer-bar {
   pointer-events: none;
 }
 
-/* giant dark type behind the dress, which passes in front of it */
+/* giant pale type behind the dress, which passes in front of it */
 .craft3d__ghost {
   position: absolute;
   left: 50%;
@@ -403,7 +403,8 @@ html.sj-pre .offer-bar {
   letter-spacing: -0.01em;
   text-transform: uppercase;
   white-space: nowrap;
-  color: var(--ink, #404041);
+  /* a quiet backdrop in the page's own beige, not a headline */
+  color: #c9b897;
   opacity: 0;
   transform: translateY(40px);
   /* the old word leaves quickly; the new one waits for it before rising */
@@ -3344,9 +3345,13 @@ section.idx {
 }
 
 /* where each photograph's subject sits in its frame */
-.col__tile:nth-child(1) .col__img { object-position: 50% 20%; }
-.col__tile:nth-child(3) .col__img { object-position: 50% 35%; }
-.col__tile:nth-child(5) .col__img { object-position: 50% 62%; }
+.col__tile:nth-child(1) .col__img { object-position: 50% 18%; }
+.col__tile:nth-child(2) .col__img { object-position: 50% 38%; }
+.col__tile:nth-child(3) .col__img { object-position: 50% 62%; }
+.col__tile:nth-child(4) .col__img { object-position: 50% 62%; }
+.col__tile:nth-child(5) .col__img { object-position: 50% 68%; }
+.col__tile:nth-child(6) .col__img { object-position: 50% 66%; }
+.col__tile:nth-child(7) .col__img { object-position: 50% 50%; }
 
 .col__media {
   position: relative;
