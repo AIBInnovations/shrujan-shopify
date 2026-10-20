@@ -798,6 +798,41 @@
           scrollTrigger: { trigger: root.querySelector('.ft__cards'), start: 'top 85%' },
         });
       }
+      // the Studio Collection's scenes: each rises in and its words follow;
+      // on desktops the sandstone, the textile and the props settle into
+      // their places as the scene comes up the screen, the props from a
+      // little further, so the scene builds in depth (never lifting off
+      // the scene's foot, so no gap opens under them)
+      var scenes = root.querySelectorAll('.ft__scene');
+      if (scenes.length) {
+        gsap.fromTo(scenes, { y: 40, opacity: 0 }, {
+          y: 0, opacity: 1, duration: 1.2, stagger: 0.14, ease: 'expo.out',
+          scrollTrigger: { trigger: root.querySelector('.ft__scenes'), start: 'top 85%' },
+        });
+        var wide = window.matchMedia('(min-width: 1025px)').matches;
+        [].forEach.call(scenes, function (sc) {
+          gsap.fromTo(sc.querySelectorAll('.ft__copy > *'), { y: 18, opacity: 0 }, {
+            y: 0, opacity: 1, duration: 1, stagger: 0.07, ease: 'power3.out',
+            scrollTrigger: { trigger: sc, start: 'top 75%' },
+          });
+          var d = sc.querySelector('.ft__detail');
+          if (d) {
+            gsap.fromTo(d, { y: 30, opacity: 0 }, {
+              y: 0, opacity: 1, duration: 1.1, delay: 0.25, ease: 'expo.out',
+              scrollTrigger: { trigger: sc, start: 'top 75%' },
+            });
+          }
+          if (!wide) return;
+          [['.ft__back', 18], ['.ft__cloth', 34], ['.ft__front', 56]].forEach(function (p) {
+            var el = sc.querySelector(p[0]);
+            if (!el) return;
+            gsap.fromTo(el, { y: p[1] }, {
+              y: 0, ease: 'none',
+              scrollTrigger: { trigger: sc, start: 'top bottom', end: 'center 60%', scrub: 0.6 },
+            });
+          });
+        });
+      }
       // the banner's photograph drifts inside its frame as the page scrolls,
       // slower than the page (desktops: on phones it sits under the words)
       var bg = root.querySelector('.ft__bg');

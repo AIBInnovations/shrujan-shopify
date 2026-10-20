@@ -1052,17 +1052,19 @@
     "feature-studio": {
       "type": "home-feature",
       "settings": {
-        "layout": "pair",
+        "layout": "studio",
         "flip": false,
         "anchor": "studio",
         "eyebrow": "Heritage · Avinya",
-        "title_1": "Studio Collection",
-        "title_2": "",
+        "title_1": "Studio",
+        "title_2": "Collection",
         "lede": "Limited-edition works created through tradition and experimentation.",
         "image_asset": "",
         "image_alt": "",
         "btn_label": "",
-        "btn_link": ""
+        "btn_link": "",
+        "paper_asset": "sj-studio-paper.webp",
+        "pillar_asset": ""
       },
       "blocks": {
         "c1": {
@@ -1071,10 +1073,18 @@
             "name": "Heritage",
             "text": "Heirloom textiles that carry the depth and detail of Kutch’s craft traditions. Each piece is made with exceptional skill and intended to be collected, preserved and passed on.",
             "note": "Available by enquiry.",
-            "image_asset": "frame-r2t24.webp",
-            "image_alt": "A woman in a heritage sari, hand-embroidered in Kutch",
+            "image_asset": "sj-studio-cloth-heritage.webp",
+            "image_alt": "A deep red heirloom textile, embroidered with mirrors and gold thread, draped over sandstone steps",
             "btn_label": "Enquire",
-            "btn_link": "/pages/studio-heritage"
+            "btn_link": "/pages/studio-heritage",
+            "look": "dark",
+            "wall_asset": "sj-studio-wall-red.webp",
+            "back_asset": "sj-studio-stone.webp",
+            "front_asset": "sj-studio-pots.webp",
+            "front_crop": "left",
+            "detail_asset": "sj-studio-detail-heritage.webp",
+            "detail_alt": "Mirror work and gold thread on red cloth, close up",
+            "words": "Timeless, Craft, Living, Traditions"
           }
         },
         "c2": {
@@ -1083,10 +1093,18 @@
             "name": "Avinya",
             "text": "Textile works that explore new expressions of craft. Created through experimentation and collaboration, Avinya pieces bring traditional knowledge into contemporary spaces.",
             "note": "",
-            "image_asset": "journal-4.webp",
-            "image_alt": "Finished embroidery reviewed together in the Shrujan workroom",
+            "image_asset": "sj-studio-cloth-avinya.webp",
+            "image_alt": "An indigo and saffron textile draped over sandstone blocks",
             "btn_label": "Discover Avinya",
-            "btn_link": "/pages/studio-avinya"
+            "btn_link": "/pages/studio-avinya",
+            "look": "light",
+            "wall_asset": "sj-studio-wall-indigo.webp",
+            "back_asset": "sj-studio-stone.webp",
+            "front_asset": "sj-studio-pots.webp",
+            "front_crop": "right",
+            "detail_asset": "sj-studio-detail-avinya.webp",
+            "detail_alt": "Skeins of indigo and saffron yarn",
+            "words": "Experimentation, Collaboration, Contemporary, Spaces"
           }
         }
       },

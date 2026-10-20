@@ -3122,6 +3122,485 @@ html.sj-pre .dh__strip {
 }
 
 /* ============================================================
+   Studio Collection: a scene for each card ("studio")
+   ------------------------------------------------------------
+   From the user's asset pack, on the page's own ground (the user had the
+   parchment, the leaf shadows and the sandstone at the top right taken
+   away; a sandstone picture can still be set there): a thin gold line down
+   each edge with the flower; the head centred under the flower with "Collection" in a wine
+   italic; then two scenes, each a wall (Heritage the burgundy arch,
+   Avinya paper with an indigo arch panel), sandstone, the textile and its
+   props cut out over it, the words on the left, and a small paper card
+   with a close-up of the craft and four words. Phones and tablets stack
+   each scene: the words, the scene, the small card.
+   ============================================================ */
+.ft--studio {
+  --gold: #a77842;
+  --gold-line: rgba(167, 120, 66, 0.55);
+  --wine: #6b1d20;
+  --paper-ink: #6c6458;
+  isolation: isolate;
+  overflow: clip;
+  padding-top: clamp(16px, 1.6vw, 28px);
+  padding-bottom: clamp(48px, 5vw, 92px);
+  background: transparent;
+}
+
+.ft__decor {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.ft__pillar {
+  position: absolute;
+  top: -2%;
+  right: -3%;
+  width: clamp(150px, 16vw, 290px);
+  height: auto;
+  transform: scaleX(-1);
+  opacity: 0.92;
+}
+
+/* the thin gold lines down the edges, each with its flower */
+.ft__edge {
+  position: absolute;
+  top: 0;
+  bottom: 10%;
+  width: 1px;
+  background: linear-gradient(var(--gold-line), var(--gold-line) 82%, rgba(167, 120, 66, 0));
+  color: var(--gold);
+}
+
+.ft__edge--l {
+  left: max(16px, 4.6vw);
+}
+
+.ft__edge--r {
+  right: max(16px, 5.6vw);
+}
+
+.ft__edge .ft__motif {
+  position: absolute;
+  top: clamp(90px, 7.6vw, 130px);
+  left: 50%;
+  width: 26px;
+  height: 26px;
+  translate: -50% 0;
+}
+
+.ft__motif {
+  display: block;
+  color: var(--gold);
+}
+
+/* the head */
+.ft--studio .ft__head {
+  position: relative;
+  max-width: 980px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.ft--studio .ft__head > .ft__motif {
+  width: 24px;
+  height: 24px;
+  margin: 0 auto clamp(6px, 0.6vw, 10px);
+}
+
+.ft--studio .ft__eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 1.6vw, 26px);
+  color: var(--paper-ink);
+}
+
+.ft--studio .ft__eyebrow::before,
+.ft--studio .ft__eyebrow::after {
+  content: '';
+  width: clamp(36px, 4vw, 64px);
+  height: 1px;
+  background: var(--gold-line);
+}
+
+.ft--studio .ft__title {
+  font-size: clamp(44px, 5.3vw, 88px);
+  line-height: 1.02;
+}
+
+.ft--studio .ft__line {
+  display: inline;
+}
+
+/* the one italic on the site, as the mock-up has it (the store's sheet
+   keeps every other word upright with an !important of its own) */
+.ft--studio .ft__line--soft {
+  margin-left: 0.22em;
+  font-style: italic !important;
+  color: var(--wine);
+}
+
+.ft--studio .ft__lede {
+  max-width: 60ch;
+  margin: clamp(8px, 0.9vw, 14px) auto 0;
+  color: var(--paper-ink);
+}
+
+/* ---- the scenes ---- */
+.ft__scenes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(14px, 1.5vw, 24px);
+  max-width: 1520px;
+  margin: clamp(24px, 2.4vw, 40px) auto 0;
+}
+
+.ft__scene {
+  position: relative;
+  aspect-ratio: 750 / 704;
+  overflow: hidden;
+  border-radius: 4px;
+  box-shadow: 0 34px 60px -44px rgba(60, 34, 18, 0.6);
+}
+
+.ft__scene--dark {
+  background: var(--wall) right center / cover, #6a1d1c;
+  color: #f3e9d8;
+}
+
+.ft__scene--light {
+  background: var(--paper) center / cover, #ece2cd;
+  color: var(--ink);
+}
+
+.ft__stage {
+  position: absolute;
+  inset: 0;
+}
+
+/* Avinya's wall: an indigo panel on the right, the paper beside it */
+.ft__scene--light .ft__stage::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 52%;
+  height: 76%;
+  background: var(--wall) center / cover;
+}
+
+.ft__stage img {
+  position: absolute;
+  display: block;
+  height: auto;
+  max-width: none;
+}
+
+.ft__back {
+  right: -7%;
+  bottom: 0;
+  width: 70%;
+}
+
+.ft__scene--light .ft__back {
+  right: -10%;
+  bottom: 10%;
+  width: 52%;
+}
+
+.ft__cloth {
+  right: -3%;
+  bottom: -1%;
+  width: 76%;
+  filter: drop-shadow(0 18px 18px rgba(30, 12, 6, 0.32));
+}
+
+.ft__scene--light .ft__cloth {
+  right: 4%;
+  bottom: -1%;
+  width: 70%;
+}
+
+/* the props: the pots from the left of their picture, or the tools from its right */
+.ft__front {
+  position: absolute;
+  overflow: hidden;
+}
+
+.ft__front img {
+  bottom: 0;
+}
+
+.ft__front--left {
+  left: 40%;
+  bottom: 5%;
+  width: 28%;
+  aspect-ratio: 0.675;
+}
+
+.ft__front--left img {
+  left: 0;
+  width: 172%;
+}
+
+.ft__front--right {
+  right: 0;
+  bottom: 7%;
+  width: 19%;
+  aspect-ratio: 0.49;
+}
+
+.ft__front--right img {
+  right: 0;
+  width: 238%;
+}
+
+.ft__front--none {
+  right: 2%;
+  bottom: 4%;
+  width: 34%;
+  aspect-ratio: 682 / 586;
+}
+
+.ft__front--none img {
+  left: 0;
+  width: 100%;
+}
+
+/* the words, on the left */
+.ft__copy {
+  position: absolute;
+  top: 13%;
+  left: 7.5%;
+  z-index: 2;
+  width: 37%;
+}
+
+.ft__scene--light .ft__copy {
+  width: 36%;
+}
+
+.ft__no {
+  margin: 0;
+  font: 500 12px/1 var(--font-sans);
+  letter-spacing: 0.3em;
+}
+
+.ft__no::after {
+  content: '';
+  display: block;
+  width: 22px;
+  height: 1px;
+  margin-top: 12px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+.ft__scene .ft__name {
+  margin: clamp(10px, 1.1vw, 18px) 0 0;
+  font: 400 clamp(32px, 3.9vw, 64px) / 1.04 var(--font-display);
+  letter-spacing: -0.01em;
+  color: inherit;
+}
+
+.ft__scene--light .ft__name {
+  color: #1f2a4d;
+}
+
+.ft__scene .ft__name::after {
+  content: '';
+  display: block;
+  width: clamp(28px, 2.6vw, 42px);
+  height: 1px;
+  margin-top: clamp(8px, 0.9vw, 14px);
+  background: currentColor;
+  opacity: 0.55;
+}
+
+.ft__scene .ft__text {
+  max-width: 28ch;
+  margin: clamp(10px, 1vw, 16px) 0 0;
+  font: 400 clamp(13.5px, 1.06vw, 17px) / 1.5 var(--font-sans);
+  color: inherit;
+  opacity: 0.92;
+}
+
+.ft__scene .ft__btn {
+  color: inherit;
+  border-color: currentColor;
+}
+
+/* the small paper card with the close-up */
+.ft__detail {
+  position: absolute;
+  left: 0.8%;
+  bottom: 3.6%;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+  width: 51%;
+  height: 33.5%;
+  padding: 1.2%;
+  border-radius: 4px;
+  background: var(--paper) center / cover, #efe6d3;
+  box-shadow: 0 18px 30px -20px rgba(40, 24, 14, 0.5), inset 0 0 0 1px rgba(167, 120, 66, 0.2);
+  color: var(--paper-ink);
+}
+
+.ft__detail > img {
+  width: 100%;
+  height: 100%;
+  border-radius: 3px;
+  object-fit: cover;
+}
+
+.ft__words {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0;
+  padding: 0 6% 0 11%;
+  font: 500 clamp(8.5px, 0.64vw, 10.5px) / 2.1 var(--font-sans);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.ft__words::before {
+  content: '';
+  width: 18px;
+  height: 1px;
+  margin-bottom: 10px;
+  background: var(--gold-line);
+}
+
+.ft__detail > .ft__motif {
+  position: absolute;
+  right: 12%;
+  bottom: 11%;
+  width: 22px;
+  height: 22px;
+}
+
+/* ---- tablets and phones: each scene stacked ---- */
+@media (max-width: 1024px) {
+  .ft__edge,
+  .ft__pillar {
+    display: none;
+  }
+
+  .ft__scenes {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    max-width: 760px;
+  }
+
+  .ft__scene {
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: auto;
+  }
+
+  .ft__copy,
+  .ft__scene--light .ft__copy {
+    position: relative;
+    top: auto;
+    left: auto;
+    order: 1;
+    width: auto;
+    padding: clamp(26px, 5vw, 44px) clamp(22px, 5vw, 44px) 8px;
+  }
+
+  .ft__stage {
+    position: relative;
+    inset: auto;
+    order: 2;
+    aspect-ratio: 16 / 11;
+  }
+
+  .ft__scene--light .ft__stage::before {
+    width: 64%;
+    height: 82%;
+  }
+
+  .ft__scene .ft__text {
+    max-width: 46ch;
+  }
+
+  .ft__back {
+    right: -6%;
+    width: 62%;
+  }
+
+  .ft__cloth {
+    right: -2%;
+    width: 80%;
+  }
+
+  .ft__scene--light .ft__cloth {
+    right: 6%;
+    width: 74%;
+  }
+
+  .ft__front--left {
+    left: 6%;
+    bottom: 4%;
+    width: 26%;
+  }
+
+  .ft__detail {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    order: 3;
+    width: auto;
+    height: clamp(150px, 30vw, 220px);
+    margin: -9% 12px 12px;
+    padding: 8px;
+  }
+
+  .ft__words {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 560px) {
+  .ft--studio .ft__eyebrow::before,
+  .ft--studio .ft__eyebrow::after {
+    width: 24px;
+  }
+
+  .ft__stage {
+    aspect-ratio: 1 / 1;
+  }
+
+  .ft__cloth {
+    width: 96%;
+  }
+
+  .ft__scene--light .ft__cloth {
+    right: 2%;
+    width: 88%;
+  }
+
+  .ft__front--left {
+    width: 30%;
+  }
+
+  .ft__front--right {
+    width: 22%;
+  }
+
+  .ft__detail {
+    grid-template-columns: 1fr 1fr;
+    height: 160px;
+    margin-top: -14%;
+  }
+}
+
+/* ============================================================
    What Shrujan has mastered
    ------------------------------------------------------------
    The seven collections as a mosaic: Kanchli large on the left, Accessories
