@@ -1,0 +1,87 @@
+{%- render 'section-design', section: section -%}
+{{ 'sj-pdp.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'sj-pdp.js' | asset_url }}" defer></script>
+{%- comment -%}
+  The making of a Shrujan piece, under every product: a film of the hands
+  at work across the top, then the steps the piece goes through, each a
+  photograph, a number, a name and a line. The steps' words follow the
+  brand writeup (Origins, Visit the Shrujan Campus). Each step is a block;
+  with none added the five below are shown. The film plays only while the
+  section is on screen (assets/sj-pdp.js).
+{%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  assign defaults = 'visit-design-studio.webp|Designed in the studio|Ideas are developed and sampled at the Shrujan campus in Bhujodi, where pre- and post-production are carried out in close collaboration with artisan communities.|Designers at work in the Shrujan studio~story-origin-3.webp|Carried to the village|Our production team reaches fabrics and threads to the craftswomen in their villages. The women do not have to pay for the materials.|Archive photograph of a village workshop~journal-3.webp|Embroidered at home|Shrujan’s craftswomen work from home, in their own villages across Kutch, each in the embroidery of her community.|A craftswoman bent over her embroidery frame~story-dignity.webp|Paid at her doorstep|Shrujan pays them their fair dues at their doorstep, as soon as they have completed the embroidery.|An artisan at work, photographed in her village~visit-campus.webp|Finished into the piece|The textiles are fashioned into high quality apparel, accessories and lifestyle products, and sent to you.|The Shrujan studio floor, with racks of finished cloth' | split: '~'
+-%}
+{%- if s.film != blank -%}
+  {%- capture film_src -%}{% render 'sj-film-url', src: s.film %}{%- endcapture -%}
+{%- endif -%}
+<section class="pdpx pdpx-making" id="making" aria-labelledby="making-title-{{ section.id }}">
+  <div class="pdpx__head">
+    {%- if s.eyebrow != blank %}<p class="pdpx__eyebrow">{{ s.eyebrow | escape }}</p>{% endif -%}
+    <h2 class="pdpx__title" id="making-title-{{ section.id }}"><span>{{ s.title_1 | escape }}</span>{% if s.title_2 != blank %}<span class="pdpx__soft">{{ s.title_2 | escape }}</span>{% endif %}</h2>
+    {%- if s.lede != blank %}<p class="pdpx__lede">{{ s.lede | escape }}</p>{% endif -%}
+  </div>
+  {%- if film_src != blank -%}
+    <div class="pdpx-making__film">
+      <video data-pdpx-film src="{{ film_src | strip }}" {% if s.poster != blank %}poster="{{ s.poster | asset_url }}"{% endif %} muted loop playsinline preload="none" aria-label="{{ s.film_alt | escape }}"></video>
+    </div>
+  {%- endif -%}
+  <ol class="pdpx-making__steps">
+    {%- if section.blocks.size > 0 -%}
+      {%- for b in section.blocks -%}
+        {%- liquid
+          if b.settings.image != blank
+            assign st_img = b.settings.image | image_url: width: 700
+          else
+            assign st_img = b.settings.asset | default: 'visit-campus.webp' | asset_url
+          endif
+        -%}
+        <li class="pdpx-making__step" {{ b.shopify_attributes }}><span class="pdpx-making__media"><img src="{{ st_img }}" alt="{{ b.settings.alt | escape }}" loading="lazy"></span><span class="pdpx-making__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span><h3 class="pdpx-making__name">{{ b.settings.name | escape }}</h3><p class="pdpx-making__text">{{ b.settings.text | escape }}</p></li>
+      {%- endfor -%}
+    {%- else -%}
+      {%- for d in defaults -%}
+        {%- assign f = d | split: '|' -%}
+        <li class="pdpx-making__step"><span class="pdpx-making__media"><img src="{{ f[0] | asset_url }}" alt="{{ f[3] | escape }}" loading="lazy"></span><span class="pdpx-making__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span><h3 class="pdpx-making__name">{{ f[1] | escape }}</h3><p class="pdpx-making__text">{{ f[2] | escape }}</p></li>
+      {%- endfor -%}
+    {%- endif -%}
+  </ol>
+  {%- if s.btn_label != blank -%}
+    <div class="pdpx__foot"><a class="pdpx__link" href="{{ s.btn_link | escape }}">{{ s.btn_label | escape }} <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 10h14M11 4.5l5.5 5.5-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></a></div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Product — The making",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "How it is made" },
+    { "type": "text", "id": "title_1", "label": "Title, first line", "default": "The making of" },
+    { "type": "text", "id": "title_2", "label": "Title, second line (in red)", "default": "a Shrujan piece" },
+    { "type": "textarea", "id": "lede", "label": "Line under the title", "default": "From the studio in Bhujodi to a craftswoman’s home in her village, and back to you: every piece passes through these hands." },
+    { "type": "header", "content": "Film" },
+    { "type": "text", "id": "film", "label": "Film", "info": "A full URL from Content → Files, or a theme file. The craft films (craft-*.mp4) play in 1080p. Leave empty for no film.", "default": "craft-embroidery.mp4" },
+    { "type": "text", "id": "poster", "label": "Still shown before it plays (theme image file)", "default": "craft-embroidery-poster.webp" },
+    { "type": "text", "id": "film_alt", "label": "Film description", "default": "A craftswoman’s hands embroidering" },
+    { "type": "header", "content": "Link" },
+    { "type": "text", "id": "btn_label", "label": "Link label", "default": "Explore Crafts" },
+    { "type": "text", "id": "btn_link", "label": "Link", "default": "/pages/video" }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "limit": 6,
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Photograph" },
+        { "type": "text", "id": "asset", "label": "Or theme image file", "default": "visit-campus.webp" },
+        { "type": "text", "id": "alt", "label": "Photograph description", "default": "The Shrujan studio" },
+        { "type": "text", "id": "name", "label": "Name", "default": "Designed in the studio" },
+        { "type": "textarea", "id": "text", "label": "Line", "default": "Ideas are developed and sampled at the Shrujan campus in Bhujodi." }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Product — The making" } ]
+}
+{% endschema %}

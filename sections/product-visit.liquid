@@ -1,0 +1,113 @@
+{%- render 'section-design', section: section -%}
+{{ 'sj-pdp.css' | asset_url | stylesheet_tag }}
+{%- comment -%}
+  Under every product: gifting and a private viewing side by side, then
+  the Shrujan stores, each with its address, numbers and directions. The
+  stores' details are shrujan.com's own; each store is a block, and with
+  none added the six below are shown.
+{%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  assign stores = 'Bhujodi|Behind G.E.B Sub Station, Bhujodi, Bhuj, Kutch 370020|+91 2832 240272|+91 90999 74395~LLDC Museum|Living and Learning Design Centre, 705, Bhuj–Bhachau Road, Ajrakhpur, Bhuj, Kutch 370105|+91 2832 229090|+91 90818 99886~Ahmedabad|Shop No. 1, Gala Business Centre 1, opp. Wagh Bakri Tea Lounge, near St. Xavier’s College Road, Navrangpura, Ahmedabad 380009||+91 72279 82099~Mumbai|C.T.C 217/A Wing, 1st Floor, Flexcel Park, S.V. Road, near 24 Karat Multiplex, Jogeshwari (W), Mumbai 400102|+91 22 6215 7598|+91 98337 66584~Bhuj Airport|Bhuj Airport, Civil Enclave, Bhuj, Kutch 370001||+91 99784 18952~Delhi|C.C.I.C. International Craft Complex, Plot No. 8, Nelson Mandela Marg, Vasant Kunj, New Delhi 110070||+91 88665 83477' | split: '~'
+  assign arrow = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 10h14M11 4.5l5.5 5.5-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>'
+-%}
+<section class="pdpx pdpx-visit" id="visit-us" aria-labelledby="visit-title-{{ section.id }}">
+  <div class="pdpx-visit__pair">
+    {%- for n in (1..2) -%}
+      {%- liquid
+        assign k_e = 'card' | append: n | append: '_eyebrow'
+        assign k_t = 'card' | append: n | append: '_title'
+        assign k_x = 'card' | append: n | append: '_text'
+        assign k_l = 'card' | append: n | append: '_label'
+        assign k_h = 'card' | append: n | append: '_link'
+        assign k_i = 'card' | append: n | append: '_asset'
+        assign k_a = 'card' | append: n | append: '_alt'
+      -%}
+      {%- if s[k_t] != blank -%}
+      <article class="pdpx-visit__card">
+        {%- if s[k_i] != blank %}<span class="pdpx-visit__media"><img src="{{ s[k_i] | asset_url }}" alt="{{ s[k_a] | escape }}" loading="lazy"></span>{% endif -%}
+        <div class="pdpx-visit__body">
+          {%- if s[k_e] != blank %}<p class="pdpx__eyebrow">{{ s[k_e] | escape }}</p>{% endif -%}
+          <h3 class="pdpx-visit__title">{{ s[k_t] | escape }}</h3>
+          <p class="pdpx-visit__text">{{ s[k_x] | escape }}</p>
+          {%- if s[k_l] != blank %}<a class="pdpx__link" href="{{ s[k_h] | escape }}">{{ s[k_l] | escape }} {{ arrow }}</a>{% endif -%}
+        </div>
+      </article>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+
+  {%- if s.show_stores -%}
+  <div class="pdpx__head pdpx-visit__head">
+    {%- if s.stores_eyebrow != blank %}<p class="pdpx__eyebrow">{{ s.stores_eyebrow | escape }}</p>{% endif -%}
+    <h2 class="pdpx__title" id="visit-title-{{ section.id }}"><span>{{ s.stores_title_1 | escape }}</span>{% if s.stores_title_2 != blank %}<span class="pdpx__soft">{{ s.stores_title_2 | escape }}</span>{% endif %}</h2>
+  </div>
+  <ul class="pdpx-visit__stores">
+    {%- if section.blocks.size > 0 -%}
+      {%- for b in section.blocks -%}
+        {%- assign st = b.settings -%}
+        <li class="pdpx-visit__store" {{ b.shopify_attributes }}>
+          <h3>{{ st.name | escape }}</h3>
+          <p class="pdpx-visit__addr">{{ st.address | escape }}</p>
+          <p class="pdpx-visit__tel">{% if st.tel != blank %}<a href="tel:{{ st.tel | remove: ' ' }}">{{ st.tel }}</a>{% endif %}{% if st.mobile != blank %}<a href="tel:{{ st.mobile | remove: ' ' }}">{{ st.mobile }}</a>{% endif %}</p>
+          <a class="pdpx__link" href="https://www.google.com/maps/search/?api=1&query={{ 'Shrujan ' | append: st.address | url_encode }}" target="_blank" rel="noopener">Directions {{ arrow }}</a>
+        </li>
+      {%- endfor -%}
+    {%- else -%}
+      {%- for d in stores -%}
+        {%- assign f = d | split: '|' -%}
+        <li class="pdpx-visit__store">
+          <h3>{{ f[0] }}</h3>
+          <p class="pdpx-visit__addr">{{ f[1] }}</p>
+          <p class="pdpx-visit__tel">{% if f[2] != blank %}<a href="tel:{{ f[2] | remove: ' ' }}">{{ f[2] }}</a>{% endif %}{% if f[3] != blank %}<a href="tel:{{ f[3] | remove: ' ' }}">{{ f[3] }}</a>{% endif %}</p>
+          <a class="pdpx__link" href="https://www.google.com/maps/search/?api=1&query={{ 'Shrujan ' | append: f[1] | url_encode }}" target="_blank" rel="noopener">Directions {{ arrow }}</a>
+        </li>
+      {%- endfor -%}
+    {%- endif -%}
+  </ul>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Product — Gifting & stores",
+  "tag": "div",
+  "settings": [
+    { "type": "header", "content": "First card" },
+    { "type": "text", "id": "card1_eyebrow", "label": "Small heading", "default": "Gifting with Shrujan" },
+    { "type": "text", "id": "card1_title", "label": "Title", "default": "Gifting & Collaborations" },
+    { "type": "textarea", "id": "card1_text", "label": "Line", "default": "We work with organisations and individuals on refined handcrafted gifting projects rooted in craft and thoughtful design." },
+    { "type": "text", "id": "card1_label", "label": "Link label", "default": "Enquire About Gifting" },
+    { "type": "text", "id": "card1_link", "label": "Link", "default": "/pages/studio-gifting" },
+    { "type": "text", "id": "card1_asset", "label": "Picture (theme image file)", "default": "hero-bottom-2.webp" },
+    { "type": "text", "id": "card1_alt", "label": "Picture description", "default": "Hand embroidery in gold thread on deep plum cloth" },
+    { "type": "header", "content": "Second card" },
+    { "type": "text", "id": "card2_eyebrow", "label": "Small heading", "default": "Private viewing" },
+    { "type": "text", "id": "card2_title", "label": "Title", "default": "See the collection in person" },
+    { "type": "textarea", "id": "card2_text", "label": "Line", "default": "Visit the Shrujan campus in Bhujodi or one of our stores, or see pieces with us on a video call." },
+    { "type": "text", "id": "card2_label", "label": "Link label", "default": "Book a viewing" },
+    { "type": "text", "id": "card2_link", "label": "Link", "info": "#book goes to the booking section on the product page.", "default": "#book" },
+    { "type": "text", "id": "card2_asset", "label": "Picture (theme image file)", "default": "visit-campus.webp" },
+    { "type": "text", "id": "card2_alt", "label": "Picture description", "default": "The Shrujan studio floor, with racks of finished cloth" },
+    { "type": "header", "content": "Stores" },
+    { "type": "checkbox", "id": "show_stores", "label": "Show the stores", "default": true },
+    { "type": "text", "id": "stores_eyebrow", "label": "Small heading", "default": "Visit us" },
+    { "type": "text", "id": "stores_title_1", "label": "Title, first line", "default": "Shrujan" },
+    { "type": "text", "id": "stores_title_2", "label": "Title, second line (in red)", "default": "stores" }
+  ],
+  "blocks": [
+    {
+      "type": "store",
+      "name": "Store",
+      "limit": 12,
+      "settings": [
+        { "type": "text", "id": "name", "label": "Name", "default": "Bhujodi" },
+        { "type": "textarea", "id": "address", "label": "Address", "default": "Behind G.E.B Sub Station, Bhujodi, Bhuj, Kutch 370020" },
+        { "type": "text", "id": "tel", "label": "Telephone" },
+        { "type": "text", "id": "mobile", "label": "Mobile" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Product — Gifting & stores" } ]
+}
+{% endschema %}

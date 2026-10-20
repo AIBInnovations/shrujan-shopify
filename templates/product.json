@@ -14,9 +14,24 @@
       "settings": {
         "size_guide_page": "size-chart"
       }
+    },
+    "making": {
+      "type": "product-making",
+      "settings": {}
+    },
+    "book": {
+      "type": "product-book",
+      "settings": {}
+    },
+    "visit": {
+      "type": "product-visit",
+      "settings": {}
     }
   },
   "order": [
-    "main"
+    "main",
+    "making",
+    "book",
+    "visit"
   ]
 }

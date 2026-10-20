@@ -1,4 +1,6 @@
 {%- render 'section-design', section: section -%}
+{{ 'sj-pdp.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'sj-pdp.js' | asset_url }}" defer></script>
 {%- comment -%}
   Product detail — the designed three-column page, rendered from the real
   product on the server.
@@ -234,6 +236,17 @@
 {%- capture icon_star -%}<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.6L12 17.6 6.1 20.7l1.2-6.6L2.5 9.5l6.6-.9Z"></path></svg>{%- endcapture -%}
 {%- capture icon_arrow_15 -%}<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>{%- endcapture -%}
 {%- capture icon_arrow_16 -%}<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>{%- endcapture -%}
+{%- capture pdpi_making -%}<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20 18.5 5.5"/><path d="M17 4.5a1.8 1.8 0 1 1 2.5 2.5"/><path d="M5 13c3-1 5 1 6 4"/><path d="M9 9c3-1 6 1 7 4"/></svg>{%- endcapture -%}
+{%- capture pdpi_call -%}<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6.5" width="12.5" height="11" rx="2"/><path d="m15.5 10.5 5-3v9l-5-3"/></svg>{%- endcapture -%}
+{%- capture pdpi_story -%}<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5c2.7-1 5.3-1 8 .8 2.7-1.8 5.3-1.8 8-.8v13c-2.7-1-5.3-1-8 .8-2.7-1.8-5.3-1.8-8-.8z"/><path d="M12 6.3v13"/></svg>{%- endcapture -%}
+{%- capture pdpi_care -%}<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 7h17l-1.6 10.5a2 2 0 0 1-2 1.7H7.1a2 2 0 0 1-2-1.7z"/><path d="M3.5 7c1.4-1.6 2.8-1.6 4.2 0s2.8 1.6 4.3 0 2.8-1.6 4.2 0 2.8 1.6 4.3 0"/></svg>{%- endcapture -%}
+{%- capture pdpi_ship -%}<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.6"/><circle cx="17.5" cy="17.5" r="1.6"/></svg>{%- endcapture -%}
+{%- capture pdpi_since -%}<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>{%- endcapture -%}
+{%- capture pdpi_assist -%}<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13v-1a7 7 0 0 1 14 0v1"/><rect x="3.5" y="12.5" width="3.5" height="6" rx="1.4"/><rect x="17" y="12.5" width="3.5" height="6" rx="1.4"/><path d="M19 18.5c0 1.5-1.8 2.5-5 2.5"/></svg>{%- endcapture -%}
+{%- capture pdpi_hand -%}<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 12V6.5a1.5 1.5 0 0 1 3 0V11"/><path d="M11 10V5a1.5 1.5 0 0 1 3 0v6"/><path d="M14 10.5V7a1.5 1.5 0 0 1 3 0v6.5c0 3.6-2.4 6.5-6 6.5-2.6 0-4.4-1.4-5.6-3.6L4 13.2a1.4 1.4 0 0 1 2.3-1.6L8 13.5"/></svg>{%- endcapture -%}
+{%- capture pdpi_wa -%}<svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M12 2.5a9.4 9.4 0 0 0-8.1 14.2L2.6 21.5l4.9-1.3A9.4 9.4 0 1 0 12 2.5Zm0 17.1c-1.4 0-2.8-.4-4-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A7.7 7.7 0 1 1 12 19.6Zm4.3-5.8c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1l-.7.9c-.1.2-.3.2-.5.1a6.3 6.3 0 0 1-3.1-2.7c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.7-1.7c-.2-.4-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.8 2.3 1 2.5c.1.2 1.6 2.5 4 3.5 1.5.6 2.1.7 2.8.6.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1l-.5-.2Z"/></svg>{%- endcapture -%}
+{%- capture pdpi_phone -%}<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3.5h3.2l1.6 4-2 1.3a10.5 10.5 0 0 0 5.4 5.4l1.3-2 4 1.6V17A2 2 0 0 1 16.4 19 14.5 14.5 0 0 1 3 5.6 2 2 0 0 1 5 3.5Z"/></svg>{%- endcapture -%}
+{%- capture pdpi_mail -%}<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>{%- endcapture -%}
 {%- capture icon_plus -%}<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>{%- endcapture -%}
 {%- capture stars_rating -%}<span class="pdp__stars" aria-label="{{ star_n }} out of 5 stars">{% for i in (1..star_n) %}{{ icon_star }}{% endfor %}</span>{%- endcapture -%}
 {%- comment -%}
@@ -288,8 +301,41 @@
         {%- if has_was or cfg.show_modes == false -%}
           <p class="pdp__price" data-pdp-was-line>{{ variant.price | money | strip_html }}{% if has_was %}<s>{{ variant.compare_at_price | money | strip_html }}</s>{% endif %}</p>
         {%- endif -%}
+        {%- if cfg.tax_note != blank %}<p class="pdp__tax">{{ cfg.tax_note | escape }}</p>{% endif -%}
         {%- if cfg.copy != blank -%}
           <p class="pdp__copy">{{ cfg.copy }}</p>
+        {%- endif -%}
+
+        {%- comment -%}
+          Four ways into the piece, as the best craft houses offer them: how it
+          is made, a call with us, the story, and how to care for it. A link
+          starting with # goes to that part of this page (the making, the
+          booking, or the care panel, which it opens).
+        {%- endcomment -%}
+        {%- if cfg.show_quick -%}
+          <ul class="pdp__quick">
+            {%- for q in (1..4) -%}
+              {%- liquid
+                assign q_label_key = 'quick' | append: q | append: '_label'
+                assign q_link_key = 'quick' | append: q | append: '_link'
+                assign q_label = cfg[q_label_key]
+                assign q_link = cfg[q_link_key]
+                case q
+                  when 1
+                    assign q_icon = pdpi_making
+                  when 2
+                    assign q_icon = pdpi_call
+                  when 3
+                    assign q_icon = pdpi_story
+                  else
+                    assign q_icon = pdpi_care
+                endcase
+              -%}
+              {%- if q_label != blank -%}
+              <li><a class="pdp__quick-link" href="{{ q_link | escape }}"{% if q_link == '#care' %} data-pdp-open="care"{% endif %}>{{ q_icon }}<span>{{ q_label | escape }}</span></a></li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
         {%- endif -%}
 
         {%- if spec_list.size > 0 -%}
@@ -388,6 +434,29 @@
           {%- endif -%}
           <button type="button" class="pdp__wish" aria-label="Save to wishlist"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19.8S4.5 15.3 4.5 9.9c0-2.6 2-4.4 4.2-4.4 1.5 0 2.7.8 3.3 2 .6-1.2 1.8-2 3.3-2 2.2 0 4.2 1.8 4.2 4.4 0 5.4-7.5 9.9-7.5 9.9Z"></path></svg></button>
         </form>
+        {%- if cfg.ships_note != blank -%}
+          <p class="pdp__ships"><b>{{ cfg.ships_label | escape }}</b> {{ cfg.ships_note | escape }}</p>
+        {%- endif -%}
+        {%- if cfg.show_trust -%}
+          <ul class="pdp__trust">
+            {%- for t in (1..4) -%}
+              {%- liquid
+                assign t_key = 'trust' | append: t
+                case t
+                  when 1
+                    assign t_icon = pdpi_ship
+                  when 2
+                    assign t_icon = pdpi_since
+                  when 3
+                    assign t_icon = pdpi_assist
+                  else
+                    assign t_icon = pdpi_hand
+                endcase
+              -%}
+              {%- if cfg[t_key] != blank %}<li>{{ t_icon }}<span>{{ cfg[t_key] | escape }}</span></li>{% endif -%}
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
         {%- if cfg.reassure != blank -%}
           <p class="pdp__reassure"><svg viewBox="0 0 32 32" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M16 2c1.3 4.6 3 7.4 5.2 8.8C23.4 12.2 26 13 30 13.4v.2c-4 .4-6.6 1.2-8.8 2.6C19 17.6 17.3 20.4 16 25c-1.3-4.6-3-7.4-5.2-8.8C8.6 14.8 6 14 2 13.6v-.2c4-.4 6.6-1.2 8.8-2.6C13 9.4 14.7 6.6 16 2Z"></path><circle cx="16" cy="28.5" r="1.6"></circle></svg> {{ cfg.reassure }}</p>
         {%- endif -%}
@@ -432,7 +501,9 @@
                 {%- assign is_fit = true -%}
                 {%- assign fit_found = true -%}
               {%- endif -%}
-              <div class="pdp__detail{% if d_rendered == 0 %} is-open{% endif %}"{% if is_fit %} data-pdp-fit{% endif %}>
+              {%- assign is_care = false -%}
+              {%- if d_title_low contains 'care' -%}{%- assign is_care = true -%}{%- endif -%}
+              <div class="pdp__detail{% if d_rendered == 0 %} is-open{% endif %}"{% if is_fit %} data-pdp-fit{% endif %}{% if is_care %} id="care" data-pdp-care{% endif %}>
                 <button type="button" class="pdp__detail-summary" aria-expanded="{% if d_rendered == 0 %}true{% else %}false{% endif %}" aria-controls="pdp-detail-{{ d_rendered }}">
                   <span>{{ d_title }}</span>
                   <span class="pdp__detail-icon" aria-hidden="true">{{ icon_plus }}</span>
@@ -442,13 +513,29 @@
                     {%- if d_rich and d_body contains '<' -%}
                       {{ d_body }}
                     {%- else -%}
-                      <p>{{ d_body }}</p>
+                      {%- assign d_lines = d_body | newline_to_br | split: '<br />' -%}
+                      {%- for d_line in d_lines -%}{%- assign d_l = d_line | strip -%}{%- if d_l != blank %}<p>{{ d_l }}</p>{% endif -%}{%- endfor -%}
                     {%- endif -%}
                   </div>
                 </div>
               </div>
               {%- assign d_rendered = d_rendered | plus: 1 -%}
             {%- endfor -%}
+          </div>
+        {%- endif -%}
+
+        {%- comment -%} help, by the channel the shopper prefers {%- endcomment -%}
+        {%- if cfg.show_assist -%}
+          {%- capture wa_text -%}Hello Shrujan, I would like to know more about {{ product.title }} ({{ shop.url }}{{ product.url }}){%- endcapture -%}
+          <div class="pdp__assist">
+            <p class="pdp__assist-title">{{ cfg.assist_title | escape }}</p>
+            <p class="pdp__assist-hours">{{ cfg.assist_hours | escape }}</p>
+            <div class="pdp__assist-links">
+              {%- if cfg.assist_whatsapp != blank %}<a href="https://api.whatsapp.com/send?phone={{ cfg.assist_whatsapp | remove: '+' | remove: ' ' }}&text={{ wa_text | url_encode }}" target="_blank" rel="noopener">{{ pdpi_wa }}<span>WhatsApp</span></a>{% endif -%}
+              {%- if cfg.assist_phone != blank %}<a href="tel:{{ cfg.assist_phone | remove: ' ' }}">{{ pdpi_phone }}<span>Call</span></a>{% endif -%}
+              {%- if cfg.assist_email != blank %}<a href="mailto:{{ cfg.assist_email }}?subject={{ product.title | url_encode }}">{{ pdpi_mail }}<span>Email</span></a>{% endif -%}
+              {%- if cfg.assist_book_label != blank %}<a class="pdp__assist-book" href="#book">{{ pdpi_call }}<span>{{ cfg.assist_book_label | escape }}</span></a>{% endif -%}
+            </div>
           </div>
         {%- endif -%}
 
@@ -521,8 +608,8 @@
       <section class="section container pdp-rec" aria-label="Recommended">
         <div class="section-head" data-reveal>
           <div class="section-head__titles">
-            <p class="eyebrow">You may also like</p>
-            <h2 class="section-title">More from the <em>same hands</em></h2>
+            <p class="eyebrow">Complete the look</p>
+            <h2 class="section-title">Pieces to <em>wear with it</em></h2>
           </div>
         </div>
         <div class="curated__grid" data-reveal-child>
@@ -887,6 +974,12 @@
       "info": "Shown under the craft line, above the “Made with” pills. The product’s own description is the first detail panel."
     },
     {
+      "type": "text",
+      "id": "tax_note",
+      "label": "Line under the price",
+      "default": "MRP incl. of all taxes"
+    },
+    {
       "type": "textarea",
       "id": "specs",
       "label": "“Made with” pills",
@@ -909,7 +1002,164 @@
     {
       "type": "text",
       "id": "reassure",
-      "label": "Free-alterations note"
+      "label": "Free-alterations note",
+      "default": "Each piece is embroidered by hand by a craftswoman of Kutch. Slight variations in embroidery and weave are natural, as each piece is handmade."
+    },
+    {
+      "type": "header",
+      "content": "Four ways into the piece"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quick",
+      "label": "Show the four links under the line",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "quick1_label",
+      "label": "First: label",
+      "default": "How it’s made"
+    },
+    {
+      "type": "text",
+      "id": "quick1_link",
+      "label": "First: link",
+      "info": "#making goes to the making section below.",
+      "default": "#making"
+    },
+    {
+      "type": "text",
+      "id": "quick2_label",
+      "label": "Second: label",
+      "default": "Book a video call"
+    },
+    {
+      "type": "text",
+      "id": "quick2_link",
+      "label": "Second: link",
+      "info": "#book goes to the booking section below.",
+      "default": "#book"
+    },
+    {
+      "type": "text",
+      "id": "quick3_label",
+      "label": "Third: label",
+      "default": "Our story"
+    },
+    {
+      "type": "text",
+      "id": "quick3_link",
+      "label": "Third: link",
+      "default": "/pages/the-shrujan-story"
+    },
+    {
+      "type": "text",
+      "id": "quick4_label",
+      "label": "Fourth: label",
+      "default": "Care guide"
+    },
+    {
+      "type": "text",
+      "id": "quick4_link",
+      "label": "Fourth: link",
+      "info": "#care opens the care panel.",
+      "default": "#care"
+    },
+    {
+      "type": "header",
+      "content": "Under the button"
+    },
+    {
+      "type": "text",
+      "id": "ships_label",
+      "label": "Shipping line: label",
+      "default": "Ships from"
+    },
+    {
+      "type": "text",
+      "id": "ships_note",
+      "label": "Shipping line",
+      "info": "For example: 2–3 days, or where it ships from.",
+      "default": "our Bhujodi workshop in Kutch"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trust",
+      "label": "Show the four promises",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "trust1",
+      "label": "Promise 1",
+      "default": "Free shipping across India"
+    },
+    {
+      "type": "text",
+      "id": "trust2",
+      "label": "Promise 2",
+      "default": "Since 1969"
+    },
+    {
+      "type": "text",
+      "id": "trust3",
+      "label": "Promise 3",
+      "default": "Personal assistance"
+    },
+    {
+      "type": "text",
+      "id": "trust4",
+      "label": "Promise 4",
+      "default": "Handmade in Kutch"
+    },
+    {
+      "type": "header",
+      "content": "Need assistance"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_assist",
+      "label": "Show the help block",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "assist_title",
+      "label": "Title",
+      "default": "Need assistance? Get in touch."
+    },
+    {
+      "type": "text",
+      "id": "assist_hours",
+      "label": "Hours",
+      "default": "Mon–Sat, 10 AM to 7 PM (IST)"
+    },
+    {
+      "type": "text",
+      "id": "assist_whatsapp",
+      "label": "WhatsApp number",
+      "info": "With the country code, e.g. 919099974319.",
+      "default": "919099974319"
+    },
+    {
+      "type": "text",
+      "id": "assist_phone",
+      "label": "Phone number",
+      "default": "+91 9099 974319"
+    },
+    {
+      "type": "text",
+      "id": "assist_email",
+      "label": "Email",
+      "default": "marketing@shrujan.com"
+    },
+    {
+      "type": "text",
+      "id": "assist_book_label",
+      "label": "Booking link label",
+      "info": "Goes to the booking section below.",
+      "default": "Book a video call"
     },
     {
       "type": "header",
@@ -992,45 +1242,49 @@
       "id": "detail2_title",
       "label": "Panel 2 heading",
       "info": "The panel whose heading mentions “fit” is the one “Size guide” opens.",
-      "default": "Fabric & fit"
+      "default": "Care instructions"
     },
     {
       "type": "textarea",
       "id": "detail2_body",
-      "label": "Panel 2 copy"
+      "label": "Panel 2 copy",
+      "default": "Dry clean is best for hand-embroidered and mirror-work pieces.\nIf you wash it, hand wash gently and separately in cold water with a mild detergent; do not soak, wring or scrub the embroidery.\nDry flat in the shade, away from direct sun.\nIron on the reverse on a low setting, never directly on the embroidery or the mirrors.\nStore it folded in a muslin or cotton cloth in a dry place, and air it every few months.\nAvoid spraying perfume directly on the cloth."
     },
     {
       "type": "text",
       "id": "detail3_title",
       "label": "Panel 3 heading",
-      "default": "How to care for it"
+      "default": "Shipping & returns"
     },
     {
       "type": "textarea",
       "id": "detail3_body",
-      "label": "Panel 3 copy"
+      "label": "Panel 3 copy",
+      "default": "Shipping is free on every order within India. Orders ship from our Bhujodi warehouse in Kutch.\nOrders within India can be exchanged within 7 days of delivery for a credit note, valid for 90 days. Sale items are not eligible, and international orders are not eligible for return or exchange.\nFor the full terms, see our Shipping Policy and Return & Exchange policy."
     },
     {
       "type": "text",
       "id": "detail4_title",
       "label": "Panel 4 heading",
-      "default": "Shipping & returns"
+      "default": "Disclaimer"
     },
     {
       "type": "textarea",
       "id": "detail4_body",
-      "label": "Panel 4 copy"
+      "label": "Panel 4 copy",
+      "default": "Slight variations in embroidery and weave are natural, as each piece is handmade. The original colour may vary slightly due to photography and differences in screen or mobile lighting."
     },
     {
       "type": "text",
       "id": "detail5_title",
       "label": "Panel 5 heading",
-      "default": "The maker"
+      "default": "Manufactured by"
     },
     {
       "type": "textarea",
       "id": "detail5_body",
-      "label": "Panel 5 copy"
+      "label": "Panel 5 copy",
+      "default": "Shrujan, Behind G.E.B Sub Station, Bhujodi, Bhuj, Kutch 370020, Gujarat, India.\nCountry of origin: India."
     },
     {
       "type": "header",
