@@ -31,7 +31,7 @@
   {%- if s.lede != blank %}<p class="ft__lede">{{ s.lede | escape }}</p>{% endif -%}
 {%- endcapture -%}
 {%- capture motif -%}<svg class="ft__motif" viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(32 32)"><path d="M0-25 C4-20 7-17 5-12 C3-8 0-8 0-4 C0-8-3-8-5-12 C-7-17-4-20 0-25Z"/><path d="M0 25 C4 20 7 17 5 12 C3 8 0 8 0 4 C0 8-3 8-5 12 C-7 17-4 20 0 25Z"/><path d="M-25 0 C-20-4-17-7-12-5 C-8-3-8 0-4 0 C-8 0-8 3-12 5 C-17 7-20 4-25 0Z"/><path d="M25 0 C20-4 17-7 12-5 C8-3 8 0 4 0 C8 0 8 3 12 5 C17 7 20 4 25 0Z"/><path d="M-17-17 C-10-19-7-14-9-9 C-14-7-19-10-17-17Z"/><path d="M17-17 C10-19 7-14 9-9 C14-7 19-10 17-17Z"/><path d="M-17 17 C-10 19-7 14-9 9 C-14 7-19 10-17 17Z"/><path d="M17 17 C10 19 7 14 9 9 C14 7 19 10 17 17Z"/><circle r="5"/><circle r="2"/><path d="M0-18V-8 M0 8V18 M-18 0h10 M8 0h10"/></g></svg>{%- endcapture -%}
-<section class="ft ft--{{ s.layout }}{% if s.flip %} ft--flip{% endif %}" id="{{ s.anchor | escape }}" aria-labelledby="ft-title-{{ sid }}"{% if s.layout == 'studio' %} style="--paper:url({{ s.paper_asset | default: 'sj-studio-paper.webp' | asset_url }})"{% endif %}>
+<section class="ft ft--{{ s.layout }}{% if s.flip %} ft--flip{% endif %}" id="{{ s.anchor | escape }}" aria-labelledby="ft-title-{{ sid }}" data-v="schema-test"{% if s.layout == 'studio' %} style="--paper:url({{ s.paper_asset | default: 'sj-studio-paper.webp' | asset_url }})"{% endif %}>
   {%- if s.layout == 'studio' -%}
     <div class="ft__decor" aria-hidden="true">{% if s.pillar_asset != blank %}<img class="ft__pillar" src="{{ s.pillar_asset | asset_url }}" alt="" loading="lazy">{% endif %}<i class="ft__edge ft__edge--l">{{ motif }}</i><i class="ft__edge ft__edge--r">{{ motif }}</i></div><div class="ft__head">{{ motif }}{{ head }}</div><div class="ft__scenes">
     {%- for b in section.blocks -%}
@@ -48,27 +48,6 @@
       -%}
       <article class="ft__scene ft__scene--{{ c.look }}" style="--wall:url({{ c.wall_asset | default: 'sj-studio-wall-red.webp' | asset_url }})" {{ b.shopify_attributes }}><div class="ft__stage">{% if c.back_asset != blank %}<img class="ft__back" src="{{ c.back_asset | asset_url }}" alt="" loading="lazy">{% endif %}<img class="ft__cloth" src="{{ pic }}" alt="{{ pic_alt | escape }}" loading="lazy">{% if c.front_asset != blank %}<span class="ft__front ft__front--{{ c.front_crop }}"><img src="{{ c.front_asset | asset_url }}" alt="" loading="lazy"></span>{% endif %}</div><div class="ft__copy"><p class="ft__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</p><h3 class="ft__name">{{ c.name | escape }}</h3><p class="ft__text">{{ c.text | escape }}</p>{%- if c.btn_label != blank -%}<a class="ft__btn" href="{{ c.btn_link | escape }}"{% if c.btn_link contains 'http' %} target="_blank" rel="noopener"{% endif %}>{{ c.btn_label | escape }} {{ arrow }}</a>{%- endif -%}</div>{%- if c.detail_asset != blank -%}<aside class="ft__detail"><img src="{{ c.detail_asset | asset_url }}" alt="{{ c.detail_alt | escape }}" loading="lazy"><p class="ft__words">{%- for w in words -%}{%- assign ww = w | strip -%}{%- if ww != blank -%}<span>{{ ww | escape }}</span>{%- endif -%}{%- endfor -%}</p>{{ motif }}</aside>{%- endif -%}</article>
     {%- endfor -%}
-    </div>
-  {%- elsif s.layout == 'collage' -%}
-    {%- assign t1 = s.title_1 | escape | replace: '&amp;', '<span class="ft__amp">&amp;</span>' -%}
-    <div class="ft__collage"><img class="ft__c-paper ft__c-paper--a" src="{{ 'sj-visit-paper.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><img class="ft__c-paper ft__c-paper--b" src="{{ 'sj-visit-paper.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><img class="ft__c-arch" src="{{ 'sj-visit-arch.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><img class="ft__c-swatch" src="{{ 'sj-visit-swatch.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><img class="ft__c-map" src="{{ 'sj-visit-map.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><div class="ft__head">{% if s.eyebrow != blank %}<p class="ft__eyebrow">{{ s.eyebrow | escape }}</p>{% endif %}<h2 class="ft__title" id="ft-title-{{ sid }}"><span class="ft__line">{{ t1 }}</span>{% if s.title_2 != blank %}<span class="ft__line">{{ s.title_2 | escape }}</span>{% endif %}</h2>{% if s.lede != blank %}<p class="ft__lede">{{ s.lede | escape }}</p>{% endif %}</div>
-    {%- for b in section.blocks -%}
-      {%- liquid
-        assign c = b.settings
-        if c.image != blank
-          assign pic = c.image | image_url: width: 1400
-          assign pic_alt = c.image_alt | default: c.image.alt
-        else
-          assign pic = c.image_asset | asset_url
-          assign pic_alt = c.image_alt
-        endif
-      -%}
-      <a class="ft__c-photo ft__c-photo--{{ forloop.index }}" href="{{ c.btn_link | escape }}" tabindex="-1" aria-hidden="true"{% if c.btn_link contains 'http' %} target="_blank" rel="noopener"{% endif %}><img src="{{ pic }}" alt="{{ pic_alt | escape }}" loading="lazy"></a><article class="ft__c-card ft__c-card--{{ forloop.index }}" {{ b.shopify_attributes }}><p class="ft__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</p><h3 class="ft__name">{{ c.name | escape }}</h3><p class="ft__text">{{ c.text | escape }}</p>{%- if c.btn_label != blank -%}<a class="ft__btn" href="{{ c.btn_link | escape }}"{% if c.btn_link contains 'http' %} target="_blank" rel="noopener"{% endif %}>{{ c.btn_label | escape }} {{ arrow }}</a>{%- endif -%}</article>
-    {%- endfor -%}
-    <img class="ft__c-sprig" src="{{ 'sj-visit-sprig.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><img class="ft__c-thread" src="{{ 'sj-visit-thread.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><img class="ft__c-flower" src="{{ 'sj-visit-flower.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><svg class="ft__c-lines" viewBox="0 0 1448 1086" aria-hidden="true"><path d="M1020,76 C1062,50 1122,30 1178,36" /><path d="M0,762 C28,752 52,738 80,733" /><path class="ft__c-route" d="M1062,836 C1122,848 1204,832 1322,795" /><circle class="ft__c-ring" cx="1020" cy="76" r="5" /><circle class="ft__c-ring" cx="80" cy="733" r="5" /><circle class="ft__c-pin" cx="1326" cy="794" r="5.5" /></svg>
-    {%- assign tw = s.collage_tags | split: ',' -%}{%- if s.collage_tags != blank -%}<p class="ft__c-tags">{%- for w in tw -%}{%- assign ww = w | strip -%}{%- if ww != blank -%}<span>{{ ww | escape }}</span>{%- endif -%}{%- endfor -%}</p>{%- endif -%}
-    {%- if s.map_label != blank -%}<p class="ft__c-label">{{ s.map_label | escape }}</p>{%- endif -%}
-    {%- assign mw = s.map_words | split: ',' -%}{%- if s.map_words != blank -%}<p class="ft__c-words">{%- for w in mw -%}{%- assign ww = w | strip -%}{%- if ww != blank -%}<span>{{ ww | escape }}</span>{%- endif -%}{%- endfor -%}</p>{%- endif -%}
     </div>
   {%- elsif s.layout == 'banner' -%}
     {%- liquid
