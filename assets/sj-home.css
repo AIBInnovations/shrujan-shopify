@@ -2996,10 +2996,12 @@ html.sj-pre .dh__strip {
 }
 
 .ft__bg {
+  /* taller than its frame, so it can drift as the page scrolls (feature.js) */
   position: absolute;
-  inset: 0;
+  left: 0;
+  top: -12%;
   width: 100%;
-  height: 100%;
+  height: 124%;
   max-width: none;
   object-fit: cover;
   object-position: 50% 50%;
@@ -3108,6 +3110,7 @@ html.sj-pre .dh__strip {
     position: static;
     aspect-ratio: 4 / 3;
     height: auto;
+    top: auto;
     object-position: 78% 50%;
   }
 

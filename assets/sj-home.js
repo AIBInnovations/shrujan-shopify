@@ -798,7 +798,16 @@
           scrollTrigger: { trigger: root.querySelector('.ft__cards'), start: 'top 85%' },
         });
       }
-      [].forEach.call(root.querySelectorAll('.ft__media img, .ft__bg'), function (img) {
+      // the banner's photograph drifts inside its frame as the page scrolls,
+      // slower than the page (desktops: on phones it sits under the words)
+      var bg = root.querySelector('.ft__bg');
+      if (bg && window.matchMedia('(min-width: 721px)').matches) {
+        gsap.fromTo(bg, { yPercent: -8 }, {
+          yPercent: 8, ease: 'none',
+          scrollTrigger: { trigger: root.querySelector('.ft__banner'), start: 'top bottom', end: 'bottom top', scrub: true },
+        });
+      }
+      [].forEach.call(root.querySelectorAll('.ft__media img'), function (img) {
         gsap.fromTo(img, { scale: 1.12 }, {
           scale: 1, duration: 1.6, ease: 'expo.out', clearProps: 'transform',
           scrollTrigger: { trigger: img, start: 'top 88%' },
