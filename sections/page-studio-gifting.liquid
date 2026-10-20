@@ -71,6 +71,8 @@
 {%- assign meta_blocks = section.blocks | where: 'type', 'meta' -%}
 {%- assign offer_blocks = section.blocks | where: 'type', 'offer' -%}
 {%- assign step_blocks = section.blocks | where: 'type', 'step' -%}
+{%- capture nl %}
+{% endcapture -%}
 <div class="page">
   <header class="page-hero page-hero--plain" data-reveal>
     <div class="container page-hero__grid">
@@ -127,7 +129,13 @@
         <div class="studio-row__body">
           <span class="studio-row__no" aria-hidden="true">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
           <h3 class="studio-row__name">{{ block.settings.name | escape }}</h3>
-          <p class="studio-row__copy">{{ block.settings.copy }}</p>
+{%- assign offer_paras = block.settings.copy | strip | split: nl -%}
+{%- for para in offer_paras -%}
+{%- assign para_text = para | strip -%}
+{%- if para_text != blank %}
+          <p class="studio-row__copy">{{ para_text }}</p>
+{%- endif -%}
+{%- endfor %}
 
           <ul class="studio-row__facts">
 {%- if block.settings.fact_1 != blank %}
@@ -330,7 +338,7 @@
       "type": "textarea",
       "id": "hero_lede",
       "label": "Hero lede",
-      "default": "We work with organisations and individuals to create refined handcrafted gifts that reflect care, craft and cultural meaning."
+      "default": "We work with organisations and individuals to create refined handcrafted gifts that reflect care, craft and cultural meaning. Each project is approached with attention to detail and an understanding that gifting can be both personal and deeply considered."
     },
     {
       "type": "image_picker",
@@ -389,7 +397,7 @@
       "type": "textarea",
       "id": "enq_copy",
       "label": "Enquiry copy",
-      "default": "Tell us the occasion, the numbers and the date you need them by. We will come back with what the crafts can do in that time."
+      "default": "If you are exploring a gifting or collaboration project and would like to understand possibilities, we would be glad to hear from you."
     },
     {
       "type": "text",
@@ -431,7 +439,7 @@
       "type": "text",
       "id": "submit_label",
       "label": "Submit button label",
-      "default": "Request a callback"
+      "default": "Enquire About Gifting"
     },
     {
       "type": "text",
@@ -815,8 +823,8 @@
         {
           "type": "textarea",
           "id": "copy",
-          "label": "Copy",
-          "default": "Meaningful, high-quality gifts rooted in craft, for organisations marking a milestone, a partnership or an occasion. Chosen for craftsmanship and cultural integrity, so the gift carries depth as well as value."
+          "label": "Copy (one paragraph per line)",
+          "default": "Shrujan collaborates with organisations seeking meaningful, high-quality gifts rooted in craft. These projects often mark important milestones, partnerships or occasions where the intention is to offer something lasting and thoughtfully made.\nOur focus is on craftsmanship, cultural integrity and thoughtful selection, ensuring each gift carries depth and value."
         },
         {
           "type": "text",
@@ -918,7 +926,7 @@
             "asset": "sj-jat-garasiya-mobile-pouch-31-1.webp",
             "alt": "Hand-embroidered mobile pouches in Jat Garasiya work",
             "name": "Corporate & Institutional Gifting",
-            "copy": "Meaningful, high-quality gifts rooted in craft, for organisations marking a milestone, a partnership or an occasion. Chosen for craftsmanship and cultural integrity, so the gift carries depth as well as value.",
+            "copy": "Shrujan collaborates with organisations seeking meaningful, high-quality gifts rooted in craft. These projects often mark important milestones, partnerships or occasions where the intention is to offer something lasting and thoughtfully made.\nOur focus is on craftsmanship, cultural integrity and thoughtful selection, ensuring each gift carries depth and value.",
             "fact_1": "From 25 pieces",
             "fact_2": "4–8 weeks",
             "fact_3": "Presentation packaging",
@@ -931,7 +939,7 @@
             "asset": "sj-jat-garasiya-party-bag-copy-1-1.webp",
             "alt": "Hand-embroidered party bags arranged together",
             "name": "Wedding & Occasion Gifting",
-            "copy": "Handcrafted pieces chosen for celebrations — for how they look, and for the artisan skill and the story they carry with them.",
+            "copy": "For weddings and special occasions, we offer handcrafted gifts that bring warmth and individuality to celebrations. These pieces are chosen not only for their beauty but for the stories and skills they carry, making them gifts that are remembered and valued.",
             "fact_1": "From 50 pieces",
             "fact_2": "6–10 weeks",
             "fact_3": "Custom colourways",
@@ -944,7 +952,7 @@
             "asset": "sj-handloom-weaving-cushion-cover-5-1.webp",
             "alt": "Handloom cushion covers in natural dyed cotton",
             "name": "Custom Collaborations",
-            "copy": "Some projects call for something more specific. We take on custom commissions involving particular colours, materials or craft techniques, developed through dialogue and aligned with Shrujan’s craft values.",
+            "copy": "Some projects call for something more specific. We work on custom commissions that may involve particular colours, materials or craft techniques, developed through dialogue and aligned with Shrujan’s craft values.\nAll collaborations are undertaken with care, respecting both timelines and the handmade nature of the work",
             "fact_1": "By commission",
             "fact_2": "12+ weeks",
             "fact_3": "Developed with the artisans",

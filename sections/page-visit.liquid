@@ -102,7 +102,13 @@
       <div class="way__body">
         <p class="way__kicker">{{ block.settings.kicker | escape }}</p>
         <h2 class="way__name">{{ block.settings.name }}</h2>
-        <p class="way__copy">{{ block.settings.copy | escape }}</p>
+        {%- assign way_paras = block.settings.copy | newline_to_br | split: '<br />' -%}
+        {%- for para in way_paras -%}
+        {%- assign para_text = para | strip -%}
+        {%- unless para_text == blank %}
+        <p class="way__copy">{{ para_text | escape }}</p>
+        {%- endunless -%}
+        {%- endfor %}
 
         <ul class="way__points">
           {%- assign way_points = block.settings.points | newline_to_br | split: '<br />' -%}
@@ -706,13 +712,13 @@
           "type": "inline_richtext",
           "id": "name",
           "label": "Title",
-          "default": "The Shrujan Campus"
+          "default": "Visit the Shrujan Campus"
         },
         {
           "type": "textarea",
           "id": "copy",
-          "label": "Copy",
-          "default": "A behind-the-scenes visit, arranged in advance. You follow a piece from an idea through sampling and into production, and see how the design studio and the artisan communities actually work together. It is a visit about process, not a shop."
+          "label": "Copy (one paragraph per line)",
+          "default": "A visit to the Shrujan campus offers a behind-the-scenes look at how craft and design come together. This is where ideas are developed, sampling takes place and the detailed pre- and post-production processes are carried out in close collaboration with artisan communities.\nVisitors gain insight into the journey from traditional skills to finished pieces, understanding the care, time and coordination involved at each stage. The campus visit is about process and practice — an opportunity to see how Shrujan works beyond the retail space."
         },
         {
           "type": "textarea",
@@ -724,7 +730,7 @@
           "type": "text",
           "id": "cta_label",
           "label": "Link label",
-          "default": "Enquire about a visit"
+          "default": "Enquire About a Visit"
         },
         {
           "type": "text",
@@ -835,10 +841,10 @@
             "asset": "visit-campus.webp",
             "image_alt": "The Shrujan studio floor, with racks of finished cloth and staff at work",
             "kicker": "By appointment",
-            "name": "The Shrujan Campus",
-            "copy": "A behind-the-scenes visit, arranged in advance. You follow a piece from an idea through sampling and into production, and see how the design studio and the artisan communities actually work together. It is a visit about process, not a shop.",
+            "name": "Visit the Shrujan Campus",
+            "copy": "A visit to the Shrujan campus offers a behind-the-scenes look at how craft and design come together. This is where ideas are developed, sampling takes place and the detailed pre- and post-production processes are carried out in close collaboration with artisan communities.\nVisitors gain insight into the journey from traditional skills to finished pieces, understanding the care, time and coordination involved at each stage. The campus visit is about process and practice — an opportunity to see how Shrujan works beyond the retail space.",
             "points": "Design studio & sampling\nPre and post production\nThe coordination team",
-            "cta_label": "Enquire about a visit",
+            "cta_label": "Enquire About a Visit",
             "cta_link": "mailto:marketing@shrujan.com?subject=Campus%20visit"
           }
         },
@@ -848,10 +854,10 @@
             "asset": "visit-lakhpat.webp",
             "image_alt": "The walled fort at Lakhpat above the salt flat",
             "kicker": "Any time in season",
-            "name": "Kutch itself",
-            "copy": "The district the work comes from: craft villages within an hour of Bhuj, a museum built for the embroidery, and a landscape that turns to salt flat and back again. Come for a day, or plan a week around it.",
+            "name": "Visit Kutch",
+            "copy": "Kutch is a land of vast landscapes, living traditions and quiet beauty. A journey here is shaped as much by the people you meet as by the places you see. Craft, music, food and everyday life are deeply connected, offering a glimpse into cultures that continue to evolve while remaining rooted.\nThrough thoughtfully designed journeys, visitors can explore Kutch in a way that goes beyond sightseeing — spending time with artisan communities, understanding their environments and experiencing the region at a slower pace. For many, the journey becomes not only a travel experience but a personal one.",
             "points": "Craft villages & workshops\nThe LLDC museum\nPalaces, port towns, the Rann",
-            "cta_label": "Plan your trip",
+            "cta_label": "Plan Your Trip",
             "cta_link": "tel:+919099974319"
           }
         },

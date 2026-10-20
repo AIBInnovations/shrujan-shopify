@@ -2,45 +2,47 @@
 /* ============================================================
    Shrujan — the site's colours, on every page
    ------------------------------------------------------------
-   The palette the home page was redesigned in, for the whole store: near-
-   black text, ajrakh indigo in place of the old maroon and gold, a deep
-   indigo footer, and a warm beige ground with a fine grain over it (the
-   ground the Craft-that-cares section was first set on). The ornament
-   dividers stay off everywhere. Loaded by layout/theme.liquid on every
-   template, after the theme's own stylesheets and colour settings.
+   Shrujan's brand language (Shrujan_BRAND LANGUAGE + EXAMPLES.pdf):
+   understated, neutral, timeless. One ground for the whole store, the
+   brand's egg white with a fine grain, under every section, the header and
+   the box behind the logo; the brand's dark grey for the words; its beige
+   for lines and quiet panels; colour only in hints, the brand's maroon for
+   the few accents, the rest left to the cloth in the photographs. The offer
+   bar and the footer are the dark grey. The ornament dividers stay off. Loaded
+   by layout/theme.liquid on every template, after the theme's own
+   stylesheets and colour settings.
    ============================================================ */
 :root {
-  --ivory: #f3f0ed;
-  --ivory-2: #e6d8cc;
-  --sand: #e6d8cc;
-  --cream: #f3f0ed;
-  --cream-dim: rgba(243, 240, 237, 0.72);
-  --ink: #181615;
-  --ink-deep: #181615;
-  --ink-soft: #6f6b68;
-  /* one accent, from Kutch itself: ajrakh indigo for the accents, a deep
-     indigo for the dark bars and the footer; text stays near-black */
-  --indigo: #2b3f6b;
-  --indigo-deep: #1b2744;
-  --maroon: #1b2744;
-  --maroon-deep: #121a30;
-  --tan: #e6d8cc;
-  --gerua: #2b3f6b;
-  --gerua-600: #1b2744;
-  --gerua-300: #8d9ac0;
-  --gerua-100: #e4e3e6;
-  --mehendi-200: #e8e3dd;
-  --gold: #2b3f6b;
-  --hairline: rgba(24, 22, 21, 0.14);
-  --hairline-strong: rgba(24, 22, 21, 0.4);
-  /* the ground of every page, and its grain */
-  /* the beige behind the logo in the header, so the header, the logo's box
-     and every page are one colour */
-  --page-bg: #f3f0ed;
-  --page-bg-2: #e6d8cc;
+  /* the ground: one light, warm beige, and a shade of it for panels */
+  --page-bg: #f6f4e6;
+  --page-bg-2: #ede9d8;
+  --ivory: #f6f4e6;
+  --ivory-2: #ede9d8;
+  --sand: #e4dcc6;
+  --cream: #faf9f0;
+  --cream-dim: rgba(250, 249, 240, 0.72);
+  --tan: #ccbe9e;
+  --mehendi-200: #ede9d8;
+  /* the ink: Delta's coffee brown, its oak grey for the quiet lines */
+  --ink: #404041;
+  --ink-deep: #2b2b2c;
+  --ink-soft: #706e68;
+  /* the accents: a warm saddle brown in place of the old indigo */
+  --indigo: #924241;
+  --indigo-deep: #6f3231;
+  --gerua: #924241;
+  --gerua-600: #6f3231;
+  --gerua-300: #ccbe9e;
+  --gerua-100: #ede9d8;
+  --gold: #9a8b6c;
+  /* the dark bars (offer bar, solid buttons) and the footer: darkest coffee */
+  --maroon: #404041;
+  --maroon-deep: #2b2b2c;
+  --hairline: rgba(64, 64, 65, 0.14);
+  --hairline-strong: rgba(64, 64, 65, 0.38);
   /* the grain as dark specks of varying strength over whatever is under it:
      a plain background, with no blend mode, so it costs nothing to scroll */
-  --grain-a: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.13 0 0 0 -0.035'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --grain-a: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.11 0 0 0 -0.03'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -54,7 +56,7 @@ body {
   color: var(--ink);
 }
 
-/* the header and its menus sit on the same beige */
+/* the header and its menus sit on the same egg white */
 .site-header,
 .nav-panel__sheet {
   background: var(--page-bg);
@@ -63,6 +65,14 @@ body {
 /* the box behind the logo is the page itself */
 .site-header .brand {
   background: var(--page-bg);
+}
+
+/* one voice for the small capitals above every title */
+.eyebrow,
+.section-intro .eyebrow,
+.arch__meta,
+.craft3d__eyebrow {
+  letter-spacing: 0.22em;
 }
 
 /* No ornament dividers. The stitched dash-and-diamond rules under the hero
@@ -104,9 +114,31 @@ body {
   border-style: solid !important;
 }
 
-/* the footer's ground was a fixed maroon gradient; it takes Vero's near-black */
+/* the footer's ground: the brand's dark grey, flat */
 .footer {
-  --footer-bg: radial-gradient(118% 82% at 50% 0%, #2d3f66 0%, #1b2744 42%, #111a30 100%);
+  --footer-bg: #404041;
 }
 
+
+/* seven menu items with the Sale: the gaps close up a little so the
+   last item stays clear of the centred logo panel, which takes its clicks */
+@media (min-width: 1081px) {
+  .site-nav {
+    gap: clamp(9px, calc(1.6vw - 10px), 22px);
+  }
+}
+
+/* five policy links at the foot: on phones they wrap as whole phrases */
+@media (max-width: 720px) {
+  .footer__legal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 16px;
+  }
+
+  .footer__legal a {
+    white-space: nowrap;
+  }
+}
 

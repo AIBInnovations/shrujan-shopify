@@ -65,6 +65,9 @@
       <div class="page-hero__text">
         <p class="eyebrow">{{ section.settings.hero_eyebrow | escape }}</p>
         <h1 class="page-hero__title">{{ section.settings.hero_title }}</h1>
+        {%- if section.settings.hero_lede != blank %}
+        <p class="page-hero__lede">{{ section.settings.hero_lede | escape }}</p>
+        {%- endif %}
       </div>
     </div>
 
@@ -91,6 +94,9 @@
           <span class="strand-card__no">{% if strand_i < 10 %}0{% endif %}{{ strand_i }}</span>
           <span class="strand-card__name">{{ block.settings.name }}</span>
           <span class="strand-card__copy">{{ block.settings.copy | escape }}</span>
+          {%- if block.settings.note != blank %}
+          <span class="strand-card__copy">{{ block.settings.note | escape }}</span>
+          {%- endif %}
           <span class="strand-card__cta">{{ block.settings.cta_label | escape }} <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
         </a>
       </li>
@@ -180,6 +186,13 @@
       "id": "hero_title",
       "label": "Title",
       "default": "Small runs, <em>signed</em> by the maker"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_lede",
+      "label": "Hero intro line",
+      "info": "Shown under the title. Leave empty to hide it.",
+      "default": "Limited-edition works created through tradition and experimentation."
     },
     {
       "type": "header",
@@ -518,7 +531,13 @@
           "type": "text",
           "id": "copy",
           "label": "Copy",
-          "default": "Heirloom textiles made to be collected, preserved and passed on."
+          "default": "Heirloom textiles that carry the depth and detail of Kutch’s craft traditions. Each piece is made with exceptional skill and intended to be collected, preserved and passed on."
+        },
+        {
+          "type": "text",
+          "id": "note",
+          "label": "Second line",
+          "info": "Optional. Sits under the copy in the same style."
         },
         {
           "type": "text",
@@ -600,8 +619,9 @@
             "asset": "frame-r2t24.webp",
             "image_alt": "Densely hand-embroidered heritage textile in crimson and gold",
             "name": "Heritage",
-            "copy": "Heirloom textiles made to be collected, preserved and passed on.",
-            "cta_label": "Open"
+            "copy": "Heirloom textiles that carry the depth and detail of Kutch’s craft traditions. Each piece is made with exceptional skill and intended to be collected, preserved and passed on.",
+            "cta_label": "Enquire",
+            "note": "Available by enquiry."
           }
         },
         {
@@ -611,8 +631,8 @@
             "asset": "story-origin-3.webp",
             "image_alt": "Craftswomen of Kutch working together on embroidery",
             "name": "Avinya",
-            "copy": "Artisans in teams of two and three, co-creating original work.",
-            "cta_label": "Open"
+            "copy": "Textile works that explore new expressions of craft. Created through experimentation and collaboration, Avinya pieces bring traditional knowledge into contemporary spaces.",
+            "cta_label": "Discover Avinya"
           }
         },
         {

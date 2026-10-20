@@ -49,9 +49,10 @@
         "type": "select",
         "id": "font_pairing",
         "label": "Font pairing",
-        "info": "Heritage sets headlines in Marcellus, flared Roman letters. Calligraphic and Poster use faces drawn alongside Indian scripts; Poster is the heaviest. Original is the pairing the site was first designed with.",
-        "default": "heritage",
+        "info": "Brand follows Shrujan's brand language: Baskerville throughout. Heritage sets headlines in Marcellus, flared Roman letters. Calligraphic and Poster use faces drawn alongside Indian scripts; Poster is the heaviest. Original is the pairing the site was first designed with.",
+        "default": "brand",
         "options": [
+          { "value": "brand", "label": "Brand: Baskerville" },
           { "value": "heritage", "label": "Heritage: Marcellus + Hind" },
           { "value": "calligraphic", "label": "Calligraphic: Sahitya + Hind" },
           { "value": "poster", "label": "Poster: Rozha One + Eczar + Hind" },

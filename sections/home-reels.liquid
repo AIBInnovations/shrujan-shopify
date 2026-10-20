@@ -79,7 +79,7 @@
     assign count_word = count_words[count_i]
   endif
 -%}
-<section class="section reels" id="reels" aria-label="Shrujan in motion"{% if r.autoplay == false %} data-autoplay="false"{% endif %}>
+<section class="section reels" id="reels" aria-label="Instagram Feed"{% if r.autoplay == false %} data-autoplay="false"{% endif %}>
   <div class="container">
     <div class="reels__meta"><span>{{ r.rl_meta_l | escape }}</span><span>{{ count_word }} {% if reel_count == 1 %}reel{% else %}reels{% endif %}{% if r.rl_meta_r != blank %} · {{ r.rl_meta_r | escape }}{% endif %}</span></div>
     <div class="reels__head">
@@ -91,7 +91,7 @@
       {%- if r.show_seal %}
       <a
         class="reels__seal-link"
-        href="{{ section.settings.seal_link | default: 'https://www.instagram.com/shrujanindia/reels/' }}"
+        href="{{ section.settings.seal_link | default: 'https://www.instagram.com/shrujanindia/' }}"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Watch Shrujan reels on Instagram"
@@ -134,7 +134,7 @@
     {%- assign pennant_count = pennants | size %}
     <div class="reels__rail">
       {%- for block in section.blocks %}
-      <a class="reel" href="{{ block.settings.link | default: 'https://www.instagram.com/shrujanindia/reels/' }}" target="_blank" rel="noopener noreferrer" {{ block.shopify_attributes }}>
+      <a class="reel" href="{{ block.settings.link | default: 'https://www.instagram.com/shrujanindia/' }}" target="_blank" rel="noopener noreferrer" {{ block.shopify_attributes }}>
         <div class="reel__media">
           <video src="{{ 'reel-' | append: forloop.index | append: '.mp4' | asset_url }}" poster="{{ 'reel-' | append: forloop.index | append: '-poster.jpg' | asset_url }}" muted {% if r.loop %}loop {% endif %}playsinline preload="none" aria-label="{{ block.settings.title | escape }}"></video>
           <span class="reel__scrim" aria-hidden="true"></span>
@@ -311,7 +311,7 @@
       "type": "text",
       "id": "eyebrow",
       "label": "Eyebrow",
-      "default": "Shrujan in Motion"
+      "default": "Instagram Feed"
     },
     {
       "type": "text",
@@ -329,7 +329,7 @@
       "type": "text",
       "id": "rl_meta_l",
       "label": "Small line above the head",
-      "default": "Shrujan in motion"
+      "default": "Instagram Feed"
     },
     {
       "type": "text",
@@ -354,7 +354,7 @@
       "type": "textarea",
       "id": "note",
       "label": "Note",
-      "default": "Forty seconds inside the workshop: a needle counting threads, madder boiling, a sari taking its first drape."
+      "default": "Check out our latest reels and stories."
     },
     {
       "type": "header",
@@ -621,35 +621,35 @@
           "type": "reel",
           "settings": {
             "title": "Indigo mirror-work jacket",
-            "link": "https://www.instagram.com/shrujanindia/reels/"
+            "link": "https://www.instagram.com/shrujanindia/"
           }
         },
         {
           "type": "reel",
           "settings": {
             "title": "Coral Kutchi embroidered sari",
-            "link": "https://www.instagram.com/shrujanindia/reels/"
+            "link": "https://www.instagram.com/shrujanindia/"
           }
         },
         {
           "type": "reel",
           "settings": {
             "title": "Sheer embroidered kurta",
-            "link": "https://www.instagram.com/shrujanindia/reels/"
+            "link": "https://www.instagram.com/shrujanindia/"
           }
         },
         {
           "type": "reel",
           "settings": {
             "title": "Shrujan, since 1969",
-            "link": "https://www.instagram.com/shrujanindia/reels/"
+            "link": "https://www.instagram.com/shrujanindia/"
           }
         },
         {
           "type": "reel",
           "settings": {
             "title": "Turquoise Kutchi sari",
-            "link": "https://www.instagram.com/shrujanindia/reels/"
+            "link": "https://www.instagram.com/shrujanindia/"
           }
         }
       ]

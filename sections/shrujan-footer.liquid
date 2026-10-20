@@ -122,7 +122,7 @@
           <li><a href="/pages/the-shrujan-story#origins">Origins</a></li>
           <li><a href="/pages/the-shrujan-story#values">Philosophy &amp; Values</a></li>
           <li><a href="/pages/the-shrujan-story#people">The People of Shrujan</a></li>
-          <li><a href="/pages/the-shrujan-story#press">In the Media</a></li>
+          <li><a href="/pages/media">In the Media</a></li>
         </ul>
       </div>
       <div class="fmap__col">
@@ -163,12 +163,12 @@
             <a href="mailto:{{ section.settings.contact_email | escape }}">{{ section.settings.contact_email }}</a>
           </li>
           <li>
-            <span class="freach__label">Call the studio</span>
-            <a href="tel:{{ section.settings.contact_phone_1 | remove: ' ' }}">{{ section.settings.contact_phone_1 }}</a>
+            <span class="freach__label">WhatsApp</span>
+            <a href="https://api.whatsapp.com/send?phone={{ section.settings.contact_phone_1 | remove: ' ' | remove: '+' }}" target="_blank" rel="noopener">{{ section.settings.contact_phone_1 }}</a>
           </li>
           <li>
             <span class="freach__label"></span>
-            <a href="tel:{{ section.settings.contact_phone_2 | remove: ' ' }}">{{ section.settings.contact_phone_2 }}</a>
+            <a href="https://api.whatsapp.com/send?phone={{ section.settings.contact_phone_2 | remove: ' ' | remove: '+' }}" target="_blank" rel="noopener">{{ section.settings.contact_phone_2 }}</a>
           </li>
           <li>
             <span class="freach__label">Visit</span>
@@ -190,6 +190,9 @@
       <div class="footer__legal">
         <a href="{{ section.settings.legal_1_url | default: 'https://shrujan.com/policies/privacy-policy' | escape }}" target="_blank" rel="noreferrer noopener">{{ section.settings.legal_1_label | escape }}</a>
         <a href="{{ section.settings.legal_2_url | default: 'https://shrujan.com/policies/terms-of-service' | escape }}" target="_blank" rel="noreferrer noopener">{{ section.settings.legal_2_label | escape }}</a>
+        <a href="https://shrujan.com/policies/shipping-policy" target="_blank" rel="noreferrer noopener">Shipping Policy</a>
+        <a href="https://shrujan.com/policies/refund-policy" target="_blank" rel="noreferrer noopener">Return &amp; Exchange</a>
+        <a href="/account">Track Your Order</a>
       </div>
     </div>
     {%- endif %}
@@ -378,7 +381,7 @@
       "type": "text",
       "id": "contact_address",
       "label": "Address line",
-      "default": "Bhujodi Road, Bhuj · Kutch"
+      "default": "Behind G.E.B Sub Station, Bhujodi, Bhuj, Kutch 370020"
     },
     {
       "type": "text",

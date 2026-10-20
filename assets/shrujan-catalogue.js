@@ -1534,6 +1534,7 @@ const REVIEWS = [
   var ASSET_RENAMES = { 'bottom left.webp': 'bottom-left.webp', 'bottom right.webp': 'bottom-right.webp', 'top right.webp': 'top-right.webp' };
   function asset(path) {
     if (!path) return path;
+    if (/^(https?:)?\/\//.test(path)) return path; // already a full URL (e.g. a film hosted in Content → Files)
     var name = String(path).replace(/^\//, '');
     name = ASSET_RENAMES[name] || name;
     return (window.SHRUJAN_ASSET_BASE || '/') + name;

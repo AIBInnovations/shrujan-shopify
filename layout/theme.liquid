@@ -37,10 +37,19 @@
       Poster: Rozha One, the Indian Type Foundry's high-contrast display face,
       for headlines, with Eczar and Hind; heavier.
       Original is the pairing the site was first designed with.
+      Brand, the default, follows Shrujan's brand language: Baskerville
+      throughout, in Google's two Baskerville cuts (Baskervville for headlines,
+      Libre Baskerville, drawn for the screen, for the text) until licensed
+      webfonts of the brand's Baskerville Serial are added to the theme.
     {%- endcomment -%}
     {%- assign font_synthesis_off = false -%}
     {%- assign font_display = '' -%}
     {%- case settings.font_pairing -%}
+      {%- when 'heritage' -%}
+        {%- assign font_families = 'family=Marcellus&family=Hind:wght@300;400;500;600' -%}
+        {%- assign font_serif = "'Marcellus', 'Optima', Georgia, serif" -%}
+        {%- assign font_sans = "'Hind', 'Segoe UI', system-ui, sans-serif" -%}
+        {%- assign font_synthesis_off = true -%}
       {%- when 'original' -%}
         {%- assign font_families = 'family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Jost:wght@300;400;500;600' -%}
         {%- assign font_serif = "'Cormorant Garamond', 'Times New Roman', Georgia, serif" -%}
@@ -65,10 +74,10 @@
         {%- assign font_sans = "'Hind', 'Segoe UI', system-ui, sans-serif" -%}
         {%- assign font_synthesis_off = true -%}
       {%- else -%}
-        {%- assign font_families = 'family=Marcellus&family=Hind:wght@300;400;500;600' -%}
-        {%- assign font_serif = "'Marcellus', 'Optima', Georgia, serif" -%}
-        {%- assign font_sans = "'Hind', 'Segoe UI', system-ui, sans-serif" -%}
-        {%- assign font_synthesis_off = true -%}
+        {%- assign font_families = 'family=Baskervville:ital,wght@0,400..700;1,400..700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400' -%}
+        {%- assign font_display = "'Baskervville', 'Baskerville', 'Libre Baskerville', Georgia, serif" -%}
+        {%- assign font_serif = "'Baskervville', 'Baskerville', 'Libre Baskerville', Georgia, serif" -%}
+        {%- assign font_sans = "'Libre Baskerville', 'Baskerville', Georgia, serif" -%}
     {%- endcase -%}
     {%- if font_display == blank -%}{%- assign font_display = font_serif -%}{%- endif -%}
     <link href="https://fonts.googleapis.com/css2?{{ font_families }}&display=swap" rel="stylesheet">
@@ -183,7 +192,7 @@
     <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
     {%- comment -%} If sj-home.js never lets the page go (blocked, failed), it lets itself go after 14 seconds (the loader's own limit is 9); without JavaScript there is no loader at all. {%- endcomment %}
     <script>setTimeout(function(){if(window.__sjRevealed)return;var h=document.documentElement;h.classList.remove('sj-pre','sj-hero-full');var l=document.querySelector('.sj-loader');if(l)l.remove();if(window.Shrujan&&window.Shrujan.startScroll)window.Shrujan.startScroll();window.__sjRevealed=true;document.dispatchEvent(new CustomEvent('sj:revealed'));},14000);</script>
-    <noscript><style>.sj-loader{display:none!important}html.sj-pre,html.sj-pre body{overflow:visible!important}html.sj-pre .hero-film__message,html.sj-pre .site-header,html.sj-pre .offer-bar{opacity:1!important}</style></noscript>
+    <noscript><style>.sj-loader{display:none!important}html.sj-pre,html.sj-pre body{overflow:visible!important}html.sj-pre .dh__content,html.sj-pre .dh__strip,html.sj-pre .site-header,html.sj-pre .offer-bar{opacity:1!important}</style></noscript>
     {%- endif %}
     {{ content_for_header }}
     {%- comment -%} the site's colours and beige ground, on every page (awwwards-preview/src/site.css) {%- endcomment %}

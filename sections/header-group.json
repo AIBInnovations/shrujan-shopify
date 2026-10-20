@@ -17,7 +17,9 @@
     },
     "header": {
       "type": "shrujan-header",
-      "settings": {}
+      "settings": {
+        "sticky_mode": "never"
+      }
     }
   },
   "order": [

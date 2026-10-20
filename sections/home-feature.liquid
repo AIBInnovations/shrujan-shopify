@@ -1,0 +1,197 @@
+{%- render 'section-design', section: section -%}
+
+{%- comment -%}
+  A feature on the home page, in the words of the brand's website writeup:
+  a head (small heading, title, a line) and either two cards side by side
+  ("pair": a picture, a name, a line and the way on each) or one picture
+  beside the head ("split", the picture on the left or, flipped, on the
+  right). The Shop, Studio Collection, LLDC, Gifting and Visit sections of
+  templates/index.json all use it.
+
+  Styles and behaviour are the home page layer's (assets/sj-home.css and
+  sj-home.js, from awwwards-preview/src/feature.css and feature.js). Written
+  by awwwards-preview/write_features.py from features.py, which also draws
+  the preview.
+{%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+  assign sid = section.id
+-%}
+{%- capture arrow -%}<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 10h14M11 4.5l5.5 5.5-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>{%- endcapture -%}
+{%- capture head -%}
+  {%- if s.eyebrow != blank %}<p class="ft__eyebrow">{{ s.eyebrow | escape }}</p>{% endif -%}
+  <h2 class="ft__title" id="ft-title-{{ sid }}"><span class="ft__line">{{ s.title_1 | escape }}</span>{% if s.title_2 != blank %}<span class="ft__line ft__line--soft">{{ s.title_2 | escape }}</span>{% endif %}</h2>
+  {%- if s.lede != blank %}<p class="ft__lede">{{ s.lede | escape }}</p>{% endif -%}
+{%- endcapture -%}
+<section class="ft ft--{{ s.layout }}{% if s.flip %} ft--flip{% endif %}" id="{{ s.anchor | escape }}" aria-labelledby="ft-title-{{ sid }}">
+  {%- if s.layout == 'split' -%}
+    {%- liquid
+      if s.image != blank
+        assign pic = s.image | image_url: width: 1600
+        assign pic_alt = s.image_alt | default: s.image.alt
+      else
+        assign pic = s.image_asset | asset_url
+        assign pic_alt = s.image_alt
+      endif
+    -%}
+    <div class="ft__split"><div class="ft__media"><img src="{{ pic }}" alt="{{ pic_alt | escape }}" loading="lazy"></div><div class="ft__side">{{ head }}{%- if s.btn_label != blank -%}<a class="ft__btn" href="{{ s.btn_link | escape }}"{% if s.btn_link contains 'http' %} target="_blank" rel="noopener"{% endif %}>{{ s.btn_label | escape }} {{ arrow }}</a>{%- endif -%}</div></div>
+  {%- else -%}
+    <div class="ft__head">{{ head }}</div><div class="ft__cards">
+    {%- for b in section.blocks -%}
+      {%- liquid
+        assign c = b.settings
+        if c.image != blank
+          assign pic = c.image | image_url: width: 1200
+          assign pic_alt = c.image_alt | default: c.image.alt
+        else
+          assign pic = c.image_asset | asset_url
+          assign pic_alt = c.image_alt
+        endif
+      -%}
+      <article class="ft__card" {{ b.shopify_attributes }}><a class="ft__media" href="{{ c.btn_link | escape }}" tabindex="-1" aria-hidden="true"><img src="{{ pic }}" alt="{{ pic_alt | escape }}" loading="lazy"></a><div class="ft__body"><h3 class="ft__name">{{ c.name | escape }}</h3><p class="ft__text">{{ c.text | escape }}</p>{% if c.note != blank %}<p class="ft__note">{{ c.note | escape }}</p>{% endif %}{%- if c.btn_label != blank -%}<a class="ft__btn" href="{{ c.btn_link | escape }}"{% if c.btn_link contains 'http' %} target="_blank" rel="noopener"{% endif %}>{{ c.btn_label | escape }} {{ arrow }}</a>{%- endif -%}</div></article>
+    {%- endfor -%}
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Home — Feature",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "default": "pair",
+      "options": [
+        {
+          "value": "pair",
+          "label": "Two cards side by side"
+        },
+        {
+          "value": "split",
+          "label": "One picture beside the words"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "flip",
+      "label": "Picture on the right (one-picture layout)",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "anchor",
+      "label": "Anchor (for links to this section)",
+      "default": "feature"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Small heading"
+    },
+    {
+      "type": "text",
+      "id": "title_1",
+      "label": "Title",
+      "default": "Title"
+    },
+    {
+      "type": "text",
+      "id": "title_2",
+      "label": "Title, second line (softer)"
+    },
+    {
+      "type": "textarea",
+      "id": "lede",
+      "label": "Line under the title"
+    },
+    {
+      "type": "header",
+      "content": "One-picture layout"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Picture"
+    },
+    {
+      "type": "text",
+      "id": "image_asset",
+      "label": "Or theme image file"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Picture description"
+    },
+    {
+      "type": "text",
+      "id": "btn_label",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "btn_link",
+      "label": "Button link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Name"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Line"
+        },
+        {
+          "type": "text",
+          "id": "note",
+          "label": "Small note (e.g. Available by enquiry.)"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Picture"
+        },
+        {
+          "type": "text",
+          "id": "image_asset",
+          "label": "Or theme image file"
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "label": "Picture description"
+        },
+        {
+          "type": "text",
+          "id": "btn_label",
+          "label": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "btn_link",
+          "label": "Button link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Home — Feature"
+    }
+  ]
+}
+{% endschema %}

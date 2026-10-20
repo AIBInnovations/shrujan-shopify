@@ -108,7 +108,8 @@
         <div class="craft-stage">
           <video class="craft-stage__video" poster="{{ first_craft.settings.poster | asset_url }}" playsinline muted{% if section.settings.film_loop %} loop{% endif %} preload="none"{% if section.settings.film_autoplay %} tabindex="-1"{% else %} controls{% endif %}>
             {%- unless section.settings.film_posters_only %}
-            <source{% if first_craft.settings.video != blank %} src="{{ first_craft.settings.video | asset_url }}"{% endif %} type="video/mp4">
+            {%- capture first_film -%}{% render 'sj-film-url', src: first_craft.settings.video %}{%- endcapture %}
+            <source{% if first_film != blank %} src="{{ first_film }}"{% endif %} type="video/mp4">
             {%- endunless %}
           </video>
 
@@ -183,7 +184,8 @@
   {
     "crafts": [
       {%- for block in section.blocks %}
-      { "no": "{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}", "name": {{ block.settings.name | json }}, "src": {% if block.settings.video != blank %}{{ block.settings.video | prepend: '/' | json }}{% else %}null{% endif %}, "poster": {{ block.settings.poster | prepend: '/' | json }} }{% unless forloop.last %},{% endunless %}
+      {%- capture b_film -%}{% render 'sj-film-url', src: block.settings.video %}{%- endcapture %}
+      { "no": "{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}", "name": {{ block.settings.name | json }}, "src": {% if b_film != blank %}{{ b_film | json }}{% else %}null{% endif %}, "poster": {{ block.settings.poster | prepend: '/' | json }} }{% unless forloop.last %},{% endunless %}
       {%- endfor %}
     ],
     "more": {
@@ -233,7 +235,7 @@
 
   var active = 0;
   var open = null; // slug whose full text is expanded
-  // The films run to ~10MB each. Nothing plays — and so nothing downloads
+  // The films are 1080p (tens of MB each). Nothing plays — and so nothing downloads
   // beyond its poster — until the player has actually reached the viewport.
   var armed = false;
 
@@ -417,7 +419,7 @@
       "type": "textarea",
       "id": "open_copy",
       "label": "Paragraphs (one per line)",
-      "default": "Kutch is home to a remarkable range of craft practices shaped by landscape, community and generations of knowledge. From textiles and natural dyes to pottery, weaving, metal and more, each craft carries its own materials, techniques and cultural memory.\nShrujan works closely with many of these traditions, learning from artisans and supporting processes that allow their knowledge to remain alive and relevant. What you see here is not a catalogue, but an introduction to living practices — each with its own story, skill and sense of place."
+      "default": "Kutch is home to a remarkable range of craft practices shaped by landscape, community and generations of knowledge. From textiles and natural dyes to pottery, weaving, metal and more, each craft carries its own materials, techniques and cultural memory.\nShrujan works closely with many of these traditions, learning from artisans and supporting processes that allow their knowledge to remain alive and relevant. What you see here is not a catalogue, but an introduction to living practices — each with its own story, skill and sense of place.\nExplore the crafts to learn about the people, processes and traditions behind the work."
     },
     {
       "type": "header",
@@ -440,7 +442,7 @@
       "type": "checkbox",
       "id": "film_posters_only",
       "label": "Posters only — never load the films",
-      "info": "Keeps each craft's still and leaves the films (about 10 MB each) out of the page entirely.",
+      "info": "Keeps each craft's still and leaves the films (1080p, about 50 MB each) out of the page entirely.",
       "default": false
     },
     {
@@ -736,7 +738,7 @@
           "type": "text",
           "id": "video",
           "label": "Film asset filename",
-          "info": "An .mp4 file uploaded to the theme assets. Leave empty for a craft without a film: its poster is shown as a still.",
+          "info": "A full URL from Content → Files, or a theme asset filename. The six craft films (craft-*.mp4) play from their 1080p copies hosted on the store. Leave empty for a craft without a film: its poster is shown as a still.",
           "default": "craft-embroidery.mp4"
         },
         {

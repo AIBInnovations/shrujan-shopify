@@ -90,7 +90,7 @@
       </div>
 
       {%- if os.link_label != blank -%}
-        <a class="offer-bar__cta" href="{{ os.link | default: '/collections/all' }}">{{ os.link_label }}<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
+        <a class="offer-bar__cta" href="{{ os.link | default: '/pages/sale' }}">{{ os.link_label }}<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
       {%- endif -%}
 
       {%- if os.dismissible -%}
@@ -161,7 +161,7 @@
       "type": "inline_richtext",
       "id": "message",
       "label": "Message",
-      "default": "Festive edit — up to 30% off selected pieces"
+      "default": "The Sale: tops, dresses and pants"
     },
     {
       "type": "text",
@@ -180,7 +180,7 @@
       "id": "link_label",
       "label": "Link label",
       "info": "Leave empty to announce the offer without a link.",
-      "default": "Shop the edit"
+      "default": "Shop the sale"
     },
     {
       "type": "color",
@@ -209,7 +209,7 @@
       "id": "message_m",
       "label": "Message (mobile)",
       "info": "A shorter line used below 768px. Leave empty to use the message above on every screen.",
-      "default": "Festive edit — up to 30% off"
+      "default": "The Sale is on"
     },
     {
       "type": "header",

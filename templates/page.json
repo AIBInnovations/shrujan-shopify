@@ -198,7 +198,7 @@
         "b3": {
           "type": "chapter",
           "settings": {
-            "label": "The People of Shrujan",
+            "label": "People of Shrujan",
             "anchor": "people"
           }
         },
@@ -219,19 +219,31 @@
         "b6": {
           "type": "origin_par",
           "settings": {
-            "text": "Shrujan’s journey began in 1969 when Kutch was ravaged by drought. Mumbai-based Chanda Shroff volunteered for drought-relief work in the village of Dhaneti. She observed that the women dressed in exquisitely embroidered traditional clothing were reluctant to accept charity."
+            "text": "Shrujan’s journey began in 1969 when Kutch was ravaged by drought."
           }
         },
         "b7": {
           "type": "origin_par",
           "settings": {
-            "text": "It was her genius that recognized that the very skill that the craftswomen possessed could empower them; that, for the first time, embroidery could become an income-generating, dignity-providing resource."
+            "text": "Mumbai-based Chanda Shroff volunteered for drought-relief work in the village of Dhaneti. She observed that the women dressed in exquisitely embroidered traditional clothing were reluctant to accept charity. It was her genius that recognized that the very skill that the craftswomen possessed could empower them; that, for the first time, embroidery could become an income-generating, dignity-providing resource."
           }
         },
         "b8": {
           "type": "origin_par",
           "settings": {
             "text": "Shrujan’s craftswomen work from home. Our production team reaches fabrics and threads to them in their villages. The women do not have to pay for the materials. Shrujan pays them their fair dues at their doorstep, as soon as they have completed the embroidery."
+          }
+        },
+        "b41": {
+          "type": "origin_par",
+          "settings": {
+            "text": "The textiles are fashioned into high quality apparel, accessories and lifestyle products, and marketed online as well as through Shrujan shops and exhibitions."
+          }
+        },
+        "b42": {
+          "type": "origin_par",
+          "settings": {
+            "text": "Sustainable practices, slow fashion, ethical fair trade practices, minimal wastage, zero wastage – these words and all that they stand for are now enabling the emergence of a more just, respectful and equitable world not only for humans but also for all beings to whom this planet belongs. Shrujan takes a tiny bit of pride for having consciously practised these values from the first day and all through its fifty-plus-year journey with the craftspeople of Kutch."
           }
         },
         "b9": {
@@ -316,7 +328,7 @@
             "asset": "story-chanda.webp",
             "name": "Chanda Shroff",
             "role": "Founder",
-            "copy": "She is the first Indian Laureate to be honoured with the prestigious Rolex Award for Enterprise."
+            "copy": "She is the first Indian Laureate to be honoured with the prestigious Rolex Award for Enterprise. This historic event of 2006, that put the crafts of Kutch on the global map, can be traced back to two loves of her childhood. From her mother, whom she lost at age nine, came the love for the handmade. From her freedom-fighter father, she learnt the joy of being of use. Kaki passed away in 2016 at the age of 83. Her legacy is simple and radical: love your work; be mindful of each person’s dignity and self-respect; stay relevant and forward thinking and, find excellence and joy in life and work"
           }
         },
         "b20": {
@@ -325,7 +337,7 @@
             "asset": "story-dipesh.webp",
             "name": "Dipesh Shroff",
             "role": "Chairman",
-            "copy": "As Chairman, Dipesh provides steady guidance and oversight to the organisation. He supports Shrujan’s long-term direction while upholding the principles on which it was founded."
+            "copy": "As Chairman, Dipesh provides steady guidance and oversight to the organisation. He supports Shrujan’s long-term direction while upholding the principles on which it was founded. His association reflects a shared belief in the importance of cultural continuity, responsible growth and the enduring value of craft"
           }
         },
         "b21": {
@@ -333,8 +345,8 @@
           "settings": {
             "asset": "story-ami.webp",
             "name": "Ami Shroff",
-            "role": "Trustee",
-            "copy": "Ami Shroff carries forward Shrujan’s vision with a deep sense of responsibility toward both craft and community."
+            "role": "Managing Director",
+            "copy": "Ami Shroff carries forward Shrujan’s vision with a deep sense of responsibility toward both craft and community. Her work focuses on strengthening relationships with artisan families, guiding design direction and ensuring that the organisation remains rooted while responding to the present. She is committed to sustaining Shrujan as a space where tradition, dignity and contemporary relevance continue to meet."
           }
         },
         "b22": {
@@ -343,7 +355,7 @@
             "asset": "story-rajiv.webp",
             "name": "Rajiv Bhatt",
             "role": "Chief Executive Officer",
-            "copy": "Rajiv serves as Chief Executive Officer of Shrujan, where he guides the organisation’s strategy and day-to-day functioning."
+            "copy": "Rajiv serves as Chief Executive Officer of Shrujan, where he guides the organisation’s strategy and day-to-day functioning. He works closely with teams, artisans and partners to build pathways that are both sustainable and respectful of craft traditions. His role supports Shrujan’s growth while ensuring that its core values remain at the centre of its work."
           }
         },
         "b23": {
@@ -518,6 +530,8 @@
         "b6",
         "b7",
         "b8",
+        "b41",
+        "b42",
         "b9",
         "b10",
         "b11",
@@ -529,9 +543,9 @@
         "b17",
         "b18",
         "b19",
-        "b20",
         "b21",
         "b22",
+        "b20",
         "b23",
         "b24",
         "b25",
@@ -863,10 +877,10 @@
             "asset": "visit-campus.webp",
             "image_alt": "The Shrujan studio floor, with racks of finished cloth and staff at work",
             "kicker": "By appointment",
-            "name": "The Shrujan Campus",
-            "copy": "A behind-the-scenes visit, arranged in advance. You follow a piece from an idea through sampling and into production, and see how the design studio and the artisan communities actually work together. It is a visit about process, not a shop.",
+            "name": "Visit the Shrujan Campus",
+            "copy": "A visit to the Shrujan campus offers a behind-the-scenes look at how craft and design come together. This is where ideas are developed, sampling takes place and the detailed pre- and post-production processes are carried out in close collaboration with artisan communities.\nVisitors gain insight into the journey from traditional skills to finished pieces, understanding the care, time and coordination involved at each stage. The campus visit is about process and practice — an opportunity to see how Shrujan works beyond the retail space.",
             "points": "Design studio & sampling\nPre and post production\nThe coordination team",
-            "cta_label": "Enquire about a visit",
+            "cta_label": "Enquire About a Visit",
             "cta_link": "mailto:marketing@shrujan.com?subject=Campus%20visit"
           }
         },
@@ -876,10 +890,10 @@
             "asset": "visit-lakhpat.webp",
             "image_alt": "The walled fort at Lakhpat above the salt flat",
             "kicker": "Any time in season",
-            "name": "Kutch itself",
-            "copy": "The district the work comes from: craft villages within an hour of Bhuj, a museum built for the embroidery, and a landscape that turns to salt flat and back again. Come for a day, or plan a week around it.",
+            "name": "Visit Kutch",
+            "copy": "Kutch is a land of vast landscapes, living traditions and quiet beauty. A journey here is shaped as much by the people you meet as by the places you see. Craft, music, food and everyday life are deeply connected, offering a glimpse into cultures that continue to evolve while remaining rooted.\nThrough thoughtfully designed journeys, visitors can explore Kutch in a way that goes beyond sightseeing — spending time with artisan communities, understanding their environments and experiencing the region at a slower pace. For many, the journey becomes not only a travel experience but a personal one.",
             "points": "Craft villages & workshops\nThe LLDC museum\nPalaces, port towns, the Rann",
-            "cta_label": "Plan your trip",
+            "cta_label": "Plan Your Trip",
             "cta_link": "tel:+919099974319"
           }
         },
@@ -1038,12 +1052,13 @@
         "b1": {
           "type": "strand",
           "settings": {
-            "link": "/pages/studio-heritage",
             "asset": "frame-r2t24.webp",
             "image_alt": "Densely hand-embroidered heritage textile in crimson and gold",
+            "link": "/pages/studio-heritage",
             "name": "Heritage",
-            "copy": "Heirloom textiles made to be collected, preserved and passed on.",
-            "cta_label": "Open"
+            "copy": "Heirloom textiles that carry the depth and detail of Kutch’s craft traditions. Each piece is made with exceptional skill and intended to be collected, preserved and passed on.",
+            "note": "Available by enquiry.",
+            "cta_label": "Enquire"
           }
         },
         "b2": {
@@ -1053,8 +1068,8 @@
             "asset": "story-origin-3.webp",
             "image_alt": "Craftswomen of Kutch working together on embroidery",
             "name": "Avinya",
-            "copy": "Artisans in teams of two and three, co-creating original work.",
-            "cta_label": "Open"
+            "copy": "Textile works that explore new expressions of craft. Created through experimentation and collaboration, Avinya pieces bring traditional knowledge into contemporary spaces.",
+            "cta_label": "Discover Avinya"
           }
         },
         "b3": {
@@ -1446,7 +1461,7 @@
             "asset": "sj-jat-garasiya-mobile-pouch-31-1.webp",
             "alt": "Hand-embroidered mobile pouches in Jat Garasiya work",
             "name": "Corporate & Institutional Gifting",
-            "copy": "Meaningful, high-quality gifts rooted in craft, for organisations marking a milestone, a partnership or an occasion. Chosen for craftsmanship and cultural integrity, so the gift carries depth as well as value.",
+            "copy": "Shrujan collaborates with organisations seeking meaningful, high-quality gifts rooted in craft. These projects often mark important milestones, partnerships or occasions where the intention is to offer something lasting and thoughtfully made.\nOur focus is on craftsmanship, cultural integrity and thoughtful selection, ensuring each gift carries depth and value.",
             "fact_1": "From 25 pieces",
             "fact_2": "4–8 weeks",
             "fact_3": "Presentation packaging",
@@ -1459,7 +1474,7 @@
             "asset": "sj-jat-garasiya-party-bag-copy-1-1.webp",
             "alt": "Hand-embroidered party bags arranged together",
             "name": "Wedding & Occasion Gifting",
-            "copy": "Handcrafted pieces chosen for celebrations — for how they look, and for the artisan skill and the story they carry with them.",
+            "copy": "For weddings and special occasions, we offer handcrafted gifts that bring warmth and individuality to celebrations. These pieces are chosen not only for their beauty but for the stories and skills they carry, making them gifts that are remembered and valued.",
             "fact_1": "From 50 pieces",
             "fact_2": "6–10 weeks",
             "fact_3": "Custom colourways",
@@ -1472,7 +1487,7 @@
             "asset": "sj-handloom-weaving-cushion-cover-5-1.webp",
             "alt": "Handloom cushion covers in natural dyed cotton",
             "name": "Custom Collaborations",
-            "copy": "Some projects call for something more specific. We take on custom commissions involving particular colours, materials or craft techniques, developed through dialogue and aligned with Shrujan’s craft values.",
+            "copy": "Some projects call for something more specific. We work on custom commissions that may involve particular colours, materials or craft techniques, developed through dialogue and aligned with Shrujan’s craft values.\nAll collaborations are undertaken with care, respecting both timelines and the handmade nature of the work",
             "fact_1": "By commission",
             "fact_2": "12+ weeks",
             "fact_3": "Developed with the artisans",

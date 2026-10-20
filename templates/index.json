@@ -335,45 +335,35 @@
         "b1": {
           "type": "seal",
           "settings": {
-            "fallback": "top-right.webp",
-            "alt": "Close crop of mirror-work embroidery in crimson and gold threads",
-            "title": "Hand Embroidery",
-            "copy": "Every motif counted and stitched by hand. No machine ever touches the cloth."
+            "fallback": "story-dignity.webp",
+            "alt": "An artisan at work, photographed in her village",
+            "title": "Dignity and Respect",
+            "copy": "We work with deep respect for the people, skills and traditions that shape every Shrujan piece."
           }
         },
         "b2": {
           "type": "seal",
           "settings": {
-            "fallback": "frame-r5t15.webp",
-            "alt": "Close crop of turquoise Kutchi mirror-work embroidery",
-            "title": "Natural Dyes",
-            "copy": "Madder, indigo and pomegranate on handloom cotton and mulberry silk."
+            "fallback": "story-continuity.webp",
+            "alt": "A younger embroiderer learning the craft",
+            "title": "Continuity of Craft",
+            "copy": "Our work keeps the craft traditions of Kutch alive by allowing them to grow and remain relevant."
           }
         },
         "b3": {
           "type": "seal",
           "settings": {
-            "fallback": "bottom-left.webp",
-            "alt": "Master weaver working threads at his handloom",
-            "title": "Fair Wages",
-            "copy": "Paid per piece, on time, directly to the woman whose hands made it."
-          }
-        },
-        "b4": {
-          "type": "seal",
-          "settings": {
-            "fallback": "bottom-right.webp",
-            "alt": "Model in a mehendi-green hand-embroidered kurta set",
-            "title": "Made to Last",
-            "copy": "Finished to be worn today, repaired for free, and handed down tomorrow."
+            "fallback": "story-conscious.webp",
+            "alt": "Craftswomen at work with care on an embroidery",
+            "title": "Conscious Practice",
+            "copy": "Every decision we make from materials to process is guided by care, responsibility and attention to detail."
           }
         }
       },
       "block_order": [
         "b1",
         "b2",
-        "b3",
-        "b4"
+        "b3"
       ]
     },
     "home-reels": {
@@ -383,35 +373,35 @@
           "type": "reel",
           "settings": {
             "title": "Indigo mirror-work jacket",
-            "link": "https://www.instagram.com/shrujanindia/reels/"
+            "link": "https://www.instagram.com/shrujanindia/"
           }
         },
         "b2": {
           "type": "reel",
           "settings": {
             "title": "Coral Kutchi embroidered sari",
-            "link": "https://www.instagram.com/shrujanindia/reels/"
+            "link": "https://www.instagram.com/shrujanindia/"
           }
         },
         "b3": {
           "type": "reel",
           "settings": {
             "title": "Sheer embroidered kurta",
-            "link": "https://www.instagram.com/shrujanindia/reels/"
+            "link": "https://www.instagram.com/shrujanindia/"
           }
         },
         "b4": {
           "type": "reel",
           "settings": {
             "title": "Shrujan, since 1969",
-            "link": "https://www.instagram.com/shrujanindia/reels/"
+            "link": "https://www.instagram.com/shrujanindia/"
           }
         },
         "b5": {
           "type": "reel",
           "settings": {
             "title": "Turquoise Kutchi sari",
-            "link": "https://www.instagram.com/shrujanindia/reels/"
+            "link": "https://www.instagram.com/shrujanindia/"
           }
         }
       },
@@ -560,14 +550,14 @@
         "b4": {
           "type": "stat",
           "settings": {
-            "value": "5",
+            "value": "5+",
             "label": "Decades of craft revival"
           }
         },
         "b5": {
           "type": "stat",
           "settings": {
-            "value": "12",
+            "value": "6",
             "label": "Living craft traditions"
           }
         },
@@ -676,29 +666,29 @@
         "b1": {
           "type": "promise",
           "settings": {
-            "title": "Complimentary shipping",
-            "copy": "On every order above ₹5,000"
+            "title": "Free shipping",
+            "copy": "On every order within India"
           }
         },
         "b2": {
           "type": "promise",
           "settings": {
-            "title": "14-day easy returns",
-            "copy": "Unworn pieces, tags intact"
+            "title": "7-day exchange",
+            "copy": "For a credit note, valid 90 days"
           }
         },
         "b3": {
           "type": "promise",
           "settings": {
-            "title": "Signed by the artisan",
-            "copy": "Every piece carries her name"
+            "title": "Made in Kutch",
+            "copy": "By craftswomen across 66 villages"
           }
         },
         "b4": {
           "type": "promise",
           "settings": {
-            "title": "Made to measure",
-            "copy": "Free alterations on request"
+            "title": "Since 1969",
+            "copy": "Over five decades of craft"
           }
         }
       },
@@ -894,7 +884,8 @@
         "b10",
         "b11",
         "b12"
-      ]
+      ],
+      "disabled": true
     },
     "home-journal": {
       "type": "home-journal",
@@ -943,35 +934,35 @@
           "type": "item",
           "settings": {
             "question": "Are your pieces handcrafted?",
-            "answer": "Yes. Every garment is embroidered by artisan women across sixty-six villages of Kutch. No machine embroidery, ever. Each piece carries the name of the hands that made it."
+            "answer": "Yes. Every piece is embroidered, printed, woven or shaped by hand by the craftswomen and artisans of Kutch, across sixty-six villages."
           }
         },
         "b2": {
           "type": "item",
           "settings": {
-            "question": "What size options are available?",
-            "answer": "Our pieces come in XS to XXL, and every silhouette is cut to drape generously. Made-to-measure is available on request for saris, lehengas and bridal commissions."
+            "question": "How do I choose my size?",
+            "answer": "Each product page lists its measurements. If you are unsure, write to us on WhatsApp at +91 9099 974319 before you order."
           }
         },
         "b3": {
           "type": "item",
           "settings": {
             "question": "How long will my order take to reach me?",
-            "answer": "Ready pieces ship from Bhuj within 48 hours and arrive in 3–6 days across India. Made-to-order embroidery takes 2–3 weeks. Good things, stitched slowly."
+            "answer": "Orders ship from our warehouse at Bhujodi, Kutch, and delivery times are shown on each product page. Shipping is free on every order within India."
           }
         },
         "b4": {
           "type": "item",
           "settings": {
             "question": "Do you offer international shipping?",
-            "answer": "We ship worldwide. International orders arrive in 8–14 days, fully tracked, with duties settled at checkout so there are no surprises."
+            "answer": "Yes. Shipping charges for international orders are shared with you by our delivery partners. International orders are not eligible for return or exchange."
           }
         },
         "b5": {
           "type": "item",
           "settings": {
             "question": "What is your return & exchange policy?",
-            "answer": "Easy returns and exchanges within 14 days for unworn pieces with tags intact. Hand-embroidered commissions and altered garments are made to order and non-returnable."
+            "answer": "Orders within India can be exchanged within 7 days of delivery for a credit note, valid for 90 days. Sale items are not eligible. Write to contact@shrujan.com or call +91 90999 74319, Monday to Saturday, 9.30 AM to 5.30 PM."
           }
         }
       },
@@ -989,19 +980,19 @@
         "b1": {
           "type": "micro",
           "settings": {
-            "text": "Shipping over ₹5,000"
+            "text": "Free shipping across India"
           }
         },
         "b2": {
           "type": "micro",
           "settings": {
-            "text": "14-day returns"
+            "text": "7-day exchange"
           }
         },
         "b3": {
           "type": "micro",
           "settings": {
-            "text": "Free alterations"
+            "text": "Made in Kutch"
           }
         }
       },
@@ -1014,6 +1005,180 @@
     "home-poster": {
       "type": "home-poster",
       "settings": {}
+    },
+    "home-legacy": {
+      "type": "home-legacy",
+      "settings": {}
+    },
+    "feature-lldc": {
+      "type": "home-feature",
+      "settings": {
+        "layout": "split",
+        "flip": false,
+        "anchor": "lldc",
+        "eyebrow": "Ajrakhpur, Kutch",
+        "title_1": "Living & Learning",
+        "title_2": "Design Centre (LLDC)",
+        "lede": "A museum and cultural institution dedicated to the crafts of Kutch, with galleries, research programmes and archives that explore the region’s living traditions.",
+        "image_asset": "lldc-hero.webp",
+        "image_alt": "Figures in the ceremonial dress of twelve Kutchi communities, arranged in a circular gallery",
+        "btn_label": "Visit the LLDC Website",
+        "btn_link": "https://shrujanlldc.org"
+      }
+    },
+    "feature-shop": {
+      "type": "home-feature",
+      "settings": {
+        "layout": "pair",
+        "flip": false,
+        "anchor": "shop",
+        "eyebrow": "Shop",
+        "title_1": "Shop Shrujan",
+        "title_2": "",
+        "lede": "Handcrafted with care. Made slowly, meant to last.",
+        "image_asset": "",
+        "image_alt": "",
+        "btn_label": "",
+        "btn_link": ""
+      },
+      "blocks": {
+        "c1": {
+          "type": "card",
+          "settings": {
+            "name": "Shrujan Classic",
+            "text": "Clothing, textiles and objects shaped by the craft traditions of Kutch, made for occasions and for the home.",
+            "note": "",
+            "image_asset": "shop-hero.webp",
+            "image_alt": "Embroidered bags, a cushion and two women in hand-embroidered clothing",
+            "btn_label": "Explore Collection",
+            "btn_link": "/pages/shop-shrujan"
+          }
+        },
+        "c2": {
+          "type": "card",
+          "settings": {
+            "name": "Raahi",
+            "text": "Easy, contemporary clothing shaped by craft and made for comfort, movement and daily life.",
+            "note": "",
+            "image_asset": "bottom-right.webp",
+            "image_alt": "A woman in a mehendi-green hand-embroidered kurta set",
+            "btn_label": "Explore Collection",
+            "btn_link": "/collections/raahi"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2"
+      ]
+    },
+    "feature-studio": {
+      "type": "home-feature",
+      "settings": {
+        "layout": "pair",
+        "flip": false,
+        "anchor": "studio",
+        "eyebrow": "Studio Collection",
+        "title_1": "Studio Collection",
+        "title_2": "",
+        "lede": "Limited-edition works created through tradition and experimentation.",
+        "image_asset": "",
+        "image_alt": "",
+        "btn_label": "",
+        "btn_link": ""
+      },
+      "blocks": {
+        "c1": {
+          "type": "card",
+          "settings": {
+            "name": "Heritage",
+            "text": "Heirloom textiles that carry the depth and detail of Kutch’s craft traditions. Each piece is made with exceptional skill and intended to be collected, preserved and passed on.",
+            "note": "Available by enquiry.",
+            "image_asset": "frame-r2t24.webp",
+            "image_alt": "A woman in a heritage sari, hand-embroidered in Kutch",
+            "btn_label": "Enquire",
+            "btn_link": "/pages/studio-heritage"
+          }
+        },
+        "c2": {
+          "type": "card",
+          "settings": {
+            "name": "Avinya",
+            "text": "Textile works that explore new expressions of craft. Created through experimentation and collaboration, Avinya pieces bring traditional knowledge into contemporary spaces.",
+            "note": "",
+            "image_asset": "journal-4.webp",
+            "image_alt": "Finished embroidery reviewed together in the Shrujan workroom",
+            "btn_label": "Discover Avinya",
+            "btn_link": "/pages/studio-avinya"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2"
+      ]
+    },
+    "feature-gifting": {
+      "type": "home-feature",
+      "settings": {
+        "layout": "split",
+        "flip": true,
+        "anchor": "gifting",
+        "eyebrow": "Corporate · Weddings · Custom",
+        "title_1": "Gifting &",
+        "title_2": "Collaborations",
+        "lede": "We work with organisations and individuals on refined handcrafted gifting projects rooted in craft and thoughtful design.",
+        "image_asset": "hero-bottom-2.webp",
+        "image_alt": "Hand embroidery in gold thread on deep plum cloth, with a carved block and a spool",
+        "btn_label": "Enquire About Gifting",
+        "btn_link": "/pages/studio-gifting"
+      }
+    },
+    "feature-visit": {
+      "type": "home-feature",
+      "settings": {
+        "layout": "pair",
+        "flip": false,
+        "anchor": "visit",
+        "eyebrow": "Visit & Experience",
+        "title_1": "Visit & Experience",
+        "title_2": "",
+        "lede": "Ways to connect more closely with Shrujan and the region of Kutch.",
+        "image_asset": "",
+        "image_alt": "",
+        "btn_label": "",
+        "btn_link": ""
+      },
+      "blocks": {
+        "c1": {
+          "type": "card",
+          "settings": {
+            "name": "Visit Shrujan",
+            "text": "Step behind the scenes at the Shrujan campus to see where design development, sampling and craft processes come together.",
+            "note": "",
+            "image_asset": "visit-campus.webp",
+            "image_alt": "The Shrujan studio floor, with racks of finished cloth and staff at work",
+            "btn_label": "Plan Your Visit",
+            "btn_link": "/pages/visit-experience"
+          }
+        },
+        "c2": {
+          "type": "card",
+          "settings": {
+            "name": "Visit Kutch",
+            "text": "Discover Kutch through journeys that connect you with its landscapes, craft traditions and communities in meaningful ways.",
+            "note": "",
+            "image_asset": "visit-vijay-vilas.webp",
+            "image_alt": "The Vijay Vilas Palace at Mandvi, Kutch",
+            "btn_label": "Plan Your Trip",
+            "btn_link": "/pages/visit-experience#plan"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2"
+      ]
     }
   },
   "order": [
@@ -1021,12 +1186,18 @@
     "home-craft3d",
     "home-marquee",
     "home-poster",
+    "home-legacy",
+    "feature-lldc",
+    "feature-shop",
     "home-spotlight",
     "home-bestsellers",
     "home-categories",
     "home-house",
+    "feature-studio",
     "home-showcase",
+    "feature-gifting",
     "home-reels",
+    "feature-visit",
     "home-craft-story",
     "home-trousseau",
     "home-testimonials",

@@ -49,6 +49,14 @@ q68, single-generation from the pristine originals in `../website/public` —
 which remain the full-quality masters if a lossless setup is ever wanted
 (e.g. serving media from Content → Files via `file_url`).
 
+The six craft films no longer play from those theme copies:
+`snippets/sj-film-url.liquid` maps each `craft-*.mp4` name to the 1920×1080
+copy Shopify already hosts for the store (Content → Files, the same films the
+live /pages/video plays), so the home hero, the Kaarigar prints and the Craft
+Traditions page are sharp. A film setting may also hold a full Files URL. The
+960×540 `assets/craft-*.mp4` stay only as a fallback name; the reels
+(`reel-*.mp4`, 540×960) have no higher-quality copy on the store yet.
+
 After installing:
 
 

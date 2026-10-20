@@ -1,536 +1,239 @@
 {%- render 'section-design', section: section -%}
 
 {%- comment -%}
-  The hero is one film: the craft montage, on the marquee's inset and ending at
-  the bottom of the screen, with the headline set over its middle. Nothing else
-  sits in it.
+  The hero, the way Delta Cafés' is: three stories, each a craft film across
+  the screen under a soft dark wash — the title and a pill button low on the
+  left, a small grid of glass cards on the right (two of them turn over with
+  the story), the stories as numbered thumbnails along the foot whose lines
+  fill as each plays — and under the film the heritage of Kutch: its makers,
+  villages, crafts and land, in a strip of captioned photographs that drifts
+  and can be dragged.
 
-  Hero-specific controls. --hero-h is how far down the screen the film reaches,
-  header included (100 packaged, the bottom of the screen), and it plays under
-  a dark wash that keeps the words readable (--hero-scrim, 0.45 packaged).
-  Nothing is emitted unless a setting has moved, so an untouched hero is
-  byte-identical.
-
-  The two heights are each written inside their own width range rather than one
-  overriding the other, so changing the desktop height leaves a phone on its own
-  setting, and the reverse.
+  Stories and heritage tiles are blocks; with none added, the defaults
+  below are shown. Styles and behaviour are the home page layer's
+  (assets/sj-home.css and sj-home.js, from awwwards-preview/src/hero.css and
+  hero.js); the loader opens onto the first film. The awwwards preview builds
+  the same markup (awwwards-preview/build.py). Films go through
+  snippets/sj-film-url, so the craft films play in 1080p.
 {%- endcomment -%}
 {%- liquid
   assign h = section.settings
-  assign hsel = '#shopify-section-' | append: section.id
+  assign arrow = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 10h14M11 4.5l5.5 5.5-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>'
+  assign story_defaults = 'craft-embroidery.mp4|craft-embroidery-poster.webp|38|Living craft traditions,~carried forward~since 1969.|Shop the collection|/pages/shop-shrujan^craft-ajrakh.mp4|craft-ajrakh-poster.webp|8|Six living crafts,~one desert.|Craft Traditions|/pages/video^craft-weaving.mp4|craft-weaving-poster.webp|8|Over five decades,~stitched by hand.|The Shrujan Story|/pages/the-shrujan-story' | split: '^'
+  assign tile_defaults = 'The Banni villages|Village|/pages/visit-experience|visit-banni.webp|Artisan women embroidering together at the centre^The People of Shrujan|People|/pages/the-shrujan-story|journal-10.webp|A craftswoman beside a finished embroidered panel^Ajrakh Block Print|Craft|/pages/video|visit-ajrakhpur.webp|A printer working a block along a long table of cloth^The Rann of Kutch|Place|/pages/visit-experience|kutch-rann.webp|Camels on the salt flat of the Rann of Kutch^Continuity of Craft|Heritage|/pages/the-shrujan-story|story-continuity.webp|A younger embroiderer learning the craft^Kutch weaving|Craft|/pages/video|bottom-left.webp|Master weaver working threads at his handloom^The exhibition hall|Heritage|/pages/the-shrujan-story|journal-7.webp|Craftswomen seated in the exhibition hall, textiles hung on the walls^Dignity and Respect|People|/pages/the-shrujan-story|story-dignity.webp|A craftswoman beside her embroidery^Pottery|Craft|/pages/video|lldc-studio.webp|A potter throwing a vessel on the wheel in the LLDC crafts studio^Lakhpat|Place|/pages/visit-experience|visit-lakhpat.webp|The walled fort at Lakhpat above the salt flat^The LLDC galleries|Museum|/pages/lldc|lldc-gallery-3.webp|A curved gallery of Kutchi costume under museum lighting^From the archive|Archive|/pages/the-shrujan-story|journal-3.webp|A craftswoman bent over her embroidery frame' | split: '^'
+  assign stories = section.blocks | where: 'type', 'story'
+  assign tiles = section.blocks | where: 'type', 'tile'
 
-  assign h_style = false
-  if h.hero_h != 100 or h.hero_h_m != 100 or h.hero_scrim != 45
-    assign h_style = true
+  comment
+    Each story, whether a block or a default, becomes one line
+    film|poster url|start|title lines (~)|button|link, so one loop draws them.
+  endcomment
+  assign rows = ''
+  if stories.size > 0
+    for b in stories limit: 3
+      assign bs = b.settings
+      if bs.poster != blank
+        assign p_url = bs.poster | image_url: width: 1600
+      else
+        assign p_url = bs.poster_asset | default: 'craft-embroidery-poster.webp' | asset_url
+      endif
+      assign t_lines = bs.title | strip | newline_to_br | replace: '<br />', '~'
+      assign row = bs.film | append: '|' | append: p_url | append: '|' | append: bs.start | append: '|' | append: t_lines | append: '|' | append: bs.btn_label | append: '|' | append: bs.btn_link
+      assign rows = rows | append: row | append: '^'
+    endfor
+  else
+    for d in story_defaults
+      assign f = d | split: '|'
+      assign p_url = f[1] | asset_url
+      assign row = f[0] | append: '|' | append: p_url | append: '|' | append: f[2] | append: '|' | append: f[3] | append: '|' | append: f[4] | append: '|' | append: f[5]
+      assign rows = rows | append: row | append: '^'
+    endfor
   endif
+  assign rows = rows | split: '^'
 -%}
+<section class="hero hero--delta" aria-roledescription="carousel" aria-label="{{ h.aria_label | escape }}" data-duration="{{ h.duration }}">
+  <div class="dh__fold">
+    <div class="dh__bg" aria-hidden="true">
+      {%- for r in rows -%}
+        {%- assign f = r | split: '|' -%}
+        {%- capture film -%}{% render 'sj-film-url', src: f[0] %}{%- endcapture -%}
+        <div class="dh__media{% if forloop.first %} is-active{% endif %}"><video class="dh__video" {% if forloop.first %}src="{{ film }}" preload="auto"{% else %}data-src="{{ film }}" preload="none"{% endif %} poster="{{ f[1] }}" data-start="{{ f[2] | default: 0 }}" muted playsinline aria-hidden="true"></video></div>
+      {%- endfor -%}
+    </div>
+    <div class="dh__content">
+      <div class="dh__top">
+        <div class="dh__titles">
+          {%- for r in rows -%}
+            {%- assign f = r | split: '|' -%}
+            {%- assign lines = f[3] | split: '~' -%}
+            <div class="dh__slide{% if forloop.first %} is-active{% endif %}" id="dh-slide-{{ forloop.index }}" role="group" aria-roledescription="slide" aria-label="{{ forloop.index }} of {{ rows.size }}">
+              {%- if forloop.first %}<h1 class="dh__title">{% else %}<h2 class="dh__title">{% endif -%}
+              {%- for l in lines %}<span class="dh__line"><span>{{ l | strip | escape }}</span></span>{% endfor -%}
+              {%- if forloop.first %}</h1>{% else %}</h2>{% endif -%}
+              {%- if f[4] != blank -%}
+              <a class="dh-btn" href="{{ f[5] | escape }}"><span class="dh-btn__bg"></span><span class="dh-btn__icon"><span class="dh-btn__ic">{{ arrow }}</span><span class="dh-btn__ic dh-btn__ic--ghost">{{ arrow }}</span></span><span class="dh-btn__label">{{ f[4] | escape }}</span></a>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+        </div>
 
-{%- if h_style -%}
-  <style>
-    {%- if h.hero_h != 100 -%}
-      @media (min-width: 721px) { {{ hsel }} { --hero-h: {{ h.hero_h }}; } }
-    {%- endif -%}
-    {%- if h.hero_h_m != 100 -%}
-      @media (max-width: 720px) { {{ hsel }} { --hero-h: {{ h.hero_h_m }}; } }
-    {%- endif -%}
-    {%- if h.hero_scrim != 45 -%}
-      {{ hsel }} { --hero-scrim: {{ h.hero_scrim | divided_by: 100.0 }}; }
-    {%- endif -%}
-  </style>
-{%- endif -%}
+        {%- liquid
+          if h.c2a_image != blank
+            assign c2a = h.c2a_image | image_url: width: 600
+          else
+            assign c2a = h.c2a_asset | default: 'craft-hero.webp' | asset_url
+          endif
+          if h.c2b_image != blank
+            assign c2b = h.c2b_image | image_url: width: 600
+          else
+            assign c2b = h.c2b_asset | default: 'visit-banni.webp' | asset_url
+          endif
+          if h.c3_image != blank
+            assign c3 = h.c3_image | image_url: width: 300
+          else
+            assign c3 = h.c3_asset | default: 'sj-red-hand-ahir-embroidered-kanchli-1.webp' | asset_url
+          endif
+          if h.c4a_image != blank
+            assign c4a = h.c4a_image | image_url: width: 400
+          else
+            assign c4a = h.c4a_asset | default: 'story-origin-4.webp' | asset_url
+          endif
+          if h.c4b_image != blank
+            assign c4b = h.c4b_image | image_url: width: 400
+          else
+            assign c4b = h.c4b_asset | default: 'mandala.webp' | asset_url
+          endif
+        -%}
+        <div class="dh__cards">
+          <div class="dh__cell dh__cell--1"><a class="dh__cta" href="{{ h.c1_link | escape }}"><span class="dh__label">{{ h.c1_label | escape }}</span><span class="dh__arrow">{{ arrow }}</span></a></div>
+          <div class="dh__cell dh__cell--2" data-alt>
+            <a class="dh__cta" href="{{ h.c2a_link | escape }}"><img src="{{ c2a }}" alt="{{ h.c2a_alt | escape }}" loading="lazy"><span class="dh__label">{{ h.c2a_label | escape }}</span></a>
+            <a class="dh__cta is-off" href="{{ h.c2b_link | escape }}" tabindex="-1"><img src="{{ c2b }}" alt="{{ h.c2b_alt | escape }}" loading="lazy"><span class="dh__label">{{ h.c2b_label | escape }}</span></a>
+          </div>
+          <div class="dh__cell dh__cell--3"><a class="dh__cta" href="{{ h.c3_link | escape }}"><span class="dh__thumb"><img src="{{ c3 }}" alt="{{ h.c3_alt | escape }}" loading="lazy"></span><span class="dh__label">{{ h.c3_label | escape }}</span></a></div>
+          <div class="dh__cell dh__cell--4" data-alt>
+            <a class="dh__cta" href="{{ h.c4a_link | escape }}"><span class="dh__thumb"><img src="{{ c4a }}" alt="{{ h.c4a_alt | escape }}" loading="lazy"></span><span class="dh__copy"><span class="dh__label">{{ h.c4a_title | escape }}</span><span class="dh__desc">{{ h.c4a_desc | escape }}</span></span><span class="dh__arrow">{{ arrow }}</span></a>
+            <a class="dh__cta is-off" href="{{ h.c4b_link | escape }}" tabindex="-1"><span class="dh__thumb"><img{% if h.c4b_spin %} class="dh__spin"{% endif %} src="{{ c4b }}" alt="" loading="lazy"></span><span class="dh__copy"><span class="dh__label">{{ h.c4b_title | escape }}</span><span class="dh__desc">{{ h.c4b_desc | escape }}</span></span><span class="dh__arrow">{{ arrow }}</span></a>
+          </div>
+        </div>
+      </div>
 
-{%- comment -%}
-  The craft films, one after another: a few seconds from the middle of each,
-  where the hands are working. One line per film: film | poster.
-{%- endcomment -%}
-{%- assign montage_lines = h.montage_films | newline_to_br | split: '<br />' -%}
-{%- assign montage_first = '' -%}
-{%- assign montage_first_poster = '' -%}
-{%- capture montage_json -%}[
-  {%- assign m_n = 0 -%}
-  {%- for l in montage_lines -%}
-    {%- assign line = l | strip -%}
-    {%- if line != blank -%}
-      {%- assign parts = line | split: '|' -%}
-      {%- assign m_film = parts[0] | strip | asset_url -%}
-      {%- assign m_poster = parts[1] | strip -%}
-      {%- if m_poster != blank -%}{%- assign m_poster = m_poster | asset_url -%}{%- endif -%}
-      {%- if m_n == 0 -%}
-        {%- assign montage_first = m_film -%}
-        {%- assign montage_first_poster = m_poster -%}
-      {%- else -%},{%- endif -%}
-      {"src":{{ m_film | json }},"poster":{{ m_poster | json }}}
-      {%- assign m_n = m_n | plus: 1 -%}
-    {%- endif -%}
-  {%- endfor -%}
-]{%- endcapture %}
-{%- comment -%}
-  The hold: the wrapper the home page layer (assets/sj-home.css and
-  sj-home.js) keeps around the film while its frame draws in on scroll.
-{%- endcomment %}
-<div class="sj-hero-hold"><section class="hero hero--film" aria-label="{{ section.settings.title_l1 | strip_html | escape }} {{ section.settings.title_l2 | strip_html | escape }} {{ section.settings.title_l3 | strip_html | escape }}"{% if h.hero_animate == false %} data-hero-animate="false"{% endif %}>
-  {%- if montage_first != blank %}
-  <video class="hero-montage__video" poster="{{ montage_first_poster }}" playsinline muted preload="auto" aria-hidden="true" data-hero-montage="{{ montage_json | escape }}" data-clip="{{ h.montage_clip }}" data-seek="{{ h.montage_seek }}"><source src="{{ montage_first }}" type="video/mp4"></video>
-  {%- endif %}
-  <span class="hero-film__scrim" aria-hidden="true"></span>
-
-  {%- comment -%}
-    Over the film, centred: a small line saying where the work comes from, the
-    title, a stitched rule, one line of copy, and two buttons; along the
-    film's foot, a few plain facts, which also sit over the caption band the
-    craft films carry. Every line is a setting, and a blank one is left out.
-  {%- endcomment %}
-  <div class="hero-film__message">
-    {%- if h.eyebrow != blank %}
-    <p class="hero-film__eyebrow" data-hero="eyebrow"><span aria-hidden="true">✦</span>{{ h.eyebrow | escape }}<span aria-hidden="true">✦</span></p>
-    {%- endif %}
-    <h1 class="hero-message__title"><span class="line"><span class="t-ink">{{ h.title_l1 }}</span></span>{% if h.title_l2 != blank %}<span class="line"><span class="t-red">{{ h.title_l2 }}</span></span>{% endif %}{% if h.title_l3 != blank %}<span class="line"><span class="t-red">{{ h.title_l3 }}</span></span>{% endif %}</h1>
-    <span class="hero-message__rule" data-hero="rule" aria-hidden="true"></span>
-    {%- if h.copy != blank %}
-    <p class="hero-message__copy" data-hero="copy">{{ h.copy }}</p>
-    {%- endif %}
-    <div class="hero-film__actions" data-hero="actions">
-      {%- if h.cta_label != blank %}
-      <a class="hero-film__btn hero-film__btn--solid" href="{{ h.cta_url | escape }}">{{ h.cta_label | escape }}<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
-      {%- endif %}
-      {%- if h.cta2_label != blank %}
-      <a class="hero-film__btn" href="{{ h.cta2_url | escape }}">{{ h.cta2_label | escape }}</a>
-      {%- endif %}
+      <div class="dh__bottom">
+        <div class="dh__thumbs">
+          <ul class="dh__tabs" role="tablist" aria-label="Choose a story">
+            {%- for r in rows -%}
+              {%- assign f = r | split: '|' -%}
+              {%- assign lines = f[3] | split: '~' -%}
+              <li><button class="dh__tab{% if forloop.first %} is-active{% endif %}" type="button" role="tab" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="dh-slide-{{ forloop.index }}"><span class="dh__prog"><i></i></span><span class="dh__tthumb"><img src="{{ f[1] }}" alt="" loading="lazy"></span><span class="dh__tcopy"><span>{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span><span>{% for l in lines %}{{ l | strip | escape }}{% unless forloop.last %} <br>{% endunless %}{% endfor %}</span></span></button></li>
+            {%- endfor -%}
+          </ul>
+          <span class="dh__remain" aria-hidden="true"></span>
+        </div>
+      </div>
     </div>
   </div>
-  {%- assign hero_facts = h.facts | split: '|' -%}
-  {%- if h.facts != blank %}
-  <ul class="hero-film__facts" data-hero="facts">
-    {%- for fact in hero_facts %}{% assign fact_text = fact | strip %}{% if fact_text != blank %}<li>{{ fact_text | escape }}</li>{% endif %}{% endfor -%}
-  </ul>
+
+  {%- if h.show_strip %}
+  <div class="dh__strip" aria-label="{{ h.strip_label | escape }}">
+    <div class="dh__track">
+      <ul class="dh__list">
+        {%- if tiles.size > 0 -%}
+          {%- for b in tiles -%}
+            {%- liquid
+              if b.settings.image != blank
+                assign t_img = b.settings.image | image_url: width: 640
+                assign t_alt = b.settings.alt | default: b.settings.image.alt | default: b.settings.label
+              else
+                assign t_img = b.settings.asset | default: 'visit-banni.webp' | asset_url
+                assign t_alt = b.settings.alt | default: b.settings.label
+              endif
+            -%}
+            <li class="dh__tile" {{ b.shopify_attributes }}><a href="{{ b.settings.link | escape }}" draggable="false"><span class="dh__tmedia"><img src="{{ t_img }}" alt="{{ t_alt | escape }}" loading="lazy"><span class="dh__tname"><span class="dh__kicker">{{ b.settings.kicker | escape }}</span><span class="dh__tlabel">{{ b.settings.label | escape }}</span></span></span></a></li>
+          {%- endfor -%}
+        {%- else -%}
+          {%- for d in tile_defaults -%}
+            {%- assign t = d | split: '|' -%}
+            <li class="dh__tile"><a href="{{ t[2] }}" draggable="false"><span class="dh__tmedia"><img src="{{ t[3] | asset_url }}" alt="{{ t[4] | escape }}" loading="lazy"><span class="dh__tname"><span class="dh__kicker">{{ t[1] | escape }}</span><span class="dh__tlabel">{{ t[0] | escape }}</span></span></span></a></li>
+          {%- endfor -%}
+        {%- endif -%}
+      </ul>
+    </div>
+  </div>
   {%- endif %}
-</section></div>
-
-<script>
-(function () {
-  var root = document.querySelector('.hero');
-  if (!root || root.__shrujanInit) return;
-  root.__shrujanInit = true;
-
-  /* Intro animation is on unless the section says otherwise. Skipping the
-     timeline leaves the words in their natural, fully visible state — the
-     hidden start values only ever exist as GSAP inline styles. */
-  var animate = root.getAttribute('data-hero-animate') !== 'false';
-
-  /* ---- The film: the craft montage (port of CraftMontage in Hero.jsx) ----
-     Each film opens at its middle, plays for the clip length, then hands over
-     to the next. Off screen the montage stops and fetches nothing; with reduced
-     motion it never starts, and the first poster simply stands. */
-  var montage = root.querySelector('[data-hero-montage]');
-  if (montage) {
-    var films = [];
-    try { films = JSON.parse(montage.getAttribute('data-hero-montage')) || []; } catch (e) {}
-    var source = montage.querySelector('source');
-    var clipMs = (parseFloat(montage.getAttribute('data-clip')) || 4) * 1000;
-    var seekTo = parseFloat(montage.getAttribute('data-seek')) || 0;
-    var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var current = 0, timer = null, inView = true, started = false;
-    montage.muted = true;
-
-    var showFilm = function (i) {
-      current = i;
-      if (films[i].poster) montage.setAttribute('poster', films[i].poster);
-      source.setAttribute('src', films[i].src);
-      montage.load();
-    };
-
-    montage.addEventListener('loadedmetadata', function () {
-      montage.currentTime = Math.min(seekTo, Math.max(0, montage.duration / 2 - 2));
-    });
-    montage.addEventListener('seeked', function () {
-      if (!inView) return;
-      var p = montage.play();
-      if (p && p.catch) p.catch(function () {});
-      clearTimeout(timer);
-      if (films.length > 1) timer = setTimeout(function () { showFilm((current + 1) % films.length); }, clipMs);
-    });
-
-    if (films.length && !still) {
-      if ('IntersectionObserver' in window) {
-        new IntersectionObserver(function (entries) {
-          inView = entries[0].isIntersecting;
-          if (!inView) {
-            clearTimeout(timer);
-            montage.pause();
-          } else {
-            showFilm(started ? (current + 1) % films.length : 0);
-            started = true;
-          }
-        }).observe(montage);
-      } else {
-        showFilm(0);
-      }
-    }
-  }
-
-  var mm = gsap.matchMedia(root);
-
-  /* The film itself never animates in — it is the first thing painted, and
-     holding it back would only delay the page. The words arrive over it. */
-  if (animate) mm.add('(prefers-reduced-motion: no-preference)', function () {
-    var tl = gsap.timeline({
-      defaults: { ease: 'power3.out', duration: 0.9 },
-    });
-
-    var has = function (sel) { return root.querySelector(sel); };
-    if (has('[data-hero="eyebrow"]')) tl.fromTo('[data-hero="eyebrow"]', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.7 }, 0.05);
-
-    tl.fromTo(
-      '.hero-message__title .line > span',
-      { yPercent: 110 },
-      { yPercent: 0, duration: 1, stagger: 0.12, ease: 'power4.out' },
-      0.15
-    )
-      .fromTo(
-        '[data-hero="rule"]',
-        { scaleX: 0, transformOrigin: 'center center' },
-        { scaleX: 1, duration: 0.6 },
-        0.6
-      )
-      .fromTo('[data-hero="actions"]', { opacity: 0, y: 14 }, { opacity: 1, y: 0 }, 0.82);
-    if (has('[data-hero="copy"]')) tl.fromTo('[data-hero="copy"]', { opacity: 0, y: 16 }, { opacity: 1, y: 0 }, 0.7);
-    if (has('[data-hero="facts"]')) tl.fromTo('[data-hero="facts"]', { opacity: 0 }, { opacity: 1, duration: 1.1 }, 1);
-  });
-
-  mm.add('(prefers-reduced-motion: reduce)', function () {
-    gsap.set('[data-hero], .hero-message__title .line > span', { clearProps: 'all', opacity: 1 });
-  });
-})();
-</script>
+</section>
 
 {% schema %}
 {
-  "name": "Home hero",
+  "name": "Home — Hero",
+  "tag": "div",
   "settings": [
+    { "type": "text", "id": "aria_label", "label": "Name read out to screen readers", "default": "Shrujan stories" },
+    { "type": "range", "id": "duration", "label": "Seconds on each story", "min": 4, "max": 12, "step": 0.5, "unit": "s", "default": 6.5 },
+    { "type": "header", "content": "Card 1 — the pill" },
+    { "type": "text", "id": "c1_label", "label": "Label", "default": "Shop Shrujan" },
+    { "type": "url", "id": "c1_link", "label": "Link", "default": "/pages/shop-shrujan" },
+    { "type": "header", "content": "Card 2 — the tall photograph (turns over)" },
+    { "type": "image_picker", "id": "c2a_image", "label": "Front: photograph" },
+    { "type": "text", "id": "c2a_asset", "label": "Front: or theme image file", "default": "craft-hero.webp" },
+    { "type": "text", "id": "c2a_alt", "label": "Front: image description", "default": "Embroiderers of Kutch working together outside their village" },
+    { "type": "text", "id": "c2a_label", "label": "Front: label", "default": "Craft Traditions of Kutch" },
+    { "type": "url", "id": "c2a_link", "label": "Front: link", "default": "/pages/video" },
+    { "type": "image_picker", "id": "c2b_image", "label": "Back: photograph" },
+    { "type": "text", "id": "c2b_asset", "label": "Back: or theme image file", "default": "visit-banni.webp" },
+    { "type": "text", "id": "c2b_alt", "label": "Back: image description", "default": "Artisan women embroidering together at the centre" },
+    { "type": "text", "id": "c2b_label", "label": "Back: label", "default": "Visit Kutch" },
+    { "type": "url", "id": "c2b_link", "label": "Back: link", "default": "/pages/visit-experience" },
+    { "type": "header", "content": "Card 3 — the small picture" },
+    { "type": "image_picker", "id": "c3_image", "label": "Picture" },
+    { "type": "text", "id": "c3_asset", "label": "Or theme image file", "default": "sj-red-hand-ahir-embroidered-kanchli-1.webp" },
+    { "type": "text", "id": "c3_alt", "label": "Image description", "default": "Red Ahir hand-embroidered kanchli" },
+    { "type": "text", "id": "c3_label", "label": "Label", "default": "Studio Collection" },
+    { "type": "url", "id": "c3_link", "label": "Link", "default": "/pages/studio-collection" },
+    { "type": "header", "content": "Card 4 — the wide card (turns over)" },
+    { "type": "image_picker", "id": "c4a_image", "label": "Front: picture" },
+    { "type": "text", "id": "c4a_asset", "label": "Front: or theme image file", "default": "story-origin-4.webp" },
+    { "type": "text", "id": "c4a_alt", "label": "Front: image description", "default": "Archive photograph of Shrujan artisans" },
+    { "type": "text", "id": "c4a_title", "label": "Front: title", "default": "The Shrujan Story" },
+    { "type": "textarea", "id": "c4a_desc", "label": "Front: line", "default": "From Kaki’s vision to the hands of thousands of women across Kutch." },
+    { "type": "url", "id": "c4a_link", "label": "Front: link", "default": "/pages/the-shrujan-story" },
+    { "type": "image_picker", "id": "c4b_image", "label": "Back: picture" },
+    { "type": "text", "id": "c4b_asset", "label": "Back: or theme image file", "default": "mandala.webp" },
+    { "type": "checkbox", "id": "c4b_spin", "label": "Back: turn the picture slowly (for a round motif)", "default": true },
+    { "type": "text", "id": "c4b_title", "label": "Back: title", "default": "The LLDC Museum" },
+    { "type": "textarea", "id": "c4b_desc", "label": "Back: line", "default": "A museum and cultural institution dedicated to the crafts of Kutch." },
+    { "type": "url", "id": "c4b_link", "label": "Back: link", "default": "/pages/lldc" },
+    { "type": "header", "content": "Heritage strip" },
+    { "type": "checkbox", "id": "show_strip", "label": "Show the heritage strip under the film", "default": true },
+    { "type": "text", "id": "strip_label", "label": "Name read out to screen readers", "default": "The heritage of Kutch" }
+  ],
+  "blocks": [
     {
-      "type": "header",
-      "content": "Film hero"
-    },
-    {
-      "type": "range",
-      "id": "hero_h",
-      "label": "Height",
-      "info": "How far down the screen the film reaches, header included. 100 ends it at the bottom of the screen. On phones, use the Mobile setting below.",
-      "min": 50,
-      "max": 100,
-      "step": 5,
-      "unit": "vh",
-      "default": 100
-    },
-    {
-      "type": "range",
-      "id": "hero_scrim",
-      "label": "Darken the film",
-      "info": "The dark wash over the film that keeps the words readable. 0 shows the film as shot.",
-      "min": 0,
-      "max": 80,
-      "step": 5,
-      "unit": "%",
-      "default": 45
-    },
-    {
-      "type": "checkbox",
-      "id": "hero_animate",
-      "label": "Play the intro animation",
-      "info": "Off renders the hero in place — the headline lines, rule, copy and button never animate in.",
-      "default": true
-    },
-    {
-      "type": "header",
-      "content": "Film"
-    },
-    {
-      "type": "textarea",
-      "id": "montage_films",
-      "label": "Films (one per line)",
-      "info": "Film | poster, both theme asset filenames. They play in this order.",
-      "default": "craft-embroidery.mp4 | craft-embroidery-poster.webp\ncraft-ajrakh.mp4 | craft-ajrakh-poster.webp\ncraft-weaving.mp4 | craft-weaving-poster.webp\ncraft-tiedye.mp4 | craft-tiedye-poster.webp\ncraft-discharge.mp4 | craft-discharge-poster.webp\ncraft-pottery.mp4 | craft-pottery-poster.webp"
-    },
-    {
-      "type": "range",
-      "id": "montage_clip",
-      "label": "Seconds of each film",
-      "min": 2,
-      "max": 10,
-      "step": 1,
-      "unit": "s",
-      "default": 4
-    },
-    {
-      "type": "range",
-      "id": "montage_seek",
-      "label": "Start each film at",
-      "info": "Seconds in. Short films start nearer their middle instead.",
-      "min": 0,
-      "max": 20,
-      "step": 1,
-      "unit": "s",
-      "default": 6
-    },
-    {
-      "type": "header",
-      "content": "Centre message"
-    },
-    {
-      "type": "text",
-      "id": "eyebrow",
-      "label": "Small line above the title",
-      "default": "Hand embroidery from Kutch"
-    },
-    {
-      "type": "inline_richtext",
-      "id": "title_l1",
-      "label": "Title line 1",
-      "default": "Every stitch"
-    },
-    {
-      "type": "inline_richtext",
-      "id": "title_l2",
-      "label": "Title line 2",
-      "info": "Set in the accent colour. Leave empty for a one-line title.",
-      "default": "carries her name"
-    },
-    {
-      "type": "inline_richtext",
-      "id": "title_l3",
-      "label": "Title line 3 (optional)",
-      "info": "Also in the accent colour, beside line 2 where it fits."
-    },
-    {
-      "type": "textarea",
-      "id": "copy",
-      "label": "Copy",
-      "default": "Embroidered by the craftswomen of Kutch, in stitches their villages have kept for generations."
-    },
-    {
-      "type": "text",
-      "id": "cta_label",
-      "label": "Main button label",
-      "default": "Shop the collection"
-    },
-    {
-      "type": "text",
-      "id": "cta_url",
-      "label": "Main button link (URL or #anchor)",
-      "default": "/pages/shop-shrujan"
-    },
-    {
-      "type": "text",
-      "id": "cta2_label",
-      "label": "Second button label",
-      "info": "Leave empty for one button.",
-      "default": "Explore the crafts"
-    },
-    {
-      "type": "text",
-      "id": "cta2_url",
-      "label": "Second button link",
-      "default": "/pages/video"
-    },
-    {
-      "type": "text",
-      "id": "facts",
-      "label": "Facts along the bottom",
-      "info": "Separate them with |. Leave empty to hide the line.",
-      "default": "Since 1969 | 12 living crafts | Made by craftswomen"
-    },
-    {
-      "type": "header",
-      "content": "Mobile"
-    },
-    {
-      "type": "range",
-      "id": "hero_h_m",
-      "label": "Height on phones",
-      "info": "Phones only (720px and under).",
-      "min": 50,
-      "max": 100,
-      "step": 5,
-      "unit": "vh",
-      "default": 100
-    },
-    {
-      "type": "header",
-      "content": "Design"
-    },
-    {
-      "type": "select",
-      "id": "sec_width",
-      "label": "Section width",
-      "info": "Theme default keeps the shared page rail.",
-      "default": "default",
-      "options": [
-        {
-          "value": "default",
-          "label": "Theme default"
-        },
-        {
-          "value": "narrow",
-          "label": "Narrow"
-        },
-        {
-          "value": "wide",
-          "label": "Wide"
-        },
-        {
-          "value": "full",
-          "label": "Full width"
-        }
+      "type": "story",
+      "name": "Story",
+      "limit": 3,
+      "settings": [
+        { "type": "text", "id": "film", "label": "Film", "info": "A full URL from Content → Files, or a theme file. The craft films (craft-*.mp4) play in 1080p.", "default": "craft-embroidery.mp4" },
+        { "type": "number", "id": "start", "label": "Start the film at (seconds)", "default": 0 },
+        { "type": "image_picker", "id": "poster", "label": "Still (shown before the film and in its thumbnail)" },
+        { "type": "text", "id": "poster_asset", "label": "Or theme image file", "default": "craft-embroidery-poster.webp" },
+        { "type": "textarea", "id": "title", "label": "Title", "info": "One line per line of the title.", "default": "Living craft traditions,\ncarried forward\nsince 1969." },
+        { "type": "text", "id": "btn_label", "label": "Button label", "default": "Shop the collection" },
+        { "type": "url", "id": "btn_link", "label": "Button link", "default": "/pages/shop-shrujan" }
       ]
     },
     {
-      "type": "range",
-      "id": "sec_space_top",
-      "label": "Extra top spacing",
-      "min": -120,
-      "max": 240,
-      "step": 4,
-      "unit": "px",
-      "default": 0
-    },
-    {
-      "type": "range",
-      "id": "sec_space_bottom",
-      "label": "Extra bottom spacing",
-      "min": -120,
-      "max": 240,
-      "step": 4,
-      "unit": "px",
-      "default": 0
-    },
-    {
-      "type": "range",
-      "id": "sec_space_top_m",
-      "label": "Extra top spacing (mobile)",
-      "min": -120,
-      "max": 240,
-      "step": 4,
-      "unit": "px",
-      "default": 0
-    },
-    {
-      "type": "range",
-      "id": "sec_space_bottom_m",
-      "label": "Extra bottom spacing (mobile)",
-      "min": -120,
-      "max": 240,
-      "step": 4,
-      "unit": "px",
-      "default": 0
-    },
-    {
-      "type": "color",
-      "id": "sec_bg",
-      "label": "Background",
-      "info": "Leave empty to keep the section’s own background."
-    },
-    {
-      "type": "color",
-      "id": "sec_text",
-      "label": "Text colour"
-    },
-    {
-      "type": "color",
-      "id": "sec_accent",
-      "label": "Accent colour"
-    },
-    {
-      "type": "checkbox",
-      "id": "sec_animate",
-      "label": "Animate on scroll",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "sec_hide_mobile",
-      "label": "Hide on mobile",
-      "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "sec_hide_desktop",
-      "label": "Hide on desktop",
-      "default": false
-    },
-    {
-      "type": "textarea",
-      "id": "sec_custom_css",
-      "label": "Custom CSS",
-      "info": "Applies to this section only, e.g. .hero__title { letter-spacing: 2px; }"
-    },
-    {
-      "type": "header",
-      "content": "Design"
-    },
-    {
-      "type": "header",
-      "content": "Design — mobile"
-    },
-    {
-      "type": "select",
-      "id": "sec_width_m",
-      "label": "Section width on mobile",
-      "info": "Only below 768px. Edge-to-edge removes the side gutter entirely.",
-      "default": "default",
-      "options": [
-        {
-          "value": "default",
-          "label": "Theme default"
-        },
-        {
-          "value": "narrow",
-          "label": "Narrow (wider gutters)"
-        },
-        {
-          "value": "full",
-          "label": "Full width"
-        },
-        {
-          "value": "edge",
-          "label": "Edge to edge"
-        }
+      "type": "tile",
+      "name": "Heritage tile",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Name", "default": "The Banni villages" },
+        { "type": "text", "id": "kicker", "label": "Small word over the name", "info": "Village, People, Craft, Place, Museum…", "default": "Village" },
+        { "type": "url", "id": "link", "label": "Link", "default": "/pages/visit-experience" },
+        { "type": "image_picker", "id": "image", "label": "Photograph", "info": "Artisans, villages, the land; a landscape photograph fits best." },
+        { "type": "text", "id": "asset", "label": "Or theme image file", "default": "visit-banni.webp" },
+        { "type": "text", "id": "alt", "label": "Photograph description", "default": "Artisan women embroidering together at the centre" }
       ]
-    },
-    {
-      "type": "select",
-      "id": "sec_align_m",
-      "label": "Text alignment on mobile",
-      "default": "default",
-      "options": [
-        {
-          "value": "default",
-          "label": "Leave as designed"
-        },
-        {
-          "value": "left",
-          "label": "Left"
-        },
-        {
-          "value": "center",
-          "label": "Centre"
-        },
-        {
-          "value": "right",
-          "label": "Right"
-        }
-      ]
-    },
-    {
-      "type": "textarea",
-      "id": "sec_custom_css_m",
-      "label": "Custom CSS (mobile only)",
-      "info": "Wrapped in a max-width: 767px media query for this section."
     }
   ],
-  "presets": [
-    {
-      "name": "Home hero"
-    }
-  ]
+  "presets": [ { "name": "Home — Hero" } ]
 }
 {% endschema %}
