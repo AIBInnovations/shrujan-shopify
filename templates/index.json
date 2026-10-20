@@ -420,9 +420,9 @@
           "type": "tile",
           "settings": {
             "fallback": "sj-col-kanchli.webp",
-            "alt": "A woman in a black hand-embroidered kanchli and dupatta, seated in a carved stone courtyard",
+            "alt": "A woman in a black hand-embroidered kanchli and maroon dupatta, seated by a carved stone window",
             "name": "Kanchli",
-            "note": "The Kutchi bodice, cut and stitched the traditional way",
+            "note": "The Kutch bodice, cut and stitched the traditional way.",
             "link": "/pages/shop-shrujan?c=kanchli"
           }
         },
@@ -432,7 +432,7 @@
             "fallback": "sj-col-accessories.webp",
             "alt": "Hand-embroidered shawls and dupattas draped over a carved wooden bench",
             "name": "Accessories",
-            "note": "Dupattas, stoles and shawls finished with hand borders",
+            "note": "Dupattas, stoles and shawls finished with hand borders.",
             "link": "/pages/shop-shrujan?c=accessories"
           }
         },
@@ -442,7 +442,7 @@
             "fallback": "sj-col-crossbody.webp",
             "alt": "A woman in a hand-embroidered kanchli with a patchwork crossbody bag",
             "name": "Crossbody & Sling",
-            "note": "Small bags for a long day, worn across the body",
+            "note": "Small bags for a long day, worn across the body.",
             "link": "/pages/shop-shrujan?c=cross-body-bags-and-sling-bags"
           }
         },
@@ -452,7 +452,7 @@
             "fallback": "sj-col-handbags.webp",
             "alt": "A patchwork hand-embroidered handbag on a carved stone ledge",
             "name": "Hand Bags",
-            "note": "Structured bags, embroidered panel by panel",
+            "note": "Structured bags, embroidered panel by panel.",
             "link": "/pages/shop-shrujan?c=hand-bag"
           }
         },
@@ -460,9 +460,9 @@
           "type": "tile",
           "settings": {
             "fallback": "sj-col-totes.webp",
-            "alt": "A woman seated beside a striped handwoven tote bag",
+            "alt": "A striped handwoven tote bag hanging on a wooden chair",
             "name": "Tote Bags",
-            "note": "Roomy totes in handwoven cotton",
+            "note": "Roomy totes in handwoven cotton.",
             "link": "/pages/shop-shrujan?c=tote-bags"
           }
         },
@@ -472,7 +472,7 @@
             "fallback": "sj-col-potlis.webp",
             "alt": "Three hand-embroidered drawstring potlis with tasselled cords",
             "name": "Potlis & Batwas",
-            "note": "Drawstring potlis in silk, for the festive months",
+            "note": "Drawstring potlis in silk, for the festive months.",
             "link": "/pages/shop-shrujan?c=potlis-batwas"
           }
         },
@@ -482,7 +482,7 @@
             "fallback": "sj-col-pouches.webp",
             "alt": "Hand-embroidered pouches and purses stacked on a stone ledge",
             "name": "Pouches",
-            "note": "Pouches and purses in offcuts too good to waste",
+            "note": "Pouches and purses in offcuts, too good to waste.",
             "link": "/pages/shop-shrujan?c=pouches"
           }
         },
@@ -520,6 +520,28 @@
             "label": "Pouches",
             "link": "/pages/shop-shrujan?c=pouches"
           }
+        },
+        "b13": {
+          "type": "tile",
+          "settings": {
+            "fallback": "sj-col-classic.webp",
+            "alt": "Folded hand-embroidered textiles and a shawl stacked on a carved stone ledge",
+            "name": "Shrujan Classic",
+            "note": "Clothing, textiles and objects shaped by the craft traditions of Kutch, made for occasions and for the home.",
+            "link": "/pages/shop-shrujan",
+            "cta_label": "Explore Collection"
+          }
+        },
+        "b14": {
+          "type": "tile",
+          "settings": {
+            "fallback": "sj-col-raahi.webp",
+            "alt": "A smiling woman in easy black clothing with hand-embroidered borders",
+            "name": "Raahi",
+            "note": "Easy, contemporary clothing shaped by craft and made for comfort, movement and daily life.",
+            "link": "/collections/clothing",
+            "cta_label": "Explore Collection"
+          }
         }
       },
       "block_order": [
@@ -530,6 +552,8 @@
         "b5",
         "b6",
         "b7",
+        "b13",
+        "b14",
         "b8",
         "b9",
         "b10",
