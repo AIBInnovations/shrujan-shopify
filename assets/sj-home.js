@@ -982,13 +982,13 @@
       });
     });
 
-    // each seal: its ring draws round, the photograph opens from the
-    // centre, the words come round it, then the name and the line
+    // each value: its photograph opens from the foot, then the name and the
+    // line (the ring and its words are no longer shown)
     var tl = gsap.timeline({ scrollTrigger: { trigger: row, start: desktop ? 'top 78%' : 'top 88%' } });
     seals.forEach(function (s, i) {
       var at = i * 0.14;
       tl.fromTo(s.querySelector('.prm__draw circle'), { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.7, ease: 'power2.inOut' }, at)
-        .fromTo(s.querySelector('.prm__photo'), { clipPath: 'circle(0% at 50% 50%)' }, { clipPath: 'circle(50% at 50% 50%)', duration: 1.4, ease: 'expo.out' }, at + 0.25)
+        .fromTo(s.querySelector('.prm__photo'), { clipPath: 'inset(100% 0% 0% 0% round 6px)' }, { clipPath: 'inset(0% 0% 0% 0% round 6px)', duration: 1.4, ease: 'expo.out' }, at + 0.25)
         .fromTo(s.querySelector('.prm__photo img'), { scale: 1.4 }, { scale: 1, duration: 1.8, ease: 'expo.out' }, at + 0.25)
         .fromTo(s.querySelector('.prm__spin'), { opacity: 0, rotate: -50 }, { opacity: 1, rotate: 0, duration: 1.8, ease: 'expo.out' }, at + 0.45)
         .fromTo(s.querySelectorAll('.prm__no, .prm__name, .prm__copy'), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 1, stagger: 0.07, ease: 'power3.out' }, at + 0.4);

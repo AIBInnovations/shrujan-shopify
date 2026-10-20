@@ -3970,6 +3970,25 @@ section.idx {
   }
 }
 
+/* the photographs as rounded portrait cards, like every other card on the
+   page: no ring of words, no drawn circle */
+.prm__ring {
+  width: min(100%, calc(var(--ring) * 1.25));
+  aspect-ratio: 4 / 5;
+}
+
+.prm__orbit,
+.prm__draw {
+  display: none;
+}
+
+.prm__photo {
+  inset: 0;
+  border-radius: 6px;
+  clip-path: inset(0 round 6px);
+  box-shadow: 0 18px 34px -24px rgba(40, 40, 41, 0.55);
+}
+
 /* ============================================================
    Shrujan in motion
    ------------------------------------------------------------
@@ -4219,6 +4238,16 @@ section.idx {
   .rl__cursor {
     display: none;
   }
+}
+
+/* the reels in one level row, with no pennants under them (the theme's
+   setting hangs none by default now) */
+.reels .reel:nth-child(even) {
+  margin-top: 0;
+}
+
+.reels .reel__letter {
+  display: none;
 }
 
 /* ============================================================
