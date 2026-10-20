@@ -639,11 +639,6 @@
    head, the painting and the crafts' names rise in as the section comes up;
    the pot in the corner moves at its own depth while it passes. */
 (function () {
-  // pictures the theme names by file (the mannequin section's village): their
-  // address is the theme's asset folder, wherever the page is served from
-  [].forEach.call(document.querySelectorAll('img[data-asset]'), function (img) {
-    if (!img.getAttribute('src')) img.setAttribute('src', (window.SHRUJAN_ASSET_BASE || '') + img.getAttribute('data-asset'));
-  });
   var root = document.querySelector('.sx');
   if (!root) return;
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

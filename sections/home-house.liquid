@@ -51,9 +51,10 @@
   </style>
 {%- endif -%}
 {%- comment -%}
-  What Shrujan has mastered: the collections as an index, each a photograph
-  with its number, name and line, and a "View" disc that follows the cursor
-  over them (assets/sj-home.js, styled by sj-home.css). The collections are the
+  What Shrujan has mastered: the collections as a mosaic, Kanchli large on
+  the left, each a photograph with its number, name, line and arrow over its
+  foot, and a "View" disc that follows the cursor over them
+  (assets/sj-home.js, styled by sj-home.css). The collections are the
   section's tile blocks; the strip-link blocks no longer show here.
 {%- endcomment -%}
 {%- liquid
@@ -70,6 +71,7 @@
   <div class="idx__head">
     <h2 class="idx__title"><span class="idx__line">{{ cfg.idx_line_1 | escape }}</span><span class="idx__line idx__line--soft">{{ cfg.idx_line_2 | escape }}</span></h2>
     <p class="idx__lede">{{ section.settings.copy | escape }}</p>
+    <span class="idx__rule" aria-hidden="true"><i></i><svg viewBox="-6 -6 12 12"><path d="M0-5 5 0 0 5-5 0z" fill="none" stroke="currentColor" stroke-width="1"/><path d="M0-2.2 2.2 0 0 2.2-2.2 0z" fill="currentColor"/></svg><i></i></span>
   </div>
   <div class="col__grid">
     {% for block in tiles -%}
@@ -79,10 +81,18 @@
     </a>
     {%- endfor %}
   </div>
-  <div class="idx__foot"><a class="arch__btn" href="{{ cfg.idx_cta_link | default: '/pages/shop-shrujan' }}">{{ cfg.idx_cta_label | escape }} <span aria-hidden="true">→</span></a>
-    {%- if cfg.house_show_strip and section.settings.strip_label != blank -%}
-    <a class="idx__more" href="{{ cfg.idx_more_link | default: '/pages/shop-shrujan?c=bags' }}">{{ section.settings.strip_label | escape }} <span aria-hidden="true">→</span></a>
-    {%- endif -%}
+  <div class="idx__foot idx__shops">
+    {%- for n in (1..2) -%}
+      {%- liquid
+        assign k_name = 'shop_' | append: n | append: '_name'
+        assign k_text = 'shop_' | append: n | append: '_text'
+        assign k_label = 'shop_' | append: n | append: '_label'
+        assign k_link = 'shop_' | append: n | append: '_link'
+      -%}
+      {%- if cfg[k_name] != blank %}
+    <div class="idx__shop"><h3 class="idx__shop-name">{{ cfg[k_name] | escape }}</h3><p class="idx__shop-text">{{ cfg[k_text] | escape }}</p><a class="idx__more" href="{{ cfg[k_link] | escape }}">{{ cfg[k_label] | escape }} <span aria-hidden="true">→</span></a></div>
+      {%- endif -%}
+    {%- endfor %}
   </div>
   <div class="col__cursor" aria-hidden="true">View</div>
 </section>
@@ -107,7 +117,7 @@
       "type": "textarea",
       "id": "copy",
       "label": "Intro copy",
-      "default": "The same counted stitches, worked into what you wear, what you carry and the cloth that dresses the house."
+      "default": "Handcrafted with care. Made slowly, meant to last."
     },
     {
       "type": "text",
@@ -141,6 +151,15 @@
       "label": "After the number of collections",
       "default": "collections"
     },
+    { "type": "header", "content": "Shop: Shrujan Classic and Raahi" },
+    { "type": "text", "id": "shop_1_name", "label": "First: name", "default": "Shrujan Classic" },
+    { "type": "textarea", "id": "shop_1_text", "label": "First: line", "default": "Clothing, textiles and objects shaped by the craft traditions of Kutch, made for occasions and for the home." },
+    { "type": "text", "id": "shop_1_label", "label": "First: link label", "default": "Explore Collection" },
+    { "type": "text", "id": "shop_1_link", "label": "First: link", "default": "/pages/shop-shrujan" },
+    { "type": "text", "id": "shop_2_name", "label": "Second: name", "default": "Raahi" },
+    { "type": "textarea", "id": "shop_2_text", "label": "Second: line", "default": "Easy, contemporary clothing shaped by craft and made for comfort, movement and daily life." },
+    { "type": "text", "id": "shop_2_label", "label": "Second: link label", "default": "Explore Collection" },
+    { "type": "text", "id": "shop_2_link", "label": "Second: link", "info": "Raahi has no collection on the store yet; until it does, this opens Clothing.", "default": "/collections/clothing" },
     {
       "type": "text",
       "id": "idx_cta_label",

@@ -419,8 +419,8 @@
         "b1": {
           "type": "tile",
           "settings": {
-            "fallback": "sj-black-pakko-hand-embroidered-kanchli-1.webp",
-            "alt": "Model wearing the black pakko hand embroidered kanchli",
+            "fallback": "sj-col-kanchli.webp",
+            "alt": "A woman in a black hand-embroidered kanchli and dupatta, seated in a carved stone courtyard",
             "name": "Kanchli",
             "note": "The Kutchi bodice, cut and stitched the traditional way",
             "link": "/pages/shop-shrujan?c=kanchli"
@@ -429,8 +429,8 @@
         "b2": {
           "type": "tile",
           "settings": {
-            "fallback": "sj-dupatta-copy-1.webp",
-            "alt": "Dupatta, hand-embroidered in Kutch",
+            "fallback": "sj-col-accessories.webp",
+            "alt": "Hand-embroidered shawls and dupattas draped over a carved wooden bench",
             "name": "Accessories",
             "note": "Dupattas, stoles and shawls finished with hand borders",
             "link": "/pages/shop-shrujan?c=accessories"
@@ -439,8 +439,8 @@
         "b3": {
           "type": "tile",
           "settings": {
-            "fallback": "sj-ahir-batwa-copy-4-1.webp",
-            "alt": "Crossbody Bag, hand-embroidered in Kutch",
+            "fallback": "sj-col-crossbody.webp",
+            "alt": "A woman in a hand-embroidered kanchli with a patchwork crossbody bag",
             "name": "Crossbody & Sling",
             "note": "Small bags for a long day, worn across the body",
             "link": "/pages/shop-shrujan?c=cross-body-bags-and-sling-bags"
@@ -449,8 +449,8 @@
         "b4": {
           "type": "tile",
           "settings": {
-            "fallback": "sj-hand-bag-copy-23-1.webp",
-            "alt": "Hand Bag, hand-embroidered in Kutch",
+            "fallback": "sj-col-handbags.webp",
+            "alt": "A patchwork hand-embroidered handbag on a carved stone ledge",
             "name": "Hand Bags",
             "note": "Structured bags, embroidered panel by panel",
             "link": "/pages/shop-shrujan?c=hand-bag"
@@ -459,8 +459,8 @@
         "b5": {
           "type": "tile",
           "settings": {
-            "fallback": "sj-pakko-embroidered-divya-bag-1.webp",
-            "alt": "Tote Bag, hand-embroidered in Kutch",
+            "fallback": "sj-col-totes.webp",
+            "alt": "A woman seated beside a striped handwoven tote bag",
             "name": "Tote Bags",
             "note": "Roomy totes in handwoven cotton",
             "link": "/pages/shop-shrujan?c=tote-bags"
@@ -469,8 +469,8 @@
         "b6": {
           "type": "tile",
           "settings": {
-            "fallback": "sj-ahir-batwa-1.webp",
-            "alt": "Potli Bag, hand-embroidered in Kutch",
+            "fallback": "sj-col-potlis.webp",
+            "alt": "Three hand-embroidered drawstring potlis with tasselled cords",
             "name": "Potlis & Batwas",
             "note": "Drawstring potlis in silk, for the festive months",
             "link": "/pages/shop-shrujan?c=potlis-batwas"
@@ -479,8 +479,8 @@
         "b7": {
           "type": "tile",
           "settings": {
-            "fallback": "sj-jat-garasiya-mobile-pouch-1-1.webp",
-            "alt": "Mobile Pouch, hand-embroidered in Kutch",
+            "fallback": "sj-col-pouches.webp",
+            "alt": "Hand-embroidered pouches and purses stacked on a stone ledge",
             "name": "Pouches",
             "note": "Pouches and purses in offcuts too good to waste",
             "link": "/pages/shop-shrujan?c=pouches"
@@ -1026,59 +1026,13 @@
         "btn_link": "https://shrujanlldc.org"
       }
     },
-    "feature-shop": {
-      "type": "home-feature",
-      "settings": {
-        "layout": "pair",
-        "flip": false,
-        "anchor": "shop",
-        "eyebrow": "Shop",
-        "title_1": "Shop Shrujan",
-        "title_2": "",
-        "lede": "Handcrafted with care. Made slowly, meant to last.",
-        "image_asset": "",
-        "image_alt": "",
-        "btn_label": "",
-        "btn_link": ""
-      },
-      "blocks": {
-        "c1": {
-          "type": "card",
-          "settings": {
-            "name": "Shrujan Classic",
-            "text": "Clothing, textiles and objects shaped by the craft traditions of Kutch, made for occasions and for the home.",
-            "note": "",
-            "image_asset": "shop-hero.webp",
-            "image_alt": "Embroidered bags, a cushion and two women in hand-embroidered clothing",
-            "btn_label": "Explore Collection",
-            "btn_link": "/pages/shop-shrujan"
-          }
-        },
-        "c2": {
-          "type": "card",
-          "settings": {
-            "name": "Raahi",
-            "text": "Easy, contemporary clothing shaped by craft and made for comfort, movement and daily life.",
-            "note": "",
-            "image_asset": "bottom-right.webp",
-            "image_alt": "A woman in a mehendi-green hand-embroidered kurta set",
-            "btn_label": "Explore Collection",
-            "btn_link": "/collections/raahi"
-          }
-        }
-      },
-      "block_order": [
-        "c1",
-        "c2"
-      ]
-    },
     "feature-studio": {
       "type": "home-feature",
       "settings": {
         "layout": "pair",
         "flip": false,
         "anchor": "studio",
-        "eyebrow": "Studio Collection",
+        "eyebrow": "Heritage · Avinya",
         "title_1": "Studio Collection",
         "title_2": "",
         "lede": "Limited-edition works created through tradition and experimentation.",
@@ -1140,7 +1094,7 @@
         "layout": "pair",
         "flip": false,
         "anchor": "visit",
-        "eyebrow": "Visit & Experience",
+        "eyebrow": "The campus · Kutch",
         "title_1": "Visit & Experience",
         "title_2": "",
         "lede": "Ways to connect more closely with Shrujan and the region of Kutch.",
@@ -1171,7 +1125,7 @@
             "image_asset": "visit-vijay-vilas.webp",
             "image_alt": "The Vijay Vilas Palace at Mandvi, Kutch",
             "btn_label": "Plan Your Trip",
-            "btn_link": "/pages/visit-experience#plan"
+            "btn_link": "https://www.craftandculturejourneys.com/"
           }
         }
       },
@@ -1188,7 +1142,6 @@
     "home-poster",
     "home-legacy",
     "feature-lldc",
-    "feature-shop",
     "home-spotlight",
     "home-bestsellers",
     "home-categories",
