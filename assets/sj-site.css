@@ -7,8 +7,8 @@
    brand's egg white with a fine grain, under every section, the header and
    the box behind the logo; the brand's dark grey for the words; its beige
    for lines and quiet panels; colour only in hints, the brand's maroon for
-   the few accents, the rest left to the cloth in the photographs. The offer
-   bar and the footer are the dark grey. The ornament dividers stay off. Loaded
+   the few accents and the footer, the rest left to the cloth in the
+   photographs. The offer bar is the dark grey. The ornament dividers stay off. Loaded
    by layout/theme.liquid on every template, after the theme's own
    stylesheets and colour settings.
    ============================================================ */
@@ -114,9 +114,9 @@ body {
   border-style: solid !important;
 }
 
-/* the footer's ground: the brand's dark grey, flat */
+/* the footer's ground: the brand's maroon, flat */
 .footer {
-  --footer-bg: #404041;
+  --footer-bg: #924241;
 }
 
 
