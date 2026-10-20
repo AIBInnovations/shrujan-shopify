@@ -3665,11 +3665,12 @@ section.idx {
 /* ============================================================
    Craft that cares: four promises
    ------------------------------------------------------------
-   The section as the theme lays it out: four round seals in a row with the
+   The section as the theme lays it out: the values in a row with the
    jharokha tilework on both edges of the screen behind them. The arches
-   slide in from the screen edges once and then hold still; each seal's
-   ring draws itself and its photograph opens from the centre, and a ring of
-   words turns slowly around every seal.
+   slide in from the screen edges once and then hold still. Each value is a
+   small photograph with rounded corners, like every card on the page; a thin
+   frame draws itself round it, and a frame of words runs round that, slowly
+   on its own and faster as the page moves (prm.js).
    On a phone the seals are a swipe row.
    ============================================================ */
 .prm {
@@ -3736,7 +3737,7 @@ section.idx {
 
 /* ---- the seals, between the arches ---- */
 .prm__stage {
-  --ring: clamp(176px, 14.5vw, 228px);
+  --ring: clamp(176px, 14vw, 216px);
   position: relative;
   margin-top: clamp(56px, 6vw, 96px);
 }
@@ -3813,8 +3814,7 @@ section.idx {
   margin-top: 14px;
 }
 
-/* the turning words: the outer span is turned by the scroll, the svg in it
-   by the cursor */
+/* the frame of words; prm.js runs them round it
 .prm__orbit {
   position: absolute;
   inset: 0;
@@ -3825,7 +3825,6 @@ section.idx {
   width: 100%;
   height: 100%;
   overflow: visible;
-  transition: rotate 1.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .prm__spin text {
@@ -3835,7 +3834,7 @@ section.idx {
   fill: var(--ink-soft);
 }
 
-/* the ring that draws itself round the photograph */
+/* the frame that draws itself round the photograph */
 .prm__draw {
   position: absolute;
   inset: 0;
@@ -3844,21 +3843,23 @@ section.idx {
   overflow: visible;
 }
 
-.prm__draw circle {
+.prm__draw path {
   fill: none;
   stroke: var(--indigo, #2b3f6b);
-  stroke-width: 1.1;
+  stroke-width: 1;
   stroke-dasharray: 1;
   stroke-dashoffset: 0;
 }
 
+/* the photograph inside the frame; its corners keep the frame's curve */
 .prm__photo {
   position: absolute;
-  inset: 16%;
+  inset: 14%;
   overflow: hidden;
-  border-radius: 50%;
+  border-radius: calc(var(--ring) * 0.03);
   background: var(--ivory-2);
-  clip-path: circle(50% at 50% 50%);
+  clip-path: inset(0 round calc(var(--ring) * 0.03));
+  box-shadow: 0 16px 30px -22px rgba(40, 40, 41, 0.55);
 }
 
 .prm__photo img {
@@ -3885,10 +3886,6 @@ section.idx {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .prm__seal:hover .prm__spin {
-    rotate: 120deg;
-  }
-
   .prm__seal:hover .prm__photo img {
     scale: 1.08;
   }
@@ -3930,7 +3927,7 @@ section.idx {
   }
 
   .prm__stage {
-    --ring: 156px;
+    --ring: 168px;
     margin-top: 36px;
   }
 
@@ -3968,25 +3965,6 @@ section.idx {
   .prm__more {
     margin-top: 32px;
   }
-}
-
-/* the photographs as rounded portrait cards, like every other card on the
-   page: no ring of words, no drawn circle */
-.prm__ring {
-  width: min(100%, calc(var(--ring) * 1.25));
-  aspect-ratio: 4 / 5;
-}
-
-.prm__orbit,
-.prm__draw {
-  display: none;
-}
-
-.prm__photo {
-  inset: 0;
-  border-radius: 6px;
-  clip-path: inset(0 round 6px);
-  box-shadow: 0 18px 34px -24px rgba(40, 40, 41, 0.55);
 }
 
 /* ============================================================

@@ -908,8 +908,7 @@
         "b10",
         "b11",
         "b12"
-      ],
-      "disabled": true
+      ]
     },
     "home-journal": {
       "type": "home-journal",
@@ -1173,13 +1172,13 @@
     "home-reels",
     "feature-visit",
     "home-craft-story",
+    "home-testimonials",
     "home-journal",
     "home-faq",
     "home-shop-cta",
     "home-marquee",
     "home-spotlight",
     "home-bestsellers",
-    "home-categories",
-    "home-testimonials"
+    "home-categories"
   ]
 }

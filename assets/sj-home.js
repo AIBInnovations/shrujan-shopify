@@ -908,8 +908,8 @@
   else document.addEventListener('sj:revealed', motion, { once: true });
 })();
 
-/* Craft that cares: the arches closing in, the seals drawing themselves,
-   the words turning round them, and the section's entrance. */
+/* Philosophy & Values: the arches closing in, the frames drawing
+   themselves, the words running round them, and the section's entrance. */
 (function () {
   var root = document.querySelector('.prm');
   if (!root) return;
@@ -924,9 +924,11 @@
     }).join(' ');
   });
 
-  // the ring of words: as many of the seal's words as fit once round its
-  // circle at their natural spacing, then spread to close the circle
-  var ORBIT = 536;
+  // the frame of words: as many of the value's words as fit once round its
+  // rounded square at their natural spacing, then spread to close it. The
+  // path goes round twice, so the words can be slid along it for ever: one
+  // round of words, started anywhere on the first round, covers it exactly.
+  var ORBIT = 685;
   function fillOrbits() {
     var ctx = document.createElement('canvas').getContext('2d');
     root.querySelectorAll('.prm__spin').forEach(function (svg) {
@@ -982,33 +984,61 @@
       });
     });
 
-    // each value: its photograph opens from the foot, then the name and the
-    // line (the ring and its words are no longer shown)
+    // each value: its frame draws itself, its photograph opens from the
+    // foot, the words come in round it, then the name and the line
     var tl = gsap.timeline({ scrollTrigger: { trigger: row, start: desktop ? 'top 78%' : 'top 88%' } });
     seals.forEach(function (s, i) {
       var at = i * 0.14;
-      tl.fromTo(s.querySelector('.prm__draw circle'), { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.7, ease: 'power2.inOut' }, at)
+      tl.fromTo(s.querySelector('.prm__draw path'), { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.7, ease: 'power2.inOut' }, at)
         .fromTo(s.querySelector('.prm__photo'), { clipPath: 'inset(100% 0% 0% 0% round 6px)' }, { clipPath: 'inset(0% 0% 0% 0% round 6px)', duration: 1.4, ease: 'expo.out' }, at + 0.25)
         .fromTo(s.querySelector('.prm__photo img'), { scale: 1.4 }, { scale: 1, duration: 1.8, ease: 'expo.out' }, at + 0.25)
-        .fromTo(s.querySelector('.prm__spin'), { opacity: 0, rotate: -50 }, { opacity: 1, rotate: 0, duration: 1.8, ease: 'expo.out' }, at + 0.45)
+        .fromTo(s.querySelector('.prm__spin'), { opacity: 0 }, { opacity: 1, duration: 1.6, ease: 'power2.out' }, at + 0.45)
         .fromTo(s.querySelectorAll('.prm__no, .prm__name, .prm__copy'), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 1, stagger: 0.07, ease: 'power3.out' }, at + 0.4);
-      // the hover turn is a CSS transition; let it run once the entrance is done
-      tl.add(function () { s.querySelector('.prm__spin').style.removeProperty('rotate'); gsap.set(s.querySelector('.prm__spin'), { clearProps: 'rotate' }); }, at + 2.3);
     });
 
-    // the words keep turning as the page moves, alternate seals the other way
-    seals.forEach(function (s, i) {
-      gsap.fromTo(s.querySelector('.prm__orbit'), { rotation: 0 }, {
-        rotation: i % 2 ? -110 : 110, ease: 'none',
-        scrollTrigger: { trigger: row, start: 'top bottom', end: 'bottom top', scrub: 0.8 },
-      });
-    });
 
     gsap.fromTo(root.querySelector('.prm__more'), { opacity: 0, y: 16 }, {
       opacity: 1, y: 0, duration: 1, ease: 'power3.out',
       scrollTrigger: { trigger: root.querySelector('.prm__more'), start: 'top 95%' },
     });
   }
+
+  // the words run round their frames: slowly on their own, with the page as
+  // it scrolls (back when it scrolls back), and faster under the cursor;
+  // every other value the other way. Only while the row is on screen.
+  function runWords() {
+    if (reduced || !window.IntersectionObserver) return;
+    var row = root.querySelector('.prm__seals');
+    var runs = seals.map(function (s, i) {
+      return { tp: s.querySelector('textPath'), dir: i % 2 ? -1 : 1, off: i * 140, speed: 1, hover: 0 };
+    }).filter(function (r) { return r.tp; });
+    if (!row || !runs.length) return;
+    seals.forEach(function (s, i) {
+      if (!runs[i]) return;
+      s.addEventListener('pointerenter', function () { runs[i].hover = 1; });
+      s.addEventListener('pointerleave', function () { runs[i].hover = 0; });
+    });
+    var on = false, raf = 0, last = 0, lastY = 0, push = 0;
+    function tick(now) {
+      var dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      var y = window.scrollY;
+      push += ((y - lastY) - push) * 0.18;
+      lastY = y;
+      runs.forEach(function (r) {
+        r.speed += ((1 + r.hover * 3.5) - r.speed) * 0.05;
+        r.off = (r.off + r.dir * (12 * r.speed * dt + push * 0.32)) % ORBIT;
+        if (r.off < 0) r.off += ORBIT;
+        r.tp.setAttribute('startOffset', r.off.toFixed(2));
+      });
+      raf = on ? requestAnimationFrame(tick) : 0;
+    }
+    new IntersectionObserver(function (e) {
+      on = e[0].isIntersecting;
+      if (on && !raf) { last = performance.now(); lastY = window.scrollY; push = 0; raf = requestAnimationFrame(tick); }
+    }, { rootMargin: '10% 0px' }).observe(row);
+  }
+  runWords();
 
   if (window.__sjRevealed || !document.querySelector('.sj-loader')) motion();
   else document.addEventListener('sj:revealed', motion, { once: true });
