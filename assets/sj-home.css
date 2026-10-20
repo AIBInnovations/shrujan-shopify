@@ -2993,7 +2993,6 @@ html.sj-pre .dh__strip {
   aspect-ratio: 1672 / 941;
   max-height: 94vh;
   overflow: hidden;
-  background: #d9cdbb;
 }
 
 .ft__bg {
@@ -3005,6 +3004,9 @@ html.sj-pre .dh__strip {
   object-fit: cover;
   object-position: 50% 50%;
   color: transparent;
+  /* its top and bottom melt into the page */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 16%, #000 84%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 16%, #000 84%, transparent 100%);
 }
 
 .ft__over {
