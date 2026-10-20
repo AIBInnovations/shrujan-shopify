@@ -1132,17 +1132,20 @@
     "feature-visit": {
       "type": "home-feature",
       "settings": {
-        "layout": "pair",
+        "layout": "collage",
         "flip": false,
         "anchor": "visit",
         "eyebrow": "The campus · Kutch",
-        "title_1": "Visit & Experience",
-        "title_2": "",
+        "title_1": "Visit &",
+        "title_2": "Experience",
         "lede": "Ways to connect more closely with Shrujan and the region of Kutch.",
         "image_asset": "",
         "image_alt": "",
         "btn_label": "",
-        "btn_link": ""
+        "btn_link": "",
+        "collage_tags": "People, Craft, Place",
+        "map_label": "Kutch",
+        "map_words": "Landscapes, Traditions, Communities"
       },
       "blocks": {
         "c1": {
