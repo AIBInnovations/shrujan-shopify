@@ -341,12 +341,12 @@ html.sj-pre .offer-bar {
 
 @media (max-width: 720px) {
   .craft3d {
-    height: 500vh;
+    height: 430vh;
   }
 
 }
 
-/* Tall, with its stage sticky: a screen to arrive in and 4.6 more (4 on a
+/* Tall, with its stage sticky: a screen to arrive in and 3.7 more (3.3 on a
    phone) for the camera and the cloths. */
 /* --col-x: the side margin every other section has, the 1080px column
    centred in the page; the text on the left and the list on the right sit on
@@ -354,7 +354,7 @@ html.sj-pre .offer-bar {
 .craft3d {
   --col-x: calc((100% - var(--col)) / 2);
   position: relative;
-  height: 560vh;
+  height: 470vh;
   margin-top: 5px;
   background: transparent;
 }

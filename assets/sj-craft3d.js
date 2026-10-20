@@ -2,9 +2,10 @@
 /* Wear the craft — a dress form, dressed in what Shrujan makes.
    A linen-covered tailor's form on a turned teak stand, in warm daylight. Each craft dresses it in a
    different piece: undyed kora and then mirror-work embroidery as a kanchli
-   (the fitted blouse with short sleeves and a deep rounded neck) over wide
-   palazzos, ajrakh as a long open jacket over a plain dress, bandhani as a
-   short flared kurti over palazzos, and handloom as a kurta.
+   (the fitted blouse with short sleeves and a deep rounded neck) over a
+   gathered ghagra, as it is worn in Kutch, ajrakh as a long open jacket over
+   a plain dress, bandhani as a kurta to the knee, and handloom as a kurta.
+   The form stands on three legs on the floor and casts its shadow there.
    All of it is sculpted here in code. As the section scrolls the camera
    travels from the shoulder down the figure and back out, and each new piece
    rises over the last from the hem, like dye taking. */
@@ -153,43 +154,91 @@ function buildKurtaLower() {
   return [ring, panel(-Math.PI / 2 + 0.1, Math.PI / 2 - 0.1), panel(Math.PI / 2 + 0.1, Math.PI * 1.5 - 0.1)];
 }
 
-// palazzos: wide Kutchi trousers, close over the hips and then two full legs
-// to the floor, in soft folds
-function buildPalazzo() {
-  const hips = hang({ y0: 2.02, y1: 1.48, t: 0.04, flare: 0.05, fold: 0.008, nv: 40, yHem: 0.9 });
-  const leg = (s) => grid(140, 90, (u, v) => {
-    const a = u * Math.PI * 2 - Math.PI;
-    const y = 1.56 + (0.08 - 1.56) * v;
-    const q = Math.pow(v, 1.1);
-    // the legs part a little as they fall, so the split between them shows
-    const rx = 0.212 + 0.05 * q, rz = 0.29 + 0.05 * q;
-    const f = 1 + (0.012 + 0.05 * q) * (Math.sin(a * 6 + s * 1.3 + v * 1.4) * 0.6 + Math.sin(a * 11 + 0.7) * 0.4);
-    return [s * (0.216 + 0.1 * q) + Math.sin(a) * rx * f, y, Math.cos(a) * rz * f];
-  }, (u, v) => [u * 0.8, (1.56 + (0.08 - 1.56) * v) / TOP], (u, v) => {
-    const a = u * Math.PI * 2 - Math.PI;
-    // darker where the two legs face each other
-    return (1 - 0.3 * smooth(0.4, 1, -Math.sin(a) * s)) * (0.85 + 0.15 * smooth(0, 0.05, v));
+// the ghagra: the gathered skirt a kanchli is worn with in Kutch, close at
+// the waist and then full, in deep soft gathers, to below the knee, so the
+// stand shows under it. `from`..`to` takes only a band of it (0 the waist, 1
+// the hem), pushed out by `out`: the embroidered border sewn near the hem.
+const GHAGRA = { y0: 2.02, y1: 0.52, t: 0.04, flare: 0.56 };
+// the gathers: rounded where the cloth swells out, creased where it folds
+// in, and never quite regular
+const gathers = (a) => {
+  const s = Math.abs(Math.sin(a * 11 + 0.45 * Math.sin(a * 3 + 1.1)));
+  return (1 - 2 * Math.pow(1 - s, 1.7)) * 0.78 + Math.sin(a * 19 + 1.3) * 0.22;
+};
+function ghagraAt(a, v, out = 0) {
+  const { y0, y1, t, flare } = GHAGRA;
+  const y = y0 + (y1 - y0) * v;
+  const q = y < 1.9 ? Math.pow((1.9 - y) / (1.9 - y1), 0.8) : 0;
+  const [bx, bz] = bodyXZ(a, Math.max(y, 1.9), t);
+  const r0 = Math.hypot(bx, bz) || 1;
+  const r = r0 + flare * q + (0.004 + 0.05 * q) * gathers(a) + out;
+  // the hem rises and falls a little with the gathers
+  const yy = y + 0.018 * gathers(a + 0.3) * smooth(0.9, 1, v);
+  return [bx / r0 * r, yy, bz / r0 * r, q];
+}
+function buildGhagra(from = 0, to = 1, out = 0) {
+  const vAt = (v) => from + (to - from) * v;
+  return grid(440, Math.max(8, Math.round(120 * (to - from))), (u, v) => {
+    const p = ghagraAt(-Math.PI + u * Math.PI * 2, vAt(v), out);
+    return [p[0], p[1], p[2]];
+  }, (u, v) => [u * (from === 0 ? 2.2 : 6), (GHAGRA.y0 + (GHAGRA.y1 - GHAGRA.y0) * vAt(v)) / TOP], (u, v) => {
+    const a = -Math.PI + u * Math.PI * 2;
+    const q = ghagraAt(a, vAt(v))[3];
+    // darker in the valleys of the gathers, more so toward the hem, and
+    // under the waistband
+    return (1 - 0.3 * q * (0.5 - 0.5 * gathers(a))) * (from === 0 ? 0.8 + 0.2 * smooth(0, 0.05, v) : 1);
   });
-  return [hips, leg(1), leg(-1)];
-}
-// a point on the front of the right leg, for the labels
-function palazzoAt(a, y) {
-  const q = Math.pow((1.56 - y) / (1.56 - 0.08), 1.1);
-  return [-(0.216 + 0.1 * q) + Math.sin(a) * (0.212 + 0.05 * q) * 1.03, y, Math.cos(a) * (0.29 + 0.05 * q) * 1.03];
 }
 
-// a short kurti's flared skirt, to the hip, for wearing over palazzos
+// bandhani as a kurta to the knee, a little flared
 function buildKurtiLower() {
-  return hang({ y0: 2.02, y1: 1.4, t: 0.048, flare: 0.26, fold: 0.03, nv: 60 });
+  return hang({ y0: 2.02, y1: 0.98, t: 0.048, flare: 0.17, fold: 0.022, nv: 80 });
 }
 
-// the stand: a slim dark pole from the form to a round foot
+// the stand, as on a tailor's form: a turned teak column on three splayed
+// legs with brass casters, a brass collar where the height is set, a brass
+// rod up into the form, and a turned cap on the neck
 function buildStand() {
-  const pole = new THREE.CylinderGeometry(0.03, 0.034, 1.84, 24);
-  pole.translate(0, 0.96, 0);
-  const foot = new THREE.CylinderGeometry(0.36, 0.4, 0.05, 72);
-  foot.translate(0, 0.025, 0);
-  return [pole, foot];
+  const wood = [], along = [], brass = [];
+  const lathe = (pts, seg = 48) => new THREE.LatheGeometry(pts.map(([r, y]) => new THREE.Vector2(r, y)), seg);
+  // the hub the legs meet in, a bead, and the column up to the collar
+  wood.push(lathe([[0, 0.25], [0.05, 0.25], [0.072, 0.29], [0.08, 0.34], [0.072, 0.39], [0.05, 0.425], [0.036, 0.45], [0.034, 0.56],
+    [0.046, 0.6], [0.046, 0.63], [0.034, 0.67], [0.031, 1.1], [0.036, 1.135], [0, 1.135]]));
+  // the collar, its screw and knob
+  brass.push(lathe([[0, 1.13], [0.044, 1.13], [0.049, 1.15], [0.049, 1.21], [0.044, 1.23], [0, 1.23]]));
+  const screw = new THREE.CylinderGeometry(0.011, 0.011, 0.1, 16);
+  screw.rotateZ(Math.PI / 2); screw.translate(0.09, 1.18, 0);
+  const knob = new THREE.SphereGeometry(0.027, 20, 14);
+  knob.scale(0.8, 1, 1); knob.translate(0.145, 1.18, 0);
+  brass.push(screw, knob);
+  // the rod that rises out of the column, and the turned flange under the form
+  const rod = new THREE.CylinderGeometry(0.02, 0.02, 0.6, 20);
+  rod.translate(0, 1.53, 0);
+  brass.push(rod);
+  wood.push(lathe([[0, 1.77], [0.035, 1.77], [0.05, 1.8], [0.1, 1.835], [0.125, 1.85], [0, 1.85]]));
+  // three legs, one to the back and two to the front, each on a caster
+  for (let k = 0; k < 3; k++) {
+    const g = Math.PI + k * Math.PI * 2 / 3;
+    const dx = Math.sin(g), dz = Math.cos(g);
+    const curve = new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3(dx * 0.05, 0.36, dz * 0.05),
+      new THREE.Vector3(dx * 0.34, 0.33, dz * 0.34),
+      new THREE.Vector3(dx * 0.6, 0.06, dz * 0.6),
+    );
+    along.push(new THREE.TubeGeometry(curve, 40, 0.024, 14, false));
+    const cap = new THREE.CylinderGeometry(0.026, 0.03, 0.03, 16);
+    cap.translate(dx * 0.605, 0.055, dz * 0.605);
+    wood.push(cap);
+    const wheel = new THREE.SphereGeometry(0.03, 18, 12);
+    wheel.translate(dx * 0.61, 0.03, dz * 0.61);
+    brass.push(wheel);
+  }
+  // the neck's cap, on the cut, tipped back with it
+  const disc = new THREE.CylinderGeometry(0.152, 0.152, 0.026, 56);
+  disc.translate(0, 0.013, 0);
+  const top = lathe([[0, 0.026], [0.05, 0.026], [0.05, 0.038], [0.024, 0.056], [0.03, 0.076], [0.02, 0.094], [0, 0.098]], 32);
+  [disc, top].forEach((c) => { c.rotateX(Math.atan2(NECK.nz, NECK.ny)); c.translate(0, NECK.ty, NECK.tz); wood.push(c); });
+  return { wood, along, brass };
 }
 
 // ---------- the dress form itself: one smooth plaster body ----------
@@ -612,6 +661,7 @@ async function init() {
   const ghosts = [...root.querySelectorAll('.craft3d__ghost')];
   const items = [...root.querySelectorAll('.craft3d__item')];
   const progressBar = root.querySelector('.craft3d__progress');
+  const fadeEl = root.querySelector('.craft3d__fade');
   const intro = root.querySelector('.craft3d__intro');
   const rise = root.querySelector('.craft3d__rise');
   const hint = root.querySelector('.craft3d__hint');
@@ -653,19 +703,20 @@ async function init() {
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
 
   const camera = new THREE.PerspectiveCamera(30, 1, 0.05, 100);
-  // warm daylight from the upper left, as through a workshop window, and a
-  // soft warm fill; reflections kept faint, so nothing shines
+  // warm daylight from high on the upper left, as from a studio skylight, so
+  // the form's shadow on the floor stays short and soft; a soft warm fill;
+  // reflections kept faint, so nothing shines
   scene.add(new THREE.HemisphereLight(0xfff8ee, 0xcdb894, 0.62));
   const key = new THREE.DirectionalLight(0xfff0dc, 2.0);
-  key.position.set(-3.6, 6.2, 4.6);
+  key.position.set(-2.7, 8.6, 3.9);
   key.castShadow = true;
   key.shadow.mapSize.set(small ? 1024 : 2048, small ? 1024 : 2048);
-  key.shadow.camera.left = -2.2; key.shadow.camera.right = 2.2;
-  key.shadow.camera.top = 4; key.shadow.camera.bottom = -0.6;
+  key.shadow.camera.left = -3; key.shadow.camera.right = 3;
+  key.shadow.camera.top = 4.4; key.shadow.camera.bottom = -2.6;
   key.shadow.camera.near = 1; key.shadow.camera.far = 16;
   key.shadow.bias = -0.0004;
   key.shadow.normalBias = 0.025;
-  key.shadow.radius = 5;
+  key.shadow.radius = 9;
   scene.add(key);
   const fill = new THREE.DirectionalLight(0xffe9d2, 0.46);
   fill.position.set(4.5, 2, 3.5);
@@ -688,7 +739,7 @@ async function init() {
   weave.wrapS = weave.wrapT = THREE.RepeatWrapping;
   weave.repeat.set(10, 6);
 
-  // plain cottons: the dress under the jacket, and palazzos
+  // plain cottons: the ghagras, and the dress under the jacket
   const plainTex = (hex) => {
     const c = document.createElement('canvas');
     c.width = c.height = 256;
@@ -706,6 +757,9 @@ async function init() {
   // way to the next, the leaving one shows only above a line and the coming
   // one only below it, and the line rises from the hem with a soft glow.
   const uniforms = { uTime: { value: 0 }, uSway: { value: reduced ? 0 : 1 } };
+  // how far the cloth's own pattern stands out of it: embroidery is raised,
+  // kora's white work a little, a print not at all
+  const RELIEF = [0.6, 1, 0.06, 0.22, 0.4];
   const makeCloth = (map, U) => {
     const m = new THREE.MeshPhysicalMaterial({
       map,
@@ -729,11 +783,11 @@ async function init() {
           transformed.x += sin( uTime * 1.1 + position.y * 2.2 + position.z * 1.4 ) * 0.012 * hem * uSway;
           transformed.z += cos( uTime * 0.9 + position.y * 1.8 + position.x * 1.3 ) * 0.012 * hem * uSway;`);
       shader.fragmentShader = shader.fragmentShader
-        .replace('#include <common>', '#include <common>\nvarying vec2 vBaseUv;\nuniform float uFront;\nuniform float uDir;\nuniform float uEdge;\nuniform float uTime;')
+        .replace('#include <common>', '#include <common>\nvarying vec2 vBaseUv;\nuniform float uFront;\nuniform float uDir;\nuniform float uEdge;\nuniform float uTime;\nuniform float uRelief;')
         // the relief: the cloth's own pattern, brighter parts raised
         .replace('#include <bumpmap_pars_fragment>', THREE.ShaderChunk.bumpmap_pars_fragment.replace(/vec2 dHdxy_fwd\(\) \{[\s\S]*?return vec2\( dBx, dBy \);\s*\}/, `float sjHeight( vec2 uvM, vec2 uvB ) {
             float lum = dot( texture2D( map, uvM ).rgb, vec3( 0.299, 0.587, 0.114 ) );
-            return lum * 0.85 + texture2D( bumpMap, uvB ).x * 0.15;
+            return lum * 0.85 * uRelief + texture2D( bumpMap, uvB ).x * 0.15;
           }
           vec2 dHdxy_fwd() {
             vec2 dMx = dFdx( vMapUv ), dMy = dFdy( vMapUv );
@@ -750,7 +804,7 @@ async function init() {
           #ifdef USE_MAP
             diffuseColor *= texture2D( map, vMapUv );
           #endif`)
-        .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += vec3( 1.0, 0.97, 0.93 ) * sjGlow * 0.9;');
+        .replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += vec3( 1.0, 0.97, 0.93 ) * sjGlow * 0.35;');
     };
     return m;
   };
@@ -763,7 +817,17 @@ async function init() {
   linen.repeat.set(7, 9);
   linen.anisotropy = maxAniso;
   const skin = new THREE.MeshStandardMaterial({ map: linen, bumpMap: weave, bumpScale: 0.35, color: '#ffffff', roughness: 1, metalness: 0, envMapIntensity: 0.18, vertexColors: true });
-  const wood = new THREE.MeshStandardMaterial({ color: '#6b4a33', roughness: 0.55, metalness: 0, envMapIntensity: 0.35 });
+  const woodTex = new THREE.CanvasTexture(woodGrain());
+  woodTex.colorSpace = THREE.SRGBColorSpace;
+  woodTex.wrapS = woodTex.wrapT = THREE.RepeatWrapping;
+  woodTex.anisotropy = maxAniso;
+  // the legs are tubes, whose uvs run the other way: the grain turned with them
+  const woodTexAlong = woodTex.clone();
+  woodTexAlong.rotation = Math.PI / 2;
+  woodTexAlong.needsUpdate = true;
+  const wood = new THREE.MeshStandardMaterial({ map: woodTex, roughness: 0.5, metalness: 0, envMapIntensity: 0.45 });
+  const woodAlong = new THREE.MeshStandardMaterial({ map: woodTexAlong, roughness: 0.5, metalness: 0, envMapIntensity: 0.45 });
+  const brass = new THREE.MeshStandardMaterial({ color: '#a7834c', roughness: 0.36, metalness: 0.75, envMapIntensity: 0.7 });
 
   const dress = new THREE.Group();
   scene.add(dress);
@@ -779,13 +843,28 @@ async function init() {
   const formGeo = shapes.form;
   if (!formGeo.attributes.uv) wrapUV(formGeo);
   addMesh(dress, formGeo, skin);
-  buildStand().forEach((g) => addMesh(dress, g, wood));
+  const stand = buildStand();
+  stand.wood.forEach((g) => addMesh(dress, g, wood));
+  stand.along.forEach((g) => addMesh(dress, g, woodAlong));
+  stand.brass.forEach((g) => addMesh(dress, g, brass));
+
+  // the floor is the page itself: it takes only the shadows, and a soft
+  // darkening right under the stand where it meets the floor
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(16, 16), new THREE.ShadowMaterial({ color: 0x3a2618, opacity: 0.1 }));
+  floor.rotation.x = -Math.PI / 2;
+  floor.receiveShadow = true;
+  scene.add(floor);
+  const contact = new THREE.Mesh(new THREE.PlaneGeometry(1.9, 1.9), new THREE.MeshBasicMaterial({ map: shadowTexture(), transparent: true, depthWrite: false, toneMapped: false }));
+  contact.rotation.x = -Math.PI / 2;
+  contact.position.y = 0.002;
+  dress.add(contact);
 
   // the five pieces, one per state: kora and embroidery as the kanchli over
-  // palazzos, ajrakh as the long jacket over a plain dress, bandhani as a
-  // short kurti over palazzos, handloom as the kurta. The kanchli is built first; the rest follow while the section
+  // a ghagra (the embroidered one black, with a border at the hem), ajrakh as
+  // the long jacket over a plain dress, bandhani as a kurta to the knee,
+  // handloom as the kurta. The kanchli is built first; the rest follow while the section
   // is read, and a state whose piece is not built yet keeps the last one.
-  const states = textures.map(() => ({ group: null, U: { uFront: { value: 9 }, uDir: { value: 1 }, uEdge: { value: 0 } } }));
+  const states = textures.map((t, k) => ({ group: null, U: { uFront: { value: 9 }, uDir: { value: 1 }, uEdge: { value: 0 }, uRelief: { value: RELIEF[k] } } }));
   const dressIn = (k, parts) => {
     const grp = new THREE.Group();
     grp.visible = false;
@@ -794,12 +873,12 @@ async function init() {
     states[k].group = grp;
   };
   const blouseGeo = shapes.blouse;
-  const palazzo = buildPalazzo();
-  const charcoal = plainTex('#2b2624'), cream = plainTex('#e8dccb'), olive = plainTex('#8b8f3e');
-  dressIn(0, [[blouseGeo, textures[0]], ...palazzo.map((g) => [g, textures[0]])]);
-  dressIn(1, [[blouseGeo, textures[1]], ...palazzo.map((g) => [g, charcoal])]);
-  dressIn(2, [[shapes.jacket, textures[2]], [buildJacketLower(), textures[2]], [shapes.inner, olive], [buildInnerLower(), olive]]);
-  dressIn(3, [[shapes.kurta, textures[3]], [buildKurtiLower(), textures[3]], ...palazzo.map((g) => [g, cream])]);
+  const ghagra = buildGhagra();
+  const charcoal = plainTex('#25201e'), kora = plainTex('#ece2cf'), ecru = plainTex('#d3c5ab');
+  dressIn(0, [[blouseGeo, textures[0]], [ghagra, kora]]);
+  dressIn(1, [[blouseGeo, textures[1]], [ghagra, charcoal], [buildGhagra(0.86, 0.95, 0.006), textures[1]]]);
+  dressIn(2, [[shapes.jacket, textures[2]], [buildJacketLower(), textures[2]], [shapes.inner, ecru], [buildInnerLower(), ecru]]);
+  dressIn(3, [[shapes.kurta, textures[3]], [buildKurtiLower(), textures[3]]]);
   dressIn(4, [[shapes.kurta, textures[4]], ...buildKurtaLower().map((g) => [g, textures[4]])]);
   // every piece's shaders compiled now, behind the loader, so no change of
   // cloth stalls the page later
@@ -813,10 +892,11 @@ async function init() {
   // below the waist, a point on a hanging piece of radius r at the waist
   // grown by `out` at that height
   const hAt = (a, y, t, out) => { const [x, z] = bodyXZ(a, 1.9, t); const r0 = Math.hypot(x, z); return new THREE.Vector3(x / r0 * (r0 + out), y, z / r0 * (r0 + out)); };
+  const gAt = (a, v) => { const p = ghagraAt(a, v, 0.03); return new THREE.Vector3(p[0], p[1], p[2]); };
   const POIS = [
     { at: [pAt(0.32, 2.36, 0.05), pAt(0.32, 2.36, 0.05), pAt(0.34, 2.36, 0.07), pAt(0.32, 2.36, 0.06), pAt(0.32, 2.36, 0.06)], n: [0.32, 0.32, 0.34, 0.32, 0.32].map(nAt),
       labels: ['Kora · undyed cotton', 'Aabhla · a mirror caged in thread', 'Madder red, printed by block', 'Each dot is a knot', 'Kala cotton, spun in Kutch'] },
-    { at: [new THREE.Vector3(...palazzoAt(-0.5, 1.0)), new THREE.Vector3(...palazzoAt(-0.5, 1.0)), hAt(-0.6, 1.15, 0.054, 0.12), new THREE.Vector3(...palazzoAt(-0.5, 0.95)), hAt(-0.5, 1.05, 0.048, 0.07)], n: [-0.5, -0.5, -0.6, -0.5, -0.5].map(nAt),
+    { at: [gAt(-0.5, 0.5), gAt(-0.5, 0.905), hAt(-0.6, 1.15, 0.054, 0.12), hAt(-0.5, 1.25, 0.048, 0.13), hAt(-0.5, 1.05, 0.048, 0.07)], n: [-0.5, -0.5, -0.6, -0.5, -0.5].map(nAt),
       labels: ['Before the first stitch', 'Suf · counted from the reverse', 'Indigo, held back by resist', 'Tied before it is dyed', 'Extra-weft border'] },
   ];
 
@@ -825,9 +905,9 @@ async function init() {
   const PATH = [
     [0.0, 2.72, 3.6, -0.1],
     [0.22, 2.35, 4.7, 0.04],
-    [0.42, 1.78, 6.7, 0.32],
-    [0.62, 1.72, 9.4, 0.58],
-    [1.0, 1.74, 9.8, 0.62],
+    [0.42, 1.8, 6.6, 0.32],
+    [0.62, 1.8, 7.9, 0.5],
+    [1.0, 1.8, 8.1, 0.52],
   ];
   // the top of the form (the neck's cut) always stays in the frame
   const FORM_TOP = 3.62;
@@ -969,6 +1049,9 @@ async function init() {
     dirty = false;
     setActive(mix > 0.5 ? s + 1 : s);
     if (hint) hint.classList.toggle('is-gone', prog > 0.06);
+    // the hem melts into the page only while the camera is close; once the
+    // whole form shows, it stands on the floor
+    if (fadeEl) fadeEl.style.opacity = String(1 - THREE.MathUtils.smoothstep(prog, 0.3, 0.5));
     if (progressBar) progressBar.style.transform = `scaleY(${Math.min(1, Math.max(0, (prog - EDGES[1]) / (1 - EDGES[1])))})`;
 
     renderer.render(scene, camera);
@@ -1268,7 +1351,7 @@ function drawAjrakh(ctx, S) {
 }
 
 function drawBandhani(ctx, S) {
-  ctx.fillStyle = '#a8102a';
+  ctx.fillStyle = '#9c1426';
   ctx.fillRect(0, 0, S, S);
   const r = rng(37);
   // uneven dye
@@ -1282,28 +1365,32 @@ function drawBandhani(ctx, S) {
   }
   grain(ctx, S, 0.05, 41);
   const dot = (x, y, col, rad) => {
-    const jx = (r() - 0.5) * 1.6, jy = (r() - 0.5) * 1.6;
+    const jx = (r() - 0.5) * 1.2, jy = (r() - 0.5) * 1.2;
+    // the dye creeps a little under the thread: a faint halo round each dot
+    ctx.fillStyle = 'rgba(240, 190, 185, 0.22)';
+    ctx.beginPath(); ctx.arc(x + jx, y + jy, rad * 1.55, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = col;
     ctx.beginPath(); ctx.ellipse(x + jx, y + jy, rad * (0.9 + r() * 0.2), rad * (0.9 + r() * 0.2), r() * Math.PI, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = 'rgba(110, 10, 25, 0.75)';
     ctx.beginPath(); ctx.arc(x + jx, y + jy, rad * 0.28, 0, Math.PI * 2); ctx.fill();
   };
-  const P = 128;
+  // the dots at the size they are tied, a few millimetres across
+  const P = 64;
   for (let j = 0; j < S / P; j++) {
     for (let i = 0; i < S / P; i++) {
       const cx = i * P + P / 2, cy = j * P + P / 2;
       // a diamond of white dots
-      for (let k = 0; k < 16; k++) {
-        const t = k / 16;
+      for (let k = 0; k < 12; k++) {
+        const t = k / 12;
         const side = Math.floor(t * 4), f = (t * 4) % 1;
-        const pts = [[0, -40], [40, 0], [0, 40], [-40, 0], [0, -40]];
+        const pts = [[0, -21], [21, 0], [0, 21], [-21, 0], [0, -21]];
         const [x1, y1] = pts[side], [x2, y2] = pts[side + 1];
-        dot(cx + x1 + (x2 - x1) * f, cy + y1 + (y2 - y1) * f, '#fbf4ea', 3.4);
+        dot(cx + x1 + (x2 - x1) * f, cy + y1 + (y2 - y1) * f, '#f8efe2', 2.1);
       }
-      // a yellow cluster at the centre
-      [[0, 0], [7, 0], [-7, 0], [0, 7], [0, -7]].forEach(([x, y]) => dot(cx + x, cy + y, '#f3b81a', 3));
+      // a saffron cluster at the centre
+      [[0, 0], [4.4, 0], [-4.4, 0], [0, 4.4], [0, -4.4]].forEach(([x, y]) => dot(cx + x, cy + y, '#e9ad22', 1.8));
       // a white dot on each corner
-      dot(i * P, j * P, '#fbf4ea', 3.6);
+      dot(i * P, j * P, '#f8efe2', 2.3);
     }
   }
 }
@@ -1337,6 +1424,22 @@ function drawWeaving(ctx, S) {
   // fine red pinstripes
   ctx.fillStyle = 'rgba(158, 42, 34, 0.55)';
   for (let y = 300; y < S; y += S / 2) { ctx.fillRect(0, y, S, 2); ctx.fillRect(0, y + 40, S, 2); ctx.fillRect(0, y + 80, S, 2); }
+}
+
+// teak's grain, running along the turned parts
+function woodGrain() {
+  const c = document.createElement('canvas');
+  c.width = 128; c.height = 512;
+  const x = c.getContext('2d');
+  x.fillStyle = '#6e4b30';
+  x.fillRect(0, 0, 128, 512);
+  const r = rng(71);
+  for (let i = 0; i < 150; i++) {
+    const px = r() * 128, w = 0.6 + r() * 2.2;
+    x.fillStyle = r() < 0.55 ? `rgba(48, 28, 16, ${0.08 + r() * 0.2})` : `rgba(170, 125, 85, ${0.06 + r() * 0.14})`;
+    x.fillRect(px, 0, w, 512);
+  }
+  return c;
 }
 
 function shadowTexture() {
