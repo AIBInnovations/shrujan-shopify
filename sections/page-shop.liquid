@@ -187,7 +187,7 @@
     <ul class="container shop-assure__row" data-reveal-child>
       {%- for block in section.blocks %}{% if block.type == 'assure' %}
       <li{{ block.shopify_attributes }}>
-        <span class="shop-assure__mark" aria-hidden="true">{% case block.settings.icon %}{% when 'leaf' %}<i class="sj-i sj-i--leaf ms" style="font-size:1.4px" aria-hidden="true"></i>{% when 'tape' %}<i class="sj-i sj-i--ruler ms" style="font-size:1.4px" aria-hidden="true"></i>{% when 'truck' %}<i class="sj-i sj-i--truck ms" style="font-size:1.4px" aria-hidden="true"></i>{% when 'heart' %}<i class="sj-i sj-i--heart ms" style="font-size:19px" aria-hidden="true"></i>{% else %}<i class="sj-i sj-i--needle ms" style="font-size:1.4px" aria-hidden="true"></i>{% endcase %}</span>
+        <span class="shop-assure__mark" aria-hidden="true">{% case block.settings.icon %}{% when 'leaf' %}<i class="sj-i sj-i--leaf ms" style="font-size:19px" aria-hidden="true"></i>{% when 'tape' %}<i class="sj-i sj-i--ruler ms" style="font-size:19px" aria-hidden="true"></i>{% when 'truck' %}<i class="sj-i sj-i--truck ms" style="font-size:19px" aria-hidden="true"></i>{% when 'heart' %}<i class="sj-i sj-i--heart ms" style="font-size:19px" aria-hidden="true"></i>{% else %}<i class="sj-i sj-i--needle ms" style="font-size:19px" aria-hidden="true"></i>{% endcase %}</span>
         <span class="shop-assure__title">{{ block.settings.title }}</span>
         <span class="shop-assure__copy">{{ block.settings.copy }}</span>
       </li>

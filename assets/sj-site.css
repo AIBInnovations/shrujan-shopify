@@ -739,6 +739,22 @@ button:hover > i.sj-i--arrow-right {
   scroll-margin-top: calc(var(--header-h, 60px) + 16px);
 }
 
+/* desktops: the hero is exactly one screen under the bar and header, the
+   pictures giving way so the promises along its foot are always in view
+   (the user: the collection in one screen, the details at its foot) */
+@media (min-width: 901px) {
+  .ch {
+    height: calc(100vh - var(--header-h, 60px) - var(--offer-h, 0px));
+    height: calc(100svh - var(--header-h, 60px) - var(--offer-h, 0px));
+    min-height: 560px;
+    padding-bottom: clamp(12px, 1.4vw, 20px);
+  }
+
+  .ch__media {
+    min-height: 0;
+  }
+}
+
 @media (max-width: 900px) {
   .ch {
     min-height: 0;
