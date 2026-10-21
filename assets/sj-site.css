@@ -241,6 +241,25 @@ body {
   }
 }
 
+/* ---- one corner for every box and button (the user: 7px, inner pages
+   too). --radius is the theme's corner, 7px, and buttons take it too;
+   these are the boxes that had none, and the pictures and films inside
+   rounded boxes that do not clip them. Dots, avatars, logos and cut-outs
+   keep their own shapes. */
+.shop-assure__row li,
+.gloss,
+.spotlight-col__inset,
+.spotlight-col__inset img,
+.reel__media video,
+.reel__media .reel__scrim,
+.craft-wall__tile img,
+.jr__media,
+.jr__media img,
+.tq__shot,
+.tq__shot img {
+  border-radius: var(--radius);
+}
+
 /* icons:start (written by convert_icons.py from icons.py) */
 /* ---- the interface icons (Material Symbols, Font Awesome brands; icons.py) ---- */
 @font-face {
@@ -531,7 +550,7 @@ button:hover > i.sj-i--arrow-right {
   align-items: center;
   gap: 10px;
   padding: 14px 22px;
-  border-radius: 999px;
+  border-radius: var(--radius);
   background: var(--ink);
   font:500 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.16em;
@@ -660,7 +679,7 @@ button:hover > i.sj-i--arrow-right {
   gap: 8px;
   padding: 10px 16px;
   border: 1px solid var(--hairline-strong, rgba(64, 64, 65, 0.4));
-  border-radius: 999px;
+  border-radius: var(--radius);
   background: transparent;
   font:500 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.12em;

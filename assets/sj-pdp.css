@@ -130,7 +130,7 @@
   gap: 8px;
   padding: 10px 16px;
   border: 1px solid var(--hairline-strong);
-  border-radius: 999px;
+  border-radius: var(--radius);
   font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -409,7 +409,7 @@
   display: inline-block;
   padding: 10px 16px;
   border: 1px solid var(--hairline-strong);
-  border-radius: 999px;
+  border-radius: var(--radius);
   font:500 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.06em;
   color: var(--ink);
@@ -536,7 +536,7 @@
 }
 
 .pdpx-book__send {
-  border-radius: 999px;
+  border-radius: var(--radius);
 }
 
 .pdpx-book__wa {

@@ -3818,7 +3818,7 @@
 
 .press__facts li {
   padding: 5px 12px;
-  border-radius: 999px;
+  border-radius: var(--radius);
   border: 1px solid color-mix(in srgb, var(--maroon) 18%, transparent);
   font-family: var(--font-sans);
   font-size: var(--fs-xs);
@@ -3867,7 +3867,7 @@
   top: 8px;
   left: 8px;
   padding: 3px 8px;
-  border-radius: 999px;
+  border-radius: var(--radius);
   background: color-mix(in srgb, var(--maroon) 88%, transparent);
   color: var(--ivory);
   font-family: var(--font-sans);
@@ -4364,7 +4364,7 @@
   place-items: center;
   width: clamp(38px, 4vw, 50px);
   aspect-ratio: 1;
-  border-radius: 50%;
+  border-radius: var(--radius);
   border: 1px solid rgba(249, 245, 234, 0.28);
   background: rgba(249, 245, 234, 0.08);
   color: var(--ivory);

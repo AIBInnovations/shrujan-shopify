@@ -663,7 +663,7 @@ html.sj-pre .offer-bar {
 
 .craft3d__poi-label {
   padding: 6px 10px;
-  border-radius: 999px;
+  border-radius: var(--radius);
   background: rgba(246, 244, 230, 0.92);
   box-shadow: 0 0 0 1px rgba(40, 40, 41, 0.1);
 }
@@ -953,7 +953,7 @@ html.sj-pre .dh__strip {
   left: 0;
   z-index: -1;
   width: calc(100% - 62px);
-  border-radius: 60px;
+  border-radius: var(--radius);
   background: #f6f4e6;
   transition: width 0.325s cubic-bezier(0.86, 0, 0.07, 1);
 }
@@ -976,7 +976,7 @@ html.sj-pre .dh__strip {
   order: 2;
   display: flex;
   overflow: hidden;
-  border-radius: 48px;
+  border-radius: var(--radius);
   background: #404041;
   color: #f6f4e6;
   transition: margin var(--t) var(--te), border-radius var(--t) var(--te);
@@ -1007,14 +1007,14 @@ html.sj-pre .dh__strip {
 @media (hover: hover) {
   .dh-btn:hover .dh-btn__bg { width: 100%; }
   .dh-btn:hover .dh-btn__label { left: 4px; }
-  .dh-btn:hover .dh-btn__icon { border-radius: 60px; margin: 4px 4px 4px -4px; }
+  .dh-btn:hover .dh-btn__icon { border-radius: var(--radius); margin: 4px 4px 4px -4px; }
   .dh-btn:hover .dh-btn__ic { transform: translateX(calc(100% + 12px)); }
 }
 
 .dh-btn:focus-visible {
   outline: 2px solid var(--dh-ink);
   outline-offset: 4px;
-  border-radius: 60px;
+  border-radius: var(--radius);
 }
 
 /* ---- the glass cards ---- */
@@ -1762,7 +1762,7 @@ html.sj-pre .dh__strip {
   gap: 12px;
   padding: 15px 28px;
   border: 1px solid var(--indigo, #2b3f6b);
-  border-radius: 999px;
+  border-radius: var(--radius);
   font:500 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -2149,7 +2149,7 @@ html.sj-pre .dh__strip {
   gap: 12px;
   margin-top: clamp(18px, 1.8vw, 26px);
   padding: 15px 30px;
-  border-radius: 999px;
+  border-radius: var(--radius);
   background: #2f2f30;
   font:500 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.2em;
@@ -2461,7 +2461,7 @@ html.sj-pre .dh__strip {
   height: max(36px, 2.8cqw);
   margin-top: auto;
   border: 1px solid rgba(246, 244, 230, 0.75);
-  border-radius: 50%;
+  border-radius: var(--radius);
   color: #f6f4e6;
   transition: background 0.3s ease, color 0.3s ease;
 }
@@ -2891,6 +2891,7 @@ html.sj-pre .dh__strip {
   position: relative;
   display: block;
   overflow: hidden;
+  border-radius: var(--radius);
   background: var(--page-bg-2);
 }
 
@@ -3755,6 +3756,7 @@ html.sj-pre .dh__strip {
   z-index: 3;
   display: block;
   overflow: hidden;
+  border-radius: var(--radius);
   box-shadow: 0 22px 40px -30px rgba(40, 28, 18, 0.55);
 }
 
@@ -3788,6 +3790,7 @@ html.sj-pre .dh__strip {
 .ft__c-card {
   z-index: 4;
   padding: 3.1cqi 2.7cqi;
+  border-radius: var(--radius);
   background: linear-gradient(165deg, #efe8d9, #e6decb);
   box-shadow: 0 16px 30px -22px rgba(40, 28, 18, 0.45), inset 0 0 0 1px rgba(120, 96, 66, 0.08);
   color: var(--ink);
@@ -4194,7 +4197,7 @@ section.idx {
   gap: 10px;
   padding: 12px 22px;
   border: 1px solid var(--hairline-strong);
-  border-radius: 999px;
+  border-radius: var(--radius);
   font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -4384,7 +4387,7 @@ section.idx {
   gap: 12px;
   padding: 15px 30px;
   border: 1px solid var(--hairline-strong);
-  border-radius: 999px;
+  border-radius: var(--radius);
   font:500 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -4772,7 +4775,7 @@ section.idx {
   width: clamp(48px, 4vw, 64px);
   aspect-ratio: 1;
   border: 1px solid var(--pv-red);
-  border-radius: 50%;
+  border-radius: var(--radius);
   background: rgba(248, 245, 238, 0.7);
   color: var(--pv-red);
   transform: translateY(-50%);
@@ -4837,7 +4840,7 @@ section.idx {
   margin-top: clamp(28px, 3vw, 44px);
   padding: clamp(14px, 1.3vw, 18px) clamp(30px, 2.6vw, 40px);
   border: 1px solid var(--pv-red);
-  border-radius: 999px;
+  border-radius: var(--radius);
   font:400 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.26em;
   text-transform: uppercase;
@@ -5392,7 +5395,7 @@ section[aria-label="What our customers say"],
 .curated__more .btn,
 .curated__more .btn--ghost {
   border-color: var(--indigo, #2b3f6b);
-  border-radius: 999px;
+  border-radius: var(--radius);
   color: var(--indigo, #2b3f6b);
 }
 
@@ -5453,7 +5456,7 @@ section[aria-label="What our customers say"],
 }
 
 .shopcta .btn {
-  border-radius: 999px;
+  border-radius: var(--radius);
 }
 
 /* ---- the footer ---- */
@@ -5715,7 +5718,7 @@ section[aria-label="What our customers say"],
   width: 50px;
   height: 50px;
   border: 1px solid var(--indigo, #2b3f6b);
-  border-radius: 50%;
+  border-radius: var(--radius);
   background: transparent;
   font:400 var(--fs-md)/1 var(--font-sans);
   color: var(--indigo, #2b3f6b);
@@ -5864,7 +5867,7 @@ section[aria-label="What our customers say"],
   top: clamp(14px, 1.4vw, 22px);
   z-index: 1;
   padding: 7px 12px;
-  border-radius: 999px;
+  border-radius: var(--radius);
   background: rgba(246, 244, 230, 0.92);
   font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.2em;

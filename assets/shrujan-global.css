@@ -49,8 +49,8 @@
   --gutter: clamp(22px, 4vw, 60px);
   --section-gap: clamp(56px, calc(36px + 5.2vw), 168px);
 
-  --radius: 20px;            /* one corner for every box on the site (the user: 20px everywhere) */
-  --radius-pill: 30px;
+  --radius: 7px;             /* one corner for every box and button on the site (the user: 7px) */
+  --radius-pill: var(--radius); /* buttons take the same corner (the user) */
 
   /* ---- Header geometry --------------------------------------- */
   --topbar-h: 44px;
@@ -3751,7 +3751,7 @@ a.hero-cell:hover .hero-cell__label svg {
   height: 30px;
   display: grid;
   place-items: center;
-  border-radius: 50%;
+  border-radius: var(--radius);
   background: rgba(242, 237, 224, 0.16);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -4395,7 +4395,7 @@ a.house-tile:hover > img {
   height: 32px;
   display: grid;
   place-items: center;
-  border-radius: 50%;
+  border-radius: var(--radius);
   background: rgba(249, 245, 234, 0.16);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -4869,7 +4869,7 @@ a.house-tile:hover .house-tile__arrow {
   height: 32px;
   display: grid;
   place-items: center;
-  border-radius: 50%;
+  border-radius: var(--radius);
   border: 1px solid rgba(199, 165, 106, 0.34);
   background: rgba(20, 7, 5, 0.3);
   color: var(--tan);
