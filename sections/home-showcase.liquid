@@ -1,112 +1,73 @@
 {%- render 'section-design', section: section -%}
-{%- liquid
-  assign cfg = section.settings
-  assign sel = '#shopify-section-' | append: section.id
-  assign has_layout = false
-  if cfg.sw_cols != 4 or cfg.sw_cols_m != 2 or cfg.sw_align != 'center'
-    assign has_layout = true
-  endif
-  if cfg.sw_show_divider == false
-    assign has_layout = true
-  endif
-  comment
-    Mobile group. The numeral and the ringed photograph are already markup
-    switches, so the phone-only versions only have work to do while the seal is
-    being rendered at all — hence the paired guard. The rule between seals needs
-    no phone switch: the stylesheet already retires it at 1080px and under.
-  endcomment
-  if cfg.sw_show_number and cfg.sw_show_number_m == false
-    assign has_layout = true
-  endif
-  if cfg.sw_show_ring and cfg.sw_show_ring_m == false
-    assign has_layout = true
-  endif
--%}
-{%- if has_layout -%}
-  <style>
-    {%- if cfg.sw_cols != 4 -%}
-      @media (min-width: 1081px) {
-        {{ sel }} .manifesto__grid { grid-template-columns: repeat({{ cfg.sw_cols }}, minmax(0, 1fr)); }
-      }
-    {%- endif -%}
-    {%- if cfg.sw_cols_m != 2 -%}
-      @media (max-width: 600px) {
-        {{ sel }} .manifesto__grid { grid-template-columns: repeat({{ cfg.sw_cols_m }}, minmax(0, 1fr)); }
-      }
-    {%- endif -%}
-    {%- comment -%}
-      The intro is a centred grid, so left-aligning it means flipping the two
-      properties that centre it rather than adding any.
-    {%- endcomment -%}
-    {%- if cfg.sw_align == 'left' -%}
-      {{ sel }} .section-intro { text-align: left; justify-items: start; }
-    {%- endif -%}
-    {%- comment -%}
-      The rule between seals is a pseudo-element, so only CSS can retire it.
-    {%- endcomment -%}
-    {%- if cfg.sw_show_divider == false -%}
-      {{ sel }} .seal + .seal::before { display: none; }
-    {%- endif -%}
-
-    {%- comment -%}
-      Phone. 600px is the seal grid's own narrowest step — the same query
-      `sw_cols_m` above is written into.
-    {%- endcomment -%}
-    {%- if cfg.sw_show_number and cfg.sw_show_number_m == false -%}
-      @media (max-width: 600px) { {{ sel }} .seal__no { display: none; } }
-    {%- endif -%}
-    {%- if cfg.sw_show_ring and cfg.sw_show_ring_m == false -%}
-      @media (max-width: 600px) { {{ sel }} .seal__ring { display: none; } }
-    {%- endif -%}
-  </style>
-{%- endif -%}
 {%- comment -%}
-  Craft that cares: the four round seals between the jharokha arches. With
-  motion (assets/sj-home.js, styled by sj-home.css) the arches close in from
-  the screen's edges, each seal's ring draws itself and its photograph opens,
-  and a ring of words, the seal's name and Shrujan, turns around it. The seals
-  are the section's blocks.
+  Philosophy & Values, on the user's layout: one screen, two panels. Left:
+  the small heading, the title in two lines (the second in maroon), a
+  diamond rule, the line under it, the values as rows (number, round
+  photograph, name in two lines, arrow) on a thin rail, Learn more and a
+  line of small words. Right: the open value's photograph fading into the
+  paper, its number out of all, its name, words and link, a drawn flower
+  with the value's three words, and the previous and next buttons. The
+  values are the section's blocks. Styles in sj-home.css (src/prm.css),
+  behaviour in sj-home.js (src/prm.js); the preview's copy is build.py's.
 {%- endcomment -%}
 {%- liquid
-  if section.settings.arch_img
-    assign arch_src = section.settings.arch_img | image_url: width: 600
-  else
-    assign arch_src = section.settings.arch_asset | asset_url
-  endif
-  assign prm_label = cfg.prm_line_1 | append: ' ' | append: cfg.prm_line_2
+  assign cfg = section.settings
+  assign n = section.blocks.size
 -%}
-<section class="prm" id="promise" aria-label="{{ prm_label | escape }}">
-  <div class="prm__meta"><span>{{ section.settings.eyebrow | escape }}</span><span>{{ cfg.prm_meta_r | escape }}</span></div>
-  <div class="prm__head">
-    <h2 class="prm__title"><span class="prm__line">{{ cfg.prm_line_1 | escape }}</span><span class="prm__line prm__line--soft">{{ cfg.prm_line_2 | escape }}</span></h2>
-    <p class="prm__lede">{{ section.settings.copy | escape }}</p>
+<section class="pv" id="promise" aria-labelledby="pv-title-{{ section.id }}">
+  <div class="pv__grid">
+    <div class="pv__side">
+      <div class="pv__intro">
+        {%- if cfg.eyebrow != blank -%}<p class="pv__eyebrow" data-pv-in style="--d:0">{{ cfg.eyebrow | escape }}</p>{%- endif -%}
+        <h2 class="pv__title" id="pv-title-{{ section.id }}" data-pv-in style="--d:1"><span>{{ cfg.prm_line_1 | escape }}</span>{% if cfg.prm_line_2 != blank %}<em>{{ cfg.prm_line_2 | escape }}</em>{% endif %}</h2>
+        <span class="pv__orn" data-pv-in style="--d:2"><svg viewBox="0 0 58 14" aria-hidden="true"><path d="M0 7h21M37 7h21" stroke="currentColor" stroke-width="1"/><path d="M29 1.5 34.5 7 29 12.5 23.5 7z" fill="none" stroke="currentColor" stroke-width="1"/><path d="M29 4.6 31.4 7 29 9.4 26.6 7z" fill="currentColor" opacity=".55"/></svg></span>
+        {%- if cfg.copy != blank -%}<p class="pv__lede" data-pv-in style="--d:3">{{ cfg.copy | escape }}</p>{%- endif -%}
+      </div>
+      <ol class="pv__list" role="tablist" aria-label="{{ cfg.prm_meta_r | default: 'Our values' | escape }}" data-pv-in style="--d:4">
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign v_name = block.settings.title | strip
+            assign v_first = v_name | split: ' ' | first
+            assign v_rest = v_name | remove_first: v_first | strip
+            if block.settings.img
+              assign v_src = block.settings.img | image_url: width: 400
+            else
+              assign v_src = block.settings.fallback | asset_url
+            endif
+          -%}
+        <li {{ block.shopify_attributes }}><button class="pv__row" type="button" role="tab" id="pv-tab-{{ section.id }}-{{ forloop.index0 }}" aria-controls="pv-panel-{{ section.id }}" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"><span class="pv__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span><span class="pv__thumb"><img src="{{ v_src }}" alt="" loading="lazy" style="object-position:{{ block.settings.thumb_focus | default: '50% 40%' | escape }}"></span><span class="pv__name"><span>{{ v_first | escape }}</span><span>{{ v_rest | escape }}</span></span><i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></button></li>
+        {%- endfor -%}
+      </ol>
+      <div class="pv__foot" data-pv-in style="--d:5">
+        {%- if cfg.more_label != blank -%}<a class="pv__more" href="{{ cfg.more_link | default: '/pages/the-shrujan-story' }}">{{ cfg.more_label | escape }} <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>{%- endif -%}
+        {%- if cfg.foot_words != blank -%}<p class="pv__words">{{ cfg.foot_words | escape }}</p>{%- endif -%}
+      </div>
+    </div>
+    <div class="pv__stage" id="pv-panel-{{ section.id }}" role="tabpanel" aria-label="{{ cfg.prm_meta_r | default: 'Our values' | escape }}">
+      <div class="pv__photos">
+        {%- for block in section.blocks -%}
+          {%- if block.settings.img -%}{%- assign v_big = block.settings.img | image_url: width: 1800 -%}{%- else -%}{%- assign v_big = block.settings.fallback | asset_url -%}{%- endif -%}
+        <figure class="pv__photo{% if forloop.first %} is-on{% endif %}"><img src="{{ v_big }}" alt="{{ block.settings.alt | escape }}" loading="lazy" style="object-position:{{ block.settings.focus | default: '60% 35%' | escape }}"></figure>
+        {%- endfor -%}
+      </div>
+      <div class="pv__top" data-pv-in style="--d:2"><p class="pv__count" aria-hidden="true"><b>01</b><i>/</i><span>{% if n < 10 %}0{% endif %}{{ n }}</span></p>{% if cfg.prm_meta_r != blank %}<p class="pv__tag">{{ cfg.prm_meta_r | escape }}</p>{% endif %}</div>
+      <div class="pv__texts" data-pv-in style="--d:3">
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign v_name = block.settings.title | strip
+            assign v_first = v_name | split: ' ' | first
+            assign v_rest = v_name | remove_first: v_first | strip
+          -%}
+        <article class="pv__text{% if forloop.first %} is-on{% endif %}" aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}"><h3 class="pv__head"><span>{{ v_first | escape }}</span><span>{{ v_rest | escape }}</span></h3><span class="pv__rule" aria-hidden="true"></span><p class="pv__copy">{{ block.settings.copy | strip | escape }}</p>{% if cfg.link_label != blank %}<a class="pv__link" href="{{ block.settings.link | default: cfg.more_link | default: '/pages/the-shrujan-story' }}">{{ cfg.link_label | escape }} <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>{% endif %}</article>
+        {%- endfor -%}
+      </div>
+      <div class="pv__bottom" data-pv-in style="--d:5">
+        <span class="pv__flower"><svg viewBox="-50 -50 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.1"><path transform="rotate(0)" d="M0-9C9-17 11-33 0-46C-11-33-9-17 0-9Z"/><path transform="rotate(90)" d="M0-9C9-17 11-33 0-46C-11-33-9-17 0-9Z"/><path transform="rotate(180)" d="M0-9C9-17 11-33 0-46C-11-33-9-17 0-9Z"/><path transform="rotate(270)" d="M0-9C9-17 11-33 0-46C-11-33-9-17 0-9Z"/><path transform="rotate(45)" d="M0-9C6-15 7-25 0-33C-7-25-6-15 0-9Z"/><path transform="rotate(135)" d="M0-9C6-15 7-25 0-33C-7-25-6-15 0-9Z"/><path transform="rotate(225)" d="M0-9C6-15 7-25 0-33C-7-25-6-15 0-9Z"/><path transform="rotate(315)" d="M0-9C6-15 7-25 0-33C-7-25-6-15 0-9Z"/><circle r="5.5"/></g></svg></span>
+        <div class="pv__trail"><p class="pv__vwords">{%- for block in section.blocks -%}<span{% if forloop.first %} class="is-on"{% endif %}>{{ block.settings.words | escape }}</span>{%- endfor -%}</p></div>
+        <div class="pv__nav"><button class="pv__prev" type="button" aria-label="Previous value"><i class="sj-i sj-i--arrow-left ms" aria-hidden="true"></i></button><button class="pv__next" type="button" aria-label="Next value"><i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></button></div>
+      </div>
+    </div>
   </div>
-  <div class="prm__stage">
-    {%- if section.settings.show_arches %}
-    <span class="prm__arch prm__arch--left" aria-hidden="true"><img src="{{ arch_src }}" alt="" decoding="async"></span>
-    <span class="prm__arch prm__arch--right" aria-hidden="true"><img src="{{ arch_src }}" alt="" decoding="async"></span>
-    {%- endif %}
-    <ol class="prm__seals">
-      {% for block in section.blocks -%}
-      {%- assign seal_name = block.settings.title | strip | escape -%}
-      <li class="prm__seal" style="--i:{{ forloop.index0 }}" {{ block.shopify_attributes }}>
-        {%- if cfg.sw_show_number %}
-        <span class="prm__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span>
-        {%- endif %}
-        <span class="prm__ring">
-          <span class="prm__orbit"><svg class="prm__spin" viewBox="0 0 200 200" aria-hidden="true" data-name="{{ seal_name }}"><defs><path id="prm-orbit-{{ forloop.index0 }}" d="M34,9 H166 A25,25 0 0 1 191,34 V166 A25,25 0 0 1 166,191 H34 A25,25 0 0 1 9,166 V34 A25,25 0 0 1 34,9 H166 A25,25 0 0 1 191,34 V166 A25,25 0 0 1 166,191 H34 A25,25 0 0 1 9,166 V34 A25,25 0 0 1 34,9"/></defs><text textLength="685" lengthAdjust="spacing"><textPath href="#prm-orbit-{{ forloop.index0 }}">{{ seal_name }} · Shrujan · {{ seal_name }} · Shrujan · </textPath></text></svg></span>
-          <svg class="prm__draw" viewBox="0 0 200 200" aria-hidden="true"><path d="M34,22 H166 A12,12 0 0 1 178,34 V166 A12,12 0 0 1 166,178 H34 A12,12 0 0 1 22,166 V34 A12,12 0 0 1 34,22 Z" pathLength="1"/></svg>
-          <span class="prm__photo"><img src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 900 }}{% else %}{{ block.settings.fallback | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy"></span>
-        </span>
-        <h3 class="prm__name">{{ seal_name }}</h3>
-        <p class="prm__copy">{{ block.settings.copy | strip | escape }}</p>
-      </li>
-      {%- endfor %}
-    </ol>
-  </div>
-  {%- if cfg.sw_show_more %}
-  <div class="prm__more"><a class="arch__btn" href="{{ section.settings.more_link | default: '#craft' }}">{{ section.settings.more_label | default: 'How we make it' | escape }} <span aria-hidden="true">→</span></a></div>
-  {%- endif %}
 </section>
 
 {% schema %}
@@ -116,68 +77,8 @@
     {
       "type": "text",
       "id": "eyebrow",
-      "label": "Eyebrow",
-      "default": "What guides us"
-    },
-    {
-      "type": "inline_richtext",
-      "id": "title",
-      "label": "Title",
-      "default": "Philosophy <em>&amp; Values</em>"
-    },
-    {
-      "type": "header",
-      "content": "Jharokha tilework"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_arches",
-      "label": "Flank the section with the tilework",
-      "info": "Shown on screens wider than 1180px.",
-      "default": true
-    },
-    {
-      "type": "image_picker",
-      "id": "arch_img",
-      "label": "Tilework image"
-    },
-    {
-      "type": "text",
-      "id": "arch_asset",
-      "label": "Tilework theme asset (fallback)",
-      "default": "heritage-arch.webp"
-    },
-    {
-      "type": "textarea",
-      "id": "copy",
-      "label": "Intro copy",
-      "default": "A responsible social enterprise since 1969."
-    },
-    {
-      "type": "text",
-      "id": "more_label",
-      "label": "Link label",
-      "default": "Learn more"
-    },
-    {
-      "type": "text",
-      "id": "more_link",
-      "label": "Link",
-      "default": "/pages/the-shrujan-story"
-    },
-    {
-      "type": "header",
-      "content": "Seals between the arches"
-    },
-    {
-      "type": "paragraph",
-      "content": "The small line above is the eyebrow; the lede is the copy; the seals are the blocks, each with a ring of its name turning around it."
-    },
-    {
-      "type": "text",
-      "id": "prm_meta_r",
-      "label": "Small line, right",
-      "default": "Three values · since 1969"
+      "label": "Small heading",
+      "default": "Our foundation"
     },
     {
       "type": "text",
@@ -188,96 +89,44 @@
     {
       "type": "text",
       "id": "prm_line_2",
-      "label": "Title, line 2",
+      "label": "Title, line 2 (in maroon)",
       "default": "& Values"
     },
     {
-      "type": "header",
-      "content": "Layout"
+      "type": "textarea",
+      "id": "copy",
+      "label": "Line under the title",
+      "default": "A responsible social enterprise since 1969."
     },
     {
-      "type": "select",
-      "id": "sw_align",
-      "label": "Heading alignment",
-      "default": "center",
-      "options": [
-        {
-          "value": "center",
-          "label": "Centred"
-        },
-        {
-          "value": "left",
-          "label": "Left"
-        }
-      ]
+      "type": "text",
+      "id": "more_label",
+      "label": "Button",
+      "default": "Learn more"
     },
     {
-      "type": "range",
-      "id": "sw_cols",
-      "label": "Seals per row (desktop)",
-      "min": 1,
-      "max": 6,
-      "step": 1,
-      "default": 4,
-      "info": "Applies above 1080px. Between 600 and 1080px the theme shows two."
+      "type": "text",
+      "id": "more_link",
+      "label": "Button link",
+      "default": "/pages/the-shrujan-story"
     },
     {
-      "type": "range",
-      "id": "sw_cols_m",
-      "label": "Seals per row (mobile)",
-      "min": 1,
-      "max": 3,
-      "step": 1,
-      "default": 2,
-      "info": "Applies below 600px."
+      "type": "text",
+      "id": "foot_words",
+      "label": "Small words beside the button",
+      "default": "People · Craft · A more conscious tomorrow"
     },
     {
-      "type": "header",
-      "content": "Seal content"
+      "type": "text",
+      "id": "prm_meta_r",
+      "label": "Small heading over the photograph",
+      "default": "Our values"
     },
     {
-      "type": "checkbox",
-      "id": "sw_show_number",
-      "label": "Show seal number",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "sw_show_ring",
-      "label": "Show seal image",
-      "default": true,
-      "info": "The round portrait above each promise."
-    },
-    {
-      "type": "checkbox",
-      "id": "sw_show_divider",
-      "label": "Show rule between seals",
-      "default": true,
-      "info": "Drawn only where seals sit side by side, so it already disappears once they stack."
-    },
-    {
-      "type": "checkbox",
-      "id": "sw_show_more",
-      "label": "Show bottom link",
-      "default": true
-    },
-    {
-      "type": "header",
-      "content": "Mobile"
-    },
-    {
-      "type": "checkbox",
-      "id": "sw_show_number_m",
-      "label": "Show the numeral",
-      "info": "600px and under — the same step the mobile column count above uses. Only applies while the numeral is switched on for every size.",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "sw_show_ring_m",
-      "label": "Show the ringed photograph",
-      "info": "Off leaves the promise as title and copy alone on a phone.",
-      "default": true
+      "type": "text",
+      "id": "link_label",
+      "label": "Each value's link label",
+      "default": "Explore this value"
     },
     {
       "type": "header",
@@ -455,41 +304,65 @@
   "blocks": [
     {
       "type": "seal",
-      "name": "Promise seal",
+      "name": "Value",
       "settings": [
-        {
-          "type": "image_picker",
-          "id": "img",
-          "label": "Image"
-        },
-        {
-          "type": "text",
-          "id": "fallback",
-          "label": "Fallback asset file",
-          "info": "Theme asset filename used until an image is picked.",
-          "default": "top-right.webp"
-        },
-        {
-          "type": "text",
-          "id": "alt",
-          "label": "Image alt text",
-          "default": "Close crop of mirror-work embroidery in crimson and gold threads"
-        },
         {
           "type": "text",
           "id": "title",
-          "label": "Title",
-          "default": "Hand Embroidery"
+          "label": "Name",
+          "default": "Dignity and Respect"
         },
         {
           "type": "textarea",
           "id": "copy",
-          "label": "Copy",
-          "default": "Every motif counted and stitched by hand. No machine ever touches the cloth."
+          "label": "Words",
+          "default": "We work with deep respect for the people, skills and traditions that shape every Shrujan piece."
+        },
+        {
+          "type": "text",
+          "id": "words",
+          "label": "Three small words (with ·)",
+          "default": "People · Heritage · Opportunity"
+        },
+        {
+          "type": "text",
+          "id": "link",
+          "label": "Link",
+          "default": "/pages/the-shrujan-story#values"
+        },
+        {
+          "type": "image_picker",
+          "id": "img",
+          "label": "Photograph"
+        },
+        {
+          "type": "text",
+          "id": "fallback",
+          "label": "Photograph, theme asset (fallback)",
+          "default": "story-dignity.webp"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Photograph description",
+          "default": "A Kutchi craftswoman smiling beside an embroidered textile"
+        },
+        {
+          "type": "text",
+          "id": "focus",
+          "label": "Large photograph focus (x% y%)",
+          "default": "60% 35%"
+        },
+        {
+          "type": "text",
+          "id": "thumb_focus",
+          "label": "Round photograph focus (x% y%)",
+          "default": "50% 40%"
         }
       ]
     }
   ],
+  "max_blocks": 6,
   "presets": [
     {
       "name": "Home promises",
@@ -497,37 +370,40 @@
         {
           "type": "seal",
           "settings": {
-            "fallback": "top-right.webp",
-            "alt": "Close crop of mirror-work embroidery in crimson and gold threads",
-            "title": "Hand Embroidery",
-            "copy": "Every motif counted and stitched by hand. No machine ever touches the cloth."
+            "title": "Dignity and Respect",
+            "copy": "We work with deep respect for the people, skills and traditions that shape every Shrujan piece.",
+            "words": "People · Heritage · Opportunity",
+            "link": "/pages/the-shrujan-story#values",
+            "fallback": "story-dignity.webp",
+            "alt": "A Kutchi craftswoman smiling beside an embroidered textile",
+            "focus": "68% 30%",
+            "thumb_focus": "74% 34%"
           }
         },
         {
           "type": "seal",
           "settings": {
-            "fallback": "frame-r5t15.webp",
-            "alt": "Close crop of turquoise Kutchi mirror-work embroidery",
-            "title": "Natural Dyes",
-            "copy": "Madder, indigo and pomegranate on handloom cotton and mulberry silk."
+            "title": "Continuity of Craft",
+            "copy": "Our work keeps the craft traditions of Kutch alive by allowing them to grow and remain relevant.",
+            "words": "Tradition · Growth · Relevance",
+            "link": "/pages/the-shrujan-story#values",
+            "fallback": "story-continuity.webp",
+            "alt": "Craftswomen of different generations embroidering together",
+            "focus": "62% 40%",
+            "thumb_focus": "60% 40%"
           }
         },
         {
           "type": "seal",
           "settings": {
-            "fallback": "bottom-left.webp",
-            "alt": "Master weaver working threads at his handloom",
-            "title": "Fair Wages",
-            "copy": "Paid per piece, on time, directly to the woman whose hands made it."
-          }
-        },
-        {
-          "type": "seal",
-          "settings": {
-            "fallback": "bottom-right.webp",
-            "alt": "Model in a mehendi-green hand-embroidered kurta set",
-            "title": "Made to Last",
-            "copy": "Finished to be worn today, repaired for free, and handed down tomorrow."
+            "title": "Conscious Practice",
+            "copy": "Every decision we make from materials to process is guided by care, responsibility and attention to detail.",
+            "words": "Care · Responsibility · Detail",
+            "link": "/pages/the-shrujan-story#values",
+            "fallback": "story-conscious.webp",
+            "alt": "Sorting hand-dyed threads in the Shrujan studio",
+            "focus": "58% 40%",
+            "thumb_focus": "56% 44%"
           }
         }
       ]

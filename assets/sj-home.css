@@ -95,11 +95,12 @@ html.sj-pre body {
   overflow: hidden;
 }
 
-/* The window is the hero film's own frame, clipped to a small box at the
-   centre of the screen (loader.js opens it); around it is the page's beige
-   ground. Closed until the loader opens it, so nothing flashes first. */
+/* The window is the hero's whole frame, scaled down to a miniature at the
+   centre of the screen (loader.js places it and zooms it up); around it is
+   the page's beige ground. Hidden until the loader places it, so nothing
+   flashes first. */
 html.sj-pre .hero--delta .dh__fold {
-  clip-path: inset(50% 50% 50% 50%);
+  opacity: 0;
 }
 
 html.sj-skip .sj-loader {
@@ -110,7 +111,8 @@ html.sj-skip .sj-loader {
   inset: 0;
   z-index: 9999;
   overflow: hidden;
-  --win-h: 15.6vh;
+  /* the window's height (loader.js sets it from the window itself) */
+  --win-h: 24vh;
 }
 
 /* The cloths: Shrujan's fabrics, cut like paper with pinking shears and held
@@ -238,7 +240,7 @@ html.sj-skip .sj-loader {
 
 @media (max-width: 720px) {
   .sj-loader {
-    --win-h: 42vh;
+    --win-h: 46vh;
   }
 
   /* on a phone the type is smaller and closer, and stays on one line */
@@ -4557,308 +4559,740 @@ section.idx {
 /* deco:end */
 
 /* ============================================================
-   Craft that cares: four promises
-   ------------------------------------------------------------
-   The section as the theme lays it out: the values in a row with the
-   jharokha tilework on both edges of the screen behind them. The arches
-   slide in from the screen edges once and then hold still. Each value is a
-   small photograph with rounded corners, like every card on the page; a thin
-   frame draws itself round it, and a frame of words runs round that, slowly
-   on its own and faster as the page moves (prm.js).
-   On a phone the seals are a swipe row.
+   Philosophy & Values (the user's layout, to the letter): one screen,
+   two panels. On the left, on a lighter ground: the small heading with
+   its line, the title in two lines (the second in maroon), a diamond
+   rule, the line under it, then the three values as rows (number, round
+   photograph, name in two lines, arrow) on a thin rail whose maroon mark
+   sits on the open one; a Learn more button and a line of small words at
+   the foot. On the right: the open value's number out of three, Our
+   values with its line, the photograph filling the right side and fading
+   into the paper, the value's name large, a short maroon rule, its words,
+   Explore this value; at the foot a drawn flower, a long line, the
+   value's three words, and the previous and next buttons. Behaviour in
+   prm.js. Below 900px: the title, the open value, the rows, the foot.
    ============================================================ */
-.prm {
+.pv {
+  --pv-red: var(--indigo, #924241);
+  --pv-ink: var(--ink, #404041);
+  --pv-soft: #7c776e;
+  --pv-line: rgba(64, 64, 65, 0.16);
+  --pv-ease: cubic-bezier(0.22, 1, 0.36, 1);
   position: relative;
-  overflow-x: clip;
-  padding: clamp(40px, 6vw, 96px) var(--gutter) clamp(96px, 10vw, 160px);
-  background: transparent;
-  color: var(--ink);
+  width: 100%;
+  color: var(--pv-ink);
 }
 
-.prm__meta {
+.pv__grid {
+  display: grid;
+  grid-template-columns: 35% 65%;
+  height: max(680px, min(100vh, 62.5vw));
+  height: max(680px, min(100svh, 62.5vw));
+  max-height: 980px;
+}
+
+/* ---- the left panel ---- */
+.pv__side {
   display: flex;
-  justify-content: space-between;
-  gap: 24px;
-  max-width: var(--col);
-  margin: 0 auto;
-  padding-bottom: 16px;
-  font:500 var(--fs-xs)/1.4 var(--font-sans);
-  letter-spacing: 0.22em;
+  flex-direction: column;
+  min-height: 0;
+  border-right: 1px solid var(--pv-line);
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.pv__intro {
+  padding: clamp(30px, 5.4vh, 54px) clamp(20px, 3vw, 44px) clamp(22px, 4.6vh, 50px) var(--gutter, 5.2vw);
+}
+
+.pv__eyebrow,
+.pv__tag {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0;
+  font:400 var(--fs-2xs)/1.2 var(--font-sans);
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: var(--pv-soft);
 }
 
-/* the title centred over the seals, as the theme has it */
-.prm__head {
-  max-width: var(--col);
-  margin: var(--h-gap) auto 0;
-  text-align: center;
+.pv__eyebrow::after,
+.pv__tag::after {
+  content: '';
+  flex: 0 0 56px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
 }
 
-.prm__title {
-  font: 400 var(--h-size)/0.95 var(--font-display);
-  letter-spacing: -0.015em;
-  color: var(--ink);
+.pv__title {
+  margin: clamp(18px, 3.4vh, 34px) 0 0;
+  font:400 var(--fs-5xl)/0.98 var(--font-display);
+  letter-spacing: -0.01em;
 }
 
-.prm__line {
+.pv__title span,
+.pv__title em {
   display: block;
-  text-wrap: balance;
 }
 
-.prm__line--soft {
-  color: var(--indigo, #2b3f6b);
+.pv__title em {
+  font-style: normal;
+  color: var(--pv-red);
 }
 
-.prm__w {
-  /* room under the baseline for the serif's long tails (g, y, p) */
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: top;
-  padding-bottom: 0.26em;
-  margin-bottom: -0.26em;
+.pv__orn {
+  display: block;
+  width: 58px;
+  margin: clamp(16px, 2.6vh, 26px) 0 0;
+  color: var(--pv-soft);
 }
 
-.prm__wi {
-  display: inline-block;
-}
-
-.prm__lede {
-  max-width: 44ch;
-  margin: clamp(22px, 2.2vw, 32px) auto 0;
-  font:400 var(--fs-base)/1.65 var(--font-sans);
-  color: var(--ink-soft);
-}
-
-/* ---- the seals, between the arches ---- */
-.prm__stage {
-  --ring: clamp(176px, 14vw, 216px);
-  position: relative;
-  margin-top: clamp(56px, 6vw, 96px);
-}
-
-/* the tilework, on the screen's own edges, fading out towards the seals */
-.prm__arch {
-  position: absolute;
-  top: 50%;
-  z-index: 0;
-  width: clamp(200px, 17vw, 320px);
-  margin-top: calc(-0.887 * clamp(200px, 17vw, 320px));
-  pointer-events: none;
-}
-
-.prm__arch--left {
-  left: calc(-1 * var(--gutter));
-}
-
-.prm__arch--right {
-  right: calc(-1 * var(--gutter));
-}
-
-.prm__arch img {
+.pv__orn svg {
   display: block;
   width: 100%;
   height: auto;
-  -webkit-mask-image:
-    linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000 14%, #000 86%, rgba(0, 0, 0, 0) 100%),
-    linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.55) 34%, #000 72%);
-  -webkit-mask-composite: source-in;
-  mask-image:
-    linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000 14%, #000 86%, rgba(0, 0, 0, 0) 100%),
-    linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.55) 34%, #000 72%);
-  mask-composite: intersect;
 }
 
-.prm__arch--left img {
-  transform: scaleX(-1);
+.pv__lede {
+  margin: clamp(10px, 1.6vh, 16px) 0 0;
+  font:400 var(--fs-lg)/1.5 var(--font-sans);
+  color: #5c5852;
 }
 
-.prm__seals {
+/* the rows, on a rail */
+.pv__list {
   position: relative;
-  z-index: 1;
+  flex: 1 1 auto;
+  min-height: 0;
   display: grid;
-  /* one column per value, however many there are */
-  grid-template-columns: none;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(0, 1fr);
-  gap: clamp(12px, 1.6vw, 28px);
-  /* inside the arches' opening, clear of the tilework on either side */
-  max-width: min(var(--col), 1140px, calc(100vw - 1.7 * clamp(200px, 17vw, 320px)));
-  margin: 0 auto;
+  grid-auto-rows: minmax(0, 1fr);
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--pv-line);
   list-style: none;
 }
 
-.prm__seal {
-  display: grid;
-  justify-items: center;
-  align-content: start;
-  text-align: center;
+.pv__list::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 16px;
+  width: 1px;
+  background: var(--pv-line);
 }
 
-.prm__no {
-  font:400 var(--fs-xl)/1 var(--font-display);
-  letter-spacing: 0.06em;
-  color: var(--indigo, #2b3f6b);
+.pv__list li {
+  min-height: 0;
+  border-bottom: 1px solid var(--pv-line);
 }
 
-.prm__ring {
+.pv__row {
   position: relative;
+  display: grid;
+  grid-template-columns: clamp(30px, 3.4vw, 56px) auto 1fr auto;
+  align-items: center;
+  gap: clamp(14px, 2.3vw, 48px);
+  width: 100%;
+  height: 100%;
+  padding: clamp(8px, 1.2vh, 14px) clamp(22px, 2.8vw, 44px) clamp(8px, 1.2vh, 14px) clamp(40px, 3.6vw, 58px);
+  border: 0;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+  transition: background 0.4s ease;
+}
+
+.pv__row::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 15px;
+  width: 3px;
+  background: var(--pv-red);
+  transform: scaleY(0);
+  transition: transform 0.6s var(--pv-ease);
+}
+
+.pv__row:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.pv__row[aria-selected='true']::before {
+  transform: none;
+}
+
+.pv__no {
+  font:400 var(--fs-sm)/1 var(--font-sans);
+  letter-spacing: 0.12em;
+  color: var(--pv-soft);
+}
+
+.pv__thumb {
   display: block;
-  width: var(--ring);
+  width: clamp(64px, min(7.6vw, 13vh), 128px);
   aspect-ratio: 1;
-  margin-top: 14px;
-}
-
-/* the frame of words; prm.js runs them round it */
-.prm__orbit {
-  position: absolute;
-  inset: 0;
-}
-
-.prm__spin {
-  display: block;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-
-.prm__spin text {
-  font:500 var(--fs-2xs)/1 var(--font-sans);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  fill: var(--ink-soft);
-}
-
-/* the frame that draws itself round the photograph */
-.prm__draw {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-
-.prm__draw path {
-  fill: none;
-  stroke: var(--indigo, #2b3f6b);
-  stroke-width: 1;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 0;
-}
-
-/* the photograph inside the frame; its corners keep the frame's curve */
-.prm__photo {
-  position: absolute;
-  inset: 14%;
   overflow: hidden;
-  border-radius: calc(var(--ring) * 0.03);
-  background: var(--ivory-2);
-  clip-path: inset(0 round calc(var(--ring) * 0.03));
-  box-shadow: 0 16px 30px -22px rgba(40, 40, 41, 0.55);
+  border-radius: 50%;
+  background: #e2dccd;
+  transition: border-radius 0.7s var(--pv-ease), transform 0.7s var(--pv-ease);
 }
 
-.prm__photo img {
+.pv__thumb img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 25%;
-  transition: scale 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 1s var(--pv-ease);
 }
 
-.prm__name {
-  margin-top: clamp(16px, 1.6vw, 24px);
-  font:400 var(--fs-3xl)/1.05 var(--font-display);
-  letter-spacing: -0.006em;
-  color: var(--ink);
-  transition: color 0.35s ease;
+/* the open value's photograph stands as an arch */
+.pv__row[aria-selected='true'] .pv__thumb {
+  border-radius: 999px 999px 0 0;
 }
 
-.prm__copy {
-  max-width: 26ch;
-  margin-top: 10px;
-  font:400 var(--fs-base)/1.6 var(--font-sans);
-  color: var(--ink-soft);
+.pv__row:hover .pv__thumb img {
+  transform: scale(1.06);
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .prm__seal:hover .prm__photo img {
-    scale: 1.08;
-  }
-
-  .prm__seal:hover .prm__name {
-    color: var(--indigo, #2b3f6b);
-  }
+.pv__name {
+  font:400 var(--fs-xl)/1.28 var(--font-display);
 }
 
-.prm__more {
+.pv__name span {
+  display: block;
+}
+
+.pv__row > i {
+  font-size: 20px;
+  color: var(--pv-ink);
+  transition: transform 0.4s var(--pv-ease), color 0.3s ease;
+}
+
+.pv__row[aria-selected='true'] > i {
+  color: var(--pv-red);
+}
+
+.pv__row:hover > i {
+  transform: translateX(4px);
+}
+
+.pv__row:focus-visible {
+  outline: 2px solid var(--pv-red);
+  outline-offset: -4px;
+}
+
+/* the foot */
+.pv__foot {
   display: flex;
-  justify-content: center;
-  margin-top: clamp(44px, 4.6vw, 72px);
+  align-items: center;
+  gap: clamp(16px, 2vw, 32px);
+  padding: clamp(18px, 3.2vh, 32px) clamp(20px, 2.8vw, 44px) clamp(18px, 3.4vh, 34px) var(--gutter, 5.2vw);
 }
 
-/* the arches only where there is room beside the seals */
-@media (max-width: 1100px) {
-  .prm__arch {
-    display: none;
+.pv__more {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 12px;
+  padding: clamp(12px, 1.8vh, 16px) clamp(22px, 2.2vw, 34px);
+  border: 1px solid var(--pv-red);
+  border-radius: 999px;
+  font:400 var(--fs-xs)/1 var(--font-sans);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--pv-red);
+  transition: background 0.35s ease, color 0.35s ease;
+}
+
+.pv__more:hover {
+  background: var(--pv-red);
+  color: var(--page-bg, #f6f4e6);
+}
+
+.pv__more i {
+  font-size: 16px;
+}
+
+.pv__words {
+  margin: 0;
+  font:400 var(--fs-2xs)/1.9 var(--font-sans);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--pv-soft);
+}
+
+/* ---- the right panel ---- */
+.pv__stage {
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.pv__photos {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 64%;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.55) 18%, #000 40%), linear-gradient(0deg, transparent 0%, #000 22%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.55) 18%, #000 40%), linear-gradient(0deg, transparent 0%, #000 22%);
+  mask-composite: intersect;
+}
+
+.pv__photo {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.pv__photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.07);
+  transition: transform 1.8s var(--pv-ease);
+}
+
+.pv__photo.is-on {
+  z-index: 1;
+  opacity: 1;
+}
+
+.pv__photo.is-on img {
+  transform: none;
+}
+
+.pv__top {
+  position: absolute;
+  top: clamp(30px, 5vh, 50px);
+  right: var(--gutter, 5.2vw);
+  left: clamp(28px, 4.7vw, 80px);
+  z-index: 3;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.pv__count {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0;
+  font:400 var(--fs-lg)/1 var(--font-display);
+  color: var(--pv-soft);
+}
+
+.pv__count b {
+  font:400 var(--fs-3xl)/1 var(--font-display);
+  color: var(--pv-red);
+}
+
+.pv__count i {
+  font-style: normal;
+  font-size: 1.5em;
+  font-weight: 300;
+  opacity: 0.6;
+  transform: translateY(-0.06em);
+}
+
+/* over the photograph, so in its light colour */
+.pv__tag {
+  color: rgba(246, 244, 230, 0.92);
+  text-shadow: 0 1px 10px rgba(20, 14, 10, 0.55);
+}
+
+.pv__texts {
+  position: absolute;
+  top: 0;
+  bottom: 4%;
+  left: clamp(28px, 4.7vw, 80px);
+  z-index: 2;
+  display: grid;
+  align-content: center;
+  width: min(36%, 460px);
+}
+
+.pv__text {
+  grid-area: 1 / 1;
+  visibility: hidden;
+}
+
+.pv__text.is-on {
+  visibility: visible;
+}
+
+.pv__text > * {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.5s ease, transform 0.7s var(--pv-ease);
+}
+
+.pv__text.is-on > * {
+  opacity: 1;
+  transform: none;
+}
+
+.pv__text.is-on > :nth-child(2) { transition-delay: 0.08s; }
+.pv__text.is-on > :nth-child(3) { transition-delay: 0.14s; }
+.pv__text.is-on > :nth-child(4) { transition-delay: 0.2s; }
+
+.pv__head {
+  margin: 0;
+  font:400 calc(var(--fs-5xl) * 1.08)/1.02 var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+.pv__head span {
+  display: block;
+}
+
+.pv__rule {
+  display: block;
+  width: 56px;
+  height: 1px;
+  margin: clamp(22px, 3.6vh, 36px) 0 0;
+  background: var(--pv-red);
+}
+
+.pv__copy {
+  max-width: 24em;
+  margin: clamp(22px, 3.6vh, 36px) 0 0;
+  font:400 var(--fs-lg)/1.65 var(--font-sans);
+  color: #5c5852;
+}
+
+.pv__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin: clamp(26px, 4.4vh, 46px) 0 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid currentColor;
+  font:400 var(--fs-xs)/1 var(--font-sans);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--pv-red);
+}
+
+.pv__link i {
+  font-size: 16px;
+  transition: transform 0.35s var(--pv-ease);
+}
+
+.pv__link:hover i {
+  transform: translateX(4px);
+}
+
+.pv__bottom {
+  position: absolute;
+  right: var(--gutter, 5.2vw);
+  bottom: clamp(26px, 5vh, 50px);
+  left: clamp(28px, 4.7vw, 80px);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2vw, 28px);
+}
+
+.pv__flower {
+  display: block;
+  flex: none;
+  width: clamp(54px, 4.6vw, 76px);
+  color: #8d8478;
+}
+
+.pv__flower svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.pv__trail {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 600px;
+  margin-top: 26px;
+}
+
+.pv__trail::before {
+  content: '';
+  display: block;
+  height: 1px;
+  margin-bottom: 18px;
+  background: linear-gradient(90deg, rgba(64, 64, 65, 0.4), rgba(64, 64, 65, 0.12));
+}
+
+.pv__vwords {
+  display: grid;
+  margin: 0;
+  font:400 var(--fs-2xs)/1.2 var(--font-sans);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--pv-soft);
+}
+
+.pv__vwords span {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.pv__vwords span.is-on {
+  opacity: 1;
+}
+
+.pv__nav {
+  display: flex;
+  gap: 16px;
+  margin-left: auto;
+}
+
+.pv__nav button {
+  display: grid;
+  place-items: center;
+  width: clamp(48px, 3.7vw, 62px);
+  aspect-ratio: 1;
+  border: 1px solid var(--pv-red);
+  border-radius: 50%;
+  background: rgba(246, 244, 230, 0.55);
+  color: var(--pv-red);
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease, transform 0.4s var(--pv-ease);
+}
+
+.pv__nav button i {
+  font-size: 20px;
+}
+
+.pv__nav .pv__next {
+  background: var(--pv-red);
+  color: var(--page-bg, #f6f4e6);
+}
+
+.pv__nav button:hover {
+  transform: scale(1.06);
+}
+
+.pv__nav .pv__prev:hover {
+  background: var(--pv-red);
+  color: var(--page-bg, #f6f4e6);
+}
+
+.pv__nav button:focus-visible {
+  outline: 2px solid var(--pv-red);
+  outline-offset: 3px;
+}
+
+/* ---- the entrance: the panels' parts come in as the section arrives ---- */
+.pv [data-pv-in] {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.8s ease, transform 1s var(--pv-ease);
+  transition-delay: calc(var(--d, 0) * 0.08s);
+}
+
+.pv.is-in [data-pv-in] {
+  opacity: 1;
+  transform: none;
+}
+
+.pv__stage .pv__photos {
+  clip-path: inset(0 0 0 100%);
+  transition: clip-path 1.4s var(--pv-ease) 0.15s;
+}
+
+.pv.is-in .pv__stage .pv__photos {
+  clip-path: inset(0 0 0 0);
+}
+
+/* ---- short desktop screens: the rows a little lower ---- */
+@media (min-width: 901px) and (max-height: 760px) {
+  .pv__lede {
+    font-size: var(--fs-md);
+  }
+
+  .pv__name {
+    font-size: var(--fs-lg);
   }
 }
 
-/* ---- phones: the seals as a swipe row ---- */
-@media (max-width: 720px) {
-  .prm {
-    padding: 28px var(--gutter) 80px;
-  }
-
-  .prm__meta {
-    flex-direction: column;
-    gap: 6px;
-    font-size: var(--fs-2xs);
-  }
-
-
-
-  .prm__lede {
-    font-size: var(--fs-base);
-  }
-
-  .prm__stage {
-    --ring: 168px;
-    margin-top: 36px;
-  }
-
-  .prm__seals {
+/* ---- tablets and phones: the title, the open value, the rows, the foot ---- */
+@media (max-width: 900px) {
+  .pv__grid {
     display: flex;
-    gap: var(--edge, 5px);
-    max-width: none;
-    margin: 0 calc(-1 * var(--gutter));
-    padding-inline: var(--edge, 5px);
-    scroll-padding-inline: var(--edge, 5px);
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
+    flex-direction: column;
+    height: auto;
+    max-height: none;
   }
 
-  .prm__seals::-webkit-scrollbar {
-    display: none;
+  .pv__side {
+    display: contents;
   }
 
-  .prm__seal {
-    flex: 0 0 62vw;
-    padding: 4px 6px 8px;
-    scroll-snap-align: start;
+  .pv__intro {
+    order: 1;
+    padding: 56px var(--gutter, 20px) 26px;
   }
 
-  .prm__name {
+  .pv__title {
+    margin-top: 18px;
+    font-size: var(--fs-4xl);
+  }
+
+  .pv__stage {
+    order: 2;
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .pv__photos {
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    width: 100%;
+    height: min(92vw, 520px);
+    -webkit-mask-image: linear-gradient(0deg, transparent 0%, #000 30%);
+    mask-image: linear-gradient(0deg, transparent 0%, #000 30%);
+  }
+
+  .pv__top {
+    top: 18px;
+    right: var(--gutter, 20px);
+    left: var(--gutter, 20px);
+  }
+
+  .pv__count {
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(246, 244, 230, 0.86);
+  }
+
+  .pv__count b {
     font-size: var(--fs-2xl);
   }
 
-  .prm__copy {
-    font-size: var(--fs-sm);
+  .pv__texts {
+    position: relative;
+    top: auto;
+    bottom: auto;
+    left: auto;
+    width: auto;
+    margin-top: -64px;
+    padding: 0 var(--gutter, 20px);
   }
 
-  .prm__more {
-    margin-top: 32px;
+  .pv__head {
+    font-size: var(--fs-4xl);
+  }
+
+  .pv__rule,
+  .pv__copy {
+    margin-top: 18px;
+  }
+
+  .pv__link {
+    margin-top: 22px;
+  }
+
+  .pv__bottom {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    flex-wrap: wrap;
+    margin-top: 30px;
+    padding: 0 var(--gutter, 20px);
+  }
+
+  .pv__flower {
+    width: 46px;
+  }
+
+  .pv__trail {
+    margin-top: 14px;
+  }
+
+  .pv__trail::before {
+    margin-bottom: 12px;
+  }
+
+  .pv__nav button {
+    width: 46px;
+  }
+
+  .pv__list {
+    order: 3;
+    margin-top: 34px;
+  }
+
+  .pv__row {
+    gap: 16px;
+    padding: 12px var(--gutter, 20px) 12px 40px;
+  }
+
+  .pv__thumb {
+    width: 68px;
+  }
+
+  .pv__name {
+    font-size: var(--fs-lg);
+  }
+
+  .pv__foot {
+    order: 4;
+    flex-wrap: wrap;
+    padding: 26px var(--gutter, 20px) 56px;
+  }
+
+  .pv__stage .pv__photos {
+    clip-path: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .pv__bottom {
+    gap: 12px;
+  }
+
+  .pv__trail {
+    flex-basis: calc(100% - 60px);
+  }
+
+  .pv__nav {
+    margin-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pv [data-pv-in],
+  .pv__stage .pv__photos,
+  .pv__photo,
+  .pv__photo img,
+  .pv__text > *,
+  .pv__thumb {
+    transition: none;
+  }
+
+  .pv [data-pv-in] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .pv__stage .pv__photos {
+    clip-path: none;
   }
 }
 
@@ -5141,7 +5575,6 @@ section.idx {
    the page between them ---- */
 .arch,
 .idx,
-.prm,
 .reels,
 #craft,
 #curated,
