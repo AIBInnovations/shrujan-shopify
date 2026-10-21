@@ -1011,13 +1011,25 @@ html.sj-pre .sje__tab {
     height: min(560px, calc(100vh - 90px));
   }
 
+  /* on a phone the tab is its icon alone, low on the edge, so it covers
+     no words */
   .sje__tab {
-    padding: 12px 8px;
-    font-size: var(--fs-2xs);
+    top: auto;
+    bottom: 76px;
+    padding: 11px 9px;
+    transform: rotate(180deg);
+  }
+
+  .sje__tab span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
   }
 
   .sje__tab i {
-    font-size: 15px;
+    font-size: 19px;
   }
 
   .sje__row {
