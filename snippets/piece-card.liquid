@@ -45,7 +45,6 @@
       {{ 'product-1' | placeholder_svg_tag: 'piece__ph' }}
     {%- endif -%}
     {%- render 'piece-badge', product: product, sale: card_sale_on, sold_out_label: sold_out_label -%}
-    <button class="piece__wish" type="button" aria-label="Save {{ product.title | escape }} to wishlist"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19.8S4.5 15.3 4.5 9.9c0-2.6 2-4.4 4.2-4.4 1.5 0 2.7.8 3.3 2 .6-1.2 1.8-2 3.3-2 2.2 0 4.2 1.8 4.2 4.4 0 5.4-7.5 9.9-7.5 9.9Z"></path></svg></button>
     {%- comment -%}
       The label the design already carries, made to work: the variant travels on
       the element and the rail's own script posts it to the cart. A piece that

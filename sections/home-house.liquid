@@ -84,13 +84,13 @@
     {%- assign cta = block.settings.cta_label -%}
     <a class="col__tile{% if cta != blank %} col__tile--shop{% endif %}" href="{{ block.settings.link | default: '/pages/shop-shrujan?c=kanchli' }}" {{ block.shopify_attributes }}>
       {%- if cta == blank -%}<span class="col__media"><img class="col__img" src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 1200 }}{% else %}{{ block.settings.fallback | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy"></span>{%- endif -%}
-      {%- if cta != blank -%}<span class="col__cap"><span class="col__kick">Shop</span><span class="col__name">{{ block.settings.name | escape }}</span><span class="col__note">{{ block.settings.note | escape }}</span><span class="col__cta">{{ cta | escape }} <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 10h14M11 4.5l5.5 5.5-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></span></span>{%- else -%}<span class="col__cap"><span class="col__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span><span class="col__name">{{ block.settings.name | escape }}</span><span class="col__go" aria-hidden="true"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 10h14M11 4.5l5.5 5.5-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></span><span class="col__note">{{ block.settings.note | escape }}</span></span>{%- endif -%}
+      {%- if cta != blank -%}<span class="col__cap"><span class="col__kick">Shop</span><span class="col__name">{{ block.settings.name | escape }}</span><span class="col__note">{{ block.settings.note | escape }}</span><span class="col__cta">{{ cta | escape }} <i class="ph-light ph-arrow-right" aria-hidden="true"></i></span></span>{%- else -%}<span class="col__cap"><span class="col__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span><span class="col__name">{{ block.settings.name | escape }}</span><span class="col__go" aria-hidden="true"><i class="ph-light ph-arrow-right" aria-hidden="true"></i></span><span class="col__note">{{ block.settings.note | escape }}</span></span>{%- endif -%}
     </a>
     {%- endfor %}
   </div>
-  <div class="idx__foot"><a class="arch__btn idx__btn" href="{{ cfg.idx_cta_link | default: '/pages/shop-shrujan' }}">{{ cfg.idx_cta_label | escape }} <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 10h14M11 4.5l5.5 5.5-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></a>
+  <div class="idx__foot"><a class="arch__btn idx__btn" href="{{ cfg.idx_cta_link | default: '/pages/shop-shrujan' }}">{{ cfg.idx_cta_label | escape }} <i class="ph-light ph-arrow-right" aria-hidden="true"></i></a>
     {%- if cfg.house_show_strip and section.settings.strip_label != blank -%}
-    <a class="idx__more" href="{{ cfg.idx_more_link | default: '/pages/shop-shrujan?c=bags' }}">{{ section.settings.strip_label | escape }} <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 10h14M11 4.5l5.5 5.5-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></a>
+    <a class="idx__more" href="{{ cfg.idx_more_link | default: '/pages/shop-shrujan?c=bags' }}">{{ section.settings.strip_label | escape }} <i class="ph-light ph-arrow-right" aria-hidden="true"></i></a>
     {%- endif -%}
   </div>
   <div class="col__cursor" aria-hidden="true">View</div>
@@ -456,7 +456,7 @@
         {
           "type": "text",
           "id": "cta_label",
-          "label": "Link label (makes it a wide shop tile, e.g. Explore Collection)",
+          "label": "Link label (a wide shop tile, e.g. Explore Collection)",
           "info": "Leave empty for a collection tile. Shrujan Classic and Raahi use it."
         }
       ]

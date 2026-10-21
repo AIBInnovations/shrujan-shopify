@@ -120,7 +120,7 @@
           {%- endfor %}
         </ul>
 
-        <a class="arrow-link way__cta" href="{{ block.settings.cta_link | escape }}">{{ block.settings.cta_label | escape }} <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
+        <a class="arrow-link way__cta" href="{{ block.settings.cta_link | escape }}">{{ block.settings.cta_label | escape }} <i class="ph-light ph-arrow-right" style="font-size:15px" aria-hidden="true"></i></a>
       </div>
     </article>
     {%- endif -%}
@@ -154,7 +154,7 @@
         <span class="stop__name">{{ block.settings.name }}</span>
         <span class="stop__copy">{{ block.settings.copy | escape }}</span>
 
-        <span class="stop__go">{{ block.settings.go_label | escape }} <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
+        <span class="stop__go">{{ block.settings.go_label | escape }} <i class="ph-light ph-arrow-right" style="font-size:14px" aria-hidden="true"></i></span>
       </a>
       {%- else %}
       <article class="stop" {{ block.shopify_attributes }}>
@@ -200,7 +200,7 @@
         {%- if section.settings.show_invite %}
         <div class="plan__invite" data-reveal>
           <p class="plan__invite-copy">{{ section.settings.invite_copy | escape }}</p>
-          <a class="btn btn--ghost plan__invite-cta" href="{{ section.settings.invite_cta_link | escape }}">{{ section.settings.invite_cta_label | escape }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
+          <a class="btn btn--ghost plan__invite-cta" href="{{ section.settings.invite_cta_link | escape }}">{{ section.settings.invite_cta_label | escape }} <i class="ph-light ph-arrow-right" style="font-size:16px" aria-hidden="true"></i></a>
         </div>
         {%- endif %}
       </div>
@@ -221,7 +221,7 @@
         </dl>
         {%- endif %}
 
-        <a class="btn plan__cta" href="{{ section.settings.aside_cta_link | escape }}">{{ section.settings.aside_cta_label | escape }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
+        <a class="btn plan__cta" href="{{ section.settings.aside_cta_link | escape }}">{{ section.settings.aside_cta_label | escape }} <i class="ph-light ph-arrow-right" style="font-size:16px" aria-hidden="true"></i></a>
       </aside>
     </div>
   </section>

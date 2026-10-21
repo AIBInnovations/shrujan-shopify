@@ -336,7 +336,7 @@
     {%- assign journey_total = tl_n | append: '' -%}
     {%- assign journey_more = section.settings.journey_more_label | replace: '[count]', journey_total | replace: '[more]', journey_hidden %}
   <div class="journey__more" data-reveal>
-    <button type="button" class="btn btn--ghost" aria-expanded="false" aria-controls="journey-list" data-journey-toggle data-label-more="{{ journey_more | escape }}" data-label-less="{{ section.settings.journey_less_label | escape }}"><span data-journey-label>{{ journey_more | escape }}</span> <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v15"></path><path d="m6.5 13.5 5.5 5.5 5.5-5.5"></path></svg></button>
+    <button type="button" class="btn btn--ghost" aria-expanded="false" aria-controls="journey-list" data-journey-toggle data-label-more="{{ journey_more | escape }}" data-label-less="{{ section.settings.journey_less_label | escape }}"><span data-journey-label>{{ journey_more | escape }}</span> <i class="ph-light ph-arrow-down" style="font-size:16px" aria-hidden="true"></i></button>
   </div>
   {%- endif %}
 </section>
@@ -615,7 +615,7 @@
 
   {%- if section.settings.show_cta %}
   <div class="curated__more" data-reveal>
-    <a class="btn btn--ghost" href="{{ section.settings.cta_url | default: '/pages/lldc' }}">{{ section.settings.cta_label | escape }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
+    <a class="btn btn--ghost" href="{{ section.settings.cta_url | default: '/pages/lldc' }}">{{ section.settings.cta_label | escape }} <i class="ph-light ph-arrow-right" style="font-size:16px" aria-hidden="true"></i></a>
   </div>
   {%- endif %}
 </section>
@@ -636,9 +636,9 @@
   /* ---- Lightbox (port of components/Lightbox.jsx) ----
      `items` is [{ src, alt, caption }]; `index` is the open frame, or -1 closed. */
 
-  var ICON_CLOSE = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg>';
-  var ICON_PREV = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5 8 12l6.5 6.5"></path></svg>';
-  var ICON_NEXT = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9.5 5.5 6.5 6.5-6.5 6.5"></path></svg>';
+  var ICON_CLOSE = '<i class="ph-light ph-x" style="font-size:20px" aria-hidden="true"></i>';
+  var ICON_PREV = '<i class="ph-light ph-caret-left" style="font-size:20px" aria-hidden="true"></i>';
+  var ICON_NEXT = '<i class="ph-light ph-caret-right" style="font-size:20px" aria-hidden="true"></i>';
 
   var lbItems = [];
   var lbIndex = -1;

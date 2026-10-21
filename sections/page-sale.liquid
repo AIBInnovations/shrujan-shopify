@@ -1,0 +1,177 @@
+{%- comment -%}
+  The Sale (/pages/sale). In the default page template beside the other
+  designed pages; it draws only on its own page. The pieces are the sale
+  collection's (set below; today "sale-july-2026", every piece marked down),
+  shown in the collection page's own hero and cards, with chips that filter
+  them in place by the collections each piece also belongs to (tops, pants,
+  dresses). The hero's promises say plainly that sale pieces are final, as
+  the store's exchange policy does.
+{%- endcomment -%}
+{%- if section.settings.only_handle == blank or page.handle == section.settings.only_handle -%}
+{%- render 'section-design', section: section -%}
+{%- liquid
+  assign s = section.settings
+  assign sale = collections[s.collection]
+  assign total = sale.products_count | default: 0
+
+  comment
+    The biggest markdown in the sale, for the hero's first promise, and the
+    first three pictures, for its mosaic.
+  endcomment
+  assign best = 0
+  assign shot_n = 0
+  for p in sale.products limit: 50
+    if p.compare_at_price > p.price
+      assign off = p.compare_at_price | minus: p.price | times: 100 | divided_by: p.compare_at_price
+      if off > best
+        assign best = off
+      endif
+    endif
+    if p.featured_image and shot_n < 3
+      assign shot_n = shot_n | plus: 1
+    endif
+  endfor
+
+  assign chips = s.chips | split: ','
+-%}
+<section class="ch" aria-labelledby="sale-title-{{ section.id }}">
+  <div class="ch__main">
+    <div class="ch__text" data-reveal>
+      <nav class="ch__crumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><i class="ph-light ph-caret-right" aria-hidden="true"></i><span aria-current="page">{{ s.title }}</span></nav>
+      {%- if s.eyebrow != blank -%}<p class="ch__eyebrow">{{ s.eyebrow }}</p>{%- endif -%}
+      <h1 class="ch__title" id="sale-title-{{ section.id }}">{{ s.title }}{% if s.title_2 != blank %} <em>{{ s.title_2 }}</em>{% endif %}</h1>
+      {%- if s.lede != blank -%}<p class="ch__lede">{{ s.lede }}</p>{%- endif -%}
+      <p class="ch__meta"><span><i class="ph-light ph-squares-four" aria-hidden="true"></i>{{ total }} {{ s.count_word }}</span>{% if best > 0 %}<span><i class="ph-light ph-tag" aria-hidden="true"></i>{{ s.best_prefix }} {{ best }}% off</span>{% endif %}</p>
+      <div class="ch__actions"><a class="ch__btn" href="#pieces">{{ s.cta }} <i class="ph-light ph-arrow-down" aria-hidden="true"></i></a></div>
+    </div>
+    {%- if shot_n > 0 -%}
+    <div class="ch__media{% if shot_n < 3 %} ch__media--one{% endif %}" data-reveal>
+      {%- assign shown = 0 -%}
+      {%- for p in sale.products limit: 12 -%}
+        {%- if p.featured_image and shown < 3 -%}
+          {%- if shot_n < 3 and shown > 0 -%}{%- break -%}{%- endif -%}
+          <figure class="ch__shot"><img src="{{ p.featured_image | image_url: width: 1200 }}" alt="{{ p.featured_image.alt | default: p.title | escape }}"{% if shown == 0 %} fetchpriority="high"{% else %} loading="lazy"{% endif %}></figure>
+          {%- assign shown = shown | plus: 1 -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+    {%- endif -%}
+  </div>
+  <ul class="ch__promises">
+    <li class="ch__promise"><i class="ph-light ph-tag" aria-hidden="true"></i><div><b>{{ s.promise1_title }}</b><span>{{ s.promise1_text }}</span></div></li>
+    <li class="ch__promise"><i class="ph-light ph-truck" aria-hidden="true"></i><div><b>{{ s.promise2_title }}</b><span>{{ s.promise2_text }}</span></div></li>
+    <li class="ch__promise"><i class="ph-light ph-info" aria-hidden="true"></i><div><b>{{ s.promise3_title }}</b><span>{{ s.promise3_text }}</span></div></li>
+    <li class="ch__promise"><i class="ph-light ph-hand" aria-hidden="true"></i><div><b>{{ s.promise4_title }}</b><span>{{ s.promise4_text }}</span></div></li>
+  </ul>
+</section>
+
+{%- paginate sale.products by 50 -%}
+<div class="container ch-grid-anchor" id="pieces" data-sale>
+  {%- if total > 0 -%}
+    <div class="ch-chips" role="group" aria-label="{{ s.chips_label | escape }}">
+      <button class="ch-chip" type="button" aria-pressed="true" data-kind="">{{ s.all_label }} <b>{{ total }}</b></button>
+      {%- for chip in chips -%}
+        {%- assign parts = chip | split: '|' -%}
+        {%- assign c_label = parts[0] | strip -%}
+        {%- assign c_handle = parts[1] | strip -%}
+        {%- assign c_n = 0 -%}
+        {%- for p in sale.products limit: 250 -%}
+          {%- for pc in p.collections -%}{%- if pc.handle == c_handle -%}{%- assign c_n = c_n | plus: 1 -%}{%- break -%}{%- endif -%}{%- endfor -%}
+        {%- endfor -%}
+        {%- if c_n > 0 -%}
+          <button class="ch-chip" type="button" aria-pressed="false" data-kind="{{ c_handle | escape }}">{{ c_label }} <b>{{ c_n }}</b></button>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    <div class="store-grid" data-reveal-child>
+      {%- for product in sale.products limit: 250 -%}
+        {%- capture kinds -%}{% for pc in product.collections %} {{ pc.handle }}{% endfor %} {%- endcapture -%}
+        <a class="piece shop-piece" href="{{ product.url }}" data-kinds="{{ kinds | strip | escape }}" style="--tint: {% cycle 'tint': 'var(--ivory-2)', 'var(--gerua-100)', 'var(--mehendi-200)', 'var(--sand)' %}">
+          <div class="piece__media">
+            {%- if product.featured_image -%}
+              <img src="{{ product.featured_image | image_url: width: 900 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy">
+            {%- else -%}
+              {{ 'product-1' | placeholder_svg_tag: 'piece__ph' }}
+            {%- endif -%}
+            {%- render 'piece-badge', product: product, show: true, sale: true, sold_out_label: 'Sold out' -%}
+          </div>
+          <div class="piece__info">
+            <p class="piece__name">{{ product.title }}</p>
+            <p class="piece__price">{{ product.price | money | strip_html }}{% if product.compare_at_price > product.price %}<span>{{ product.compare_at_price | money | strip_html }}</span>{% endif %}</p>
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+    {%- if paginate.pages > 1 -%}
+      <nav class="store-pager" aria-label="Pages">
+        {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}#pieces" rel="prev" aria-label="Previous page">&#8249;</a>{%- endif -%}
+        <span aria-current="page">{{ paginate.current_page }} / {{ paginate.pages }}</span>
+        {%- if paginate.next -%}<a href="{{ paginate.next.url }}#pieces" rel="next" aria-label="Next page">&#8250;</a>{%- endif -%}
+      </nav>
+    {%- endif -%}
+  {%- else -%}
+    <div class="store-empty" data-reveal>
+      <h2 class="store-empty__title">{{ s.empty_title }}</h2>
+      <p class="store-empty__copy">{{ s.empty_copy }}</p>
+      <div class="store-empty__actions"><a class="store-btn" href="{{ routes.all_products_collection_url }}">{{ s.empty_link_label }} <i class="ph-light ph-arrow-right" aria-hidden="true"></i></a></div>
+    </div>
+  {%- endif -%}
+</div>
+{%- endpaginate -%}
+
+<script>
+(function () {
+  var root = document.querySelector('[data-sale]');
+  if (!root || root.__sale) return;
+  root.__sale = true;
+  /* the chips show the pieces of one kind, in place; "All" shows them all */
+  root.addEventListener('click', function (e) {
+    var chip = e.target.closest('.ch-chip');
+    if (!chip) return;
+    var kind = chip.getAttribute('data-kind');
+    root.querySelectorAll('.ch-chip').forEach(function (c) { c.setAttribute('aria-pressed', c === chip ? 'true' : 'false'); });
+    root.querySelectorAll('.store-grid .piece').forEach(function (p) {
+      var kinds = ' ' + (p.getAttribute('data-kinds') || '') + ' ';
+      p.hidden = !!kind && kinds.indexOf(' ' + kind + ' ') < 0;
+    });
+  });
+})();
+</script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Page — The Sale",
+  "settings": [
+    { "type": "text", "id": "only_handle", "label": "Page handle", "info": "The section draws only on this page.", "default": "sale" },
+    { "type": "text", "id": "collection", "label": "Sale collection (handle)", "default": "sale-july-2026" },
+    { "type": "header", "content": "Hero" },
+    { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "Tops, dresses and pants" },
+    { "type": "text", "id": "title", "label": "Title", "default": "The Sale" },
+    { "type": "text", "id": "title_2", "label": "Title, words in red", "default": "is on" },
+    { "type": "textarea", "id": "lede", "label": "Line under the title", "default": "Tops, pants and dresses from the Shrujan studio, made by hand in Kutch and marked down while they last." },
+    { "type": "text", "id": "count_word", "label": "Word after the count", "default": "pieces" },
+    { "type": "text", "id": "best_prefix", "label": "Before the biggest markdown", "default": "Up to" },
+    { "type": "text", "id": "cta", "label": "Button", "default": "See the pieces" },
+    { "type": "header", "content": "Promises" },
+    { "type": "text", "id": "promise1_title", "label": "Promise 1 (tag icon)", "default": "Marked down" },
+    { "type": "text", "id": "promise1_text", "label": "Promise 1 line", "default": "Prices as marked, while stocks last" },
+    { "type": "text", "id": "promise2_title", "label": "Promise 2 (truck icon)", "default": "Free shipping" },
+    { "type": "text", "id": "promise2_text", "label": "Promise 2 line", "default": "On every order within India" },
+    { "type": "text", "id": "promise3_title", "label": "Promise 3 (info icon)", "default": "Final sale" },
+    { "type": "text", "id": "promise3_text", "label": "Promise 3 line", "default": "Sale pieces can’t be returned or exchanged" },
+    { "type": "text", "id": "promise4_title", "label": "Promise 4 (hand icon)", "default": "Made by hand" },
+    { "type": "text", "id": "promise4_text", "label": "Promise 4 line", "default": "By craftswomen across Kutch" },
+    { "type": "header", "content": "Filters" },
+    { "type": "text", "id": "chips_label", "label": "Filter group name (for screen readers)", "default": "Show" },
+    { "type": "text", "id": "all_label", "label": "All chip", "default": "All" },
+    { "type": "text", "id": "chips", "label": "Chips (Label|collection handle, comma separated)", "default": "Tops|top, Pants|pant, Dresses|dresses" },
+    { "type": "header", "content": "When the sale is over" },
+    { "type": "text", "id": "empty_title", "label": "Title", "default": "The sale has ended" },
+    { "type": "text", "id": "empty_copy", "label": "Line", "default": "Thank you for shopping it. The full collection is always here." },
+    { "type": "text", "id": "empty_link_label", "label": "Link label", "default": "Shop everything" }
+  ],
+  "presets": [ { "name": "Page — The Sale" } ]
+}
+{% endschema %}

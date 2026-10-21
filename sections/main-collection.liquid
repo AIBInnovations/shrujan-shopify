@@ -114,24 +114,71 @@
   </style>
 {%- endif -%}
 <div class="page">
-  <header class="container store-head" data-reveal>
-    {%- if cfg.eyebrow != blank -%}
-      <p class="store-head__eyebrow">{{ cfg.eyebrow }}</p>
+  {%- liquid
+    comment
+      The hero: one screen, words on the left, the collection's pictures on the
+      right (its own image, or else its first three pieces as a little mosaic),
+      the promises along the foot. The line under the title is the section's
+      lede, or else the start of the collection's description.
+    endcomment
+    assign hero_desc = cfg.lede
+    if hero_desc == blank and cfg.show_description and collection.description != blank
+      assign hero_desc = collection.description | strip_html | truncatewords: 34
+    endif
+    assign shot_n = 0
+    if collection.image
+      assign shot_n = 1
+    else
+      for p in collection.products limit: 3
+        if p.featured_image
+          assign shot_n = shot_n | plus: 1
+        endif
+      endfor
+    endif
+    assign promise_icons = 'truck,hand,arrows-counter-clockwise,headset' | split: ','
+  -%}
+  <section class="ch" aria-labelledby="ch-title-{{ section.id }}">
+    <div class="ch__main">
+      <div class="ch__text" data-reveal>
+        <nav class="ch__crumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><i class="ph-light ph-caret-right" aria-hidden="true"></i><a href="{{ routes.all_products_collection_url }}">Shop</a><i class="ph-light ph-caret-right" aria-hidden="true"></i><span aria-current="page">{{ head_title }}</span></nav>
+        {%- if cfg.eyebrow != blank -%}<p class="ch__eyebrow">{{ cfg.eyebrow }}</p>{%- endif -%}
+        <h1 class="ch__title" id="ch-title-{{ section.id }}">{{ head_title }}</h1>
+        {%- if hero_desc != blank -%}<p class="ch__lede">{{ hero_desc }}</p>{%- endif -%}
+        <p class="ch__meta">{% if cfg.show_count %}<span><i class="ph-light ph-squares-four" aria-hidden="true"></i>{{ count }} {{ count_word }}</span>{% endif %}<span><i class="ph-light ph-hand" aria-hidden="true"></i>{{ cfg.hero_note }}</span></p>
+        <div class="ch__actions"><a class="ch__btn" href="#pieces">{{ cfg.hero_cta }} <i class="ph-light ph-arrow-down" aria-hidden="true"></i></a>{% if cfg.hero_cta_2 != blank %}<a class="ch__btn ch__btn--quiet" href="#enquire" data-enquire="Custom pieces">{{ cfg.hero_cta_2 }}</a>{% endif %}</div>
+      </div>
+      {%- if cfg.show_hero_images and shot_n > 0 -%}
+      <div class="ch__media{% if shot_n < 3 %} ch__media--one{% endif %}" data-reveal>
+        {%- if collection.image -%}
+          <figure class="ch__shot"><img src="{{ collection.image | image_url: width: 1600 }}" alt="{{ collection.image.alt | default: head_title | escape }}" fetchpriority="high"></figure>
+        {%- else -%}
+          {%- assign shown = 0 -%}
+          {%- for p in collection.products limit: 3 -%}
+            {%- if p.featured_image and shown < shot_n -%}
+              {%- if shot_n < 3 and shown > 0 -%}{%- break -%}{%- endif -%}
+              <figure class="ch__shot"><img src="{{ p.featured_image | image_url: width: 1200 }}" alt="{{ p.featured_image.alt | default: p.title | escape }}"{% if forloop.first %} fetchpriority="high"{% else %} loading="lazy"{% endif %}></figure>
+              {%- assign shown = shown | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+      {%- endif -%}
+    </div>
+    {%- if cfg.show_promises -%}
+    <ul class="ch__promises">
+      {%- for icon_name in promise_icons -%}
+        {%- assign pk_t = 'promise' | append: forloop.index | append: '_title' -%}
+        {%- assign pk_x = 'promise' | append: forloop.index | append: '_text' -%}
+        {%- if cfg[pk_t] != blank -%}
+        <li class="ch__promise"><i class="ph-light ph-{{ icon_name }}" aria-hidden="true"></i><div><b>{{ cfg[pk_t] }}</b><span>{{ cfg[pk_x] }}</span></div></li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
     {%- endif -%}
-    <h1 class="store-head__title">{{ head_title }}</h1>
-    {%- if cfg.lede != blank -%}
-      <p class="store-head__lede">{{ cfg.lede }}</p>
-    {%- endif -%}
-    {%- if cfg.show_description and collection.description != blank -%}
-      <div class="store-head__lede store-head__rte">{{ collection.description }}</div>
-    {%- endif -%}
-    {%- if cfg.show_count -%}
-      <p class="store-head__count">{{ count }} {{ count_word }}</p>
-    {%- endif -%}
-  </header>
+  </section>
 
   {%- paginate collection.products by section.settings.per_page -%}
-  <div class="container">
+  <div class="container ch-grid-anchor" id="pieces">
     {%- if show_filters or show_sort -%}
       <div class="store-bar" data-reveal>
         {%- if show_filters -%}
@@ -219,7 +266,6 @@
               {%- endif -%}
               {%- render 'piece-badge', product: product, show: cfg.card_badge, sale: cfg.card_sale_badge, sold_out_label: cfg.sold_out_label -%}
               {%- if cfg.card_wish -%}
-                <button class="piece__wish" type="button" aria-pressed="false" aria-label="{{ cfg.wish_label }}: {{ product.title | escape }}"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19.8S4.5 15.3 4.5 9.9c0-2.6 2-4.4 4.2-4.4 1.5 0 2.7.8 3.3 2 .6-1.2 1.8-2 3.3-2 2.2 0 4.2 1.8 4.2 4.4 0 5.4-7.5 9.9-7.5 9.9Z"></path></svg></button>
               {%- endif -%}
               {%- if cfg.card_quick and product.available -%}
                 <span class="piece__quick" data-variant="{{ product.selected_or_first_available_variant.id }}">{{ cfg.quick_label }}</span>
@@ -280,7 +326,7 @@
             <a class="store-btn store-btn--quiet" href="{{ collection.url }}" rel="nofollow">{{ cfg.filters_clear_label }}</a>
           {%- endif -%}
           <a class="store-btn" href="{{ cfg.empty_link | default: '/collections/all' }}">{{ cfg.empty_link_label }}
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
+            <i class="ph-light ph-arrow-right" style="font-size:16px" aria-hidden="true"></i>
           </a>
         </div>
       </div>
@@ -357,6 +403,88 @@
       "id": "lede",
       "label": "Intro copy",
       "info": "Shown above the collection description. Leave empty to show only the description."
+    },
+    {
+      "type": "header",
+      "content": "Hero"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_hero_images",
+      "label": "Show the pictures",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "hero_note",
+      "label": "Note beside the count",
+      "default": "Handmade in Kutch"
+    },
+    {
+      "type": "text",
+      "id": "hero_cta",
+      "label": "Button",
+      "default": "See the pieces"
+    },
+    {
+      "type": "text",
+      "id": "hero_cta_2",
+      "label": "Second button (opens Enquire)",
+      "default": "Ask about a custom piece"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_promises",
+      "label": "Show the promises",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "promise1_title",
+      "label": "Promise 1 (truck icon)",
+      "default": "Free shipping"
+    },
+    {
+      "type": "text",
+      "id": "promise1_text",
+      "label": "Promise 1 line",
+      "default": "On every order within India"
+    },
+    {
+      "type": "text",
+      "id": "promise2_title",
+      "label": "Promise 2 (hand icon)",
+      "default": "Made by hand"
+    },
+    {
+      "type": "text",
+      "id": "promise2_text",
+      "label": "Promise 2 line",
+      "default": "By craftswomen across Kutch"
+    },
+    {
+      "type": "text",
+      "id": "promise3_title",
+      "label": "Promise 3 (exchange icon)",
+      "default": "7-day exchange"
+    },
+    {
+      "type": "text",
+      "id": "promise3_text",
+      "label": "Promise 3 line",
+      "default": "For a credit note, within India"
+    },
+    {
+      "type": "text",
+      "id": "promise4_title",
+      "label": "Promise 4 (help icon)",
+      "default": "Personal help"
+    },
+    {
+      "type": "text",
+      "id": "promise4_text",
+      "label": "Promise 4 line",
+      "default": "Mon–Sat, 10 AM to 7 PM IST"
     },
     {
       "type": "checkbox",

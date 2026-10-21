@@ -14,11 +14,17 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const root = document.querySelector('.craft3d');
 if (root) {
-  // built at once, behind the loader, which waits for it, so the section is
-  // ready the moment the page opens; if anything fails the loader is let go
+  // built once the page has opened, in the browser's idle time, so the
+  // loader and the hero never stutter while the cloths are drawn and the
+  // shaders compiled; the section is far enough down to be ready by the
+  // time anyone scrolls to it (and starts at once if it is already near)
   const fail = (e) => { console.error(e); window.__sjCraftReady = true; document.dispatchEvent(new CustomEvent('sj:craft-ready')); };
-  const go = () => { try { init().catch(fail); } catch (e) { fail(e); } };
-  if (window.requestIdleCallback) requestIdleCallback(go, { timeout: 200 }); else setTimeout(go, 0);
+  let started = false;
+  const go = () => { if (started) return; started = true; try { init().catch(fail); } catch (e) { fail(e); } };
+  const soon = () => { if (window.requestIdleCallback) requestIdleCallback(go, { timeout: 1500 }); else setTimeout(go, 300); };
+  new IntersectionObserver((e, io) => { if (e[0].isIntersecting) { io.disconnect(); go(); } }, { rootMargin: '60% 0px' }).observe(root);
+  if (window.__sjRevealed || !document.querySelector('.sj-loader')) soon();
+  else document.addEventListener('sj:revealed', () => setTimeout(soon, 500), { once: true });
 }
 
 // phones build the sculpted shapes a little coarser: quicker to make and to draw

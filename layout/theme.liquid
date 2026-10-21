@@ -1,7 +1,11 @@
 <!doctype html>
-<html lang="en"{% if template.name == 'index' %} class="sj-pre sj-hero-full"{% endif %}>
+<html lang="en"{% if template.name == 'index' %} class="sj-pre"{% endif %}>
   <head>
     <meta charset="UTF-8">
+    {%- if template.name == 'index' %}
+    {%- comment -%} The loader once a visit: a reload or a return to the home page opens straight onto the hero (assets/sj-home.js reads the class). {%- endcomment %}
+    <script>(function(){var h=document.documentElement;try{if(sessionStorage.getItem('sj-seen')){h.classList.add('sj-skip');h.classList.remove('sj-pre');}else{sessionStorage.setItem('sj-seen','1');}}catch(e){}})();</script>
+    {%- endif %}
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M32 6 L44 32 L32 58 L20 32 Z' fill='%23B05C3B'/%3E%3Cpath d='M32 20 L38 32 L32 44 L26 32 Z' fill='%23F5F1E6'/%3E%3C/svg%3E">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {%- comment -%}
@@ -81,6 +85,9 @@
     {%- endcase -%}
     {%- if font_display == blank -%}{%- assign font_display = font_serif -%}{%- endif -%}
     <link href="https://fonts.googleapis.com/css2?{{ font_families }}&display=swap" rel="stylesheet">
+    {%- comment -%} the interface icons: the Phosphor set, light weight (awwwards-preview/icons.py swaps the hand-drawn ones) {%- endcomment %}
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/light/style.css">
     <link rel="stylesheet" href="{{ 'shrujan-global.css' | asset_url }}">
     <link rel="stylesheet" href="{{ 'shrujan-pages.css' | asset_url }}">
     {%- comment -%} commerce pages (collection, cart, search, blog, account) {%- endcomment -%}
@@ -191,12 +198,14 @@
     {%- endcomment %}
     <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
     {%- comment -%} If sj-home.js never lets the page go (blocked, failed), it lets itself go after 14 seconds (the loader's own limit is 9); without JavaScript there is no loader at all. {%- endcomment %}
-    <script>setTimeout(function(){if(window.__sjRevealed)return;var h=document.documentElement;h.classList.remove('sj-pre','sj-hero-full');var l=document.querySelector('.sj-loader');if(l)l.remove();if(window.Shrujan&&window.Shrujan.startScroll)window.Shrujan.startScroll();window.__sjRevealed=true;document.dispatchEvent(new CustomEvent('sj:revealed'));},14000);</script>
+    <script>setTimeout(function(){if(window.__sjRevealed)return;var h=document.documentElement;h.classList.remove('sj-pre');var l=document.querySelector('.sj-loader');if(l)l.remove();if(window.Shrujan&&window.Shrujan.startScroll)window.Shrujan.startScroll();window.__sjRevealed=true;document.dispatchEvent(new CustomEvent('sj:revealed'));},14000);</script>
     <noscript><style>.sj-loader{display:none!important}html.sj-pre,html.sj-pre body{overflow:visible!important}html.sj-pre .dh__content,html.sj-pre .dh__strip,html.sj-pre .site-header,html.sj-pre .offer-bar{opacity:1!important}</style></noscript>
     {%- endif %}
     {{ content_for_header }}
     {%- comment -%} the site's colours and beige ground, on every page (awwwards-preview/src/site.css) {%- endcomment %}
     <link rel="stylesheet" href="{{ 'sj-site.css' | asset_url }}">
+    {%- comment -%} the search overlay, the helpdesk and the Enquire tab, on every page (awwwards-preview/src/ui.css, ui.js) {%- endcomment %}
+    <link rel="stylesheet" href="{{ 'sj-ui.css' | asset_url }}">
     {%- if template.name == 'index' %}
     <link rel="stylesheet" href="{{ 'sj-home.css' | asset_url }}">
     {%- endif %}
@@ -208,6 +217,7 @@
       <main>{{ content_for_layout }}</main>
       {% sections 'footer-group' %}
     </div>
+    <script src="{{ 'sj-ui.js' | asset_url }}" defer></script>
     {%- if template.name == 'index' %}
     <script src="{{ 'sj-home.js' | asset_url }}"></script>
     <script type="module" src="{{ 'sj-craft3d.js' | asset_url }}"></script>

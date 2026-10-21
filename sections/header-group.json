@@ -18,7 +18,10 @@
     "header": {
       "type": "shrujan-header",
       "settings": {
-        "sticky_mode": "never"
+        "sticky_mode": "never",
+        "show_topbar": false,
+        "show_wishlist": false,
+        "utility_style": "icon"
       }
     }
   },

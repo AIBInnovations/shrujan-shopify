@@ -76,7 +76,7 @@
         <form class="fletters__form" data-success-text="{{ section.settings.nl_success | escape }}">
           <input type="email" required placeholder="{{ section.settings.nl_placeholder | escape }}" aria-label="Email address">
           <button type="submit">
-            {{ section.settings.nl_button }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg>
+            {{ section.settings.nl_button }} <i class="ph-light ph-arrow-right" style="font-size:16px" aria-hidden="true"></i>
           </button>
         </form>
       </div>
@@ -92,21 +92,13 @@
         {%- if f.show_socials %}
         <div class="footer__socials">
           <a class="footer__social" href="{{ section.settings.social_instagram | default: 'https://www.instagram.com/shrujanindia/' | escape }}" aria-label="Instagram" target="_blank" rel="noreferrer noopener">
-            <svg viewBox="0 0 24 24" width="{{ f.social_size }}" height="{{ f.social_size }}" fill="none" stroke="currentColor" stroke-width="1.6">
-              <rect x="3.5" y="3.5" width="17" height="17" rx="5"></rect>
-              <circle cx="12" cy="12" r="3.9"></circle>
-              <circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"></circle>
-            </svg>
+            <i class="ph-light ph-instagram-logo" aria-hidden="true"></i>
           </a>
           <a class="footer__social" href="{{ section.settings.social_facebook | default: 'https://www.facebook.com/shrujanindia' | escape }}" aria-label="Facebook" target="_blank" rel="noreferrer noopener">
-            <svg viewBox="0 0 24 24" width="{{ f.social_size }}" height="{{ f.social_size }}" fill="currentColor">
-              <path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.25-1.5 1.55-1.5h1.65V3.6c-.3 0-1.3-.1-2.45-.1-2.4 0-4.05 1.5-4.05 4.2v2.2H7.5V13h2.7v8Z"></path>
-            </svg>
+            <i class="ph-light ph-facebook-logo" aria-hidden="true"></i>
           </a>
           <a class="footer__social" href="{{ section.settings.social_pinterest | default: 'https://www.pinterest.com/shrujancreations/' | escape }}" aria-label="Pinterest" target="_blank" rel="noreferrer noopener">
-            <svg viewBox="0 0 24 24" width="{{ f.social_size }}" height="{{ f.social_size }}" fill="currentColor">
-              <path d="M12 3a9 9 0 0 0-3.3 17.36c-.08-.72-.15-1.83.03-2.62.16-.7 1.06-4.5 1.06-4.5s-.27-.54-.27-1.34c0-1.26.73-2.2 1.63-2.2.77 0 1.14.58 1.14 1.27 0 .78-.49 1.94-.75 3.02-.21.9.46 1.64 1.35 1.64 1.62 0 2.87-1.71 2.87-4.18 0-2.19-1.57-3.72-3.82-3.72-2.6 0-4.13 1.95-4.13 3.97 0 .79.3 1.63.68 2.09.08.09.09.17.06.26l-.25 1.02c-.4.17-.13.2-.3.12-1.11-.52-1.8-2.14-1.8-3.44 0-2.8 2.03-5.37 5.87-5.37 3.08 0 5.47 2.2 5.47 5.13 0 3.06-1.93 5.52-4.6 5.52-.9 0-1.75-.47-2.04-1.02l-.55 2.12c-.2.77-.74 1.73-1.1 2.32A9 9 0 1 0 12 3Z"></path>
-            </svg>
+            <i class="ph-light ph-pinterest-logo" aria-hidden="true"></i>
           </a>
         </div>
         {%- endif %}
@@ -116,7 +108,7 @@
     {%- if f.show_sitemap %}
     <nav class="fmap" aria-label="Footer">
       <div class="fmap__col">
-        <button class="fmap__group" type="button" aria-expanded="false">Explore <svg class="fmap__chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9.5 6 6 6-6"></path></svg></button>
+        <button class="fmap__group" type="button" aria-expanded="false">Explore <i class="ph-light ph-caret-down fmap__chev" style="font-size:13px" aria-hidden="true"></i></button>
         <ul>
           <li><a href="/pages/the-shrujan-story">The Shrujan Story</a></li>
           <li><a href="/pages/the-shrujan-story#origins">Origins</a></li>
@@ -126,7 +118,7 @@
         </ul>
       </div>
       <div class="fmap__col">
-        <button class="fmap__group" type="button" aria-expanded="false">Shop <svg class="fmap__chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9.5 6 6 6-6"></path></svg></button>
+        <button class="fmap__group" type="button" aria-expanded="false">Shop <i class="ph-light ph-caret-down fmap__chev" style="font-size:13px" aria-hidden="true"></i></button>
         <ul>
           <li><a href="/pages/shop-shrujan">All of Shrujan</a></li>
           <li><a href="/pages/shop-shrujan?c=hand-bag">Bags</a></li>
@@ -137,7 +129,7 @@
         </ul>
       </div>
       <div class="fmap__col">
-        <button class="fmap__group" type="button" aria-expanded="false">Studio <svg class="fmap__chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9.5 6 6 6-6"></path></svg></button>
+        <button class="fmap__group" type="button" aria-expanded="false">Studio <i class="ph-light ph-caret-down fmap__chev" style="font-size:13px" aria-hidden="true"></i></button>
         <ul>
           <li><a href="/pages/studio-collection">Studio Collection</a></li>
           <li><a href="/pages/studio-heritage">Heritage</a></li>
@@ -146,7 +138,7 @@
         </ul>
       </div>
       <div class="fmap__col">
-        <button class="fmap__group" type="button" aria-expanded="false">Visit &amp; Help <svg class="fmap__chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9.5 6 6 6-6"></path></svg></button>
+        <button class="fmap__group" type="button" aria-expanded="false">Visit &amp; Help <i class="ph-light ph-caret-down fmap__chev" style="font-size:13px" aria-hidden="true"></i></button>
         <ul>
           <li><a href="/pages/video">Craft Traditions of Kutch</a></li>
           <li><a href="/pages/lldc">Living &amp; Learning Design Centre</a></li>
@@ -156,7 +148,7 @@
       </div>
 
       <div class="fmap__col">
-        <button class="fmap__group" type="button" aria-expanded="false">Reach us <svg class="fmap__chev" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9.5 6 6 6-6"></path></svg></button>
+        <button class="fmap__group" type="button" aria-expanded="false">Reach us <i class="ph-light ph-caret-down fmap__chev" style="font-size:13px" aria-hidden="true"></i></button>
         <ul class="freach">
           <li>
             <span class="freach__label">Write to us</span>

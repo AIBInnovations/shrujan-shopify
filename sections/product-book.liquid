@@ -31,7 +31,7 @@
         {%- endfor -%}
       </ul>
       {%- if s.hours != blank %}<p class="pdpx-book__hours">{{ s.hours | escape }}</p>{% endif -%}
-      {%- if s.booking_url != blank %}<a class="pdpx__link" href="{{ s.booking_url | escape }}" target="_blank" rel="noopener">{{ s.booking_label | escape }} <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 10h14M11 4.5l5.5 5.5-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></a>{% endif -%}
+      {%- if s.booking_url != blank %}<a class="pdpx__link" href="{{ s.booking_url | escape }}" target="_blank" rel="noopener">{{ s.booking_label | escape }} <i class="ph-light ph-arrow-right" aria-hidden="true"></i></a>{% endif -%}
     </div>
 
     <div class="pdpx-book__card" data-pdpx-book data-whatsapp="{{ s.whatsapp | remove: '+' | remove: ' ' }}">
@@ -83,7 +83,7 @@
           <div class="pdpx-book__actions">
             <button type="submit" class="btn pdpx-book__send">{{ s.send_label | escape }}</button>
             {%- if s.whatsapp != blank -%}
-              <a class="pdpx-book__wa" href="https://api.whatsapp.com/send?phone={{ s.whatsapp | remove: '+' | remove: ' ' }}" target="_blank" rel="noopener" data-pdpx-wa><svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M12 2.5a9.4 9.4 0 0 0-8.1 14.2L2.6 21.5l4.9-1.3A9.4 9.4 0 1 0 12 2.5Zm0 17.1c-1.4 0-2.8-.4-4-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A7.7 7.7 0 1 1 12 19.6Zm4.3-5.8c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1l-.7.9c-.1.2-.3.2-.5.1a6.3 6.3 0 0 1-3.1-2.7c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.7-1.7c-.2-.4-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.8 2.3 1 2.5c.1.2 1.6 2.5 4 3.5 1.5.6 2.1.7 2.8.6.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1l-.5-.2Z"/></svg><span>{{ s.whatsapp_label | escape }}</span></a>
+              <a class="pdpx-book__wa" href="https://api.whatsapp.com/send?phone={{ s.whatsapp | remove: '+' | remove: ' ' }}" target="_blank" rel="noopener" data-pdpx-wa><i class="ph-light ph-whatsapp-logo" style="font-size:17px" aria-hidden="true"></i><span>{{ s.whatsapp_label | escape }}</span></a>
             {%- endif -%}
           </div>
           {%- if s.note != blank %}<p class="pdpx-book__note">{{ s.note | escape }}</p>{% endif -%}

@@ -27,7 +27,7 @@
 <article>
   <header class="store-head container" data-reveal>
     <a class="store-back" href="{{ blog.url }}">
-      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H5"></path><path d="m10.5 6.5-5.5 5.5 5.5 5.5"></path></svg>
+      <i class="ph-light ph-arrow-left" style="font-size:15px" aria-hidden="true"></i>
       {{ cfg.back_label }}
     </a>
     {%- if cfg.eyebrow != blank %}
@@ -78,16 +78,16 @@
       <p class="store-share__label">{{ cfg.share_label }}</p>
       <div class="store-share__links">
         <a class="store-share__link" href="https://www.facebook.com/sharer.php?u={{ share_url | url_encode }}" target="_blank" rel="noreferrer noopener" aria-label="Share on Facebook">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.25-1.5 1.55-1.5h1.65V3.6c-.3 0-1.3-.1-2.45-.1-2.4 0-4.05 1.5-4.05 4.2v2.2H7.5V13h2.7v8Z"></path></svg>
+          <i class="ph-light ph-facebook-logo" style="font-size:16px" aria-hidden="true"></i>
         </a>
         <a class="store-share__link" href="https://www.pinterest.com/pin/create/button/?url={{ share_url | url_encode }}&amp;description={{ share_title }}" target="_blank" rel="noreferrer noopener" aria-label="Save to Pinterest">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 3a9 9 0 0 0-3.3 17.36c-.08-.72-.15-1.83.03-2.62.16-.7 1.06-4.5 1.06-4.5s-.27-.54-.27-1.34c0-1.26.73-2.2 1.63-2.2.77 0 1.14.58 1.14 1.27 0 .78-.49 1.94-.75 3.02-.21.9.46 1.64 1.35 1.64 1.62 0 2.87-1.71 2.87-4.18 0-2.19-1.57-3.72-3.82-3.72-2.6 0-4.13 1.95-4.13 3.97 0 .79.3 1.63.68 2.09.08.09.09.17.06.26l-.25 1.02c-.4.17-.13.2-.3.12-1.11-.52-1.8-2.14-1.8-3.44 0-2.8 2.03-5.37 5.87-5.37 3.08 0 5.47 2.2 5.47 5.13 0 3.06-1.93 5.52-4.6 5.52-.9 0-1.75-.47-2.04-1.02l-.55 2.12c-.2.77-.74 1.73-1.1 2.32A9 9 0 1 0 12 3Z"></path></svg>
+          <i class="ph-light ph-pinterest-logo" style="font-size:16px" aria-hidden="true"></i>
         </a>
         <a class="store-share__link" href="https://api.whatsapp.com/send?text={{ share_title }}%20{{ share_url | url_encode }}" target="_blank" rel="noreferrer noopener" aria-label="Share on WhatsApp">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 2.9a9 9 0 0 0-7.7 13.7L3 21.6l5.1-1.3A9 9 0 1 0 12 2.9Zm0 1.7a7.3 7.3 0 0 1 6.2 11.2 7.3 7.3 0 0 1-9.7 2.4l-.4-.2-3 .8.8-2.9-.2-.4A7.3 7.3 0 0 1 12 4.6Zm-3.1 3.6c-.2 0-.5.1-.7.3-.3.3-.7.9-.7 1.7 0 .9.6 1.9 1.8 3.1 1.2 1.2 2.5 2 3.7 2.1.7.1 1.3-.1 1.7-.4.3-.2.5-.6.5-1v-.6l-1.6-.7-.6.7c-.1.2-.3.2-.5.1a5.6 5.6 0 0 1-2.6-2.5c-.1-.2 0-.4.1-.5l.6-.6-.7-1.6h-1Z"></path></svg>
+          <i class="ph-light ph-whatsapp-logo" style="font-size:16px" aria-hidden="true"></i>
         </a>
         <a class="store-share__link" href="mailto:?subject={{ article.title | url_encode }}&amp;body={{ share_url | url_encode }}" aria-label="Share by email">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2"></rect><path d="m4 7 8 6 8-6"></path></svg>
+          <i class="ph-light ph-envelope-simple" style="font-size:16px" aria-hidden="true"></i>
         </a>
       </div>
     </div>

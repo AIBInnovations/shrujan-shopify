@@ -5,32 +5,52 @@
       type above, a running stitch and a count below. The window opens from
       nothing while the page loads, and Shrujan's cloths slide in round the
       edge of the screen.
-   2. At 100 the type and the cloths go, and the window zooms out to the whole
-      screen, the film settling from a slight enlargement as it does.
+   2. At 100 the type and the cloths go, and the window opens out to the
+      film's own frame, the film settling from a slight enlargement as it does.
    3. Then the bar and header come down, and the hero comes in: the title line
       by line, its button, the glass cards, the stories along the foot
-      (hero.js takes the hero on from there). */
+      (hero.js takes the hero on from there).
+   The window is the film's own frame clipped (clip-path), so nothing is laid
+   out again while it opens, and the film never moves: it is already in its
+   place under the header. The loader shows once a visit: a reload, or coming
+   back to the home page, opens straight onto the hero (the sj-skip class, set
+   in the head from sessionStorage). It does not wait for the 3D form, which
+   builds after the page has opened (craft3d.js). */
 (function () {
   var html = document.documentElement;
   var loader = document.querySelector('.sj-loader');
   if (!loader) return;
 
-  var win = loader.querySelector('.sj-loader__window');
+  // already seen this visit: no loader, the hero comes straight in
+  if (html.classList.contains('sj-skip')) {
+    loader.remove();
+    html.classList.remove('sj-pre', 'sj-hero-full');
+    var g = window.gsap, H0 = '.hero--delta ';
+    if (g && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      g.fromTo(H0 + '.dh__slide.is-active .dh__line > span', { yPercent: 150 }, { yPercent: 0, duration: 1.1, stagger: 0.08, ease: 'expo.out' });
+      g.fromTo(H0 + '.dh__slide.is-active .dh-btn, ' + H0 + '.dh__cell', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.8, stagger: 0.06, ease: 'power3.out', clearProps: 'transform,opacity', delay: 0.2 });
+    }
+    var reveal = function () {
+      window.__sjRevealed = true;
+      if (window.Shrujan && window.Shrujan.startScroll) window.Shrujan.startScroll();
+      document.dispatchEvent(new CustomEvent('sj:revealed'));
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', reveal, { once: true });
+    else reveal();
+    return;
+  }
+
   var countEl = loader.querySelector('.sj-loader__num');
   var bar = loader.querySelector('.sj-loader__bar i');
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var gsap = window.gsap;
 
-  var MIN_MS = reduced ? 400 : 2400;
-  // the page opens once the film, the type and the 3D form are ready, but
-  // never makes anyone wait longer than this
-  var MAX_MS = 9000;
+  var MIN_MS = reduced ? 400 : 2000;
+  // the page opens once the film and the type are ready, but never makes
+  // anyone wait longer than this
+  var MAX_MS = 6000;
   var t0 = performance.now();
-  var ready = { film: false, fonts: false, craft: !document.querySelector('.craft3d') };
-  // the Wear-the-craft section builds its pieces behind the loader and says
-  // when it has drawn them (craft3d.js)
-  if (window.__sjCraftReady) ready.craft = true;
-  document.addEventListener('sj:craft-ready', function () { ready.craft = true; }, { once: true });
+  var ready = { film: false, fonts: false };
   var shown = 0;
   var done = false;
 
@@ -198,21 +218,29 @@
   document.addEventListener('DOMContentLoaded', function () { setTimeout(hold, 0); });
   window.scrollTo(0, 0);
 
-  // the window keeps the screen's own proportions
+  // the window keeps the screen's own proportions; it is the film's frame
+  // (.dh__fold) clipped to a small box at the centre of the screen
   var phone = function () { return window.innerWidth <= 720; };
+  var fold = document.querySelector('.hero--delta .dh__fold');
+  var clipAt = function (w, h, r) {
+    var b = fold.getBoundingClientRect(), vw = window.innerWidth, vh = window.innerHeight;
+    var t = vh / 2 - h / 2 - b.top, l = vw / 2 - w / 2 - b.left;
+    var bt = b.bottom - (vh / 2 + h / 2), rt = b.right - (vw / 2 + w / 2);
+    return 'inset(' + t.toFixed(1) + 'px ' + rt.toFixed(1) + 'px ' + bt.toFixed(1) + 'px ' + l.toFixed(1) + 'px round ' + r + 'px)';
+  };
   var small = function () {
     var w = window.innerWidth * (phone() ? 0.42 : 0.156);
     return { w: w, h: w * (window.innerHeight / window.innerWidth) };
   };
 
-  if (gsap && !reduced) {
+  if (fold) {
     var s = small();
-    gsap.fromTo(win, { width: 0, height: 0 }, { width: s.w, height: s.h, duration: 1.4, ease: 'power3.out', delay: 0.15 });
-    gsap.fromTo('.sj-loader__top, .sj-loader__bottom', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power2.out', delay: 0.45, stagger: 0.1 });
-  } else {
-    var s2 = small();
-    win.style.width = s2.w + 'px';
-    win.style.height = s2.h + 'px';
+    if (gsap && !reduced) {
+      gsap.fromTo(fold, { clipPath: clipAt(0, 0, 4) }, { clipPath: clipAt(s.w, s.h, 4), duration: 1.4, ease: 'power3.out', delay: 0.15 });
+      gsap.fromTo('.sj-loader__top, .sj-loader__bottom', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power2.out', delay: 0.45, stagger: 0.1 });
+    } else {
+      fold.style.clipPath = clipAt(s.w, s.h, 4);
+    }
   }
   buildCloths();
 
@@ -241,7 +269,7 @@
     if (done) return;
     var elapsed = now - t0;
     var timeShare = Math.min(1, elapsed / MIN_MS);
-    var loaded = (ready.film ? 0.3 : 0) + (ready.fonts ? 0.15 : 0) + (ready.craft ? 0.55 : 0);
+    var loaded = (ready.film ? 0.6 : 0) + (ready.fonts ? 0.4 : 0);
     var target = Math.min(timeShare, Math.max(loaded, 0.9 * timeShare));
     if (elapsed > MAX_MS) target = 1;
     shown += (target - shown) * 0.08;
@@ -253,25 +281,10 @@
   }
   requestAnimationFrame(tick);
 
-  // the film, full screen through the loader, gives up the top of the screen
-  // to the header as it lands: from its full-screen box to its own place
-  function settleHero() {
-    var hero = document.querySelector('.hero--delta');
-    if (!hero || !html.classList.contains('sj-hero-full')) return;
-    var fold = hero.querySelector('.dh__fold');
-    var mt = getComputedStyle(hero).marginTop;
-    var fh = fold ? fold.getBoundingClientRect().height : 0;
-    html.classList.remove('sj-hero-full');
-    gsap.from(hero, { marginTop: mt, duration: 1.1, ease: 'power3.out', clearProps: 'marginTop' });
-    if (fold) gsap.from(fold, {
-      height: fh, duration: 1.1, ease: 'power3.out', clearProps: 'height',
-      onComplete: function () { if (window.ScrollTrigger) window.ScrollTrigger.refresh(); },
-    });
-  }
-
   function finish() {
     window.__sjRevealed = true;
     html.classList.remove('sj-hero-full');
+    if (fold) fold.style.clipPath = '';
     loader.remove();
     html.classList.remove('sj-pre');
     release();
@@ -290,7 +303,7 @@
     var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
     tl.to('.sj-loader__top, .sj-loader__bottom', { opacity: 0, y: -10, duration: 0.4, ease: 'power2.in', stagger: 0.05 })
       // the window zooms out to the whole screen; the film settles as it does
-      .to(win, { width: window.innerWidth, height: window.innerHeight, borderRadius: 0, duration: 1.05, ease: 'power4.inOut' }, '-=0.05')
+      .to(fold, { clipPath: 'inset(0px 0px 0px 0px round 0px)', duration: 1.05, ease: 'power4.inOut' }, '-=0.05')
       // 'open' is the moment the window fills the screen; everything after is
       // placed from it, not from the end of the film's longer settle
       .addLabel('open')
@@ -298,7 +311,6 @@
       .add(function () {
         loader.style.visibility = 'hidden';
         gsap.set([H + '.dh__content', H + '.dh__strip'], { opacity: 1 });
-        settleHero();
       }, 'open')
       // then the bar and header come down, and the film gives way to them
       .fromTo('.offer-bar, .site-header', { yPercent: -100, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 1, stagger: 0.08, ease: 'power3.out', clearProps: 'transform,opacity' }, 'open')
@@ -844,8 +856,25 @@
         gsap.fromTo(col.querySelectorAll('.ft__c-card'), { y: 30, opacity: 0 }, {
           y: 0, opacity: 1, duration: 1.1, stagger: 0.16, delay: 0.3, ease: 'expo.out', scrollTrigger: at,
         });
-        gsap.fromTo(col.querySelectorAll('.ft__c-paper, .ft__c-arch, .ft__c-swatch, .ft__c-map, .ft__c-sprig, .ft__c-thread, .ft__c-flower, .ft__c-lines, .ft__c-tags, .ft__c-label, .ft__c-words'), { opacity: 0 }, {
+        gsap.fromTo(col.querySelectorAll('.ft__c-paper, .ft__c-arch, .ft__c-swatch, .ft__c-map, .ft__c-tags, .ft__c-label, .ft__c-words'), { opacity: 0 }, {
           opacity: 1, duration: 1.6, stagger: 0.06, delay: 0.2, ease: 'power2.out', scrollTrigger: at,
+        });
+        // the thread draws itself as the collage comes up the screen, and
+        // undraws if the page goes back; its dots come in as it reaches them
+        [].forEach.call(col.querySelectorAll('.ft__c-thread-path, .ft__c-route'), function (path, i) {
+          var len = path.getTotalLength();
+          path.style.strokeDasharray = path.classList.contains('ft__c-route') ? '' : len + ' ' + len;
+          if (path.classList.contains('ft__c-route')) {
+            gsap.fromTo(path, { opacity: 0 }, { opacity: 1, ease: 'none', scrollTrigger: { trigger: col, start: '55% 75%', end: '70% 60%', scrub: true } });
+            return;
+          }
+          gsap.fromTo(path, { strokeDashoffset: len }, {
+            strokeDashoffset: 0, ease: 'none',
+            scrollTrigger: { trigger: col, start: i ? '30% 80%' : 'top 75%', end: i ? '45% 60%' : '75% 55%', scrub: 0.6 },
+          });
+        });
+        gsap.fromTo(col.querySelectorAll('.ft__c-ring, .ft__c-pin'), { opacity: 0, scale: 0.4, transformOrigin: '50% 50%' }, {
+          opacity: 1, scale: 1, duration: 0.6, stagger: 0.25, ease: 'back.out(2)', scrollTrigger: { trigger: col, start: '20% 70%' },
         });
       }
       // the banner's photograph drifts inside its frame as the page scrolls,

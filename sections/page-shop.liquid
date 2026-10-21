@@ -187,7 +187,7 @@
     <ul class="container shop-assure__row" data-reveal-child>
       {%- for block in section.blocks %}{% if block.type == 'assure' %}
       <li{{ block.shopify_attributes }}>
-        <span class="shop-assure__mark" aria-hidden="true">{% case block.settings.icon %}{% when 'leaf' %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" width="19" height="19"><path d="M20 4c0 8-4.6 13-11 13H5c0-8 4.6-13 11-13Z" stroke-linejoin="round"></path><path d="M5 20c2.4-4.4 5.6-7.4 9.5-9.3" stroke-linecap="round"></path></svg>{% when 'tape' %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" width="19" height="19"><rect x="2.5" y="8.5" width="19" height="7" rx="1.4"></rect><path d="M7 8.5v3M11 8.5v4.4M15 8.5v3M19 8.5v4.4" stroke-linecap="round"></path></svg>{% when 'truck' %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" width="19" height="19"><path d="M2 7h11v9H2zM13 10h4.5l3 3v3H13z" stroke-linejoin="round"></path><circle cx="6.5" cy="18" r="1.7"></circle><circle cx="17" cy="18" r="1.7"></circle></svg>{% when 'heart' %}<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19.8S4.5 15.3 4.5 9.9c0-2.6 2-4.4 4.2-4.4 1.5 0 2.7.8 3.3 2 .6-1.2 1.8-2 3.3-2 2.2 0 4.2 1.8 4.2 4.4 0 5.4-7.5 9.9-7.5 9.9Z"></path></svg>{% else %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" width="19" height="19"><path d="M4 20 19 5" stroke-linecap="round"></path><circle cx="20.2" cy="3.8" r="1.6"></circle><path d="M7 17.5c1.8.6 3 .2 3.6-1.2" stroke-linecap="round"></path></svg>{% endcase %}</span>
+        <span class="shop-assure__mark" aria-hidden="true">{% case block.settings.icon %}{% when 'leaf' %}<i class="ph-light ph-leaf" style="font-size:1.4px" aria-hidden="true"></i>{% when 'tape' %}<i class="ph-light ph-ruler" style="font-size:1.4px" aria-hidden="true"></i>{% when 'truck' %}<i class="ph-light ph-truck" style="font-size:1.4px" aria-hidden="true"></i>{% when 'heart' %}<i class="ph-light ph-heart" style="font-size:19px" aria-hidden="true"></i>{% else %}<i class="ph-light ph-needle" style="font-size:1.4px" aria-hidden="true"></i>{% endcase %}</span>
         <span class="shop-assure__title">{{ block.settings.title }}</span>
         <span class="shop-assure__copy">{{ block.settings.copy }}</span>
       </li>
@@ -200,7 +200,7 @@
   <!-- ---- categories as medallions ---- -->
   <section class="section container shop-cats" aria-label="Collections">
     <div class="shop-head" data-reveal>
-      <span class="orn" aria-hidden="true"><i></i><svg viewBox="0 0 32 32" width="15" height="15" fill="currentColor"><path d="M16 2c1.3 4.6 3 7.4 5.2 8.8C23.4 12.2 26 13 30 13.4v.2c-4 .4-6.6 1.2-8.8 2.6C19 17.6 17.3 20.4 16 25c-1.3-4.6-3-7.4-5.2-8.8C8.6 14.8 6 14 2 13.6v-.2c4-.4 6.6-1.2 8.8-2.6C13 9.4 14.7 6.6 16 2Z"></path><circle cx="16" cy="28.5" r="1.6"></circle></svg><i></i></span>
+      <span class="orn" aria-hidden="true"><i></i><i class="ph-light ph-sparkle" style="font-size:15px" aria-hidden="true"></i><i></i></span>
       <h2 class="section-title">{{ section.settings.cats_title }}</h2>
       <p class="shop-head__copy">{{ section.settings.cats_copy }}</p>
     </div>
@@ -225,15 +225,15 @@
           <span class="medallion__disc" style="--tint: {% cycle 'medallion': 'var(--ivory-2)', 'var(--gerua-100)', 'var(--mehendi-200)', 'var(--sand)' %}">{% if med_img %}<img src="{{ med_img | image_url: width: 640 }}" alt="{{ med_img.alt | default: med.title | escape }}" loading="lazy">{% else %}{{ 'collection-1' | placeholder_svg_tag: 'medallion__ph' }}{% endif %}</span>
           <span class="medallion__name">{{ med.title | escape }}</span>
           <span class="medallion__sub">{{ med_n }} {{ med_word }}</span>
-          <span class="medallion__go" aria-hidden="true">Shop <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></span>
+          <span class="medallion__go" aria-hidden="true">Shop <i class="ph-light ph-arrow-right" style="font-size:13px" aria-hidden="true"></i></span>
         </button>
         {%- endif %}
         {%- endfor %}
       </div>
 
       <div class="carousel-arrows shop-cats__arrows">
-        <button type="button" aria-label="Previous collections"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5 8 12l6.5 6.5"></path></svg></button>
-        <button type="button" aria-label="Next collections"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9.5 5.5 6.5 6.5-6.5 6.5"></path></svg></button>
+        <button type="button" aria-label="Previous collections"><i class="ph-light ph-caret-left" style="font-size:18px" aria-hidden="true"></i></button>
+        <button type="button" aria-label="Next collections"><i class="ph-light ph-caret-right" style="font-size:18px" aria-hidden="true"></i></button>
       </div>
     </div>
   </section>
@@ -243,7 +243,7 @@
   <section class="section container shop-body" id="catalogue">
 {%- if section.settings.show_rail %}
     <aside class="shop-rail" data-reveal>
-      <p class="shop-rail__title"><svg viewBox="0 0 32 32" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M16 2c1.3 4.6 3 7.4 5.2 8.8C23.4 12.2 26 13 30 13.4v.2c-4 .4-6.6 1.2-8.8 2.6C19 17.6 17.3 20.4 16 25c-1.3-4.6-3-7.4-5.2-8.8C8.6 14.8 6 14 2 13.6v-.2c4-.4 6.6-1.2 8.8-2.6C13 9.4 14.7 6.6 16 2Z"></path><circle cx="16" cy="28.5" r="1.6"></circle></svg> Browse by collection</p>
+      <p class="shop-rail__title"><i class="ph-light ph-sparkle" style="font-size:13px" aria-hidden="true"></i> Browse by collection</p>
       <ul class="shop-rail__list">
         <li><button type="button" class="shop-rail__item is-active" aria-pressed="true" data-c="" data-title="Everything">Everything</button></li>
         {%- for key in col_keys %}
@@ -263,7 +263,7 @@
         <p class="shop-main__count">{{ grid_count }} {{ count_word }}</p>
         <div class="shop-sort">
           <div class="sortmenu">
-            <button type="button" class="sortmenu__button" aria-haspopup="listbox" aria-expanded="false"><span class="sortmenu__label">Sort</span><span class="sortmenu__value">{{ sort_labels[sort_index] }}</span><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9.5 6 6 6-6"></path></svg></button>
+            <button type="button" class="sortmenu__button" aria-haspopup="listbox" aria-expanded="false"><span class="sortmenu__label">Sort</span><span class="sortmenu__value">{{ sort_labels[sort_index] }}</span><i class="ph-light ph-caret-down" style="font-size:13px" aria-hidden="true"></i></button>
 
             <ul class="sortmenu__list" role="listbox" aria-label="Sort by" tabindex="-1">
               {%- for key in sort_keys %}
@@ -291,7 +291,7 @@
           assign card_swatches = product.metafields.shrujan.swatches.value
         -%}
         <a class="piece shop-piece" href="{{ product.url }}" data-c="{% for pc in product.collections %}{{ pc.handle }} {% endfor %}" data-price="{{ product.price }}">
-          <div class="piece__media" style="--tint: {% cycle 'piece': 'var(--ivory-2)', 'var(--gerua-100)', 'var(--mehendi-200)', 'var(--sand)' %}">{% if card_img %}<img src="{{ card_img | image_url: width: 900 }}" alt="{{ card_img.alt | default: product.title | escape }}" loading="lazy">{% else %}{{ 'product-1' | placeholder_svg_tag: 'piece__ph' }}{% endif %}{% render 'piece-badge', product: product, show: cfg.card_badge, sale: cfg.card_sale_badge %}{% if cfg.card_wish %}<button class="piece__wish" type="button" aria-label="Save {{ product.title | escape }} to wishlist"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19.8S4.5 15.3 4.5 9.9c0-2.6 2-4.4 4.2-4.4 1.5 0 2.7.8 3.3 2 .6-1.2 1.8-2 3.3-2 2.2 0 4.2 1.8 4.2 4.4 0 5.4-7.5 9.9-7.5 9.9Z"></path></svg></button>{% endif %}{% if cfg.card_quick %}<span class="piece__quick">Add to bag</span>{% endif %}</div>
+          <div class="piece__media" style="--tint: {% cycle 'piece': 'var(--ivory-2)', 'var(--gerua-100)', 'var(--mehendi-200)', 'var(--sand)' %}">{% if card_img %}<img src="{{ card_img | image_url: width: 900 }}" alt="{{ card_img.alt | default: product.title | escape }}" loading="lazy">{% else %}{{ 'product-1' | placeholder_svg_tag: 'piece__ph' }}{% endif %}{% render 'piece-badge', product: product, show: cfg.card_badge, sale: cfg.card_sale_badge %}{% if cfg.card_wish %}{% endif %}{% if cfg.card_quick %}<span class="piece__quick">Add to bag</span>{% endif %}</div>
 
           <div class="piece__info">
             <p class="piece__name">{{ product.title | escape }}</p>
@@ -337,7 +337,7 @@
         <li><strong>24</strong><span>Pieces online</span></li>
       </ul>
 
-      <a class="btn" href="#catalogue">Shop the collection <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
+      <a class="btn" href="#catalogue">Shop the collection <i class="ph-light ph-arrow-right" style="font-size:16px" aria-hidden="true"></i></a>
     </div>
   </section>
 {%- endif %}
@@ -346,7 +346,7 @@
   <!-- ---- why it costs what it costs ---- -->
   <section class="section container shop-why" aria-label="Why Shrujan">
     <div class="shop-head" data-reveal>
-      <span class="orn" aria-hidden="true"><i></i><svg viewBox="0 0 32 32" width="15" height="15" fill="currentColor"><path d="M16 2c1.3 4.6 3 7.4 5.2 8.8C23.4 12.2 26 13 30 13.4v.2c-4 .4-6.6 1.2-8.8 2.6C19 17.6 17.3 20.4 16 25c-1.3-4.6-3-7.4-5.2-8.8C8.6 14.8 6 14 2 13.6v-.2c4-.4 6.6-1.2 8.8-2.6C13 9.4 14.7 6.6 16 2Z"></path><circle cx="16" cy="28.5" r="1.6"></circle></svg><i></i></span>
+      <span class="orn" aria-hidden="true"><i></i><i class="ph-light ph-sparkle" style="font-size:15px" aria-hidden="true"></i><i></i></span>
       <h2 class="section-title">{{ section.settings.why_title }}</h2>
     </div>
 
@@ -368,7 +368,7 @@
 
   <section class="section container page-cta" data-reveal>
     <p>{{ section.settings.cta_text }}</p>
-    <a class="btn btn--ghost" href="{{ section.settings.cta_link | default: '/pages/video' }}">{{ section.settings.cta_label }} <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15"></path><path d="m13.5 6.5 5.5 5.5-5.5 5.5"></path></svg></a>
+    <a class="btn btn--ghost" href="{{ section.settings.cta_link | default: '/pages/video' }}">{{ section.settings.cta_label }} <i class="ph-light ph-arrow-right" style="font-size:16px" aria-hidden="true"></i></a>
   </section>
 </div>
 

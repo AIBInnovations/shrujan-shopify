@@ -20,7 +20,7 @@
   capture orn
     echo '<svg viewBox="-12 -12 24 24" aria-hidden="true"><g fill="currentColor"><path d="M0-4.2 4.2 0 0 4.2-4.2 0z"/><path d="M0-11.5 2.2-8.3 0-5.6-2.2-8.3z"/><path d="M11.5 0 8.3 2.2 5.6 0 8.3-2.2z"/><path d="M0 11.5-2.2 8.3 0 5.6 2.2 8.3z"/><path d="M-11.5 0-8.3-2.2-5.6 0-8.3 2.2z"/><circle cx="-5.4" cy="-5.4" r="1.25"/><circle cx="5.4" cy="-5.4" r="1.25"/><circle cx="5.4" cy="5.4" r="1.25"/><circle cx="-5.4" cy="5.4" r="1.25"/></g><path d="M0-1.7 1.7 0 0 1.7-1.7 0z" fill="#f6f4e6"/></svg>'
   endcapture
-  assign arrow = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 10h14M11 4.5l5.5 5.5-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>'
+  assign arrow = '<i class="ph-light ph-arrow-right" aria-hidden="true"></i>'
 
   if s.tree != blank
     assign tree = s.tree | image_url: width: 1400

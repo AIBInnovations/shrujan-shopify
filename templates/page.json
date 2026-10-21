@@ -1545,7 +1545,13 @@
     "main": {
       "type": "main-page",
       "settings": {
-        "designed_handles": "shop-shrujan,the-shrujan-story,video,lldc,visit-experience,studio-collection,studio-heritage,studio-avinya,studio-gifting"
+        "designed_handles": "shop-shrujan,the-shrujan-story,video,lldc,visit-experience,studio-collection,studio-heritage,studio-avinya,studio-gifting,sale"
+      }
+    },
+    "sale": {
+      "type": "page-sale",
+      "settings": {
+        "only_handle": "sale"
       }
     }
   },
@@ -1559,6 +1565,7 @@
     "heritage",
     "avinya",
     "gifting",
+    "sale",
     "main"
   ]
 }

@@ -142,3 +142,505 @@ body {
   }
 }
 
+/* ============================================================
+   The header in one short row (the user: shorter, without the
+   currency, the language, the shipping line or the tagline): the
+   menu on the left, the mark in the middle, search, account and bag
+   as icons on the right, the bag with its count. The offer bar above
+   it slimmer too.
+   ============================================================ */
+:root:has(.offer-bar) {
+  --offer-h: 34px;
+}
+
+.site-header {
+  --topbar-h: 0px;
+  --header-row-min: 60px;
+}
+
+.site-header .topbar,
+.site-header .brand__tag {
+  display: none !important;
+}
+
+.site-header__inner {
+  min-height: 60px;
+}
+
+/* above 1080px the mark floats in the middle of the row; below it, it is
+   the middle cell of the bar's grid (shrujan-global.css), only smaller */
+@media (min-width: 1081px) {
+  .site-header .brand {
+    --logo-h: clamp(34px, 2.5vw, 42px);
+    top: 50%;
+    gap: 0;
+    padding: 0 clamp(20px, 2.4vw, 40px);
+    transform: translate(-50%, -50%);
+    background: transparent;
+  }
+}
+
+@media (max-width: 1080px) {
+  .site-header .brand {
+    --logo-h: 32px;
+    padding: 0;
+  }
+
+  .site-header .site-header__inner {
+    --header-row-min: 54px;
+  }
+}
+
+/* the utilities as icons; their words stay, for screen readers */
+.header-utils {
+  gap: clamp(10px, 1.3vw, 20px);
+}
+
+.header-utils .utility-link {
+  position: relative;
+  padding: 6px;
+}
+
+.header-utils .utility-link > span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.header-utils .utility-link > i,
+.menu-toggle > i {
+  font-size: 21px;
+}
+
+.utility-count {
+  position: absolute;
+  top: 0;
+  right: -4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: var(--indigo, #924241);
+  font: 600 9.5px/16px var(--font-sans);
+  text-align: center;
+  color: var(--page-bg, #f6f4e6);
+}
+
+@media (max-width: 767px) {
+  :root:has(.offer-bar) {
+    --offer-h: 32px;
+  }
+
+  .site-header__inner {
+    min-height: 54px;
+  }
+}
+
+/* ---- the interface icons (the Phosphor set, light; icons.py) ---- */
+i.ph-light {
+  display: inline-block;
+  flex: none;
+  line-height: 1;
+  vertical-align: -0.14em;
+  transition: transform 0.3s ease;
+}
+
+a:hover > i.ph-arrow-right,
+button:hover > i.ph-arrow-right {
+  transform: translateX(3px);
+}
+
+/* no wishlist anywhere (the user had it taken out) */
+.piece__wish,
+.pdp__wish,
+.best-card__wish,
+.utility-link[aria-label='Wishlist'] {
+  display: none !important;
+}
+
+/* ============================================================
+   Every page on the home page's lines (the user: the same left and
+   right spacing everywhere). Text and grids sit on the column the
+   home page's sections use (the page width less a gutter each side);
+   page heroes run to the screen's edges as the home page's film does,
+   instead of standing 6px in with rounded corners.
+   ============================================================ */
+.page-hero--frame,
+.visit-hero,
+.shop-banner,
+.atelier__frame {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.page-hero--frame,
+.page-hero--frame .page-hero__bg,
+.visit-hero,
+.shop-banner,
+.shop-banner__frame,
+.atelier__frame {
+  border-radius: 0 !important;
+}
+
+/* the assurance strip on the Shop page sits on the column, like a home band */
+.shop-assure {
+  margin-left: var(--gutter) !important;
+  margin-right: var(--gutter) !important;
+}
+
+/* plain pages (size chart, policies, contact): on the column, not in a
+   narrower box of their own; the words keep a reading measure */
+.store-page {
+  max-width: none !important;
+}
+
+.store-article--page table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+@media (max-width: 720px) {
+  .shop-assure {
+    margin-left: var(--edge, 5px) !important;
+    margin-right: var(--edge, 5px) !important;
+  }
+}
+
+/* ============================================================
+   The collection hero (collection pages and the Sale page): one
+   screen, the words on the left and the collection's pictures on the
+   right, with the promises along its foot, each with its icon (the
+   user: the picture and the details like shipping in one 100vh, set
+   the way the home page is).
+   ============================================================ */
+.ch {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-height: calc(100vh - var(--header-h, 60px) - var(--offer-h, 0px));
+  min-height: calc(100svh - var(--header-h, 60px) - var(--offer-h, 0px));
+  max-width: var(--page-max, 1580px);
+  margin: 0 auto;
+  padding: clamp(14px, 1.4vw, 22px) var(--gutter) 0;
+  color: var(--ink);
+}
+
+.ch__main {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: clamp(24px, 4vw, 72px);
+  align-items: stretch;
+  min-height: 0;
+}
+
+.ch__text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(10px, 2vw, 36px) 0;
+}
+
+.ch__crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 clamp(18px, 2.2vw, 34px);
+  font: 400 12px/1.3 var(--font-sans);
+  color: var(--ink-soft);
+}
+
+.ch__crumbs a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.ch__crumbs a:hover {
+  color: var(--ink);
+}
+
+.ch__crumbs i {
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+.ch__eyebrow {
+  margin: 0 0 14px;
+  font: 500 11px/1.4 var(--font-sans);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--indigo, #924241);
+}
+
+.ch__title {
+  margin: 0;
+  font: 400 clamp(40px, 5.2vw, 84px) / 1 var(--font-display);
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+
+.ch__title em {
+  font-style: normal;
+  color: var(--indigo, #924241);
+}
+
+.ch__lede {
+  max-width: 46ch;
+  margin: clamp(16px, 1.6vw, 24px) 0 0;
+  font: 400 15px/1.65 var(--font-sans);
+  color: var(--ink-soft);
+}
+
+.ch__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  margin: clamp(16px, 1.6vw, 24px) 0 0;
+  font: 500 11px/1.3 var(--font-sans);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.ch__meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ch__meta i {
+  font-size: 16px;
+  color: var(--indigo, #924241);
+}
+
+.ch__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: clamp(22px, 2.2vw, 34px);
+}
+
+.ch__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  background: var(--ink);
+  font: 500 11.5px/1 var(--font-sans);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--page-bg, #f6f4e6);
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+.ch__btn:hover {
+  background: var(--indigo, #924241);
+}
+
+.ch__btn--quiet {
+  border: 1px solid var(--hairline-strong, rgba(64, 64, 65, 0.4));
+  background: transparent;
+  color: var(--ink);
+}
+
+.ch__btn--quiet:hover {
+  border-color: var(--ink);
+  background: transparent;
+}
+
+/* the pictures: one large, or the first three pieces as a little mosaic */
+.ch__media {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 8px;
+  min-height: 340px;
+}
+
+.ch__media--one {
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+}
+
+.ch__shot {
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  border-radius: 6px;
+  background: var(--page-bg-2, #ede9d8);
+}
+
+.ch__shot:first-child {
+  grid-row: 1 / span 2;
+}
+
+.ch__media--one .ch__shot:first-child {
+  grid-row: auto;
+}
+
+.ch__shot img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ch__shot:hover img {
+  transform: scale(1.04);
+}
+
+/* the promises along the foot */
+.ch__promises {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: clamp(16px, 1.8vw, 26px) 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.ch__promise {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: clamp(14px, 1.4vw, 20px) clamp(10px, 1.4vw, 22px);
+}
+
+.ch__promise + .ch__promise {
+  border-left: 1px solid var(--hairline);
+}
+
+.ch__promise > i {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--page-bg-2, #ede9d8);
+  font-size: 22px;
+  color: var(--indigo, #924241);
+}
+
+.ch__promise b {
+  display: block;
+  font: 400 15px/1.25 var(--font-display);
+  color: var(--ink);
+}
+
+.ch__promise span {
+  display: block;
+  margin-top: 3px;
+  font: 400 12px/1.4 var(--font-sans);
+  color: var(--ink-soft);
+}
+
+/* the shop under it: chips that filter the grid in place (the Sale page) */
+.ch-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: clamp(26px, 3vw, 44px) 0 clamp(18px, 2vw, 28px);
+}
+
+.ch-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid var(--hairline-strong, rgba(64, 64, 65, 0.4));
+  border-radius: 999px;
+  background: transparent;
+  font: 500 11.5px/1 var(--font-sans);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+.ch-chip b {
+  font-weight: 500;
+  opacity: 0.55;
+}
+
+.ch-chip:hover {
+  border-color: var(--ink);
+}
+
+.ch-chip[aria-pressed='true'] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--page-bg, #f6f4e6);
+}
+
+.ch-grid-anchor {
+  scroll-margin-top: calc(var(--header-h, 60px) + 16px);
+}
+
+@media (max-width: 900px) {
+  .ch {
+    min-height: 0;
+  }
+
+  .ch__main {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .ch__media {
+    min-height: 0;
+    aspect-ratio: 4 / 3;
+  }
+
+  .ch__promises {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ch__promise:nth-child(3) {
+    border-left: 0;
+  }
+
+  .ch__promise:nth-child(n + 3) {
+    border-top: 1px solid var(--hairline);
+  }
+}
+
+@media (max-width: 560px) {
+  .ch {
+    padding-inline: var(--gutter);
+  }
+
+  .ch__media {
+    margin-inline: calc(var(--edge, 5px) - var(--gutter));
+  }
+
+  .ch__promise {
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 8px;
+  }
+
+  .ch__promise > i {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+
+  .ch__promise b {
+    font-size: 14px;
+  }
+
+  .ch__promise span {
+    font-size: 11.5px;
+  }
+}
+

@@ -96,27 +96,22 @@ html.sj-pre body {
   overflow: hidden;
 }
 
-/* The screen is the window's own shadow: a small clear frame at the centre
-   with ivory spread out to every edge, so the hero film plays inside it and
-   growing the frame is the zoom. The window keeps the screen's proportions,
-   so at 15.6vw wide it is 15.6vh tall. */
+/* The window is the hero film's own frame, clipped to a small box at the
+   centre of the screen (loader.js opens it); around it is the page's beige
+   ground. Closed until the loader opens it, so nothing flashes first. */
+html.sj-pre .hero--delta .dh__fold {
+  clip-path: inset(50% 50% 50% 50%);
+}
+
+html.sj-skip .sj-loader {
+  display: none;
+}
 .sj-loader {
   position: fixed;
   inset: 0;
   z-index: 9999;
   overflow: hidden;
   --win-h: 15.6vh;
-}
-
-.sj-loader__window {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 0;
-  height: 0;
-  translate: -50% -50%;
-  border-radius: 4px;
-  box-shadow: 0 0 0 200vmax var(--page-bg, #f6f4e6);
 }
 
 /* The cloths: Shrujan's fabrics, cut like paper with pinking shears and held
@@ -816,17 +811,6 @@ html.sj-pre .offer-bar {
   overflow: hidden;
   background: #2f2f30;
   color: var(--dh-ink);
-}
-
-/* behind the loader the film fills the screen, pulled up under the header
-   (which comes down as the loader leaves; loader.js settles it in place) */
-html.sj-hero-full .hero--delta {
-  margin-top: calc(-1 * (var(--header-h, 130px) + var(--offer-h, 0px)));
-}
-
-html.sj-hero-full .dh__fold {
-  height: 100vh;
-  height: 100svh;
 }
 
 /* until then, nothing but the film */
@@ -3642,9 +3626,10 @@ html.sj-pre .dh__strip {
    keeps its proportions at any desktop width: the head at the top left,
    the campus photograph over torn paper with the Visit Shrujan card
    beside it, the palace photograph across the foot with the Visit Kutch
-   card over an olive arch, a sprig and a thread with its flower drawn
-   across, an embroidered swatch at the right edge and the paper map of
-   Kutch with its dotted way. Below 1200px: the head, then each
+   card over an olive arch, an embroidered swatch at the right edge and the
+   paper map of Kutch with its dotted way; one thread runs through it all,
+   drawing itself as the collage scrolls (the user had the flowers taken
+   out). Below 1200px: the head, then each
    photograph with its card over its foot; the loose pieces stay out.
    ============================================================ */
 .ft--collage {
@@ -3852,30 +3837,6 @@ html.sj-pre .dh__strip {
 }
 
 /* the drawn pieces, over everything */
-/* the sprig behind the photographs and the cards (the user's wish), over
-   the paper and the arch */
-.ft__c-sprig {
-  left: 24%;
-  top: 35.5%;
-  z-index: 2;
-  width: 21.4%;
-}
-
-/* the thread runs behind the Visit Shrujan card, as a drawn line under paper */
-.ft__c-thread {
-  left: 81.5%;
-  top: 0.4%;
-  z-index: 3;
-  width: 15%;
-}
-
-.ft__c-flower {
-  left: 78.2%;
-  top: 77.3%;
-  z-index: 5;
-  width: 6.1%;
-}
-
 .ft__c-lines {
   inset: 0;
   z-index: 5;
@@ -3890,6 +3851,12 @@ html.sj-pre .dh__strip {
   stroke: #5c4234;
   stroke-width: 1.3;
   stroke-linecap: round;
+}
+
+/* the thread: a little heavier than the route, drawn by feature.js */
+.ft__c-lines .ft__c-thread-path {
+  stroke: #6b4a3a;
+  stroke-width: 1.5;
 }
 
 .ft__c-lines .ft__c-route {
@@ -3964,9 +3931,6 @@ html.sj-pre .dh__strip {
   .ft__c-arch,
   .ft__c-swatch,
   .ft__c-map,
-  .ft__c-sprig,
-  .ft__c-thread,
-  .ft__c-flower,
   .ft__c-lines,
   .ft__c-tags,
   .ft__c-label,
@@ -4051,6 +4015,22 @@ html.sj-pre .dh__strip {
     margin-top: 18px;
     font-size: 11px;
   }
+}
+
+/* Avinya's small card in maroon, as the user asked: Heritage's is cream on
+   its maroon wall, Avinya's maroon on its paper */
+.ft__scene--light .ft__detail {
+  background: linear-gradient(160deg, #924241, #77302f);
+  box-shadow: 0 18px 30px -20px rgba(60, 20, 18, 0.55), inset 0 0 0 1px rgba(246, 230, 205, 0.14);
+  color: #f3e6d2;
+}
+
+.ft__scene--light .ft__words::before {
+  background: rgba(243, 230, 210, 0.55);
+}
+
+.ft__scene--light .ft__detail > .ft__motif {
+  color: #e2bd84;
 }
 
 /* ============================================================

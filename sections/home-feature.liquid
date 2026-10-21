@@ -9,8 +9,8 @@
   scene for each card ("studio": a wall, sandstone, the textile and its
   props cut out over it, the words, and a small card with a close-up of the
   craft and four words), or a collage ("collage": the two photographs and
-  their cards over torn paper, an olive arch, a sprig, a thread with its
-  flower, an embroidered swatch and the paper map of Kutch, the pictures
+  their cards over torn paper, an olive arch, an embroidered swatch and
+  the paper map of Kutch, with one thread drawn across it as it scrolls, the pictures
   fixed as theme files sj-visit-*.webp, the words beside them in the
   section's settings). The Studio Collection, LLDC, Gifting and Visit
   sections of templates/index.json all use it.
@@ -24,7 +24,7 @@
   assign s = section.settings
   assign sid = section.id
 -%}
-{%- capture arrow -%}<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 10h14M11 4.5l5.5 5.5-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>{%- endcapture -%}
+{%- capture arrow -%}<i class="ph-light ph-arrow-right" aria-hidden="true"></i>{%- endcapture -%}
 {%- capture head -%}
   {%- if s.eyebrow != blank %}<p class="ft__eyebrow">{{ s.eyebrow | escape }}</p>{% endif -%}
   <h2 class="ft__title" id="ft-title-{{ sid }}"><span class="ft__line">{{ s.title_1 | escape }}</span>{% if s.title_2 != blank %}<span class="ft__line ft__line--soft">{{ s.title_2 | escape }}</span>{% endif %}</h2>
@@ -65,7 +65,7 @@
       -%}
       <a class="ft__c-photo ft__c-photo--{{ forloop.index }}" href="{{ c.btn_link | escape }}" tabindex="-1" aria-hidden="true"{% if c.btn_link contains 'http' %} target="_blank" rel="noopener"{% endif %}><img src="{{ pic }}" alt="{{ pic_alt | escape }}" loading="lazy"></a><article class="ft__c-card ft__c-card--{{ forloop.index }}" {{ b.shopify_attributes }}><p class="ft__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</p><h3 class="ft__name">{{ c.name | escape }}</h3><p class="ft__text">{{ c.text | escape }}</p>{%- if c.btn_label != blank -%}<a class="ft__btn" href="{{ c.btn_link | escape }}"{% if c.btn_link contains 'http' %} target="_blank" rel="noopener"{% endif %}>{{ c.btn_label | escape }} {{ arrow }}</a>{%- endif -%}</article>
     {%- endfor -%}
-    <img class="ft__c-sprig" src="{{ 'sj-visit-sprig.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><img class="ft__c-thread" src="{{ 'sj-visit-thread.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><img class="ft__c-flower" src="{{ 'sj-visit-flower.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><svg class="ft__c-lines" viewBox="0 0 1448 1086" aria-hidden="true"><path d="M1020,76 C1062,50 1122,30 1178,36" /><path d="M0,762 C28,752 52,738 80,733" /><path class="ft__c-route" d="M1062,836 C1122,848 1204,832 1322,795" /><circle class="ft__c-ring" cx="1020" cy="76" r="5" /><circle class="ft__c-ring" cx="80" cy="733" r="5" /><circle class="ft__c-pin" cx="1326" cy="794" r="5.5" /></svg>
+    <svg class="ft__c-lines" viewBox="0 0 1448 1086" aria-hidden="true"><path class="ft__c-thread-path" d="M560,72 C640,40 760,26 900,44 C1040,62 1150,26 1236,58 C1330,92 1418,168 1404,300 C1394,396 1438,462 1412,520 C1388,598 1254,650 1164,728 C1120,768 1082,816 1062,836" /><path class="ft__c-thread-path" d="M300,430 C276,468 248,500 236,540" /><path class="ft__c-route" d="M1062,836 C1122,848 1204,832 1322,795" /><circle class="ft__c-ring" cx="560" cy="72" r="5" /><circle class="ft__c-ring" cx="1404" cy="300" r="5" /><circle class="ft__c-ring" cx="300" cy="430" r="5" /><circle class="ft__c-pin" cx="1326" cy="794" r="5.5" /></svg>
     {%- assign tw = s.collage_tags | split: ',' -%}{%- if s.collage_tags != blank -%}<p class="ft__c-tags">{%- for w in tw -%}{%- assign ww = w | strip -%}{%- if ww != blank -%}<span>{{ ww | escape }}</span>{%- endif -%}{%- endfor -%}</p>{%- endif -%}
     {%- if s.map_label != blank -%}<p class="ft__c-label">{{ s.map_label | escape }}</p>{%- endif -%}
     {%- assign mw = s.map_words | split: ',' -%}{%- if s.map_words != blank -%}<p class="ft__c-words">{%- for w in mw -%}{%- assign ww = w | strip -%}{%- if ww != blank -%}<span>{{ ww | escape }}</span>{%- endif -%}{%- endfor -%}</p>{%- endif -%}
