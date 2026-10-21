@@ -649,9 +649,11 @@ html.sj-pre .sje__tab {
    to bottom with its icon upright; the drawer holds everything in one
    screen's height, without scrolling: the topics three to a row, the fields
    two to a row, the message box taking whatever height is left. */
+/* the tab hangs outside the drawer, so it takes the grey from the page's
+   own ink, not from the drawer's tokens */
 .sje,
 .sje__tab {
-  --sje-ink: var(--ui-ink);
+  --sje-ink: var(--ink, #404041);
   --sje-deep: #2f2f30;
 }
 
