@@ -14,13 +14,13 @@
     {%- endcomment -%}
     {%- capture meta_desc -%}
       {%- if page_description != blank -%}{{ page_description | escape }}
-      {%- else -%}Shrujan — Heritage by Hand. Handcrafted Indian clothing rooted in the living embroidery traditions of Kutch.
+      {%- else -%}Shrujan, consciously crafted since 1969: clothing, textiles and objects embroidered by hand by the craftswomen of Kutch.
       {%- endif -%}
     {%- endcapture -%}
     <meta name="description" content="{{ meta_desc | strip }}">
     <title>
       {%- if request.page_type == 'index' -%}
-        SHRUJAN — Heritage by Hand
+        SHRUJAN — Consciously crafted since 1969
       {%- else -%}
         {{ page_title }}{% if current_tags %} — {{ current_tags | join: ', ' }}{% endif %}
         {%- if current_page != 1 %} — page {{ current_page }}{% endif %} — SHRUJAN
