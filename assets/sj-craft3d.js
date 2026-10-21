@@ -830,6 +830,78 @@ async function init() {
   textures[2].repeat.set(4 / 1.5, 4.8 / 1.5);
   const heights = cloths.map((c) => clothTex(c.height, false));
   const shine = clothTex(cloths[1].shine, false);
+
+  // Shrujan's own cloth (the user: the pieces as the real Shrujan products
+  // are): each craft's cloth is a seamless tile cut from a photograph of one
+  // of its pieces (sj-cloth-*.webp: the red Ahir kanchli, a hand block
+  // printed pant, a shibori top, a handwoven shawl), with its relief and, for
+  // the kanchli's silk and zari, its shine read from the same photograph. The
+  // drawn cloth stands in until the photograph arrives. [file, tiles round
+  // the body]: the tile's size on the body follows the cloth's own scale.
+  const PHOTO_CLOTH = { 1: ['sj-cloth-emb.webp', 3], 2: ['sj-cloth-ajr.webp', 3], 3: ['sj-cloth-ban.webp', 6], 4: ['sj-cloth-wea.webp', 3] };
+  const reliefOf = (img, n, k) => {
+    // the threads and prints stand up where they are lighter than the cloth
+    // around them: the photograph less a blur of itself
+    const c = document.createElement('canvas');
+    c.width = c.height = n;
+    const x = c.getContext('2d', { willReadFrequently: true });
+    x.drawImage(img, 0, 0, n, n);
+    const px = x.getImageData(0, 0, n, n);
+    const lo = document.createElement('canvas');
+    lo.width = lo.height = Math.max(8, Math.round(n / 24));
+    const lx = lo.getContext('2d');
+    lx.drawImage(img, 0, 0, lo.width, lo.height);
+    const low = document.createElement('canvas');
+    low.width = low.height = n;
+    const wx = low.getContext('2d', { willReadFrequently: true });
+    wx.imageSmoothingQuality = 'high';
+    wx.drawImage(lo, 0, 0, n, n);
+    const lp = wx.getImageData(0, 0, n, n).data, d = px.data;
+    const gain = { 1: 2.2, 2: 0.9, 3: 1.3, 4: 1.5 }[k] || 1.5;
+    const sh = k === 1 ? x.createImageData(n, n) : null;
+    for (let i = 0; i < d.length; i += 4) {
+      const l = 0.3 * d[i] + 0.59 * d[i + 1] + 0.11 * d[i + 2];
+      const m = 0.3 * lp[i] + 0.59 * lp[i + 1] + 0.11 * lp[i + 2];
+      const h = Math.max(0, Math.min(255, 128 + (l - m) * gain));
+      if (sh) {
+        // zari and mirrors (gold or white on the red silk) shine; the silk
+        // keeps a soft gloss
+        const gold = d[i] > 170 && d[i + 1] > 120 && d[i + 2] < 140 && d[i + 1] - d[i + 2] > 40;
+        sh.data[i] = 255; sh.data[i + 1] = gold ? 110 : 190; sh.data[i + 2] = gold ? 150 : 10; sh.data[i + 3] = 255;
+      }
+      d[i] = d[i + 1] = d[i + 2] = h;
+    }
+    x.putImageData(px, 0, 0);
+    let shineC = null;
+    if (sh) {
+      shineC = document.createElement('canvas');
+      shineC.width = shineC.height = n;
+      shineC.getContext('2d').putImageData(sh, 0, 0);
+    }
+    return { height: c, shine: shineC };
+  };
+  const base = window.SHRUJAN_ASSET_BASE;
+  if (base) {
+    Object.keys(PHOTO_CLOTH).forEach((key) => {
+      const k = +key, file = PHOTO_CLOTH[key][0], round = PHOTO_CLOTH[key][1];
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.decoding = 'async';
+      img.onload = () => {
+        const n = img.naturalWidth;
+        textures[k].image = img;
+        textures[k].repeat.set(round, round * 1.2);
+        textures[k].needsUpdate = true;
+        try {
+          const r = reliefOf(img, n, k);
+          heights[k].image = r.height;
+          heights[k].needsUpdate = true;
+          if (r.shine) { shine.image = r.shine; shine.needsUpdate = true; }
+        } catch (e) { /* a picture the page may not read keeps the drawn relief */ }
+      };
+      img.src = base + file;
+    });
+  }
   // plain cloth has only the weave in its surface
   const FLAT = new THREE.DataTexture(new Uint8Array([0, 0, 0, 255]), 1, 1);
   FLAT.needsUpdate = true;
@@ -1003,9 +1075,9 @@ async function init() {
   const gAt = (a, v) => { const p = ghagraAt(a, v, 0.03); return new THREE.Vector3(p[0], p[1], p[2]); };
   const POIS = [
     { at: [pAt(0.32, 2.36, 0.05), pAt(0.32, 2.36, 0.05), pAt(0.34, 2.36, 0.07), pAt(0.32, 2.36, 0.06), pAt(0.32, 2.36, 0.06)], n: [0.32, 0.32, 0.34, 0.32, 0.32].map(nAt),
-      labels: ['Kora · undyed cotton', 'Aabhla · a mirror caged in thread', 'Madder red, printed by block', 'Each dot is a knot', 'Kala cotton, spun in Kutch'] },
+      labels: ['Kora · undyed cotton', 'Ahir work, stitched by hand', 'Printed by hand, block by block', 'Folded and bound before dyeing', 'Woven on a Kutch handloom'] },
     { at: [gAt(-0.5, 0.5), gAt(-0.5, 0.905), hAt(-0.6, 1.15, 0.054, 0.12), hAt(-0.5, 1.25, 0.048, 0.13), hAt(-0.5, 1.05, 0.048, 0.07)], n: [-0.5, -0.5, -0.6, -0.5, -0.5].map(nAt),
-      labels: ['Before the first stitch', 'Suf · counted from the reverse', 'Indigo, held back by resist', 'Tied before it is dyed', 'Extra-weft border'] },
+      labels: ['Before the first stitch', 'From Shrujan’s red Ahir kanchli', 'From a hand block printed pant', 'From a shibori top', 'Extra-weft motifs'] },
   ];
 
   // ---------- the camera's path down the dress ----------
