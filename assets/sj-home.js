@@ -1018,81 +1018,94 @@
   else document.addEventListener('sj:revealed', motion, { once: true });
 })();
 
-/* Philosophy & Values: the rows on the left and the previous and next
-   buttons open a value on the right (its photograph, number, name, words
-   and three small words change together); the arrow keys move along the
-   rows. While the section is on screen the values turn by themselves every
-   eight seconds, until the visitor picks one or points at the section. Its
-   parts come in as it arrives. */
+/* Philosophy & Values: the cards turn round the middle one. The previous
+   and next buttons, the dots, a click on a card beside the open one, a
+   swipe, or the arrow keys bring another to the middle; each card's place
+   is its data-pos (0 the middle, -1 and 1 either side, far-l and far-r out
+   of sight). While the section is on screen the cards turn by themselves
+   every seven seconds, until the visitor turns them or points at them. The
+   head and the cards come in as the section arrives. */
 (function () {
   var root = document.querySelector('.pv');
   if (!root || root.__pv) return;
   root.__pv = true;
-  var rows = [].slice.call(root.querySelectorAll('.pv__row'));
-  var photos = [].slice.call(root.querySelectorAll('.pv__photo'));
-  var texts = [].slice.call(root.querySelectorAll('.pv__text'));
-  var words = [].slice.call(root.querySelectorAll('.pv__vwords span'));
-  var count = root.querySelector('.pv__count b');
-  var n = rows.length;
+  var cards = [].slice.call(root.querySelectorAll('.pv__card'));
+  var dots = [].slice.call(root.querySelectorAll('.pv__dot'));
+  var n = cards.length;
   if (!n) return;
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var at = 0;
 
-  function show(i, focus) {
+  function place(i) {
     at = (i + n) % n;
-    rows.forEach(function (r, k) {
-      r.setAttribute('aria-selected', k === at ? 'true' : 'false');
-      r.tabIndex = k === at ? 0 : -1;
+    cards.forEach(function (c, k) {
+      var d = (k - at + n) % n;
+      if (d > n / 2) d -= n;
+      // with two cards, the other one sits on the right
+      var pos = d === 0 ? '0' : d === 1 ? '1' : d === -1 ? '-1' : d < 0 ? 'far-l' : 'far-r';
+      if (n === 2 && d !== 0) pos = '1';
+      c.setAttribute('data-pos', pos);
+      c.setAttribute('aria-hidden', pos.indexOf('far') === 0 ? 'true' : 'false');
+      c.tabIndex = pos === '-1' || pos === '1' ? 0 : -1;
     });
-    [photos, texts, words].forEach(function (set) {
-      set.forEach(function (el, k) { el.classList.toggle('is-on', k === at); });
-    });
-    texts.forEach(function (t, k) { t.setAttribute('aria-hidden', k === at ? 'false' : 'true'); });
-    if (count) count.textContent = (at + 1 < 10 ? '0' : '') + (at + 1);
-    if (focus) rows[at].focus();
+    dots.forEach(function (d, k) { d.setAttribute('aria-current', k === at ? 'true' : 'false'); });
   }
 
-  // the visitor's choice stops the turning
   var timer = null, held = false, seen = false;
   function stop() { clearInterval(timer); timer = null; }
   function turn() {
     stop();
-    if (reduced || held || !seen) return;
-    timer = setInterval(function () { show(at + 1); }, 8000);
+    if (reduced || held || !seen || n < 2) return;
+    timer = setInterval(function () { place(at + 1); }, 7000);
   }
+  function go(i) { held = true; stop(); place(i); }
 
-  rows.forEach(function (r, k) {
-    r.addEventListener('click', function () { held = true; stop(); show(k); });
+  var prev = root.querySelector('.pv__arrow--prev'), next = root.querySelector('.pv__arrow--next');
+  if (prev) prev.addEventListener('click', function () { go(at - 1); });
+  if (next) next.addEventListener('click', function () { go(at + 1); });
+  dots.forEach(function (d, k) { d.addEventListener('click', function () { go(k); }); });
+  cards.forEach(function (c, k) {
+    c.addEventListener('click', function (e) {
+      if (c.getAttribute('data-pos') === '0') return;
+      e.preventDefault();
+      go(k);
+    });
+    c.addEventListener('keydown', function (e) {
+      if ((e.key === 'Enter' || e.key === ' ') && c.getAttribute('data-pos') !== '0') { e.preventDefault(); go(k); }
+    });
   });
-  root.querySelector('.pv__list').addEventListener('keydown', function (e) {
-    var step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
-    if (e.key === 'Home') step = -at;
-    if (e.key === 'End') step = n - 1 - at;
-    if (step === undefined) return;
-    e.preventDefault();
-    held = true; stop();
-    show(at + step, true);
+  root.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft') { e.preventDefault(); go(at - 1); }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); go(at + 1); }
   });
-  var prev = root.querySelector('.pv__prev'), next = root.querySelector('.pv__next');
-  if (prev) prev.addEventListener('click', function () { held = true; stop(); show(at - 1); });
-  if (next) next.addEventListener('click', function () { held = true; stop(); show(at + 1); });
+
+  // a swipe across the cards
+  var track = root.querySelector('.pv__track'), x0 = null, y0 = 0;
+  track.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+  track.addEventListener('touchend', function (e) {
+    if (x0 === null) return;
+    var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+    x0 = null;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) go(at + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+
   root.addEventListener('mouseenter', stop);
   root.addEventListener('mouseleave', turn);
   root.addEventListener('focusin', stop);
 
-  // the entrance, and the turning only while the section is on screen
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(function (es) {
       es.forEach(function (e) {
         if (e.isIntersecting) { root.classList.add('is-in'); seen = true; turn(); }
         else { seen = false; stop(); }
       });
-    }, { threshold: 0.25 }).observe(root);
+    }, { threshold: 0.2 }).observe(root);
   } else {
     root.classList.add('is-in');
   }
 
-  show(0);
+  // the middle value opens first, so the three stand in their order
+  place(n > 2 ? 1 : 0);
 })();
 
 /* Shrujan in motion: the films opening, the tags swinging, the "Watch"

@@ -1,73 +1,60 @@
 {%- render 'section-design', section: section -%}
 {%- comment -%}
-  Philosophy & Values, on the user's layout: one screen, two panels. Left:
-  the small heading, the title in two lines (the second in maroon), a
-  diamond rule, the line under it, the values as rows (number, round
-  photograph, name in two lines, arrow) on a thin rail, Learn more and a
-  line of small words. Right: the open value's photograph fading into the
-  paper, its number out of all, its name, words and link, a drawn flower
-  with the value's three words, and the previous and next buttons. The
+  Philosophy & Values, on the user's layout: the title in two lines and the
+  line under it, centred; the values as cards turning round the middle one
+  (larger, raised, with a small maroon flower under its photograph), round
+  previous and next buttons at the column's edges, dots, Learn more. The
   values are the section's blocks. Styles in sj-home.css (src/prm.css),
   behaviour in sj-home.js (src/prm.js); the preview's copy is build.py's.
 {%- endcomment -%}
 {%- liquid
   assign cfg = section.settings
   assign n = section.blocks.size
+  assign mid = 0
+  if n > 2
+    assign mid = 1
+  endif
+  assign mid_l = mid | minus: 1
+  assign mid_r = mid | plus: 1
 -%}
-<section class="pv" id="promise" aria-labelledby="pv-title-{{ section.id }}">
-  <div class="pv__grid">
-    <div class="pv__side">
-      <div class="pv__intro">
-        {%- if cfg.eyebrow != blank -%}<p class="pv__eyebrow" data-pv-in style="--d:0">{{ cfg.eyebrow | escape }}</p>{%- endif -%}
-        <h2 class="pv__title" id="pv-title-{{ section.id }}" data-pv-in style="--d:1"><span>{{ cfg.prm_line_1 | escape }}</span>{% if cfg.prm_line_2 != blank %}<em>{{ cfg.prm_line_2 | escape }}</em>{% endif %}</h2>
-        <span class="pv__orn" data-pv-in style="--d:2"><svg viewBox="0 0 58 14" aria-hidden="true"><path d="M0 7h21M37 7h21" stroke="currentColor" stroke-width="1"/><path d="M29 1.5 34.5 7 29 12.5 23.5 7z" fill="none" stroke="currentColor" stroke-width="1"/><path d="M29 4.6 31.4 7 29 9.4 26.6 7z" fill="currentColor" opacity=".55"/></svg></span>
-        {%- if cfg.copy != blank -%}<p class="pv__lede" data-pv-in style="--d:3">{{ cfg.copy | escape }}</p>{%- endif -%}
-      </div>
-      <ol class="pv__list" role="tablist" aria-label="{{ cfg.prm_meta_r | default: 'Our values' | escape }}" data-pv-in style="--d:4">
-        {%- for block in section.blocks -%}
-          {%- liquid
-            assign v_name = block.settings.title | strip
-            assign v_first = v_name | split: ' ' | first
-            assign v_rest = v_name | remove_first: v_first | strip
-            if block.settings.img
-              assign v_src = block.settings.img | image_url: width: 400
-            else
-              assign v_src = block.settings.fallback | asset_url
-            endif
-          -%}
-        <li {{ block.shopify_attributes }}><button class="pv__row" type="button" role="tab" id="pv-tab-{{ section.id }}-{{ forloop.index0 }}" aria-controls="pv-panel-{{ section.id }}" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"><span class="pv__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</span><span class="pv__thumb"><img src="{{ v_src }}" alt="" loading="lazy" style="object-position:{{ block.settings.thumb_focus | default: '50% 40%' | escape }}"></span><span class="pv__name"><span>{{ v_first | escape }}</span><span>{{ v_rest | escape }}</span></span><i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></button></li>
-        {%- endfor -%}
-      </ol>
-      <div class="pv__foot" data-pv-in style="--d:5">
-        {%- if cfg.more_label != blank -%}<a class="pv__more" href="{{ cfg.more_link | default: '/pages/the-shrujan-story' }}">{{ cfg.more_label | escape }} <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>{%- endif -%}
-        {%- if cfg.foot_words != blank -%}<p class="pv__words">{{ cfg.foot_words | escape }}</p>{%- endif -%}
-      </div>
-    </div>
-    <div class="pv__stage" id="pv-panel-{{ section.id }}" role="tabpanel" aria-label="{{ cfg.prm_meta_r | default: 'Our values' | escape }}">
-      <div class="pv__photos">
-        {%- for block in section.blocks -%}
-          {%- if block.settings.img -%}{%- assign v_big = block.settings.img | image_url: width: 1800 -%}{%- else -%}{%- assign v_big = block.settings.fallback | asset_url -%}{%- endif -%}
-        <figure class="pv__photo{% if forloop.first %} is-on{% endif %}"><img src="{{ v_big }}" alt="{{ block.settings.alt | escape }}" loading="lazy" style="object-position:{{ block.settings.focus | default: '60% 35%' | escape }}"></figure>
-        {%- endfor -%}
-      </div>
-      <div class="pv__top" data-pv-in style="--d:2"><p class="pv__count" aria-hidden="true"><b>01</b><i>/</i><span>{% if n < 10 %}0{% endif %}{{ n }}</span></p>{% if cfg.prm_meta_r != blank %}<p class="pv__tag">{{ cfg.prm_meta_r | escape }}</p>{% endif %}</div>
-      <div class="pv__texts" data-pv-in style="--d:3">
-        {%- for block in section.blocks -%}
-          {%- liquid
-            assign v_name = block.settings.title | strip
-            assign v_first = v_name | split: ' ' | first
-            assign v_rest = v_name | remove_first: v_first | strip
-          -%}
-        <article class="pv__text{% if forloop.first %} is-on{% endif %}" aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}"><h3 class="pv__head"><span>{{ v_first | escape }}</span><span>{{ v_rest | escape }}</span></h3><span class="pv__rule" aria-hidden="true"></span><p class="pv__copy">{{ block.settings.copy | strip | escape }}</p>{% if cfg.link_label != blank %}<a class="pv__link" href="{{ block.settings.link | default: cfg.more_link | default: '/pages/the-shrujan-story' }}">{{ cfg.link_label | escape }} <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>{% endif %}</article>
-        {%- endfor -%}
-      </div>
-      <div class="pv__bottom" data-pv-in style="--d:5">
-        <span class="pv__flower"><svg viewBox="-50 -50 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.1"><path transform="rotate(0)" d="M0-9C9-17 11-33 0-46C-11-33-9-17 0-9Z"/><path transform="rotate(90)" d="M0-9C9-17 11-33 0-46C-11-33-9-17 0-9Z"/><path transform="rotate(180)" d="M0-9C9-17 11-33 0-46C-11-33-9-17 0-9Z"/><path transform="rotate(270)" d="M0-9C9-17 11-33 0-46C-11-33-9-17 0-9Z"/><path transform="rotate(45)" d="M0-9C6-15 7-25 0-33C-7-25-6-15 0-9Z"/><path transform="rotate(135)" d="M0-9C6-15 7-25 0-33C-7-25-6-15 0-9Z"/><path transform="rotate(225)" d="M0-9C6-15 7-25 0-33C-7-25-6-15 0-9Z"/><path transform="rotate(315)" d="M0-9C6-15 7-25 0-33C-7-25-6-15 0-9Z"/><circle r="5.5"/></g></svg></span>
-        <div class="pv__trail"><p class="pv__vwords">{%- for block in section.blocks -%}<span{% if forloop.first %} class="is-on"{% endif %}>{{ block.settings.words | escape }}</span>{%- endfor -%}</p></div>
-        <div class="pv__nav"><button class="pv__prev" type="button" aria-label="Previous value"><i class="sj-i sj-i--arrow-left ms" aria-hidden="true"></i></button><button class="pv__next" type="button" aria-label="Next value"><i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></button></div>
-      </div>
-    </div>
+<section class="pv" id="promise" aria-labelledby="pv-title-{{ section.id }}" aria-roledescription="carousel">
+  <div class="pv__head">
+    {%- if cfg.eyebrow != blank -%}<p class="pv__eyebrow" data-pv-in style="--d:0">{{ cfg.eyebrow | escape }}</p>{%- endif -%}
+    <h2 class="pv__title" id="pv-title-{{ section.id }}" data-pv-in style="--d:0"><span>{{ cfg.prm_line_1 | escape }}</span>{% if cfg.prm_line_2 != blank %}<em>{{ cfg.prm_line_2 | escape }}</em>{% endif %}</h2>
+    {%- if cfg.copy != blank -%}<p class="pv__lede" data-pv-in style="--d:1">{{ cfg.copy | escape }}</p>{%- endif -%}
   </div>
+  <div class="pv__stage" data-pv-in style="--d:2">
+    <button class="pv__arrow pv__arrow--prev" type="button" aria-label="Previous value"><i class="sj-i sj-i--caret-left ms" aria-hidden="true"></i></button>
+    <ol class="pv__track">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign k = forloop.index0
+          if k == mid
+            assign pos = '0'
+          elsif k == mid_l
+            assign pos = '-1'
+          elsif k == mid_r
+            assign pos = '1'
+          else
+            assign pos = 'far-r'
+          endif
+          if block.settings.img
+            assign v_src = block.settings.img | image_url: width: 1200
+          else
+            assign v_src = block.settings.fallback | asset_url
+          endif
+        -%}
+      <li class="pv__card" data-pos="{{ pos }}" role="group" aria-roledescription="slide" aria-label="{{ forloop.index }} of {{ n }}" {{ block.shopify_attributes }}><p class="pv__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</p><h3 class="pv__name">{{ block.settings.title | strip | escape }}</h3><p class="pv__copy">{{ block.settings.copy | strip | escape }}</p><span class="pv__photo"><img src="{{ v_src }}" alt="{{ block.settings.alt | escape }}" loading="lazy" style="object-position:{{ block.settings.focus | default: '50% 40%' | escape }}"></span><span class="pv__mark"><svg viewBox="-20 -20 40 40" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.3"><path transform="rotate(0)" d="M0-4C4-8 4-13 0-18C-4-13-4-8 0-4Z"/><path transform="rotate(90)" d="M0-4C4-8 4-13 0-18C-4-13-4-8 0-4Z"/><path transform="rotate(180)" d="M0-4C4-8 4-13 0-18C-4-13-4-8 0-4Z"/><path transform="rotate(270)" d="M0-4C4-8 4-13 0-18C-4-13-4-8 0-4Z"/><path d="M0-6 6 0 0 6-6 0Z" transform="rotate(45) scale(.7)"/><circle r="1.6" fill="currentColor"/></g></svg></span></li>
+      {%- endfor -%}
+    </ol>
+    <button class="pv__arrow pv__arrow--next" type="button" aria-label="Next value"><i class="sj-i sj-i--caret-right ms" aria-hidden="true"></i></button>
+  </div>
+  <div class="pv__dots" data-pv-in style="--d:3">
+    {%- for block in section.blocks -%}<button class="pv__dot" type="button" aria-label="Value {{ forloop.index }}" aria-current="{% if forloop.index0 == mid %}true{% else %}false{% endif %}"></button>{%- endfor -%}
+  </div>
+  {%- if cfg.more_label != blank -%}
+  <a class="pv__more" href="{{ cfg.more_link | default: '/pages/the-shrujan-story' }}" data-pv-in style="--d:4">{{ cfg.more_label | escape }} <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>
+  {%- endif -%}
 </section>
 
 {% schema %}
@@ -77,8 +64,7 @@
     {
       "type": "text",
       "id": "eyebrow",
-      "label": "Small heading",
-      "default": "Our foundation"
+      "label": "Small heading above the title (optional)"
     },
     {
       "type": "text",
@@ -109,24 +95,6 @@
       "id": "more_link",
       "label": "Button link",
       "default": "/pages/the-shrujan-story"
-    },
-    {
-      "type": "text",
-      "id": "foot_words",
-      "label": "Small words beside the button",
-      "default": "People · Craft · A more conscious tomorrow"
-    },
-    {
-      "type": "text",
-      "id": "prm_meta_r",
-      "label": "Small heading over the photograph",
-      "default": "Our values"
-    },
-    {
-      "type": "text",
-      "id": "link_label",
-      "label": "Each value's link label",
-      "default": "Explore this value"
     },
     {
       "type": "header",
@@ -319,18 +287,6 @@
           "default": "We work with deep respect for the people, skills and traditions that shape every Shrujan piece."
         },
         {
-          "type": "text",
-          "id": "words",
-          "label": "Three small words (with ·)",
-          "default": "People · Heritage · Opportunity"
-        },
-        {
-          "type": "text",
-          "id": "link",
-          "label": "Link",
-          "default": "/pages/the-shrujan-story#values"
-        },
-        {
           "type": "image_picker",
           "id": "img",
           "label": "Photograph"
@@ -350,13 +306,7 @@
         {
           "type": "text",
           "id": "focus",
-          "label": "Large photograph focus (x% y%)",
-          "default": "60% 35%"
-        },
-        {
-          "type": "text",
-          "id": "thumb_focus",
-          "label": "Round photograph focus (x% y%)",
+          "label": "Photograph focus (x% y%)",
           "default": "50% 40%"
         }
       ]
@@ -372,12 +322,9 @@
           "settings": {
             "title": "Dignity and Respect",
             "copy": "We work with deep respect for the people, skills and traditions that shape every Shrujan piece.",
-            "words": "People · Heritage · Opportunity",
-            "link": "/pages/the-shrujan-story#values",
             "fallback": "story-dignity.webp",
             "alt": "A Kutchi craftswoman smiling beside an embroidered textile",
-            "focus": "68% 30%",
-            "thumb_focus": "74% 34%"
+            "focus": "56% 35%"
           }
         },
         {
@@ -385,12 +332,9 @@
           "settings": {
             "title": "Continuity of Craft",
             "copy": "Our work keeps the craft traditions of Kutch alive by allowing them to grow and remain relevant.",
-            "words": "Tradition · Growth · Relevance",
-            "link": "/pages/the-shrujan-story#values",
             "fallback": "story-continuity.webp",
             "alt": "Craftswomen of different generations embroidering together",
-            "focus": "62% 40%",
-            "thumb_focus": "60% 40%"
+            "focus": "50% 40%"
           }
         },
         {
@@ -398,12 +342,9 @@
           "settings": {
             "title": "Conscious Practice",
             "copy": "Every decision we make from materials to process is guided by care, responsibility and attention to detail.",
-            "words": "Care · Responsibility · Detail",
-            "link": "/pages/the-shrujan-story#values",
             "fallback": "story-conscious.webp",
             "alt": "Sorting hand-dyed threads in the Shrujan studio",
-            "focus": "58% 40%",
-            "thumb_focus": "56% 44%"
+            "focus": "55% 45%"
           }
         }
       ]

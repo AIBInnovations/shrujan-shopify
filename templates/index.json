@@ -337,12 +337,9 @@
           "settings": {
             "title": "Dignity and Respect",
             "copy": "We work with deep respect for the people, skills and traditions that shape every Shrujan piece.",
-            "words": "People · Heritage · Opportunity",
-            "link": "/pages/the-shrujan-story#values",
             "fallback": "story-dignity.webp",
             "alt": "A Kutchi craftswoman smiling beside an embroidered textile",
-            "focus": "68% 30%",
-            "thumb_focus": "74% 34%"
+            "focus": "56% 35%"
           }
         },
         "b2": {
@@ -350,12 +347,9 @@
           "settings": {
             "title": "Continuity of Craft",
             "copy": "Our work keeps the craft traditions of Kutch alive by allowing them to grow and remain relevant.",
-            "words": "Tradition · Growth · Relevance",
-            "link": "/pages/the-shrujan-story#values",
             "fallback": "story-continuity.webp",
             "alt": "Craftswomen of different generations embroidering together",
-            "focus": "62% 40%",
-            "thumb_focus": "60% 40%"
+            "focus": "50% 40%"
           }
         },
         "b3": {
@@ -363,12 +357,9 @@
           "settings": {
             "title": "Conscious Practice",
             "copy": "Every decision we make from materials to process is guided by care, responsibility and attention to detail.",
-            "words": "Care · Responsibility · Detail",
-            "link": "/pages/the-shrujan-story#values",
             "fallback": "story-conscious.webp",
             "alt": "Sorting hand-dyed threads in the Shrujan studio",
-            "focus": "58% 40%",
-            "thumb_focus": "56% 44%"
+            "focus": "55% 45%"
           }
         }
       },
