@@ -268,14 +268,21 @@ function buildStand() {
 // neck rising out of it, a ridge from the base of the neck out to each
 // shoulder so the shoulders slope, and an arm stub at the end of each ridge
 const NECKC = { ax: 0, ay: 2.95, az: 0.0, bx: 0, by: 3.62, bz: 0.06, r: 0.145 };
-const RIDGE = { ax: 0.1, ay: 3.17, az: -0.04, bx: 0.47, by: 3.0, bz: -0.04, r: 0.105 };
+// the line from the base of the neck down to the shoulder (the trapezius):
+// low and slim, so the shoulders slope and nothing humps up behind the neck
+// (the user: "the back is coming out")
+const RIDGE = { ax: 0.13, ay: 3.05, az: -0.03, bx: 0.55, by: 2.97, bz: -0.02, r: 0.094 };
 // the arms (the user: a form with arms, so the pieces have their sleeves),
 // hanging a little away from the body: the shoulder, the elbow and the
 // wrist, each with the arm's radius there; the wrist is cut flat and capped
 // in teak, as a tailor's form with arms is
-const ARM = { ax: 0.47, ay: 2.99, az: -0.03, r: 0.128 };
-const ELB = { x: 0.635, y: 2.33, z: -0.01, r: 0.088 };
-const WRI = { x: 0.735, y: 1.72, z: 0.07, r: 0.062 };
+// As on a woman's body the shoulders are a little broader than the bust and
+// the arm hangs outside the ribs, a little away from the side, so the armpit
+// sits just above the bust line rather than the arm running into the torso
+// (the user: "where are the armpits").
+const ARM = { ax: 0.575, ay: 2.945, az: -0.01, r: 0.124 };
+const ELB = { x: 0.79, y: 2.35, z: 0.0, r: 0.09 };
+const WRI = { x: 0.9, y: 1.78, z: 0.07, r: 0.062 };
 // how far down the arm the elbow is, as a share of its length
 const ARM_TE = (() => { const u = Math.hypot(ELB.x - ARM.ax, ELB.y - ARM.ay, ELB.z - ARM.az), l = Math.hypot(WRI.x - ELB.x, WRI.y - ELB.y, WRI.z - ELB.z); return u / (u + l); })();
 // the cut across the top of the neck: level, tipped a little toward the back
@@ -295,7 +302,11 @@ function brFast(y) {
   return BR_TABLE[i] * (1 - t) + BR_TABLE[i + 1] * t;
 }
 
-const smin = (a, b, k) => { const h = Math.max(k - Math.abs(a - b), 0) / k; return Math.min(a, b) - h * h * k * 0.25; };
+const smin = (a, b, k) => { if (k <= 1e-5) return Math.min(a, b); const h = Math.max(k - Math.abs(a - b), 0) / k; return Math.min(a, b) - h * h * k * 0.25; };
+// how much the arm (or a sleeve) melts into the body at height y: at the
+// shoulder only; from the armpit down they stay two separate shapes, so no
+// web of cloth joins the sleeve to the side
+const armpitK = (y) => 0.075 * smooth(2.64, 2.88, y);
 // the flat cuts get a softly rounded edge, as a plaster cast has
 const smax = (a, b, k) => -smin(-a, -b, k);
 
@@ -377,8 +388,8 @@ function sleeves(x, y, z, t, flare, len) {
 
 function formSDF(x, y, z) {
   let d = Math.max(torsoSDF(x, y, z), 1.86 - y);
-  d = smin(d, armSDF(x, y, z, 1), 0.1);
-  d = smin(d, armSDF(x, y, z, -1), 0.1);
+  d = smin(d, armSDF(x, y, z, 1), armpitK(y));
+  d = smin(d, armSDF(x, y, z, -1), armpitK(y));
   d = smax(d, (y - NECK.ty) * NECK.ny + (z - NECK.tz) * NECK.nz, 0.03);
   return d;
 }
@@ -392,15 +403,23 @@ function formSDF(x, y, z) {
 const BLOUSE_T = 0.03;
 // the hem, a little lower at the centre front, higher at the back
 const hemY = (x, z) => 2.17 - 0.035 * Math.exp(-(x / 0.22) * (x / 0.22)) * smooth(-0.1, 0.25, z) + 0.06 * smooth(0.0, -0.35, z);
+// how far a point is outside a piece's neck opening, seen from above: a band
+// `w` wide at the front, rounding to a wider circle round the back of the
+// neck, so the cloth stops at the base of the neck all the way round instead
+// of standing up in points beside it (the user: "the back is coming out")
+function neckHole(x, z, w) {
+  return Math.hypot(x, Math.min(0, z)) - (w + 0.08 * smooth(0.04, -0.16, z));
+}
+
 function blouseSDF(x, y, z) {
   // the body of it down to the hem, and short sleeves to the middle of the
   // upper arm, a little fuller at their edge, as a Kutchi kanchli's are
   const body = smax(torsoSDF(x, y, z) - BLOUSE_T, hemY(x, z) - y, 0.02);
-  let d = smin(body, sleeves(x, y, z, BLOUSE_T, 0.02, 0.3), 0.08);
+  let d = smin(body, sleeves(x, y, z, BLOUSE_T, 0.02, 0.3), armpitK(y));
   // the neck: a deep U at the front, shallower at the back, wide enough to
   // leave the base of the neck bare
   const yOpen = 2.97 - 0.17 * smooth(-0.12, 0.2, z) + 2.4 * x * x;
-  const open = smax(Math.abs(x) - 0.27, yOpen - y, 0.05);
+  const open = smax(neckHole(x, z, 0.27), yOpen - y, 0.05);
   d = smax(d, -open, 0.025);
   return d;
 }
@@ -554,7 +573,7 @@ function wrapUV(g) {
   return g;
 }
 
-const BOX = [-0.92, 0.92, 1.96, 3.3, -0.52, 0.64];
+const BOX = [-1.1, 1.1, 1.96, 3.3, -0.52, 0.64];
 
 
 // the long jacket, above the waist: loose over the body and the arm stubs,
@@ -563,10 +582,10 @@ const BOX = [-0.92, 0.92, 1.96, 3.3, -0.52, 0.64];
 function jacketSDF(x, y, z) {
   // three-quarter sleeves, a little loose at the cuff
   const body = smax(torsoSDF(x, y, z) - 0.042, 2.0 - y, 0.015);
-  let d = smin(body, sleeves(x, y, z, 0.042, 0.03, 0.74), 0.1);
+  let d = smin(body, sleeves(x, y, z, 0.042, 0.022, 0.74), armpitK(y));
   const gap = Math.min(0.21, 0.07 + 0.62 * Math.pow(Math.max(0, y - 2.5), 1.15));
   const front = smax(Math.abs(x) - gap, 0.04 - z, 0.03);
-  const back = smax(Math.abs(x) - 0.2, 3.0 - y, 0.04);
+  const back = smax(neckHole(x, z, 0.2), 3.0 - y, 0.04);
   d = smax(d, -Math.min(front, back), 0.02);
   return d;
 }
@@ -575,7 +594,7 @@ function jacketSDF(x, y, z) {
 function innerSDF(x, y, z) {
   let d = torsoSDF(x, y, z) - 0.024;
   const yOpen = 3.0 - 0.12 * smooth(-0.1, 0.2, z) + 1.6 * x * x;
-  d = smax(d, -smax(Math.abs(x) - 0.22, yOpen - y, 0.04), 0.02);
+  d = smax(d, -smax(neckHole(x, z, 0.22), yOpen - y, 0.04), 0.02);
   return smax(d, 2.0 - y, 0.015);
 }
 
@@ -584,17 +603,17 @@ function innerSDF(x, y, z) {
 // (the bandhani one)
 function kurtaNeck(x, y, z, d) {
   const yOpen = 3.0 - 0.07 * smooth(-0.1, 0.2, z) + 1.8 * x * x;
-  const neck = smax(Math.abs(x) - 0.2, yOpen - y, 0.04);
+  const neck = smax(neckHole(x, z, 0.2), yOpen - y, 0.04);
   const slit = smax(smax(Math.abs(x) - 0.012, 2.74 - y, 0.005), 0.05 - z, 0.005);
   return smax(d, -Math.min(neck, slit), 0.015);
 }
 function kurtaSDF(x, y, z) {
   const body = smax(torsoSDF(x, y, z) - 0.036, 2.0 - y, 0.015);
-  return kurtaNeck(x, y, z, smin(body, sleeves(x, y, z, 0.036, 0.034, 0.93), 0.1));
+  return kurtaNeck(x, y, z, smin(body, sleeves(x, y, z, 0.036, 0.022, 0.93), armpitK(y)));
 }
 function kurta3qSDF(x, y, z) {
   const body = smax(torsoSDF(x, y, z) - 0.036, 2.0 - y, 0.015);
-  return kurtaNeck(x, y, z, smin(body, sleeves(x, y, z, 0.036, 0.03, 0.62), 0.1));
+  return kurtaNeck(x, y, z, smin(body, sleeves(x, y, z, 0.036, 0.022, 0.62), armpitK(y)));
 }
 
 // ---------- the sculpted shapes, built off the page ----------
@@ -604,19 +623,19 @@ function kurta3qSDF(x, y, z) {
 // (IndexedDB) under a key made from the code that shapes them, so the next
 // visit draws them at once, and any change to that code builds them afresh.
 const SHAPES = {
-  form: { sdf: 'formSDF', box: [-0.9, 0.9, 1.6, 3.56, -0.5, 0.62], h: 0.0092, shade: 'formShade' },
+  form: { sdf: 'formSDF', box: [-1.06, 1.06, 1.6, 3.56, -0.5, 0.62], h: 0.0092, shade: 'formShade' },
   jacket: { sdf: 'jacketSDF', box: BOX, h: 0.0095, uv: true },
-  kurta: { sdf: 'kurtaSDF', box: [-0.92, 0.92, 1.64, 3.3, -0.52, 0.64], h: 0.0095, uv: true },
+  kurta: { sdf: 'kurtaSDF', box: [-1.14, 1.14, 1.64, 3.3, -0.52, 0.64], h: 0.0095, uv: true },
   kurta3q: { sdf: 'kurta3qSDF', box: BOX, h: 0.0095, uv: true },
-  blouse: { sdf: 'blouseSDF', box: [-0.86, 0.86, 2.06, 3.28, -0.48, 0.6], h: 0.0088, uv: true },
+  blouse: { sdf: 'blouseSDF', box: [-0.98, 0.98, 2.06, 3.28, -0.48, 0.6], h: 0.0088, uv: true },
   inner: { sdf: 'innerSDF', box: [-0.72, 0.72, 1.96, 3.26, -0.5, 0.62], h: 0.0095, uv: true },
 };
 const SDFN = { formSDF, jacketSDF, kurtaSDF, kurta3qSDF, blouseSDF, innerSDF, formShade };
 
 // everything a worker needs to shape the fields, written out as source
 function workerSource() {
-  const arrows = { smooth, gauss, smin, smax, hemY };
-  const fns = [bodyR, shapeAt, radAt, brFast, capsule, cone, armCut, armT, torsoSDF, armSDF, sleeves, formSDF, blouseSDF, jacketSDF, innerSDF, kurtaNeck, kurtaSDF, kurta3qSDF, formShade, netArrays];
+  const arrows = { smooth, gauss, smin, smax, armpitK, hemY };
+  const fns = [bodyR, shapeAt, radAt, brFast, capsule, cone, armCut, armT, torsoSDF, armSDF, sleeves, formSDF, neckHole, blouseSDF, jacketSDF, innerSDF, kurtaNeck, kurtaSDF, kurta3qSDF, formShade, netArrays];
   return [
     `const TOP = ${TOP}, COARSE = ${COARSE}, BLOUSE_T = ${BLOUSE_T}, BR_Y0 = ${BR_Y0}, BR_DY = ${BR_DY};`,
     'let BR_TABLE = null;',
@@ -654,7 +673,7 @@ function buildInWorkers(names) {
 }
 
 function shapesKey() {
-  const src = [smooth, gauss, bodyR, shapeAt, radAt, brFast, smin, smax, capsule, cone, armCut, armT, torsoSDF, armSDF, sleeves, formSDF, hemY, blouseSDF,
+  const src = [smooth, gauss, bodyR, shapeAt, radAt, brFast, smin, smax, armpitK, capsule, cone, armCut, armT, torsoSDF, armSDF, sleeves, formSDF, hemY, neckHole, blouseSDF,
     jacketSDF, innerSDF, kurtaNeck, kurtaSDF, kurta3qSDF, formShade, netArrays, wrapUV].map(String).join('|')
     + JSON.stringify([PROFILE, NECKC, RIDGE, ARM, ELB, WRI, NECK, BLOUSE_T, SHAPES, TOP, COARSE]);
   let h = 2166136261;
