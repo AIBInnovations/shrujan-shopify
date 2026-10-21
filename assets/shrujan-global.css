@@ -120,7 +120,7 @@ body {
   color: var(--ink);
   font-family: var(--font-sans);
   font-weight: 400;
-  font-size: clamp(16.8px, calc(16.4px + 0.101vw), 19px);
+  font-size: var(--fs-lg);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -190,7 +190,7 @@ ul {
 
 .eyebrow {
   font-family: var(--font-sans);
-  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-size: var(--fs-sm);
   font-weight: 500;
   letter-spacing: 0.3em;
   text-transform: uppercase;
@@ -218,7 +218,7 @@ ul {
 .section-title {
   font-family: var(--font-serif);
   font-weight: 500;
-  font-size: clamp(31.4px, calc(27.8px + 0.93vw), 51.5px);
+  font-size: var(--fs-4xl);
   line-height: 1.15;
   color: var(--ink);
 }
@@ -235,7 +235,7 @@ ul {
   gap: 12px;
   background: var(--gerua);
   color: var(--cream);
-  font-size: clamp(13.4px, calc(13px + 0.101vw), 15.7px);
+  font-size: var(--fs-base);
   font-weight: 500;
   letter-spacing: 0.24em;
   text-transform: uppercase;
@@ -275,7 +275,7 @@ ul {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-size: clamp(12.9px, calc(12.4px + 0.101vw), 15.1px);
+  font-size: var(--fs-base);
   font-weight: 500;
   letter-spacing: 0.26em;
   text-transform: uppercase;
@@ -320,7 +320,7 @@ ul {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: clamp(12.9px, 0.717vw, 14.6px);
+  font-size: var(--fs-sm);
   letter-spacing: 0.12em;
   color: var(--ink);
 }
@@ -357,7 +357,7 @@ ul {
 .topbar__note {
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  font-size: 11.8px;
+  font-size: var(--fs-xs);
   color: var(--ink-soft);
 }
 
@@ -428,7 +428,7 @@ ul {
    and body copy in spaced uppercase and stopped them wrapping. */
 .nav-item__link,
 .utility-link {
-  font-size: clamp(12.9px, calc(12.4px + 0.101vw), 15.1px);
+  font-size: var(--fs-base);
   font-weight: 500;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -485,7 +485,7 @@ ul {
 .brand__word {
   font-family: var(--font-serif);
   font-weight: 600;
-  font-size: clamp(29.1px, 2.128vw, 40.3px);
+  font-size: var(--fs-3xl);
   line-height: 1;
   letter-spacing: 0.42em;
   margin-right: -0.42em; /* optically recentre tracked caps */
@@ -493,7 +493,7 @@ ul {
 }
 
 .brand__tag {
-  font-size: clamp(10.1px, 0.616vw, 12.3px);
+  font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: 0.46em;
   margin-right: -0.46em;
@@ -702,7 +702,7 @@ ul {
 }
 
 .navlead__eyebrow {
-  font-size: clamp(11px, calc(10.6px + 0.09vw), 13px);
+  font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: 0.28em;
   text-transform: uppercase;
@@ -712,7 +712,7 @@ ul {
 .navlead__title {
   font-family: var(--font-serif);
   font-weight: 500;
-  font-size: clamp(22px, calc(19.5px + 0.64vw), 36px);
+  font-size: var(--fs-3xl);
   line-height: 1.12;
 }
 
@@ -721,7 +721,7 @@ ul {
 }
 
 .navlead__copy {
-  font-size: clamp(13.5px, calc(13.1px + 0.09vw), 15.5px);
+  font-size: var(--fs-base);
   line-height: 1.5;
   color: var(--cream-dim);
 }
@@ -734,7 +734,7 @@ ul {
   padding-bottom: 3px;
   width: fit-content;
   border-bottom: 1px solid rgba(242, 237, 224, 0.5);
-  font-size: clamp(11px, calc(10.6px + 0.09vw), 13px);
+  font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -754,7 +754,7 @@ ul {
   padding-bottom: 12px;
   margin-bottom: 12px;
   border-bottom: 1px solid var(--hairline);
-  font-size: clamp(11px, calc(10.6px + 0.09vw), 13px);
+  font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: 0.26em;
   text-transform: uppercase;
@@ -812,13 +812,13 @@ ul {
 .navthumbs__label {
   font-family: var(--font-serif);
   font-weight: 500;
-  font-size: clamp(17px, calc(16.1px + 0.23vw), 22px);
+  font-size: var(--fs-lg);
   line-height: 1.15;
   color: var(--ink);
 }
 
 .navthumbs__sub {
-  font-size: clamp(11px, calc(10.6px + 0.09vw), 13px);
+  font-size: var(--fs-xs);
   color: var(--ink-soft);
 }
 
@@ -851,7 +851,7 @@ ul {
   border-bottom: 1px solid transparent;
   font-family: var(--font-serif);
   font-weight: 500;
-  font-size: clamp(17px, calc(16.1px + 0.23vw), 22px);
+  font-size: var(--fs-lg);
   color: var(--ink);
   transition: color var(--dur-quick) var(--ease);
 }
@@ -912,7 +912,7 @@ ul {
 .navfeat__title {
   font-family: var(--font-serif);
   font-weight: 500;
-  font-size: clamp(17px, calc(16.1px + 0.23vw), 22px);
+  font-size: var(--fs-lg);
   line-height: 1.15;
   color: var(--ink);
 }
@@ -922,7 +922,7 @@ ul {
 }
 
 .navfeat__sub {
-  font-size: clamp(11px, calc(10.6px + 0.09vw), 13px);
+  font-size: var(--fs-xs);
   color: var(--ink-soft);
 }
 
@@ -934,7 +934,7 @@ ul {
   padding-bottom: 3px;
   width: fit-content;
   border-bottom: 1px solid var(--hairline-strong);
-  font-size: clamp(11px, calc(10.6px + 0.09vw), 13px);
+  font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -1021,7 +1021,7 @@ ul {
 .mobile-nav__sub a {
   padding: 9px 0;
   border-bottom: 0;
-  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-size: var(--fs-sm);
   font-weight: 400;
   letter-spacing: 0.1em;
   text-transform: none;
@@ -1031,7 +1031,7 @@ ul {
 .mobile-nav a {
   display: block;
   padding: 16px var(--gutter);
-  font-size: 13.4px;
+  font-size: var(--fs-sm);
   font-weight: 500;
   letter-spacing: 0.24em;
   text-transform: uppercase;
@@ -1143,7 +1143,7 @@ a.hero-cell:hover img {
   text-align: left;
   z-index: 2;
   color: var(--cream);
-  font-size: clamp(14px, 0.918vw, 17.4px);
+  font-size: var(--fs-md);
   font-weight: 500;
   /* 0.22em was tuned for two-word labels. The nav names are longer, and at
      that tracking they broke mid-phrase in the narrow cells. */
@@ -1231,7 +1231,7 @@ a.hero-cell:hover .hero-cell__label svg {
   top: auto;
   bottom: clamp(28px, 3vw, 52px);
   transform: none;
-  font-size: clamp(15px, 1.05vw, 19px);
+  font-size: var(--fs-lg);
 }
 
 .hero-cell__label--montage em {
@@ -1239,7 +1239,7 @@ a.hero-cell:hover .hero-cell__label svg {
   margin-top: 10px;
   font-family: var(--font-serif);
   font-style: normal;
-  font-size: clamp(20px, 1.6vw, 30px);
+  font-size: var(--fs-2xl);
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1249,11 +1249,11 @@ a.hero-cell:hover .hero-cell__label svg {
 @media (max-width: 720px) {
   .hero-cell__label--montage {
     bottom: 20px;
-    font-size: 13px;
+    font-size: var(--fs-sm);
   }
 
   .hero-cell__label--montage em {
-    font-size: 17px;
+    font-size: var(--fs-lg);
   }
 }
 
@@ -1279,7 +1279,7 @@ a.hero-cell:hover .hero-cell__label svg {
 .hero-message__title {
   font-family: var(--font-serif);
   font-weight: 600;
-  font-size: clamp(38.1px, calc(32.4px + 1.445vw), 69.4px);
+  font-size: var(--fs-5xl);
   line-height: 1.04;
   letter-spacing: 0.005em;
 }
@@ -1314,7 +1314,7 @@ a.hero-cell:hover .hero-cell__label svg {
 
 .hero-message__copy {
   margin-top: clamp(18px, 1.7vw, 28px);
-  font-size: clamp(15.7px, 0.952vw, 18.5px);
+  font-size: var(--fs-lg);
   line-height: 1.7;
   color: var(--ink-soft);
   max-width: 34ch;
@@ -1325,7 +1325,7 @@ a.hero-cell:hover .hero-cell__label svg {
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  font-size: clamp(12.9px, calc(12.4px + 0.101vw), 15.1px);
+  font-size: var(--fs-base);
   font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -1393,7 +1393,7 @@ a.hero-cell:hover .hero-cell__label svg {
 }
 
 .hero-story__title {
-  font-size: clamp(14.6px, 0.941vw, 17.9px);
+  font-size: var(--fs-md);
   font-weight: 500;
   /* 0.22em pushed "Rooted in heritage." past the width of this cell — it is
      the narrowest in the bento — so the line broke mid-phrase. Tighter
@@ -1405,7 +1405,7 @@ a.hero-cell:hover .hero-cell__label svg {
 }
 
 .hero-story__copy {
-  font-size: clamp(15.7px, 0.941vw, 17.9px);
+  font-size: var(--fs-md);
   line-height: 1.75;
   color: var(--cream-dim);
 }
@@ -1415,7 +1415,7 @@ a.hero-cell:hover .hero-cell__label svg {
   align-items: center;
   gap: 10px;
   align-self: flex-start;
-  font-size: clamp(13.4px, calc(13px + 0.101vw), 15.7px);
+  font-size: var(--fs-base);
   font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -1497,7 +1497,7 @@ a.hero-cell:hover .hero-cell__label svg {
   gap: clamp(34px, 2.4vw, 52px);
   padding-right: clamp(34px, 2.4vw, 52px);
   font-family: var(--font-serif);
-  font-size: clamp(16.8px, 1.064vw, 21.3px);
+  font-size: var(--fs-lg);
   font-weight: 500;
   letter-spacing: 0.42em;
   text-transform: uppercase;
@@ -1564,7 +1564,7 @@ a.hero-cell:hover .hero-cell__label svg {
 .seal__no {
   font-family: var(--font-serif);
   font-weight: 500;
-  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  font-size: var(--fs-md);
   letter-spacing: 0.22em;
   color: var(--gold);
 }
@@ -1603,7 +1603,7 @@ a.hero-cell:hover .hero-cell__label svg {
   margin-top: clamp(18px, 1.8vw, 26px);
   font-family: var(--font-serif);
   font-weight: 600;
-  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  font-size: var(--fs-xl);
   line-height: 1.2;
   color: var(--ink);
   transition: color var(--dur-quick) var(--ease);
@@ -1616,7 +1616,7 @@ a.hero-cell:hover .hero-cell__label svg {
 .seal__copy {
   margin-top: 10px;
   max-width: 26ch;
-  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  font-size: var(--fs-md);
   line-height: 1.6;
   color: var(--ink-soft);
 }
@@ -1669,7 +1669,7 @@ a.hero-cell:hover .hero-cell__label svg {
 .tw__title {
   font-family: var(--font-serif);
   font-weight: 500;
-  font-size: clamp(31.4px, calc(27.8px + 0.93vw), 51.5px);
+  font-size: var(--fs-4xl);
   line-height: 1.15;
   color: var(--ink);
 }
@@ -1698,7 +1698,7 @@ a.hero-cell:hover .hero-cell__label svg {
 }
 
 .tw-rating__count {
-  font-size: clamp(13.4px, calc(13px + 0.078vw), 15.1px);
+  font-size: var(--fs-base);
   color: var(--ink-soft);
 }
 
@@ -1726,7 +1726,7 @@ a.hero-cell:hover .hero-cell__label svg {
 }
 
 .tw-loved__label {
-  font-size: clamp(13.4px, calc(13px + 0.078vw), 15.1px);
+  font-size: var(--fs-base);
   line-height: 1.45;
   color: var(--ink-soft);
 }
@@ -1830,14 +1830,14 @@ a.hero-cell:hover .hero-cell__label svg {
 }
 
 .tw-cell__name {
-  font-size: clamp(15.1px, 0.896vw, 17.4px);
+  font-size: var(--fs-md);
   font-weight: 500;
   color: var(--ink);
 }
 
 .tw-cell__role {
   margin-top: 2px;
-  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-size: var(--fs-sm);
   color: var(--ink-soft);
 }
 
@@ -1845,14 +1845,14 @@ a.hero-cell:hover .hero-cell__label svg {
   margin-top: clamp(20px, 1.8vw, 30px);
   font-family: var(--font-serif);
   font-weight: 600;
-  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  font-size: var(--fs-xl);
   color: var(--ink);
 }
 
 .tw-cell__quote {
   margin-top: auto;
   padding-top: clamp(24px, 2.4vw, 40px);
-  font-size: clamp(15.1px, 0.896vw, 17.4px);
+  font-size: var(--fs-md);
   line-height: 1.65;
   color: var(--ink-soft);
 }
@@ -1887,7 +1887,7 @@ a.hero-cell:hover .hero-cell__label svg {
 /* ---- back face: the pieces she bought ---- */
 
 .tw-buys__eyebrow {
-  font-size: clamp(11.8px, 0.694vw, 13.4px);
+  font-size: var(--fs-sm);
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -1935,7 +1935,7 @@ a.hero-cell:hover .hero-cell__label svg {
 
 .tw-buys__name {
   margin-top: 8px;
-  font-size: clamp(12.3px, 0.739vw, 14px);
+  font-size: var(--fs-sm);
   line-height: 1.35;
   color: var(--ink-soft);
 }
@@ -1943,7 +1943,7 @@ a.hero-cell:hover .hero-cell__label svg {
 .tw-buys__link {
   margin-top: clamp(14px, 1.2vw, 20px);
   align-self: flex-start;
-  font-size: clamp(12.3px, 0.739vw, 14px);
+  font-size: var(--fs-sm);
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -2040,7 +2040,7 @@ a.hero-cell:hover .hero-cell__label svg {
   padding: 10px 22px;
   border-radius: var(--radius-pill);
   border: 1px solid var(--hairline);
-  font-size: clamp(12.9px, calc(12.4px + 0.101vw), 15.1px);
+  font-size: var(--fs-base);
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -2100,7 +2100,7 @@ a.hero-cell:hover .hero-cell__label svg {
   border-radius: var(--radius-pill);
   background: var(--ivory);
   color: var(--ink);
-  font-size: clamp(11.2px, 0.65vw, 12.9px);
+  font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -2149,7 +2149,7 @@ a.hero-cell:hover .hero-cell__label svg {
   background: var(--ink);
   color: var(--cream);
   text-align: center;
-  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-size: var(--fs-sm);
   font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -2170,7 +2170,7 @@ a.hero-cell:hover .hero-cell__label svg {
 .piece__name {
   font-family: var(--font-serif);
   font-weight: 600;
-  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  font-size: var(--fs-xl);
   line-height: 1.25;
   color: var(--ink);
   transition: color var(--dur-quick) var(--ease);
@@ -2191,7 +2191,7 @@ a.hero-cell:hover .hero-cell__label svg {
 
 .piece__craft {
   margin-top: 5px;
-  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-size: var(--fs-sm);
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -2200,7 +2200,7 @@ a.hero-cell:hover .hero-cell__label svg {
 
 .piece__price {
   margin-top: 10px;
-  font-size: clamp(15.1px, calc(14.7px + 0.101vw), 17.4px);
+  font-size: var(--fs-md);
   font-weight: 500;
   color: var(--ink);
 }
@@ -2253,13 +2253,13 @@ a.hero-cell:hover .hero-cell__label svg {
 .promise__title {
   font-family: var(--font-serif);
   font-weight: 600;
-  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  font-size: var(--fs-xl);
   color: var(--ink);
 }
 
 .promise__copy {
   margin-top: 6px;
-  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-size: var(--fs-sm);
   color: var(--ink-soft);
 }
 
@@ -2310,7 +2310,7 @@ a.hero-cell:hover .hero-cell__label svg {
 .faq__no {
   font-family: var(--font-serif);
   font-weight: 500;
-  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  font-size: var(--fs-md);
   letter-spacing: 0.18em;
   color: var(--gold);
   transition: color var(--dur-quick) var(--ease);
@@ -2319,7 +2319,7 @@ a.hero-cell:hover .hero-cell__label svg {
 .faq__q {
   font-family: var(--font-serif);
   font-weight: 600;
-  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  font-size: var(--fs-xl);
   line-height: 1.3;
   color: var(--ink);
   transition: color var(--dur-quick) var(--ease);
@@ -2366,7 +2366,7 @@ a.hero-cell:hover .hero-cell__label svg {
   margin-left: calc(2.5ch + clamp(16px, 2vw, 36px));
   max-width: 78ch;
   padding-bottom: clamp(20px, 2vw, 30px);
-  font-size: clamp(15.7px, calc(15.2px + 0.101vw), 17.9px);
+  font-size: var(--fs-md);
   line-height: 1.7;
   color: var(--ink-soft);
 }
@@ -2411,7 +2411,7 @@ a.hero-cell:hover .hero-cell__label svg {
 .spotlight__title {
   font-family: var(--font-serif);
   font-weight: 500;
-  font-size: clamp(31.4px, calc(27.8px + 0.93vw), 51.5px);
+  font-size: var(--fs-4xl);
   line-height: 1.25; /* a touch more: the inline chips need clearance */
   color: var(--ink);
 }
@@ -2464,14 +2464,14 @@ a.hero-cell:hover .hero-cell__label svg {
 .spotlight__outro p {
   max-width: 46ch;
   text-align: right;
-  font-size: clamp(16.8px, calc(16.4px + 0.101vw), 19px);
+  font-size: var(--fs-lg);
   line-height: 1.6;
   color: var(--ink-soft);
 }
 
 .spotlight__copy {
   max-width: 42ch;
-  font-size: clamp(16.8px, calc(16.4px + 0.101vw), 19px);
+  font-size: var(--fs-lg);
   line-height: 1.6;
   color: var(--ink-soft);
 }
@@ -2617,7 +2617,7 @@ a.hero-cell:hover .hero-cell__label svg {
   display: block;
   font-family: var(--font-serif);
   font-weight: 500;
-  font-size: clamp(29.1px, calc(26.3px + 0.717vw), 44.8px);
+  font-size: var(--fs-3xl);
   line-height: 1;
   color: var(--ink);
 }
@@ -2625,7 +2625,7 @@ a.hero-cell:hover .hero-cell__label svg {
 .spotlight__stat span {
   display: block;
   margin-top: 8px;
-  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  font-size: var(--fs-md);
   font-weight: 500;
   line-height: 1.5;
   letter-spacing: 0.04em;
@@ -2654,7 +2654,7 @@ a.hero-cell:hover .hero-cell__label svg {
   top: 30%;
   z-index: 3;
   max-width: 16ch;
-  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  font-size: var(--fs-md);
   font-weight: 500;
   line-height: 1.55;
   letter-spacing: 0.04em;
@@ -2671,7 +2671,7 @@ a.hero-cell:hover .hero-cell__label svg {
 
 .best__legend {
   max-width: 26ch;
-  font-size: clamp(12.9px, calc(12.4px + 0.101vw), 15.1px);
+  font-size: var(--fs-base);
   line-height: 1.5;
   color: var(--ink-soft);
 }
@@ -2801,7 +2801,7 @@ a.hero-cell:hover .hero-cell__label svg {
   border-radius: var(--radius);
   background: rgba(249, 245, 234, 0.94);
   color: var(--ink);
-  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-size: var(--fs-sm);
   font-weight: 500;
   line-height: 1.4;
   opacity: 0;
@@ -2823,7 +2823,7 @@ a.hero-cell:hover .hero-cell__label svg {
 .best-card__name {
   font-family: var(--font-serif);
   font-weight: 600;
-  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  font-size: var(--fs-xl);
   line-height: 1.25;
   color: var(--ink);
   transition: color var(--dur-quick) var(--ease);
@@ -2845,7 +2845,7 @@ a.hero-cell:hover .hero-cell__label svg {
 
 .best-card__craft {
   margin-top: 5px;
-  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-size: var(--fs-sm);
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -2854,7 +2854,7 @@ a.hero-cell:hover .hero-cell__label svg {
 
 .best-card__price {
   margin-top: 10px;
-  font-size: clamp(15.1px, calc(14.7px + 0.101vw), 17.4px);
+  font-size: var(--fs-md);
   font-weight: 500;
   color: var(--ink);
 }
@@ -2887,7 +2887,7 @@ a.hero-cell:hover .hero-cell__label svg {
 
 .best-card__sold {
   margin-top: 8px;
-  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-size: var(--fs-sm);
   color: var(--ink-soft);
 }
 
@@ -2955,7 +2955,7 @@ a.hero-cell:hover .hero-cell__label svg {
 }
 
 .atelier__eyebrow {
-  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-size: var(--fs-sm);
   font-weight: 500;
   letter-spacing: 0.3em;
   text-transform: uppercase;
@@ -2966,13 +2966,13 @@ a.hero-cell:hover .hero-cell__label svg {
   margin-top: 16px;
   font-family: var(--font-serif);
   font-weight: 500;
-  font-size: clamp(31.4px, calc(27.8px + 0.93vw), 51.5px);
+  font-size: var(--fs-4xl);
   line-height: 1.12;
 }
 
 .atelier__copy {
   margin-top: 18px;
-  font-size: clamp(15.7px, 0.952vw, 18.5px);
+  font-size: var(--fs-lg);
   line-height: 1.7;
   color: var(--cream-dim);
   max-width: 40ch;
@@ -3016,14 +3016,14 @@ a.hero-cell:hover .hero-cell__label svg {
   display: block;
   font-family: var(--font-serif);
   font-weight: 600;
-  font-size: clamp(17.9px, 1.064vw, 21.3px);
+  font-size: var(--fs-lg);
   color: var(--ink);
 }
 
 .atelier__tag span {
   display: block;
   margin-top: 6px;
-  font-size: clamp(13.4px, calc(13px + 0.078vw), 15.1px);
+  font-size: var(--fs-base);
   line-height: 1.5;
   color: var(--ink-soft);
 }
@@ -3047,7 +3047,7 @@ a.hero-cell:hover .hero-cell__label svg {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   color: var(--cream);
-  font-size: clamp(13.4px, calc(13px + 0.078vw), 15.1px);
+  font-size: var(--fs-base);
   font-weight: 500;
   letter-spacing: 0.04em;
   transition: background var(--dur-quick) var(--ease);
@@ -3144,7 +3144,7 @@ a.hero-cell:hover .hero-cell__label svg {
   z-index: 2;
   font-family: var(--font-serif);
   font-weight: 600;
-  font-size: clamp(16.8px, 1.008vw, 20.2px);
+  font-size: var(--fs-lg);
   line-height: 1;
   color: var(--cream-dim);
 }
@@ -3164,7 +3164,7 @@ a.hero-cell:hover .hero-cell__label svg {
   white-space: nowrap;
   font-family: var(--font-serif);
   font-weight: 600;
-  font-size: clamp(19px, 1.12vw, 23.5px);
+  font-size: var(--fs-xl);
   letter-spacing: 0.02em;
   color: var(--cream);
   transition: opacity var(--dur-quick) var(--ease);
@@ -3203,13 +3203,13 @@ a.hero-cell:hover .hero-cell__label svg {
 .catpanel__name {
   font-family: var(--font-serif);
   font-weight: 600;
-  font-size: clamp(23.5px, 1.68vw, 33.6px);
+  font-size: var(--fs-2xl);
   line-height: 1.15;
 }
 
 .catpanel__copy {
   max-width: 30ch;
-  font-size: clamp(14px, 0.829vw, 16.2px);
+  font-size: var(--fs-base);
   line-height: 1.5;
   color: var(--cream-dim);
 }
@@ -3229,7 +3229,7 @@ a.hero-cell:hover .hero-cell__label svg {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-size: var(--fs-sm);
   font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -3346,7 +3346,7 @@ a.hero-cell:hover .hero-cell__label svg {
   top: 12px;
   left: 12px;
   z-index: 2;
-  font-size: clamp(11.8px, 0.694vw, 14px);
+  font-size: var(--fs-sm);
   font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -3371,7 +3371,7 @@ a.hero-cell:hover .hero-cell__label svg {
 .product-card__name {
   font-family: var(--font-serif);
   font-weight: 600;
-  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  font-size: var(--fs-xl);
   line-height: 1.2;
   color: var(--ink);
   transition: color var(--dur-quick) var(--ease);
@@ -3383,7 +3383,7 @@ a.hero-cell:hover .hero-cell__label svg {
 
 .product-card__credit {
   margin-top: 6px;
-  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-size: var(--fs-sm);
   font-weight: 400;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -3392,7 +3392,7 @@ a.hero-cell:hover .hero-cell__label svg {
 
 .product-card__price {
   margin-top: 9px;
-  font-size: clamp(15.1px, calc(14.7px + 0.101vw), 17.4px);
+  font-size: var(--fs-md);
   font-weight: 500;
   letter-spacing: 0.06em;
   color: var(--ink);
@@ -3473,7 +3473,7 @@ a.hero-cell:hover .hero-cell__label svg {
 
 .craft__shot figcaption {
   margin-top: 12px;
-  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-size: var(--fs-sm);
   font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -3502,14 +3502,14 @@ a.hero-cell:hover .hero-cell__label svg {
 .stat__value {
   font-family: var(--font-serif);
   font-weight: 500;
-  font-size: clamp(29.1px, calc(26.3px + 0.717vw), 44.8px);
+  font-size: var(--fs-3xl);
   line-height: 1;
   color: var(--gerua);
 }
 
 .stat__label {
   margin-top: 8px;
-  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-size: var(--fs-sm);
   font-weight: 500;
   letter-spacing: 0.22em;
   /* Small caps, not full caps. Lowercasing first means the small-caps
@@ -3544,7 +3544,7 @@ a.hero-cell:hover .hero-cell__label svg {
   font-family: var(--font-serif);
   font-style: italic;
   font-weight: 500;
-  font-size: clamp(24.6px, calc(21.8px + 0.717vw), 40.3px);
+  font-size: var(--fs-3xl);
   line-height: 1.35;
   max-width: 24ch;
   margin-inline: auto;
@@ -3552,7 +3552,7 @@ a.hero-cell:hover .hero-cell__label svg {
 
 .quote figcaption {
   margin-top: 30px;
-  font-size: 12.3px;
+  font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: 0.34em;
   text-transform: uppercase;
@@ -3629,7 +3629,7 @@ a.hero-cell:hover .hero-cell__label svg {
 .journal-feature__title {
   font-family: var(--font-serif);
   font-weight: 600;
-  font-size: clamp(24.6px, 1.792vw, 35.8px);
+  font-size: var(--fs-3xl);
   line-height: 1.25;
   color: var(--ink);
   max-width: 24ch;
@@ -3672,14 +3672,14 @@ a.hero-cell:hover .hero-cell__label svg {
 }
 
 .journal-author__name {
-  font-size: clamp(15.7px, calc(15.2px + 0.101vw), 17.9px);
+  font-size: var(--fs-md);
   font-weight: 500;
   color: var(--ink);
 }
 
 .journal-author__role {
   margin-top: 2px;
-  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-size: var(--fs-sm);
   color: var(--ink-soft);
 }
 
@@ -3688,7 +3688,7 @@ a.hero-cell:hover .hero-cell__label svg {
 .journal-pill {
   display: inline-flex;
   align-items: center;
-  font-size: clamp(11.8px, 0.694vw, 13.4px);
+  font-size: var(--fs-sm);
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -3770,7 +3770,7 @@ a.hero-cell:hover .hero-cell__label svg {
   margin-top: 14px;
   font-family: var(--font-serif);
   font-weight: 600;
-  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  font-size: var(--fs-xl);
   line-height: 1.3;
   text-align: center;
   color: var(--ink);
@@ -3807,7 +3807,7 @@ a.hero-cell:hover .hero-cell__label svg {
   }
 
   .journal-feature__title {
-    font-size: clamp(22.4px, 3.808vh, 33.6px);
+    font-size: var(--fs-2xl);
   }
 
   .journal-feature__excerpt {
@@ -3847,7 +3847,7 @@ a.hero-cell:hover .hero-cell__label svg {
 
   .journal-card__title {
     margin-top: 8px;
-    font-size: clamp(16.8px, 2.688vh, 21.3px);
+    font-size: var(--fs-lg);
   }
 }
 
@@ -3917,7 +3917,7 @@ a.hero-cell:hover .hero-cell__label svg {
 
 .looks__label {
   padding: 14px 22px;
-  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-size: var(--fs-sm);
   font-weight: 500;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -3949,7 +3949,7 @@ a.hero-cell:hover .hero-cell__label svg {
   place-items: center;
   padding: 12px 20px;
   border-inline: 1px solid var(--hairline);
-  font-size: clamp(13.4px, calc(13px + 0.101vw), 15.7px);
+  font-size: var(--fs-base);
   color: var(--ink);
 }
 
@@ -4020,21 +4020,21 @@ a.hero-cell:hover .hero-cell__label svg {
 .looks-spot__name {
   font-family: var(--font-serif);
   font-weight: 600;
-  font-size: clamp(16.8px, 1.008vw, 20.2px);
+  font-size: var(--fs-lg);
   line-height: 1.25;
   color: var(--ink);
 }
 
 .looks-spot__price {
   margin-top: 4px;
-  font-size: clamp(14px, calc(13.6px + 0.078vw), 15.7px);
+  font-size: var(--fs-base);
   color: var(--ink-soft);
 }
 
 .looks-spot__link {
   display: inline-block;
   margin-top: 8px;
-  font-size: clamp(12.9px, 0.762vw, 14.6px);
+  font-size: var(--fs-sm);
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -4125,7 +4125,7 @@ a.hero-cell:hover .hero-cell__label svg {
 
 .reels__seal text {
   font-family: var(--font-sans);
-  font-size: 10.5px;
+  font-size: var(--fs-2xs);
   font-weight: 500;
   letter-spacing: 0.28em;
   text-transform: uppercase;
@@ -4209,7 +4209,7 @@ a.hero-cell:hover .hero-cell__label svg {
   border-radius: var(--radius-pill);
   background: rgba(18, 10, 8, 0.42);
   backdrop-filter: blur(5px);
-  font-size: clamp(11.8px, 0.694vw, 13.4px);
+  font-size: var(--fs-sm);
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -4225,7 +4225,7 @@ a.hero-cell:hover .hero-cell__label svg {
   z-index: 2;
   font-family: var(--font-serif);
   font-weight: 600;
-  font-size: clamp(16.8px, calc(16.4px + 0.101vw), 19px);
+  font-size: var(--fs-lg);
   line-height: 1.25;
   color: var(--cream);
   text-shadow: 0 1px 14px rgba(18, 10, 8, 0.5);
@@ -4375,13 +4375,13 @@ a.house-tile:hover > img {
 .house-tile__name {
   font-family: var(--font-serif);
   font-weight: 600;
-  font-size: clamp(19px, calc(17.5px + 0.4vw), 28px);
+  font-size: var(--fs-2xl);
   line-height: 1.15;
 }
 
 .house-tile__note {
   max-width: 30ch;
-  font-size: clamp(12px, calc(11.6px + 0.07vw), 13.5px);
+  font-size: var(--fs-sm);
   line-height: 1.5;
   color: rgba(249, 245, 234, 0.72);
 }
@@ -4484,7 +4484,7 @@ a.house-tile:hover .house-tile__arrow {
 }
 
 .shopcta__eyebrow {
-  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-size: var(--fs-sm);
   font-weight: 500;
   letter-spacing: 0.3em;
   text-transform: uppercase;
@@ -4495,7 +4495,7 @@ a.house-tile:hover .house-tile__arrow {
   margin-top: 18px;
   font-family: var(--font-serif);
   font-weight: 500;
-  font-size: clamp(31.4px, calc(27.8px + 0.93vw), 51.5px);
+  font-size: var(--fs-4xl);
   line-height: 1.15;
   color: var(--ink);
 }
@@ -4509,7 +4509,7 @@ a.house-tile:hover .house-tile__arrow {
 .shopcta__copy {
   margin-top: 16px;
   max-width: 42ch;
-  font-size: clamp(16.8px, calc(16.4px + 0.101vw), 19px);
+  font-size: var(--fs-lg);
   line-height: 1.6;
   color: var(--ink-soft);
 }
@@ -4541,7 +4541,7 @@ a.house-tile:hover .house-tile__arrow {
   display: flex;
   gap: clamp(16px, 2vw, 32px);
   flex-wrap: wrap;
-  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-size: var(--fs-sm);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-soft);
@@ -4650,7 +4650,7 @@ a.house-tile:hover .house-tile__arrow {
 }
 
 .fbrand__tag {
-  font-size: clamp(11px, calc(10.6px + 0.09vw), 13px);
+  font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -4671,7 +4671,7 @@ a.house-tile:hover .house-tile__arrow {
 }
 
 .fletters__eyebrow {
-  font-size: clamp(11.8px, 0.694vw, 13.4px);
+  font-size: var(--fs-sm);
   font-weight: 500;
   letter-spacing: 0.3em;
   text-transform: uppercase;
@@ -4682,7 +4682,7 @@ a.house-tile:hover .house-tile__arrow {
   margin-top: 10px;
   font-family: var(--font-serif);
   font-weight: 600;
-  font-size: clamp(24.6px, 1.68vw, 33.6px);
+  font-size: var(--fs-2xl);
   line-height: 1.15;
   color: var(--cream);
 }
@@ -4690,7 +4690,7 @@ a.house-tile:hover .house-tile__arrow {
 .fletters__copy {
   margin-top: 8px;
   max-width: 52ch;
-  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  font-size: var(--fs-md);
   line-height: 1.6;
   color: var(--cream-dim);
 }
@@ -4717,7 +4717,7 @@ a.house-tile:hover .house-tile__arrow {
   min-width: 0;
   padding: 10px 0;
   font-family: var(--font-sans);
-  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  font-size: var(--fs-md);
   color: var(--cream);
   background: transparent;
   border: 0;
@@ -4738,7 +4738,7 @@ a.house-tile:hover .house-tile__arrow {
   gap: 9px;
   padding: 11px 22px;
   border-radius: var(--radius-pill);
-  font-size: clamp(11.8px, 0.694vw, 13.4px);
+  font-size: var(--fs-sm);
   font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -4754,7 +4754,7 @@ a.house-tile:hover .house-tile__arrow {
 
 .fletters__sent {
   margin-top: clamp(14px, 1.5vw, 22px);
-  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  font-size: var(--fs-md);
   color: var(--tan);
 }
 
@@ -4778,7 +4778,7 @@ a.house-tile:hover .house-tile__arrow {
   gap: 12px;
   margin-bottom: clamp(12px, 1.3vw, 20px);
   font-family: var(--font-sans);
-  font-size: clamp(11.8px, 0.694vw, 13.4px);
+  font-size: var(--fs-sm);
   font-weight: 500;
   letter-spacing: 0.26em;
   text-transform: uppercase;
@@ -4800,7 +4800,7 @@ a.house-tile:hover .house-tile__arrow {
 }
 
 .fmap a {
-  font-size: clamp(14px, calc(13.6px + 0.078vw), 15.7px);
+  font-size: var(--fs-base);
   color: var(--footer-link, rgba(242, 237, 224, 0.72));
   transition: color var(--dur-quick) var(--ease);
 }
@@ -4817,7 +4817,7 @@ a.house-tile:hover .house-tile__arrow {
 
 .freach__label {
   display: block;
-  font-size: clamp(10.4px, calc(10px + 0.09vw), 12px);
+  font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -4835,7 +4835,7 @@ a.house-tile:hover .house-tile__arrow {
 .freach__value {
   display: block;
   margin-top: 2px;
-  font-size: clamp(14px, calc(13.6px + 0.078vw), 15.7px);
+  font-size: var(--fs-base);
   color: var(--footer-text, var(--cream));
   transition: color var(--dur-quick) var(--ease);
 }
@@ -4855,7 +4855,7 @@ a.house-tile:hover .house-tile__arrow {
   margin-top: clamp(20px, 2.2vw, 36px);
   padding-top: clamp(12px, 1.2vw, 18px);
   border-top: 1px dashed rgba(199, 165, 106, 0.34);
-  font-size: clamp(12.9px, 0.762vw, 14.6px);
+  font-size: var(--fs-sm);
   color: var(--footer-muted, rgba(242, 237, 224, 0.5));
 }
 
@@ -5392,7 +5392,7 @@ a.house-tile:hover .house-tile__arrow {
 }
 
 .house__strip-label {
-  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-size: var(--fs-sm);
   font-weight: 500;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -5411,7 +5411,7 @@ a.house-tile:hover .house-tile__arrow {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: clamp(13.4px, calc(13px + 0.101vw), 15.7px);
+  font-size: var(--fs-base);
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -5451,12 +5451,12 @@ a.house-tile:hover .house-tile__arrow {
   }
 
   .nav-item__link {
-    font-size: 13px;
+    font-size: var(--fs-xs);
     letter-spacing: 0.14em;
   }
 
   .utility-link {
-    font-size: 12.5px;
+    font-size: var(--fs-sm);
     letter-spacing: 0.12em;
   }
 }
@@ -5493,7 +5493,7 @@ a.house-tile:hover .house-tile__arrow {
   }
 
   body {
-    font-size: 15.5px;
+    font-size: var(--fs-md);
     line-height: 1.55;
   }
 
@@ -5501,11 +5501,11 @@ a.house-tile:hover .house-tile__arrow {
   .tw__title,
   .shopcta__title,
   .atelier__title {
-    font-size: clamp(25px, 7vw, 30px);
+    font-size: var(--fs-2xl);
   }
 
   .eyebrow {
-    font-size: 11.4px;
+    font-size: var(--fs-xs);
     letter-spacing: 0.26em;
   }
 
@@ -5513,7 +5513,7 @@ a.house-tile:hover .house-tile__arrow {
   .tw__intro-copy,
   .journal-feature__excerpt,
   .shopcta__copy {
-    font-size: 14.5px;
+    font-size: var(--fs-base);
   }
 
   .section-intro {
@@ -5528,12 +5528,12 @@ a.house-tile:hover .house-tile__arrow {
   .btn {
     gap: 9px;
     padding: 14px 26px;
-    font-size: 12.4px;
+    font-size: var(--fs-sm);
     letter-spacing: 0.2em;
   }
 
   .arrow-link {
-    font-size: 12px;
+    font-size: var(--fs-sm);
     letter-spacing: 0.22em;
   }
 
@@ -5552,25 +5552,25 @@ a.house-tile:hover .house-tile__arrow {
   .faq__q,
   .navthumbs__label,
   .tw-cell__label {
-    font-size: 17.5px;
+    font-size: var(--fs-lg);
   }
 
   .piece__craft,
   .best-card__craft,
   .product-card__credit {
-    font-size: 11.5px;
+    font-size: var(--fs-xs);
   }
 
   .piece__price,
   .best-card__price,
   .product-card__price {
-    font-size: 14px;
+    font-size: var(--fs-sm);
   }
 
   /* ---- header + topbar ------------------------------------- */
 
   .topbar__inner {
-    font-size: 11.8px;
+    font-size: var(--fs-xs);
   }
 
   .header-utils {
@@ -5586,7 +5586,7 @@ a.house-tile:hover .house-tile__arrow {
 
   .mobile-nav a {
     padding: 14px var(--gutter);
-    font-size: 12.6px;
+    font-size: var(--fs-xs);
   }
 
   /* ---- hero bento ------------------------------------------ */
@@ -5613,16 +5613,16 @@ a.house-tile:hover .house-tile__arrow {
   }
 
   .hero-message__title {
-    font-size: clamp(33px, 9.6vw, 42px);
+    font-size: var(--fs-3xl);
   }
 
   .hero-message__copy {
-    font-size: 14.5px;
+    font-size: var(--fs-base);
     max-width: 40ch;
   }
 
   .hero-message__cta {
-    font-size: 12px;
+    font-size: var(--fs-sm);
   }
 
   .hero-cell--story {
@@ -5634,7 +5634,7 @@ a.house-tile:hover .house-tile__arrow {
   }
 
   .hero-cell__label {
-    font-size: 13px;
+    font-size: var(--fs-sm);
   }
 
   /* ---- marquee --------------------------------------------- */
@@ -5647,7 +5647,7 @@ a.house-tile:hover .house-tile__arrow {
   .marquee__item {
     gap: 22px;
     padding-right: 22px;
-    font-size: 14px;
+    font-size: var(--fs-sm);
     letter-spacing: 0.3em;
   }
 
@@ -5657,7 +5657,7 @@ a.house-tile:hover .house-tile__arrow {
      and become a 2×2 spec sheet in normal flow below it. */
 
   .spotlight__title {
-    font-size: clamp(23px, 6.4vw, 28px);
+    font-size: var(--fs-2xl);
     line-height: 1.3;
   }
 
@@ -5670,7 +5670,7 @@ a.house-tile:hover .house-tile__arrow {
   }
 
   .spotlight__copy {
-    font-size: 14.5px;
+    font-size: var(--fs-base);
   }
 
   .spotlight__stage {
@@ -5743,13 +5743,13 @@ a.house-tile:hover .house-tile__arrow {
   }
 
   .spotlight__stat strong {
-    font-size: 25px;
+    font-size: var(--fs-2xl);
   }
 
   .spotlight__stat span,
   .spotlight__note {
     margin-top: 5px;
-    font-size: 13px;
+    font-size: var(--fs-sm);
   }
 
   .spotlight__outro {
@@ -5759,7 +5759,7 @@ a.house-tile:hover .house-tile__arrow {
 
   .spotlight__outro p {
     text-align: left;
-    font-size: 14.5px;
+    font-size: var(--fs-base);
   }
 
   /* ---- bestsellers rail: swipe, one card at a time ---------- */
@@ -5767,7 +5767,7 @@ a.house-tile:hover .house-tile__arrow {
   .best__legend {
     display: block;
     max-width: none;
-    font-size: 12.5px;
+    font-size: var(--fs-sm);
   }
 
   .best-card {
@@ -5781,24 +5781,24 @@ a.house-tile:hover .house-tile__arrow {
   /* ---- categories band ------------------------------------- */
 
   .catpanel__name {
-    font-size: 20px;
+    font-size: var(--fs-xl);
   }
 
   /* the copy the ≤900 rule hides comes back — nothing is cut */
   .catpanel__copy {
     display: block;
     max-width: 44ch;
-    font-size: 12.5px;
+    font-size: var(--fs-sm);
   }
 
   .catpanel__cta {
-    font-size: 11.5px;
+    font-size: var(--fs-xs);
   }
 
   /* ---- manifesto seals ------------------------------------- */
 
   .seal__copy {
-    font-size: 13.5px;
+    font-size: var(--fs-sm);
   }
 
   /* ---- reels: a one-card swipe carousel, not a scroll -------
@@ -5855,7 +5855,7 @@ a.house-tile:hover .house-tile__arrow {
 
   .reel__title {
     margin-top: 10px;
-    font-size: 15px;
+    font-size: var(--fs-base);
     text-align: center;
   }
 
@@ -5867,7 +5867,7 @@ a.house-tile:hover .house-tile__arrow {
 
   .looks__label {
     padding: 11px 16px;
-    font-size: 11.5px;
+    font-size: var(--fs-xs);
   }
 
   .looks__nav button {
@@ -5877,13 +5877,13 @@ a.house-tile:hover .house-tile__arrow {
   /* ---- house bento ----------------------------------------- */
 
   .house-tile__name {
-    font-size: 18px;
+    font-size: var(--fs-lg);
   }
 
   /* ---- craft story ----------------------------------------- */
 
   .stat__value {
-    font-size: 25px;
+    font-size: var(--fs-2xl);
   }
 
   .craft__stats .stat {
@@ -5891,7 +5891,7 @@ a.house-tile:hover .house-tile__arrow {
   }
 
   .stat__label {
-    font-size: 11.5px;
+    font-size: var(--fs-xs);
     letter-spacing: 0.18em;
   }
 
@@ -5899,11 +5899,11 @@ a.house-tile:hover .house-tile__arrow {
 
   .curated__filter {
     padding: 8px 16px;
-    font-size: 12px;
+    font-size: var(--fs-sm);
   }
 
   .promise__copy {
-    font-size: 12.5px;
+    font-size: var(--fs-sm);
   }
 
   /* ---- testimonials: one card per swipe, next one peeking --- */
@@ -5928,7 +5928,7 @@ a.house-tile:hover .house-tile__arrow {
   }
 
   .journal-feature__title {
-    font-size: clamp(21px, 6vw, 26px);
+    font-size: var(--fs-xl);
   }
 
   .journal-feature__body {
@@ -5942,13 +5942,13 @@ a.house-tile:hover .house-tile__arrow {
   }
 
   .quote blockquote {
-    font-size: clamp(20px, 5.8vw, 25px);
+    font-size: var(--fs-xl);
   }
 
   /* ---- faq -------------------------------------------------- */
 
   .faq__a {
-    font-size: 14.5px;
+    font-size: var(--fs-base);
   }
 
   /* ---- shop cta -------------------------------------------- */
@@ -5964,11 +5964,11 @@ a.house-tile:hover .house-tile__arrow {
   /* ---- footer ---------------------------------------------- */
 
   .fletters__title {
-    font-size: 21px;
+    font-size: var(--fs-xl);
   }
 
   .fletters__copy {
-    font-size: 13.5px;
+    font-size: var(--fs-sm);
   }
 
   .fbrand__mark {
@@ -5981,11 +5981,11 @@ a.house-tile:hover .house-tile__arrow {
   }
 
   .fmap a {
-    font-size: 13.5px;
+    font-size: var(--fs-sm);
   }
 
   .footer__bottom {
-    font-size: 12px;
+    font-size: var(--fs-sm);
   }
 }
 
@@ -6066,7 +6066,7 @@ a.house-tile:hover .house-tile__arrow {
   }
 
   .house__strip-links a {
-    font-size: 11.5px;
+    font-size: var(--fs-xs);
     letter-spacing: 0.04em;
   }
 
@@ -6221,7 +6221,7 @@ a.house-tile:hover .house-tile__arrow {
   bottom: 0;
   padding: 30px 14px 11px;
   background: linear-gradient(0deg, rgba(24, 12, 10, 0.72) 0%, rgba(24, 12, 10, 0) 100%);
-  font-size: clamp(11px, calc(10.6px + 0.09vw), 13px);
+  font-size: var(--fs-xs);
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -6326,7 +6326,7 @@ a.house-tile:hover .house-tile__arrow {
 /* set exactly like .craft__shot figcaption — the site's figure caption */
 .poster__caption,
 .poster__plate {
-  font-size: clamp(12.3px, calc(11.9px + 0.101vw), 14.6px);
+  font-size: var(--fs-sm);
   font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -6384,7 +6384,7 @@ a.house-tile:hover .house-tile__arrow {
 .poster__lead {
   font-family: var(--font-serif);
   font-weight: 500;
-  font-size: clamp(22px, calc(19.5px + 0.64vw), 36px);
+  font-size: var(--fs-3xl);
   line-height: 1.2;
   color: var(--ink);
 }
@@ -6396,7 +6396,7 @@ a.house-tile:hover .house-tile__arrow {
 
 /* the shared card-title step */
 .poster__lead--quiet {
-  font-size: clamp(19px, calc(18px + 0.258vw), 24.6px);
+  font-size: var(--fs-xl);
   color: var(--ink);
 }
 
@@ -6406,7 +6406,7 @@ a.house-tile:hover .house-tile__arrow {
 
 /* the shared small-copy step — same as the seal copy */
 .poster__copy {
-  font-size: clamp(14.6px, calc(14.1px + 0.101vw), 16.8px);
+  font-size: var(--fs-md);
   line-height: 1.6;
   color: var(--ink-soft);
 }
@@ -6443,7 +6443,7 @@ a.house-tile:hover .house-tile__arrow {
 
 .poster__stamp text {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: var(--fs-2xs);
   font-weight: 500;
   letter-spacing: 0.24em;
   text-transform: uppercase;
@@ -6451,7 +6451,7 @@ a.house-tile:hover .house-tile__arrow {
 }
 
 .poster__stamp .poster-stamp__glyph {
-  font-size: 16px;
+  font-size: var(--fs-base);
   letter-spacing: 0;
 }
 
@@ -6491,15 +6491,15 @@ a.house-tile:hover .house-tile__arrow {
   /* the same steps the mobile layer gives the quote band and
      card titles */
   .poster__lead {
-    font-size: clamp(20px, 5.8vw, 25px);
+    font-size: var(--fs-xl);
   }
 
   .poster__lead--quiet {
-    font-size: 17.5px;
+    font-size: var(--fs-lg);
   }
 
   .poster__copy {
-    font-size: 14.5px;
+    font-size: var(--fs-base);
   }
 
   .poster__stamp {

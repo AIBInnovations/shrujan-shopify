@@ -12,7 +12,7 @@
 /* ---- in the buying column ---- */
 .pdp__tax {
   margin: 4px 0 0;
-  font: 400 12.5px/1.4 var(--font-sans);
+  font:400 var(--fs-sm)/1.4 var(--font-sans);
   letter-spacing: 0.02em;
   color: var(--ink-soft);
 }
@@ -38,7 +38,7 @@
   align-items: center;
   gap: 8px;
   padding: 14px 6px 13px;
-  font: 500 10.5px/1.3 var(--font-sans);
+  font:500 var(--fs-2xs)/1.3 var(--font-sans);
   letter-spacing: 0.12em;
   text-align: center;
   text-transform: uppercase;
@@ -47,7 +47,8 @@
   transition: color 0.3s ease, background 0.3s ease;
 }
 
-.pdp__quick-link svg {
+.pdp__quick-link svg,
+.pdp__quick-link i {
   color: var(--indigo);
 }
 
@@ -58,7 +59,7 @@
 
 .pdp__ships {
   margin: 14px 0 0;
-  font: 400 13.5px/1.5 var(--font-sans);
+  font:400 var(--fs-sm)/1.5 var(--font-sans);
   color: var(--ink-soft);
 }
 
@@ -84,11 +85,12 @@
   align-items: center;
   gap: 8px;
   text-align: center;
-  font: 400 12px/1.35 var(--font-sans);
+  font:400 var(--fs-xs)/1.35 var(--font-sans);
   color: var(--ink);
 }
 
-.pdp__trust svg {
+.pdp__trust svg,
+.pdp__trust i {
   color: var(--indigo);
 }
 
@@ -106,13 +108,13 @@
 
 .pdp__assist-title {
   margin: 0;
-  font: 400 19px/1.25 var(--font-display);
+  font:400 var(--fs-lg)/1.25 var(--font-display);
   color: var(--ink);
 }
 
 .pdp__assist-hours {
   margin: 4px 0 14px;
-  font: 400 13px/1.4 var(--font-sans);
+  font:400 var(--fs-xs)/1.4 var(--font-sans);
   color: var(--ink-soft);
 }
 
@@ -129,7 +131,7 @@
   padding: 10px 16px;
   border: 1px solid var(--hairline-strong);
   border-radius: 999px;
-  font: 500 11px/1 var(--font-sans);
+  font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink);
@@ -167,7 +169,7 @@
 
 .pdpx__eyebrow {
   margin: 0 0 14px;
-  font: 500 11.5px/1.4 var(--font-sans);
+  font:500 var(--fs-xs)/1.4 var(--font-sans);
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--ink-soft);
@@ -191,7 +193,7 @@
 .pdpx__lede {
   max-width: 52ch;
   margin: 16px 0 0;
-  font: 400 16px/1.65 var(--font-sans);
+  font:400 var(--fs-base)/1.65 var(--font-sans);
   color: var(--ink-soft);
 }
 
@@ -207,7 +209,7 @@
   gap: 10px;
   padding-bottom: 6px;
   border-bottom: 1px solid var(--hairline-strong);
-  font: 500 11.5px/1 var(--font-sans);
+  font:500 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--ink);
@@ -215,7 +217,8 @@
   transition: border-color 0.3s ease;
 }
 
-.pdpx__link svg {
+.pdpx__link svg,
+.pdpx__link i {
   width: 14px;
   height: auto;
   transition: transform 0.3s ease;
@@ -225,7 +228,8 @@
   border-color: var(--ink);
 }
 
-.pdpx__link:hover svg {
+.pdpx__link:hover svg,
+.pdpx__link:hover i {
   transform: translateX(4px);
 }
 
@@ -287,20 +291,20 @@
 
 .pdpx-making__no {
   margin-top: 14px;
-  font: 500 10.5px/1 var(--font-sans);
+  font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.18em;
   color: var(--indigo);
 }
 
 .pdpx-making__name {
   margin: 8px 0 0;
-  font: 400 clamp(19px, 1.5vw, 23px) / 1.15 var(--font-display);
+  font:400 var(--fs-xl) / 1.15 var(--font-display);
   color: var(--ink);
 }
 
 .pdpx-making__text {
   margin: 8px 0 0;
-  font: 400 14px/1.6 var(--font-sans);
+  font:400 var(--fs-sm)/1.6 var(--font-sans);
   color: var(--ink-soft);
 }
 
@@ -333,7 +337,7 @@
   position: relative;
   padding: 12px 0 12px 26px;
   border-top: 1px solid var(--hairline);
-  font: 400 15px/1.5 var(--font-sans);
+  font:400 var(--fs-base)/1.5 var(--font-sans);
   color: var(--ink);
 }
 
@@ -355,7 +359,7 @@
 
 .pdpx-book__hours {
   margin: 18px 0 18px;
-  font: 400 13.5px/1.5 var(--font-sans);
+  font:400 var(--fs-sm)/1.5 var(--font-sans);
   color: var(--ink-soft);
 }
 
@@ -376,12 +380,12 @@
 .pdpx-book__step legend {
   margin-bottom: 12px;
   padding: 0;
-  font: 400 18px/1.2 var(--font-display);
+  font:400 var(--fs-md)/1.2 var(--font-display);
   color: var(--ink);
 }
 
 .pdpx-book__tz {
-  font: 400 12px/1 var(--font-sans);
+  font:400 var(--fs-xs)/1 var(--font-sans);
   color: var(--ink-soft);
 }
 
@@ -406,7 +410,7 @@
   padding: 10px 16px;
   border: 1px solid var(--hairline-strong);
   border-radius: 999px;
-  font: 500 12px/1 var(--font-sans);
+  font:500 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.06em;
   color: var(--ink);
   cursor: pointer;
@@ -452,7 +456,7 @@
   padding: 10px 0;
   border: 1px solid var(--hairline-strong);
   border-radius: 6px;
-  font: 500 10.5px/1 var(--font-sans);
+  font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink-soft);
@@ -461,7 +465,7 @@
 }
 
 .pdpx-book__day b {
-  font: 400 22px/1 var(--font-display);
+  font:400 var(--fs-lg)/1 var(--font-display);
   letter-spacing: 0;
   color: var(--ink);
 }
@@ -488,7 +492,7 @@
 .pdpx-book__you label > span {
   display: block;
   margin-bottom: 6px;
-  font: 500 10.5px/1 var(--font-sans);
+  font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--ink-soft);
@@ -513,7 +517,7 @@
   border: 1px solid var(--hairline-strong);
   border-radius: 6px;
   background: transparent;
-  font: 400 15px/1.4 var(--font-sans);
+  font:400 var(--fs-base)/1.4 var(--font-sans);
   color: var(--ink);
 }
 
@@ -541,7 +545,7 @@
   gap: 8px;
   padding-bottom: 4px;
   border-bottom: 1px solid var(--hairline-strong);
-  font: 500 11.5px/1 var(--font-sans);
+  font:500 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink);
@@ -550,13 +554,13 @@
 
 .pdpx-book__note {
   margin: 16px 0 0;
-  font: 400 12.5px/1.5 var(--font-sans);
+  font:400 var(--fs-sm)/1.5 var(--font-sans);
   color: var(--ink-soft);
 }
 
 .pdpx-book__done-title {
   margin: 0 0 8px;
-  font: 400 24px/1.2 var(--font-display);
+  font:400 var(--fs-xl)/1.2 var(--font-display);
   color: var(--ink);
 }
 
@@ -566,7 +570,7 @@
   border-radius: 6px;
   background: rgba(146, 66, 65, 0.08);
   color: var(--indigo);
-  font: 400 14px/1.5 var(--font-sans);
+  font:400 var(--fs-sm)/1.5 var(--font-sans);
 }
 
 /* gifting, private viewing, the stores */
@@ -605,13 +609,13 @@
 
 .pdpx-visit__title {
   margin: 0;
-  font: 400 clamp(22px, 1.9vw, 30px) / 1.12 var(--font-display);
+  font:400 var(--fs-2xl) / 1.12 var(--font-display);
   color: var(--ink);
 }
 
 .pdpx-visit__text {
   margin: 10px 0 18px;
-  font: 400 14.5px/1.6 var(--font-sans);
+  font:400 var(--fs-sm)/1.6 var(--font-sans);
   color: var(--ink-soft);
 }
 
@@ -640,13 +644,13 @@
 
 .pdpx-visit__store h3 {
   margin: 0;
-  font: 400 22px/1.15 var(--font-display);
+  font:400 var(--fs-lg)/1.15 var(--font-display);
   color: var(--ink);
 }
 
 .pdpx-visit__addr {
   margin: 8px 0 6px;
-  font: 400 14px/1.55 var(--font-sans);
+  font:400 var(--fs-sm)/1.55 var(--font-sans);
   color: var(--ink-soft);
 }
 
@@ -655,7 +659,7 @@
   flex-wrap: wrap;
   gap: 4px 14px;
   margin: 0 0 14px;
-  font: 400 14px/1.4 var(--font-sans);
+  font:400 var(--fs-sm)/1.4 var(--font-sans);
 }
 
 .pdpx-visit__tel a {
@@ -701,7 +705,7 @@
 
 @media (max-width: 720px) {
   .pdp__quick-link {
-    font-size: 9.5px;
+    font-size: var(--fs-2xs);
     letter-spacing: 0.08em;
     padding: 12px 2px;
   }
@@ -739,3 +743,13 @@
   color: var(--indigo);
 }
 
+
+/* the icons from the Phosphor set: their sizes in the buying column */
+.pdp__quick-link i,
+.pdp__trust i {
+  font-size: 22px;
+}
+
+.pdp__assist-links a i {
+  font-size: 16px;
+}

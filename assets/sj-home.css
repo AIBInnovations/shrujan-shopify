@@ -28,7 +28,7 @@
    ============================================================ */
 :root {
   /* every section's heading is this size, this far under its meta row */
-  --h-size: clamp(34px, 3.9vw, 66px);
+  --h-size: var(--fs-4xl);
   --h-gap: clamp(22px, 2.8vw, 44px);
   /* and every section has this much room above its first line and below
      its last, so the space between any two is the same */
@@ -79,7 +79,6 @@
 
 @media (max-width: 720px) {
   :root {
-    --h-size: clamp(28px, 7.6vw, 36px);
     --h-gap: 22px;
     --sec-pad: 30px;
   }
@@ -173,7 +172,7 @@ html.sj-skip .sj-loader {
   justify-content: center;
   align-items: center;
   gap: 14px;
-  font: 500 11px/1 var(--font-sans);
+  font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--ink, #404041);
@@ -246,7 +245,7 @@ html.sj-skip .sj-loader {
   .sj-loader__top,
   .sj-loader__bottom {
     gap: 10px;
-    font-size: 9.5px;
+    font-size: var(--fs-2xs);
     letter-spacing: 0.18em;
   }
 
@@ -324,7 +323,7 @@ html.sj-pre .offer-bar {
   left: 50%;
   top: 50%;
   translate: -50% -50%;
-  font: 500 11px/1 var(--font-sans);
+  font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.26em;
   text-transform: uppercase;
   color: var(--ink-soft, #706e68);
@@ -447,7 +446,7 @@ html.sj-pre .offer-bar {
 }
 
 .craft3d__eyebrow {
-  font: 500 11.5px/1 var(--font-sans);
+  font:500 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--gerua, #924241);
@@ -494,7 +493,7 @@ html.sj-pre .offer-bar {
 }
 
 .craft3d__no {
-  font: 500 12px/1 var(--font-sans);
+  font:500 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.26em;
   color: var(--ink-soft, #706e68);
 }
@@ -505,12 +504,12 @@ html.sj-pre .offer-bar {
 }
 
 .craft3d__name {
-  font: 400 clamp(38px, 3.8vw, 64px)/1.04 var(--font-display), Georgia, serif;
+  font:400 var(--fs-4xl)/1.04 var(--font-display), Georgia, serif;
   color: var(--ink, #404041);
 }
 
 .craft3d__tags {
-  font: 500 11.5px/1.4 var(--font-sans);
+  font:500 var(--fs-xs)/1.4 var(--font-sans);
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--gerua, #924241);
@@ -518,7 +517,7 @@ html.sj-pre .offer-bar {
 
 .craft3d__copy {
   max-width: 34ch;
-  font: 400 16px/1.65 var(--font-sans);
+  font:400 var(--fs-base)/1.65 var(--font-sans);
   color: var(--ink-soft, #706e68);
 }
 
@@ -530,7 +529,7 @@ html.sj-pre .offer-bar {
   margin-top: 6px;
   padding-bottom: 5px;
   border-bottom: 1px solid currentColor;
-  font: 500 12px/1 var(--font-sans);
+  font:500 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--ink, #404041);
@@ -574,7 +573,7 @@ html.sj-pre .offer-bar {
   display: flex;
   align-items: center;
   gap: 12px;
-  font: 500 12px/1 var(--font-sans);
+  font:500 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: rgba(40, 40, 41, 0.42);
@@ -612,7 +611,7 @@ html.sj-pre .offer-bar {
   display: flex;
   align-items: center;
   gap: 10px;
-  font: 500 10.5px/1.3 var(--font-sans);
+  font:500 var(--fs-2xs)/1.3 var(--font-sans);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   white-space: nowrap;
@@ -676,7 +675,7 @@ html.sj-pre .offer-bar {
   display: flex;
   align-items: center;
   gap: 12px;
-  font: 500 11px/1 var(--font-sans);
+  font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--ink-soft, #706e68);
@@ -741,11 +740,11 @@ html.sj-pre .offer-bar {
   }
 
   .craft3d__name {
-    font-size: 32px;
+    font-size: var(--fs-4xl);
   }
 
   .craft3d__copy {
-    font-size: 14px;
+    font-size: var(--fs-sm);
   }
 
   /* above the head, clear of the form, in front of it; sized so the
@@ -913,7 +912,7 @@ html.sj-pre .dh__strip {
 
 .dh__title {
   margin: 0;
-  font: 400 clamp(42px, 28.9px + 3.36vw, 86px) / 1 var(--font-display);
+  font:400 var(--fs-display) / 1 var(--font-display);
   letter-spacing: -0.015em;
   color: var(--dh-ink);
 }
@@ -963,7 +962,7 @@ html.sj-pre .dh__strip {
   display: flex;
   align-items: center;
   padding: 0 24px;
-  font: 500 12px/1 var(--font-sans);
+  font:500 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   white-space: nowrap;
@@ -1087,7 +1086,7 @@ html.sj-pre .dh__strip {
 }
 
 .dh__label {
-  font: 400 13px/1.3 var(--font-sans);
+  font:400 var(--fs-xs)/1.3 var(--font-sans);
   letter-spacing: 0.01em;
 }
 
@@ -1227,7 +1226,7 @@ html.sj-pre .dh__strip {
 }
 
 .dh__desc {
-  font: 400 13px/1.35 var(--font-sans);
+  font:400 var(--fs-xs)/1.35 var(--font-sans);
   color: var(--dh-soft);
 }
 
@@ -1323,7 +1322,7 @@ html.sj-pre .dh__strip {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  font: 500 12px/1.3 var(--font-sans);
+  font:500 var(--fs-xs)/1.3 var(--font-sans);
   letter-spacing: 0.02em;
   transition: transform 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
 }
@@ -1440,14 +1439,14 @@ html.sj-pre .dh__strip {
 }
 
 .dh__kicker {
-  font: 500 10px/1 var(--font-sans);
+  font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: rgba(246, 244, 230, 0.75);
 }
 
 .dh__tlabel {
-  font: 400 clamp(17px, 1.3vw, 21px) / 1.1 var(--font-display);
+  font:400 var(--fs-lg) / 1.1 var(--font-display);
   color: #f6f4e6;
 }
 
@@ -1477,7 +1476,7 @@ html.sj-pre .dh__strip {
   }
 
   .dh__title {
-    font-size: clamp(38px, 10.6vw, 48px);
+    font-size: var(--fs-3xl);
   }
 
   .dh__line {
@@ -1490,7 +1489,7 @@ html.sj-pre .dh__strip {
 
   .dh-btn__label {
     padding: 0 20px;
-    font-size: 11px;
+    font-size: var(--fs-xs);
   }
 
   .dh-btn__ic {
@@ -1525,7 +1524,7 @@ html.sj-pre .dh__strip {
   .dh__tcopy {
     gap: 6px;
     justify-content: flex-start;
-    font-size: 11.5px;
+    font-size: var(--fs-xs);
     line-height: 1.35;
   }
 
@@ -1573,7 +1572,7 @@ html.sj-pre .dh__strip {
   max-width: var(--arch-max);
   margin: 0 auto;
   padding-bottom: 16px;
-  font: 500 11.5px/1.4 var(--font-sans);
+  font:500 var(--fs-xs)/1.4 var(--font-sans);
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--ink-soft);
@@ -1687,12 +1686,12 @@ html.sj-pre .dh__strip {
   gap: 10px;
   margin-top: 14px;
   white-space: nowrap;
-  font: 400 clamp(18px, 1.35vw, 23px)/1.1 var(--font-display);
+  font:400 var(--fs-xl)/1.1 var(--font-display);
   color: var(--ink);
 }
 
 .arch__label span {
-  font: 500 10.5px/1 var(--font-sans);
+  font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.18em;
   color: var(--ink-soft);
 }
@@ -1706,7 +1705,7 @@ html.sj-pre .dh__strip {
   justify-content: center;
   gap: 28px;
   margin-top: clamp(40px, 4.4vw, 64px);
-  font: 500 11px/1.4 var(--font-sans);
+  font:500 var(--fs-2xs)/1.4 var(--font-sans);
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--ink-soft);
@@ -1726,7 +1725,7 @@ html.sj-pre .dh__strip {
 
 .arch__say {
   max-width: 15ch;
-  font: 400 clamp(36px, 3.6vw, 58px)/1.02 var(--font-display);
+  font:400 var(--fs-4xl)/1.02 var(--font-display);
   letter-spacing: -0.01em;
   text-wrap: balance;
   color: var(--ink);
@@ -1743,7 +1742,7 @@ html.sj-pre .dh__strip {
 
 /* straight edges left and right */
 .arch__copy {
-  font: 400 16px/1.65 var(--font-sans);
+  font:400 var(--fs-base)/1.65 var(--font-sans);
   text-align: justify;
   text-align-last: left;
   hyphens: none;
@@ -1762,7 +1761,7 @@ html.sj-pre .dh__strip {
   padding: 15px 28px;
   border: 1px solid var(--indigo, #2b3f6b);
   border-radius: 999px;
-  font: 500 12px/1 var(--font-sans);
+  font:500 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--indigo, #2b3f6b);
@@ -1783,7 +1782,7 @@ html.sj-pre .dh__strip {
   .arch__meta {
     flex-direction: column;
     gap: 6px;
-    font-size: 10.5px;
+    font-size: var(--fs-2xs);
   }
 
 
@@ -1813,12 +1812,12 @@ html.sj-pre .dh__strip {
     display: flex;
     align-items: baseline;
     gap: 10px;
-    font: 400 20px/1.1 var(--font-display);
+    font:400 var(--fs-xl)/1.1 var(--font-display);
     color: var(--ink);
   }
 
   .arch__names li span {
-    font: 500 10px/1 var(--font-sans);
+    font:500 var(--fs-2xs)/1 var(--font-sans);
     letter-spacing: 0.18em;
     color: var(--ink-soft);
   }
@@ -1830,7 +1829,7 @@ html.sj-pre .dh__strip {
   }
 
   .arch__say {
-    font-size: 34px;
+    font-size: var(--fs-4xl);
   }
 
   .arch__side {
@@ -1928,7 +1927,7 @@ html.sj-pre .dh__strip {
 
 .sx__eyebrow {
   margin: 0 0 clamp(12px, 1.2vw, 18px);
-  font: 500 11.5px/1.4 var(--font-sans);
+  font:500 var(--fs-xs)/1.4 var(--font-sans);
   letter-spacing: 0.26em;
   text-transform: uppercase;
   color: #8a7f68;
@@ -1969,7 +1968,7 @@ html.sj-pre .dh__strip {
 .sx__lede {
   max-width: 52ch;
   margin: clamp(16px, 1.6vw, 24px) 0 0;
-  font: 400 16px/1.6 var(--font-sans);
+  font:400 var(--fs-base)/1.6 var(--font-sans);
   color: var(--ink-soft);
 }
 
@@ -2076,13 +2075,13 @@ html.sj-pre .dh__strip {
   align-items: baseline;
   gap: 8px;
   margin: 0;
-  font: 400 clamp(17px, 1.45vw, 22px) / 1.1 var(--font-display);
+  font:400 var(--fs-lg) / 1.1 var(--font-display);
   color: #2f2f30;
   white-space: nowrap;
 }
 
 .sx__name span {
-  font: 500 10.5px/1 var(--font-sans);
+  font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.14em;
   color: #8a7f68;
 }
@@ -2104,7 +2103,7 @@ html.sj-pre .dh__strip {
 .sx__desc {
   max-width: 19ch;
   margin: 0;
-  font: 400 13px/1.45 var(--font-sans);
+  font:400 var(--fs-xs)/1.45 var(--font-sans);
   color: var(--ink-soft);
 }
 
@@ -2123,7 +2122,7 @@ html.sj-pre .dh__strip {
   align-items: center;
   gap: clamp(16px, 2vw, 28px);
   margin: 0;
-  font: 400 clamp(22px, 2.1vw, 32px) / 1.15 var(--font-display);
+  font:400 var(--fs-2xl) / 1.15 var(--font-display);
   color: #2f2f30;
 }
 
@@ -2141,7 +2140,7 @@ html.sj-pre .dh__strip {
   padding: 15px 30px;
   border-radius: 999px;
   background: #2f2f30;
-  font: 500 11.5px/1 var(--font-sans);
+  font:500 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: #f6f4e6;
@@ -2179,7 +2178,7 @@ html.sj-pre .dh__strip {
   }
 
   .sx__lede {
-    font-size: 15px;
+    font-size: var(--fs-base);
   }
 
   .sx__scroll {
@@ -2200,7 +2199,7 @@ html.sj-pre .dh__strip {
   }
 
   .sx__say {
-    font-size: 22px;
+    font-size: var(--fs-lg);
   }
 
   .sx__say .sx__orn {
@@ -2721,8 +2720,8 @@ html.sj-pre .dh__strip {
 
   .hst__facts li { gap: 7px; padding: 0 10px; white-space: normal; }
   .hst__facts li:nth-child(3) { border-left: 0; }
-  .hst__facts b { font-size: clamp(26px, 7.4vw, 40px); }
-  .hst__facts span { font-size: 10.5px; letter-spacing: 0.16em; }
+  .hst__facts b { font-size: var(--fs-3xl); }
+  .hst__facts span { font-size: var(--fs-2xs); letter-spacing: 0.16em; }
 }
 
 @media (max-width: 1023px) and (min-width: 721px) {
@@ -2805,7 +2804,7 @@ html.sj-pre .dh__strip {
 
 .ft__eyebrow {
   margin: 0 0 clamp(12px, 1.2vw, 18px);
-  font: 500 11.5px/1.4 var(--font-sans);
+  font:500 var(--fs-xs)/1.4 var(--font-sans);
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--ink-soft);
@@ -2829,7 +2828,7 @@ html.sj-pre .dh__strip {
 .ft__lede {
   max-width: 52ch;
   margin: clamp(14px, 1.4vw, 20px) 0 0;
-  font: 400 16px/1.65 var(--font-sans);
+  font:400 var(--fs-base)/1.65 var(--font-sans);
   color: var(--ink-soft);
 }
 
@@ -2841,7 +2840,7 @@ html.sj-pre .dh__strip {
   margin-top: clamp(18px, 1.6vw, 24px);
   padding-bottom: 6px;
   border-bottom: 1px solid var(--hairline-strong);
-  font: 500 11.5px/1 var(--font-sans);
+  font:500 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--ink);
@@ -2918,20 +2917,20 @@ html.sj-pre .dh__strip {
 
 .ft__name {
   margin: 0;
-  font: 400 clamp(24px, 2vw, 32px) / 1.1 var(--font-display);
+  font:400 var(--fs-2xl) / 1.1 var(--font-display);
   color: var(--ink);
 }
 
 .ft__text {
   max-width: 46ch;
   margin: 10px 0 0;
-  font: 400 15px/1.65 var(--font-sans);
+  font:400 var(--fs-base)/1.65 var(--font-sans);
   color: var(--ink-soft);
 }
 
 .ft__note {
   margin: 8px 0 0;
-  font: italic 400 14px/1.5 var(--font-display);
+  font:italic 400 var(--fs-sm)/1.5 var(--font-display);
   color: var(--ink);
 }
 
@@ -3008,20 +3007,20 @@ html.sj-pre .dh__strip {
 
 .ft__over .ft__eyebrow {
   margin-bottom: clamp(14px, 1.3vw, 22px);
-  font-size: clamp(11px, 1vw, 16px);
+  font-size: var(--fs-base);
   letter-spacing: 0.24em;
   color: var(--ink-soft);
 }
 
 .ft__over .ft__title {
-  font-size: clamp(32px, 3.4vw, 60px);
+  font-size: var(--fs-4xl);
   line-height: 1.12;
 }
 
 .ft__over .ft__lede {
   max-width: 34ch;
   margin-top: clamp(18px, 1.9vw, 32px);
-  font-size: clamp(15px, 1.42vw, 24px);
+  font-size: var(--fs-xl);
   line-height: 1.62;
 }
 
@@ -3037,7 +3036,7 @@ html.sj-pre .dh__strip {
   display: inline-flex;
   align-items: center;
   gap: 14px;
-  font: 500 clamp(12px, 1.05vw, 17px) / 1 var(--font-sans);
+  font:500 var(--fs-md) / 1 var(--font-sans);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--indigo);
@@ -3057,7 +3056,7 @@ html.sj-pre .dh__strip {
 /* ---- phones: the cards one under the other, the picture over the words ---- */
 @media (max-width: 720px) {
   .ft__lede {
-    font-size: 15px;
+    font-size: var(--fs-base);
   }
 
   .ft__cards {
@@ -3213,7 +3212,7 @@ html.sj-pre .dh__strip {
 }
 
 .ft--studio .ft__title {
-  font-size: clamp(44px, 5.3vw, 88px);
+  font-size: var(--fs-display);
   line-height: 1.02;
 }
 
@@ -3519,7 +3518,7 @@ html.sj-pre .dh__strip {
   }
 
   .ft__no {
-    font-size: 11px;
+    font-size: var(--fs-2xs);
   }
 
   .ft__no::after {
@@ -3528,7 +3527,7 @@ html.sj-pre .dh__strip {
 
   .ft__scene .ft__name {
     margin-top: 12px;
-    font-size: clamp(32px, 6vw, 46px);
+    font-size: var(--fs-3xl);
   }
 
   .ft__scene .ft__name::after {
@@ -3539,12 +3538,12 @@ html.sj-pre .dh__strip {
   .ft__scene .ft__text {
     max-width: 46ch;
     margin-top: 12px;
-    font-size: 15px;
+    font-size: var(--fs-base);
   }
 
   .ft__scene .ft__btn {
     margin-top: 18px;
-    font-size: 11px;
+    font-size: var(--fs-2xs);
   }
 
   .ft__back {
@@ -3580,7 +3579,7 @@ html.sj-pre .dh__strip {
   }
 
   .ft__words {
-    font-size: 10px;
+    font-size: var(--fs-2xs);
   }
 }
 
@@ -3947,7 +3946,7 @@ html.sj-pre .dh__strip {
 
   .ft__collage .ft__eyebrow {
     gap: 14px;
-    font-size: 11px;
+    font-size: var(--fs-2xs);
   }
 
   .ft__collage .ft__eyebrow::after {
@@ -3956,12 +3955,12 @@ html.sj-pre .dh__strip {
 
   .ft__collage .ft__title {
     margin-top: 16px;
-    font-size: clamp(46px, 11vw, 92px);
+    font-size: var(--fs-display);
   }
 
   .ft__collage .ft__lede {
     margin-top: 16px;
-    font-size: 16px;
+    font-size: var(--fs-base);
   }
 
   .ft__c-photo--1 {
@@ -3993,7 +3992,7 @@ html.sj-pre .dh__strip {
   }
 
   .ft__collage .ft__no {
-    font-size: 11px;
+    font-size: var(--fs-2xs);
   }
 
   .ft__collage .ft__no::after {
@@ -4003,17 +4002,17 @@ html.sj-pre .dh__strip {
 
   .ft__collage .ft__name {
     margin-top: 14px;
-    font-size: clamp(30px, 7vw, 42px);
+    font-size: var(--fs-3xl);
   }
 
   .ft__collage .ft__text {
     margin-top: 12px;
-    font-size: 15px;
+    font-size: var(--fs-base);
   }
 
   .ft__collage .ft__btn {
     margin-top: 18px;
-    font-size: 11px;
+    font-size: var(--fs-2xs);
   }
 }
 
@@ -4059,7 +4058,7 @@ html.sj-pre .dh__strip {
   max-width: var(--idx-max);
   margin: 0 auto;
   padding-bottom: 16px;
-  font: 500 11.5px/1.4 var(--font-sans);
+  font:500 var(--fs-xs)/1.4 var(--font-sans);
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--ink-soft);
@@ -4139,7 +4138,7 @@ section.idx {
 
 .idx__lede {
   width: min(100%, 46ch);
-  font: 400 15px/1.6 var(--font-sans);
+  font:400 var(--fs-base)/1.6 var(--font-sans);
   text-wrap: balance;
   color: var(--ink-soft);
 }
@@ -4198,7 +4197,7 @@ section.idx {
 .col__kick {
   grid-column: 1;
   margin-bottom: 10px;
-  font: 500 10.5px/1 var(--font-sans);
+  font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--ink-soft);
@@ -4206,7 +4205,7 @@ section.idx {
 
 .col__tile--shop .col__name {
   grid-column: 1;
-  font-size: clamp(26px, 2.3vw, 38px);
+  font-size: var(--fs-3xl);
   color: var(--ink);
 }
 
@@ -4228,7 +4227,7 @@ section.idx {
   padding: 12px 22px;
   border: 1px solid var(--hairline-strong);
   border-radius: 999px;
-  font: 500 11px/1 var(--font-sans);
+  font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--ink);
@@ -4316,13 +4315,13 @@ section.idx {
 }
 
 .col__no {
-  font: 500 10.5px/1 var(--font-sans);
+  font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.18em;
   color: rgba(243, 240, 237, 0.75);
 }
 
 .col__name {
-  font: 400 clamp(18px, 1.5vw, 26px)/1.1 var(--font-display);
+  font:400 var(--fs-xl)/1.1 var(--font-display);
   transition: color 0.35s ease;
 }
 
@@ -4334,7 +4333,7 @@ section.idx {
   width: 20px;
   height: 20px;
   margin-bottom: 2px;
-  font: 400 20px/1 var(--font-sans);
+  font:400 var(--fs-lg)/1 var(--font-sans);
   color: var(--ivory);
   transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), color 0.35s ease;
 }
@@ -4346,7 +4345,7 @@ section.idx {
 }
 
 .col__tile:nth-child(1) .col__name {
-  font-size: clamp(24px, 2.1vw, 36px);
+  font-size: var(--fs-3xl);
 }
 
 /* the note in full, never cut short */
@@ -4355,7 +4354,7 @@ section.idx {
   display: block;
   max-width: 34ch;
   margin-top: 5px;
-  font: 400 clamp(11.5px, 0.86vw, 13.5px)/1.5 var(--font-sans);
+  font:400 var(--fs-sm)/1.5 var(--font-sans);
   color: rgba(246, 244, 230, 0.86);
 }
 
@@ -4382,7 +4381,7 @@ section.idx {
   border-radius: 50%;
   background: var(--indigo, #2b3f6b);
   color: var(--ivory);
-  font: 500 11px/1 var(--font-sans);
+  font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   pointer-events: none;
@@ -4418,7 +4417,7 @@ section.idx {
   padding: 15px 30px;
   border: 1px solid var(--hairline-strong);
   border-radius: 999px;
-  font: 500 11.5px/1 var(--font-sans);
+  font:500 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--ink);
@@ -4449,7 +4448,7 @@ section.idx {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font: 500 11.5px/1 var(--font-sans);
+  font:500 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--ink);
@@ -4467,7 +4466,7 @@ section.idx {
   }
 
   .idx__meta {
-    font-size: 10.5px;
+    font-size: var(--fs-2xs);
   }
 
   .idx__head {
@@ -4517,11 +4516,11 @@ section.idx {
   }
 
   .col__name {
-    font-size: 21px;
+    font-size: var(--fs-xl);
   }
 
   .col__note {
-    font-size: 12.5px;
+    font-size: var(--fs-sm);
   }
 
   .col__cursor {
@@ -4599,7 +4598,7 @@ section.idx {
   max-width: var(--col);
   margin: 0 auto;
   padding-bottom: 16px;
-  font: 500 11.5px/1.4 var(--font-sans);
+  font:500 var(--fs-xs)/1.4 var(--font-sans);
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--ink-soft);
@@ -4643,7 +4642,7 @@ section.idx {
 .prm__lede {
   max-width: 44ch;
   margin: clamp(22px, 2.2vw, 32px) auto 0;
-  font: 400 16px/1.65 var(--font-sans);
+  font:400 var(--fs-base)/1.65 var(--font-sans);
   color: var(--ink-soft);
 }
 
@@ -4713,7 +4712,7 @@ section.idx {
 }
 
 .prm__no {
-  font: 400 clamp(20px, 1.6vw, 26px)/1 var(--font-display);
+  font:400 var(--fs-xl)/1 var(--font-display);
   letter-spacing: 0.06em;
   color: var(--indigo, #2b3f6b);
 }
@@ -4740,7 +4739,7 @@ section.idx {
 }
 
 .prm__spin text {
-  font: 500 9.2px/1 var(--font-sans);
+  font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   fill: var(--ink-soft);
@@ -4784,7 +4783,7 @@ section.idx {
 
 .prm__name {
   margin-top: clamp(16px, 1.6vw, 24px);
-  font: 400 clamp(26px, 2.2vw, 36px)/1.05 var(--font-display);
+  font:400 var(--fs-3xl)/1.05 var(--font-display);
   letter-spacing: -0.006em;
   color: var(--ink);
   transition: color 0.35s ease;
@@ -4793,7 +4792,7 @@ section.idx {
 .prm__copy {
   max-width: 26ch;
   margin-top: 10px;
-  font: 400 15px/1.6 var(--font-sans);
+  font:400 var(--fs-base)/1.6 var(--font-sans);
   color: var(--ink-soft);
 }
 
@@ -4829,13 +4828,13 @@ section.idx {
   .prm__meta {
     flex-direction: column;
     gap: 6px;
-    font-size: 10.5px;
+    font-size: var(--fs-2xs);
   }
 
 
 
   .prm__lede {
-    font-size: 15px;
+    font-size: var(--fs-base);
   }
 
   .prm__stage {
@@ -4867,11 +4866,11 @@ section.idx {
   }
 
   .prm__name {
-    font-size: 25px;
+    font-size: var(--fs-2xl);
   }
 
   .prm__copy {
-    font-size: 13.5px;
+    font-size: var(--fs-sm);
   }
 
   .prm__more {
@@ -4897,7 +4896,7 @@ section.idx {
   gap: 24px;
   margin-bottom: var(--h-gap);
   padding-bottom: 16px;
-  font: 500 11.5px/1.4 var(--font-sans);
+  font:500 var(--fs-xs)/1.4 var(--font-sans);
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--ink-soft);
@@ -4941,7 +4940,7 @@ section.idx {
 }
 
 .reels .reels__note p {
-  font: 400 16px/1.65 var(--font-sans);
+  font:400 var(--fs-base)/1.65 var(--font-sans);
   color: var(--ink-soft);
 }
 
@@ -4952,7 +4951,7 @@ section.idx {
 }
 
 .reels .reels__seal text {
-  font-size: 9px;
+  font-size: var(--fs-2xs);
   letter-spacing: 0.2em;
 }
 
@@ -4987,7 +4986,7 @@ section.idx {
   left: 14px;
   top: 14px;
   z-index: 2;
-  font: 500 10.5px/1 var(--font-sans);
+  font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.2em;
   color: var(--ivory);
 }
@@ -4997,7 +4996,7 @@ section.idx {
 }
 
 .reels .reel__title {
-  font: 400 clamp(19px, 1.5vw, 24px)/1.15 var(--font-display);
+  font:400 var(--fs-xl)/1.15 var(--font-display);
   letter-spacing: -0.004em;
   color: var(--ivory);
   transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
@@ -5008,7 +5007,7 @@ section.idx {
   left: 14px;
   bottom: 14px;
   z-index: 2;
-  font: 500 10.5px/1 var(--font-sans);
+  font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: #e4dcc6;
@@ -5082,7 +5081,7 @@ section.idx {
   border-radius: 50%;
   background: var(--indigo, #2b3f6b);
   color: var(--ivory);
-  font: 500 11px/1 var(--font-sans);
+  font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   pointer-events: none;
@@ -5099,7 +5098,7 @@ section.idx {
   .reels__meta {
     flex-direction: column;
     gap: 6px;
-    font-size: 10.5px;
+    font-size: var(--fs-2xs);
   }
 
   .reels .reels__head {
@@ -5119,11 +5118,11 @@ section.idx {
   }
 
   .reels .reels__note p {
-    font-size: 15px;
+    font-size: var(--fs-base);
   }
 
   .reels .reel__title {
-    font-size: 17px;
+    font-size: var(--fs-lg);
   }
 
   .rl__cursor {
@@ -5202,7 +5201,7 @@ section[aria-label="What our customers say"],
   justify-content: space-between;
   gap: 24px;
   padding-bottom: 16px;
-  font: 500 11.5px/1.4 var(--font-sans);
+  font:500 var(--fs-xs)/1.4 var(--font-sans);
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--ink-soft);
@@ -5251,7 +5250,7 @@ section[aria-label="What our customers say"],
 .hx__lede {
   justify-self: end;
   width: min(100%, 38ch);
-  font: 400 16px/1.65 var(--font-sans);
+  font:400 var(--fs-base)/1.65 var(--font-sans);
   text-wrap: pretty;
   color: var(--ink-soft);
 }
@@ -5280,12 +5279,12 @@ section[aria-label="What our customers say"],
 }
 
 .craft-wall__tile figcaption {
-  font: 500 10.5px/1.3 var(--font-sans);
+  font:500 var(--fs-2xs)/1.3 var(--font-sans);
   letter-spacing: 0.2em;
 }
 
 .stat__value {
-  font: 400 clamp(52px, 5.2vw, 92px)/1 var(--font-display);
+  font:400 var(--fs-display)/1 var(--font-display);
   letter-spacing: -0.015em;
   color: var(--indigo, #2b3f6b);
   font-variant-numeric: tabular-nums;
@@ -5302,7 +5301,7 @@ section[aria-label="What our customers say"],
 }
 
 .curated__filter {
-  font: 500 11.5px/1 var(--font-sans);
+  font:500 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.2em;
   transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
@@ -5318,13 +5317,13 @@ section[aria-label="What our customers say"],
 }
 
 .piece__name {
-  font: 400 clamp(20px, 1.55vw, 25px)/1.12 var(--font-display);
+  font:400 var(--fs-xl)/1.12 var(--font-display);
   letter-spacing: -0.004em;
 }
 
 .piece__price {
   margin-top: 6px;
-  font: 400 14px/1.4 var(--font-sans);
+  font:400 var(--fs-sm)/1.4 var(--font-sans);
   letter-spacing: 0.02em;
   color: var(--ink-soft);
 }
@@ -5343,27 +5342,27 @@ section[aria-label="What our customers say"],
 }
 
 .promise__title {
-  font: 400 clamp(22px, 1.8vw, 28px)/1.15 var(--font-display);
+  font:400 var(--fs-2xl)/1.15 var(--font-display);
 }
 
 /* ---- the reviews ---- */
 .tw__title {
-  font: 400 clamp(40px, 3.6vw, 60px)/1 var(--font-display);
+  font:400 var(--fs-4xl)/1 var(--font-display);
   letter-spacing: -0.012em;
 }
 
 .tw-cell__label {
-  font: 400 clamp(22px, 1.8vw, 28px)/1.15 var(--font-display);
+  font:400 var(--fs-2xl)/1.15 var(--font-display);
 }
 
 /* ---- the journal ---- */
 .journal-feature__title {
-  font: 400 clamp(32px, 2.9vw, 48px)/1.05 var(--font-display);
+  font:400 var(--fs-3xl)/1.05 var(--font-display);
   letter-spacing: -0.01em;
 }
 
 .journal-card__title {
-  font: 400 clamp(21px, 1.6vw, 26px)/1.15 var(--font-display);
+  font:400 var(--fs-xl)/1.15 var(--font-display);
 }
 
 .journal-feature__media img,
@@ -5373,12 +5372,12 @@ section[aria-label="What our customers say"],
 
 /* ---- the questions ---- */
 .faq__q {
-  font: 400 clamp(22px, 1.75vw, 28px)/1.2 var(--font-display);
+  font:400 var(--fs-2xl)/1.2 var(--font-display);
   letter-spacing: -0.004em;
 }
 
 .faq__no {
-  font: 400 clamp(17px, 1.3vw, 20px)/1 var(--font-display);
+  font:400 var(--fs-lg)/1 var(--font-display);
   color: var(--indigo, #2b3f6b);
 }
 
@@ -5398,7 +5397,7 @@ section[aria-label="What our customers say"],
 
 /* ---- the footer ---- */
 .fletters__title {
-  font: 400 clamp(30px, 2.6vw, 42px)/1.05 var(--font-display);
+  font:400 var(--fs-3xl)/1.05 var(--font-display);
   letter-spacing: -0.01em;
 }
 
@@ -5406,35 +5405,35 @@ section[aria-label="What our customers say"],
   /* Marcellus runs wide: the names and small titles step down on a phone so
      they fit their cards without being cut short */
   .piece__name {
-    font-size: 16px;
+    font-size: var(--fs-md);
     line-height: 1.25;
   }
 
   .promise__title {
-    font-size: 17px;
+    font-size: var(--fs-lg);
   }
 
   .promise__copy {
-    font-size: 12.5px;
+    font-size: var(--fs-sm);
   }
 
   .faq__q {
-    font-size: 18px;
+    font-size: var(--fs-lg);
   }
 
   .journal-card__title,
   .tw-cell__label {
-    font-size: 18px;
+    font-size: var(--fs-lg);
   }
 
   .stat__value {
-    font-size: 38px;
+    font-size: var(--fs-5xl);
   }
 
   .hx__meta {
     flex-direction: column;
     gap: 6px;
-    font-size: 10.5px;
+    font-size: var(--fs-2xs);
   }
 
   .hx__head {
@@ -5447,11 +5446,11 @@ section[aria-label="What our customers say"],
   .hx__lede {
     justify-self: start;
     width: 100%;
-    font-size: 15px;
+    font-size: var(--fs-base);
   }
 
   .stat__value {
-    font-size: 44px;
+    font-size: var(--fs-display);
   }
 
 }
@@ -5494,7 +5493,7 @@ section[aria-label="What our customers say"],
   justify-content: space-between;
   align-items: center;
   gap: 16px;
-  font: 500 11.5px/1 var(--font-sans);
+  font:500 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--ink-soft);
@@ -5540,7 +5539,7 @@ section[aria-label="What our customers say"],
 
 .tq__quote {
   margin: 0;
-  font: 400 clamp(28px, 2.75vw, 48px)/1.12 var(--font-display);
+  font:400 var(--fs-3xl)/1.12 var(--font-display);
   letter-spacing: -0.01em;
   text-wrap: pretty;
   color: var(--ink);
@@ -5574,14 +5573,14 @@ section[aria-label="What our customers say"],
 
 .tq__who b {
   display: block;
-  font: 400 22px/1.1 var(--font-display);
+  font:400 var(--fs-lg)/1.1 var(--font-display);
   color: var(--ink);
 }
 
 .tq__city {
   display: block;
   margin-top: 4px;
-  font: 500 11px/1.3 var(--font-sans);
+  font:500 var(--fs-2xs)/1.3 var(--font-sans);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--ink-soft);
@@ -5640,7 +5639,7 @@ section[aria-label="What our customers say"],
 
 .tq__loved {
   flex: 1 1 auto;
-  font: 400 13.5px/1.4 var(--font-sans);
+  font:400 var(--fs-sm)/1.4 var(--font-sans);
   color: var(--ink-soft);
 }
 
@@ -5657,7 +5656,7 @@ section[aria-label="What our customers say"],
   border: 1px solid var(--indigo, #2b3f6b);
   border-radius: 50%;
   background: transparent;
-  font: 400 18px/1 var(--font-sans);
+  font:400 var(--fs-md)/1 var(--font-sans);
   color: var(--indigo, #2b3f6b);
   cursor: pointer;
   transition: background 0.3s ease, color 0.3s ease;
@@ -5731,20 +5730,20 @@ section[aria-label="What our customers say"],
 }
 
 .tq__took {
-  font: 500 10.5px/1 var(--font-sans);
+  font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: #e4dcc6;
 }
 
 .tq__item {
-  font: 400 clamp(26px, 2.2vw, 36px)/1.05 var(--font-display);
+  font:400 var(--fs-3xl)/1.05 var(--font-display);
   color: var(--ivory);
 }
 
 .tq__go {
   margin-top: 6px;
-  font: 500 11px/1 var(--font-sans);
+  font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: rgba(243, 240, 237, 0.86);
@@ -5806,7 +5805,7 @@ section[aria-label="What our customers say"],
   padding: 7px 12px;
   border-radius: 999px;
   background: rgba(246, 244, 230, 0.92);
-  font: 500 10px/1 var(--font-sans);
+  font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--ink);
@@ -5823,7 +5822,7 @@ section[aria-label="What our customers say"],
 }
 
 .jr__title {
-  font: 400 clamp(22px, 1.8vw, 30px)/1.08 var(--font-display);
+  font:400 var(--fs-2xl)/1.08 var(--font-display);
   letter-spacing: -0.006em;
   text-wrap: balance;
   transition: color 0.35s ease;
@@ -5831,13 +5830,13 @@ section[aria-label="What our customers say"],
 
 .jr__tile--lead .jr__title {
   max-width: 18ch;
-  font-size: clamp(34px, 3.3vw, 58px);
+  font-size: var(--fs-4xl);
   line-height: 1.02;
 }
 
 .jr__ex {
   max-width: 46ch;
-  font: 400 15px/1.55 var(--font-sans);
+  font:400 var(--fs-base)/1.55 var(--font-sans);
   color: rgba(243, 240, 237, 0.84);
 }
 
@@ -5859,13 +5858,13 @@ section[aria-label="What our customers say"],
 
 .jr__by b {
   display: block;
-  font: 400 19px/1.1 var(--font-display);
+  font:400 var(--fs-lg)/1.1 var(--font-display);
 }
 
 .jr__by b + span {
   display: block;
   margin-top: 3px;
-  font: 500 10.5px/1.3 var(--font-sans);
+  font:500 var(--fs-2xs)/1.3 var(--font-sans);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: rgba(243, 240, 237, 0.72);
@@ -5876,7 +5875,7 @@ section[aria-label="What our customers say"],
 }
 
 .jr__read {
-  font: 500 11px/1 var(--font-sans);
+  font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: rgba(243, 240, 237, 0.86);
@@ -5905,7 +5904,7 @@ section[aria-label="What our customers say"],
   border-radius: 50%;
   background: var(--indigo, #2b3f6b);
   color: var(--ivory);
-  font: 500 11px/1 var(--font-sans);
+  font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   pointer-events: none;
@@ -5951,12 +5950,12 @@ section[aria-label="What our customers say"],
   }
 
   .tq__quote {
-    font-size: 23px;
+    font-size: var(--fs-xl);
     line-height: 1.18;
   }
 
   .tq__item {
-    font-size: 24px;
+    font-size: var(--fs-2xl);
   }
 
   .tq__dots {
@@ -5997,7 +5996,7 @@ section[aria-label="What our customers say"],
   }
 
   .jr__tile--lead .jr__title {
-    font-size: 28px;
+    font-size: var(--fs-3xl);
   }
 
   .jr__ex {
@@ -6005,7 +6004,7 @@ section[aria-label="What our customers say"],
   }
 
   .jr__by b {
-    font-size: 17px;
+    font-size: var(--fs-lg);
   }
 
   .jr__by .jr__read {

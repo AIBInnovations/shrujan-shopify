@@ -275,10 +275,6 @@
     bubble('me', esc(q), null, true);
     reply(match(q), q);
   });
-  // the label folds into the round button once the page has moved
-  var compact = function () { help.classList.toggle('is-compact', window.scrollY > 240); };
-  window.addEventListener('scroll', compact, { passive: true });
-  compact();
 
   /* ---------- 3. the Enquire tab ---------- */
   var KINDS = [
