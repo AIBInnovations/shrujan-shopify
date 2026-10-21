@@ -56,7 +56,7 @@
 {%- endif -%}
 <div class="page">
   <section class="container store-head" data-reveal>
-    <span class="store-head__mark" aria-hidden="true"><i class="ph-light ph-sparkle" style="font-size:14px" aria-hidden="true"></i><i></i></span>
+    <span class="store-head__mark" aria-hidden="true"><i class="sj-i sj-i--sparkle ms" style="font-size:14px" aria-hidden="true"></i><i></i></span>
 
     <p class="store-head__eyebrow">{{ cfg.eyebrow }}</p>
     <h1 class="store-head__title">{{ cfg.heading }}</h1>
@@ -86,7 +86,7 @@
       >
       <button type="submit" class="store-btn">
         {{ cfg.submit_label }}
-        <i class="ph-light ph-magnifying-glass" style="font-size:15px" aria-hidden="true"></i>
+        <i class="sj-i sj-i--magnifying-glass ms" style="font-size:15px" aria-hidden="true"></i>
       </button>
     </form>
 
@@ -141,7 +141,7 @@
         <div class="store-empty__actions">
           <a class="btn btn--ghost" href="{{ browse_url }}">
             {{ cfg.browse_label }}
-            <i class="ph-light ph-arrow-right" style="font-size:16px" aria-hidden="true"></i>
+            <i class="sj-i sj-i--arrow-right ms" style="font-size:16px" aria-hidden="true"></i>
           </a>
         </div>
       </div>
@@ -237,7 +237,7 @@
               <span class="store-read__excerpt">{{ body | strip_html | truncatewords: 26 }}</span>
               {%- endif %}
             </span>
-            <span class="store-read__go" aria-hidden="true"><i class="ph-light ph-arrow-right" style="font-size:17px" aria-hidden="true"></i></span>
+            <span class="store-read__go" aria-hidden="true"><i class="sj-i sj-i--arrow-right ms" style="font-size:17px" aria-hidden="true"></i></span>
           </a>
             {%- endunless %}
           {%- endfor %}
@@ -274,7 +274,7 @@
     <div class="store-empty__actions">
       <a class="btn btn--ghost" href="{{ browse_url }}">
         {{ cfg.browse_label }}
-        <i class="ph-light ph-arrow-right" style="font-size:16px" aria-hidden="true"></i>
+        <i class="sj-i sj-i--arrow-right ms" style="font-size:16px" aria-hidden="true"></i>
       </a>
     </div>
   </section>

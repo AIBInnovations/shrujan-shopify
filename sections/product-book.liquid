@@ -31,7 +31,7 @@
         {%- endfor -%}
       </ul>
       {%- if s.hours != blank %}<p class="pdpx-book__hours">{{ s.hours | escape }}</p>{% endif -%}
-      {%- if s.booking_url != blank %}<a class="pdpx__link" href="{{ s.booking_url | escape }}" target="_blank" rel="noopener">{{ s.booking_label | escape }} <i class="ph-light ph-arrow-right" aria-hidden="true"></i></a>{% endif -%}
+      {%- if s.booking_url != blank %}<a class="pdpx__link" href="{{ s.booking_url | escape }}" target="_blank" rel="noopener">{{ s.booking_label | escape }} <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>{% endif -%}
     </div>
 
     <div class="pdpx-book__card" data-pdpx-book data-whatsapp="{{ s.whatsapp | remove: '+' | remove: ' ' }}">
@@ -83,7 +83,7 @@
           <div class="pdpx-book__actions">
             <button type="submit" class="btn pdpx-book__send">{{ s.send_label | escape }}</button>
             {%- if s.whatsapp != blank -%}
-              <a class="pdpx-book__wa" href="https://api.whatsapp.com/send?phone={{ s.whatsapp | remove: '+' | remove: ' ' }}" target="_blank" rel="noopener" data-pdpx-wa><i class="ph-light ph-whatsapp-logo" style="font-size:17px" aria-hidden="true"></i><span>{{ s.whatsapp_label | escape }}</span></a>
+              <a class="pdpx-book__wa" href="https://api.whatsapp.com/send?phone={{ s.whatsapp | remove: '+' | remove: ' ' }}" target="_blank" rel="noopener" data-pdpx-wa><i class="sj-i sj-i--whatsapp-logo fab" style="font-size:17px" aria-hidden="true"></i><span>{{ s.whatsapp_label | escape }}</span></a>
             {%- endif -%}
           </div>
           {%- if s.note != blank %}<p class="pdpx-book__note">{{ s.note | escape }}</p>{% endif -%}

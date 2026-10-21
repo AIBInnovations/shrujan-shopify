@@ -140,12 +140,12 @@
   <section class="ch" aria-labelledby="ch-title-{{ section.id }}">
     <div class="ch__main">
       <div class="ch__text" data-reveal>
-        <nav class="ch__crumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><i class="ph-light ph-caret-right" aria-hidden="true"></i><a href="{{ routes.all_products_collection_url }}">Shop</a><i class="ph-light ph-caret-right" aria-hidden="true"></i><span aria-current="page">{{ head_title }}</span></nav>
+        <nav class="ch__crumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><i class="sj-i sj-i--caret-right ms" aria-hidden="true"></i><a href="{{ routes.all_products_collection_url }}">Shop</a><i class="sj-i sj-i--caret-right ms" aria-hidden="true"></i><span aria-current="page">{{ head_title }}</span></nav>
         {%- if cfg.eyebrow != blank -%}<p class="ch__eyebrow">{{ cfg.eyebrow }}</p>{%- endif -%}
         <h1 class="ch__title" id="ch-title-{{ section.id }}">{{ head_title }}</h1>
         {%- if hero_desc != blank -%}<p class="ch__lede">{{ hero_desc }}</p>{%- endif -%}
-        <p class="ch__meta">{% if cfg.show_count %}<span><i class="ph-light ph-squares-four" aria-hidden="true"></i>{{ count }} {{ count_word }}</span>{% endif %}<span><i class="ph-light ph-hand" aria-hidden="true"></i>{{ cfg.hero_note }}</span></p>
-        <div class="ch__actions"><a class="ch__btn" href="#pieces">{{ cfg.hero_cta }} <i class="ph-light ph-arrow-down" aria-hidden="true"></i></a>{% if cfg.hero_cta_2 != blank %}<a class="ch__btn ch__btn--quiet" href="#enquire" data-enquire="Custom pieces">{{ cfg.hero_cta_2 }}</a>{% endif %}</div>
+        <p class="ch__meta">{% if cfg.show_count %}<span><i class="sj-i sj-i--squares-four ms" aria-hidden="true"></i>{{ count }} {{ count_word }}</span>{% endif %}<span><i class="sj-i sj-i--hand ms" aria-hidden="true"></i>{{ cfg.hero_note }}</span></p>
+        <div class="ch__actions"><a class="ch__btn" href="#pieces">{{ cfg.hero_cta }} <i class="sj-i sj-i--arrow-down ms" aria-hidden="true"></i></a>{% if cfg.hero_cta_2 != blank %}<a class="ch__btn ch__btn--quiet" href="#enquire" data-enquire="Custom pieces">{{ cfg.hero_cta_2 }}</a>{% endif %}</div>
       </div>
       {%- if cfg.show_hero_images and shot_n > 0 -%}
       <div class="ch__media{% if shot_n < 3 %} ch__media--one{% endif %}" data-reveal>
@@ -170,7 +170,7 @@
         {%- assign pk_t = 'promise' | append: forloop.index | append: '_title' -%}
         {%- assign pk_x = 'promise' | append: forloop.index | append: '_text' -%}
         {%- if cfg[pk_t] != blank -%}
-        <li class="ch__promise"><i class="ph-light ph-{{ icon_name }}" aria-hidden="true"></i><div><b>{{ cfg[pk_t] }}</b><span>{{ cfg[pk_x] }}</span></div></li>
+        <li class="ch__promise"><i class="sj-i sj-i--{{ icon_name }} ms" aria-hidden="true"></i><div><b>{{ cfg[pk_t] }}</b><span>{{ cfg[pk_x] }}</span></div></li>
         {%- endif -%}
       {%- endfor -%}
     </ul>
@@ -326,7 +326,7 @@
             <a class="store-btn store-btn--quiet" href="{{ collection.url }}" rel="nofollow">{{ cfg.filters_clear_label }}</a>
           {%- endif -%}
           <a class="store-btn" href="{{ cfg.empty_link | default: '/collections/all' }}">{{ cfg.empty_link_label }}
-            <i class="ph-light ph-arrow-right" style="font-size:16px" aria-hidden="true"></i>
+            <i class="sj-i sj-i--arrow-right ms" style="font-size:16px" aria-hidden="true"></i>
           </a>
         </div>
       </div>

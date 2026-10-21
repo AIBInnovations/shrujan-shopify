@@ -37,12 +37,12 @@
 <section class="ch" aria-labelledby="sale-title-{{ section.id }}">
   <div class="ch__main">
     <div class="ch__text" data-reveal>
-      <nav class="ch__crumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><i class="ph-light ph-caret-right" aria-hidden="true"></i><span aria-current="page">{{ s.title }}</span></nav>
+      <nav class="ch__crumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><i class="sj-i sj-i--caret-right ms" aria-hidden="true"></i><span aria-current="page">{{ s.title }}</span></nav>
       {%- if s.eyebrow != blank -%}<p class="ch__eyebrow">{{ s.eyebrow }}</p>{%- endif -%}
       <h1 class="ch__title" id="sale-title-{{ section.id }}">{{ s.title }}{% if s.title_2 != blank %} <em>{{ s.title_2 }}</em>{% endif %}</h1>
       {%- if s.lede != blank -%}<p class="ch__lede">{{ s.lede }}</p>{%- endif -%}
-      <p class="ch__meta"><span><i class="ph-light ph-squares-four" aria-hidden="true"></i>{{ total }} {{ s.count_word }}</span>{% if best > 0 %}<span><i class="ph-light ph-tag" aria-hidden="true"></i>{{ s.best_prefix }} {{ best }}% off</span>{% endif %}</p>
-      <div class="ch__actions"><a class="ch__btn" href="#pieces">{{ s.cta }} <i class="ph-light ph-arrow-down" aria-hidden="true"></i></a></div>
+      <p class="ch__meta"><span><i class="sj-i sj-i--squares-four ms" aria-hidden="true"></i>{{ total }} {{ s.count_word }}</span>{% if best > 0 %}<span><i class="sj-i sj-i--tag ms" aria-hidden="true"></i>{{ s.best_prefix }} {{ best }}% off</span>{% endif %}</p>
+      <div class="ch__actions"><a class="ch__btn" href="#pieces">{{ s.cta }} <i class="sj-i sj-i--arrow-down ms" aria-hidden="true"></i></a></div>
     </div>
     {%- if shot_n > 0 -%}
     <div class="ch__media{% if shot_n < 3 %} ch__media--one{% endif %}" data-reveal>
@@ -58,10 +58,10 @@
     {%- endif -%}
   </div>
   <ul class="ch__promises">
-    <li class="ch__promise"><i class="ph-light ph-tag" aria-hidden="true"></i><div><b>{{ s.promise1_title }}</b><span>{{ s.promise1_text }}</span></div></li>
-    <li class="ch__promise"><i class="ph-light ph-truck" aria-hidden="true"></i><div><b>{{ s.promise2_title }}</b><span>{{ s.promise2_text }}</span></div></li>
-    <li class="ch__promise"><i class="ph-light ph-info" aria-hidden="true"></i><div><b>{{ s.promise3_title }}</b><span>{{ s.promise3_text }}</span></div></li>
-    <li class="ch__promise"><i class="ph-light ph-hand" aria-hidden="true"></i><div><b>{{ s.promise4_title }}</b><span>{{ s.promise4_text }}</span></div></li>
+    <li class="ch__promise"><i class="sj-i sj-i--tag ms" aria-hidden="true"></i><div><b>{{ s.promise1_title }}</b><span>{{ s.promise1_text }}</span></div></li>
+    <li class="ch__promise"><i class="sj-i sj-i--truck ms" aria-hidden="true"></i><div><b>{{ s.promise2_title }}</b><span>{{ s.promise2_text }}</span></div></li>
+    <li class="ch__promise"><i class="sj-i sj-i--info ms" aria-hidden="true"></i><div><b>{{ s.promise3_title }}</b><span>{{ s.promise3_text }}</span></div></li>
+    <li class="ch__promise"><i class="sj-i sj-i--hand ms" aria-hidden="true"></i><div><b>{{ s.promise4_title }}</b><span>{{ s.promise4_text }}</span></div></li>
   </ul>
 </section>
 
@@ -114,7 +114,7 @@
     <div class="store-empty" data-reveal>
       <h2 class="store-empty__title">{{ s.empty_title }}</h2>
       <p class="store-empty__copy">{{ s.empty_copy }}</p>
-      <div class="store-empty__actions"><a class="store-btn" href="{{ routes.all_products_collection_url }}">{{ s.empty_link_label }} <i class="ph-light ph-arrow-right" aria-hidden="true"></i></a></div>
+      <div class="store-empty__actions"><a class="store-btn" href="{{ routes.all_products_collection_url }}">{{ s.empty_link_label }} <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a></div>
     </div>
   {%- endif -%}
 </div>

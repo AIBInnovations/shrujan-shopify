@@ -187,7 +187,7 @@
     <ul class="container shop-assure__row" data-reveal-child>
       {%- for block in section.blocks %}{% if block.type == 'assure' %}
       <li{{ block.shopify_attributes }}>
-        <span class="shop-assure__mark" aria-hidden="true">{% case block.settings.icon %}{% when 'leaf' %}<i class="ph-light ph-leaf" style="font-size:1.4px" aria-hidden="true"></i>{% when 'tape' %}<i class="ph-light ph-ruler" style="font-size:1.4px" aria-hidden="true"></i>{% when 'truck' %}<i class="ph-light ph-truck" style="font-size:1.4px" aria-hidden="true"></i>{% when 'heart' %}<i class="ph-light ph-heart" style="font-size:19px" aria-hidden="true"></i>{% else %}<i class="ph-light ph-needle" style="font-size:1.4px" aria-hidden="true"></i>{% endcase %}</span>
+        <span class="shop-assure__mark" aria-hidden="true">{% case block.settings.icon %}{% when 'leaf' %}<i class="sj-i sj-i--leaf ms" style="font-size:1.4px" aria-hidden="true"></i>{% when 'tape' %}<i class="sj-i sj-i--ruler ms" style="font-size:1.4px" aria-hidden="true"></i>{% when 'truck' %}<i class="sj-i sj-i--truck ms" style="font-size:1.4px" aria-hidden="true"></i>{% when 'heart' %}<i class="sj-i sj-i--heart ms" style="font-size:19px" aria-hidden="true"></i>{% else %}<i class="sj-i sj-i--needle ms" style="font-size:1.4px" aria-hidden="true"></i>{% endcase %}</span>
         <span class="shop-assure__title">{{ block.settings.title }}</span>
         <span class="shop-assure__copy">{{ block.settings.copy }}</span>
       </li>
@@ -200,7 +200,7 @@
   <!-- ---- categories as medallions ---- -->
   <section class="section container shop-cats" aria-label="Collections">
     <div class="shop-head" data-reveal>
-      <span class="orn" aria-hidden="true"><i></i><i class="ph-light ph-sparkle" style="font-size:15px" aria-hidden="true"></i><i></i></span>
+      <span class="orn" aria-hidden="true"><i></i><i class="sj-i sj-i--sparkle ms" style="font-size:15px" aria-hidden="true"></i><i></i></span>
       <h2 class="section-title">{{ section.settings.cats_title }}</h2>
       <p class="shop-head__copy">{{ section.settings.cats_copy }}</p>
     </div>
@@ -225,15 +225,15 @@
           <span class="medallion__disc" style="--tint: {% cycle 'medallion': 'var(--ivory-2)', 'var(--gerua-100)', 'var(--mehendi-200)', 'var(--sand)' %}">{% if med_img %}<img src="{{ med_img | image_url: width: 640 }}" alt="{{ med_img.alt | default: med.title | escape }}" loading="lazy">{% else %}{{ 'collection-1' | placeholder_svg_tag: 'medallion__ph' }}{% endif %}</span>
           <span class="medallion__name">{{ med.title | escape }}</span>
           <span class="medallion__sub">{{ med_n }} {{ med_word }}</span>
-          <span class="medallion__go" aria-hidden="true">Shop <i class="ph-light ph-arrow-right" style="font-size:13px" aria-hidden="true"></i></span>
+          <span class="medallion__go" aria-hidden="true">Shop <i class="sj-i sj-i--arrow-right ms" style="font-size:13px" aria-hidden="true"></i></span>
         </button>
         {%- endif %}
         {%- endfor %}
       </div>
 
       <div class="carousel-arrows shop-cats__arrows">
-        <button type="button" aria-label="Previous collections"><i class="ph-light ph-caret-left" style="font-size:18px" aria-hidden="true"></i></button>
-        <button type="button" aria-label="Next collections"><i class="ph-light ph-caret-right" style="font-size:18px" aria-hidden="true"></i></button>
+        <button type="button" aria-label="Previous collections"><i class="sj-i sj-i--caret-left ms" style="font-size:18px" aria-hidden="true"></i></button>
+        <button type="button" aria-label="Next collections"><i class="sj-i sj-i--caret-right ms" style="font-size:18px" aria-hidden="true"></i></button>
       </div>
     </div>
   </section>
@@ -243,7 +243,7 @@
   <section class="section container shop-body" id="catalogue">
 {%- if section.settings.show_rail %}
     <aside class="shop-rail" data-reveal>
-      <p class="shop-rail__title"><i class="ph-light ph-sparkle" style="font-size:13px" aria-hidden="true"></i> Browse by collection</p>
+      <p class="shop-rail__title"><i class="sj-i sj-i--sparkle ms" style="font-size:13px" aria-hidden="true"></i> Browse by collection</p>
       <ul class="shop-rail__list">
         <li><button type="button" class="shop-rail__item is-active" aria-pressed="true" data-c="" data-title="Everything">Everything</button></li>
         {%- for key in col_keys %}
@@ -263,7 +263,7 @@
         <p class="shop-main__count">{{ grid_count }} {{ count_word }}</p>
         <div class="shop-sort">
           <div class="sortmenu">
-            <button type="button" class="sortmenu__button" aria-haspopup="listbox" aria-expanded="false"><span class="sortmenu__label">Sort</span><span class="sortmenu__value">{{ sort_labels[sort_index] }}</span><i class="ph-light ph-caret-down" style="font-size:13px" aria-hidden="true"></i></button>
+            <button type="button" class="sortmenu__button" aria-haspopup="listbox" aria-expanded="false"><span class="sortmenu__label">Sort</span><span class="sortmenu__value">{{ sort_labels[sort_index] }}</span><i class="sj-i sj-i--caret-down ms" style="font-size:13px" aria-hidden="true"></i></button>
 
             <ul class="sortmenu__list" role="listbox" aria-label="Sort by" tabindex="-1">
               {%- for key in sort_keys %}
@@ -337,7 +337,7 @@
         <li><strong>24</strong><span>Pieces online</span></li>
       </ul>
 
-      <a class="btn" href="#catalogue">Shop the collection <i class="ph-light ph-arrow-right" style="font-size:16px" aria-hidden="true"></i></a>
+      <a class="btn" href="#catalogue">Shop the collection <i class="sj-i sj-i--arrow-right ms" style="font-size:16px" aria-hidden="true"></i></a>
     </div>
   </section>
 {%- endif %}
@@ -346,7 +346,7 @@
   <!-- ---- why it costs what it costs ---- -->
   <section class="section container shop-why" aria-label="Why Shrujan">
     <div class="shop-head" data-reveal>
-      <span class="orn" aria-hidden="true"><i></i><i class="ph-light ph-sparkle" style="font-size:15px" aria-hidden="true"></i><i></i></span>
+      <span class="orn" aria-hidden="true"><i></i><i class="sj-i sj-i--sparkle ms" style="font-size:15px" aria-hidden="true"></i><i></i></span>
       <h2 class="section-title">{{ section.settings.why_title }}</h2>
     </div>
 
@@ -368,7 +368,7 @@
 
   <section class="section container page-cta" data-reveal>
     <p>{{ section.settings.cta_text }}</p>
-    <a class="btn btn--ghost" href="{{ section.settings.cta_link | default: '/pages/video' }}">{{ section.settings.cta_label }} <i class="ph-light ph-arrow-right" style="font-size:16px" aria-hidden="true"></i></a>
+    <a class="btn btn--ghost" href="{{ section.settings.cta_link | default: '/pages/video' }}">{{ section.settings.cta_label }} <i class="sj-i sj-i--arrow-right ms" style="font-size:16px" aria-hidden="true"></i></a>
   </section>
 </div>
 

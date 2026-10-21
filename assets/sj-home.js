@@ -856,7 +856,7 @@
         gsap.fromTo(col.querySelectorAll('.ft__c-card'), { y: 30, opacity: 0 }, {
           y: 0, opacity: 1, duration: 1.1, stagger: 0.16, delay: 0.3, ease: 'expo.out', scrollTrigger: at,
         });
-        gsap.fromTo(col.querySelectorAll('.ft__c-paper, .ft__c-arch, .ft__c-swatch, .ft__c-map, .ft__c-tags, .ft__c-label, .ft__c-words'), { opacity: 0 }, {
+        gsap.fromTo(col.querySelectorAll('.ft__c-arch, .ft__c-swatch, .ft__c-map, .ft__c-tags, .ft__c-label, .ft__c-words'), { opacity: 0 }, {
           opacity: 1, duration: 1.6, stagger: 0.06, delay: 0.2, ease: 'power2.out', scrollTrigger: at,
         });
         // the thread draws itself as the collage comes up the screen, and

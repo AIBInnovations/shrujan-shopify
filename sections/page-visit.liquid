@@ -120,7 +120,7 @@
           {%- endfor %}
         </ul>
 
-        <a class="arrow-link way__cta" href="{{ block.settings.cta_link | escape }}">{{ block.settings.cta_label | escape }} <i class="ph-light ph-arrow-right" style="font-size:15px" aria-hidden="true"></i></a>
+        <a class="arrow-link way__cta" href="{{ block.settings.cta_link | escape }}">{{ block.settings.cta_label | escape }} <i class="sj-i sj-i--arrow-right ms" style="font-size:15px" aria-hidden="true"></i></a>
       </div>
     </article>
     {%- endif -%}
@@ -154,7 +154,7 @@
         <span class="stop__name">{{ block.settings.name }}</span>
         <span class="stop__copy">{{ block.settings.copy | escape }}</span>
 
-        <span class="stop__go">{{ block.settings.go_label | escape }} <i class="ph-light ph-arrow-right" style="font-size:14px" aria-hidden="true"></i></span>
+        <span class="stop__go">{{ block.settings.go_label | escape }} <i class="sj-i sj-i--arrow-right ms" style="font-size:14px" aria-hidden="true"></i></span>
       </a>
       {%- else %}
       <article class="stop" {{ block.shopify_attributes }}>
@@ -200,7 +200,7 @@
         {%- if section.settings.show_invite %}
         <div class="plan__invite" data-reveal>
           <p class="plan__invite-copy">{{ section.settings.invite_copy | escape }}</p>
-          <a class="btn btn--ghost plan__invite-cta" href="{{ section.settings.invite_cta_link | escape }}">{{ section.settings.invite_cta_label | escape }} <i class="ph-light ph-arrow-right" style="font-size:16px" aria-hidden="true"></i></a>
+          <a class="btn btn--ghost plan__invite-cta" href="{{ section.settings.invite_cta_link | escape }}">{{ section.settings.invite_cta_label | escape }} <i class="sj-i sj-i--arrow-right ms" style="font-size:16px" aria-hidden="true"></i></a>
         </div>
         {%- endif %}
       </div>
@@ -221,7 +221,7 @@
         </dl>
         {%- endif %}
 
-        <a class="btn plan__cta" href="{{ section.settings.aside_cta_link | escape }}">{{ section.settings.aside_cta_label | escape }} <i class="ph-light ph-arrow-right" style="font-size:16px" aria-hidden="true"></i></a>
+        <a class="btn plan__cta" href="{{ section.settings.aside_cta_link | escape }}">{{ section.settings.aside_cta_label | escape }} <i class="sj-i sj-i--arrow-right ms" style="font-size:16px" aria-hidden="true"></i></a>
       </aside>
     </div>
   </section>

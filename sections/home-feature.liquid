@@ -9,7 +9,7 @@
   scene for each card ("studio": a wall, sandstone, the textile and its
   props cut out over it, the words, and a small card with a close-up of the
   craft and four words), or a collage ("collage": the two photographs and
-  their cards over torn paper, an olive arch, an embroidered swatch and
+  their cards beside them, an olive arch, an embroidered swatch and
   the paper map of Kutch, with one thread drawn across it as it scrolls, the pictures
   fixed as theme files sj-visit-*.webp, the words beside them in the
   section's settings). The Studio Collection, LLDC, Gifting and Visit
@@ -24,7 +24,7 @@
   assign s = section.settings
   assign sid = section.id
 -%}
-{%- capture arrow -%}<i class="ph-light ph-arrow-right" aria-hidden="true"></i>{%- endcapture -%}
+{%- capture arrow -%}<i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i>{%- endcapture -%}
 {%- capture head -%}
   {%- if s.eyebrow != blank %}<p class="ft__eyebrow">{{ s.eyebrow | escape }}</p>{% endif -%}
   <h2 class="ft__title" id="ft-title-{{ sid }}"><span class="ft__line">{{ s.title_1 | escape }}</span>{% if s.title_2 != blank %}<span class="ft__line ft__line--soft">{{ s.title_2 | escape }}</span>{% endif %}</h2>
@@ -51,7 +51,7 @@
     </div>
   {%- elsif s.layout == 'collage' -%}
     {%- assign t1 = s.title_1 | escape | replace: '&amp;', '<span class="ft__amp">&amp;</span>' -%}
-    <div class="ft__collage"><img class="ft__c-paper ft__c-paper--a" src="{{ 'sj-visit-paper.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><img class="ft__c-paper ft__c-paper--b" src="{{ 'sj-visit-paper.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><img class="ft__c-arch" src="{{ 'sj-visit-arch.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><img class="ft__c-swatch" src="{{ 'sj-visit-swatch.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><img class="ft__c-map" src="{{ 'sj-visit-map.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><div class="ft__head">{% if s.eyebrow != blank %}<p class="ft__eyebrow">{{ s.eyebrow | escape }}</p>{% endif %}<h2 class="ft__title" id="ft-title-{{ sid }}"><span class="ft__line">{{ t1 }}</span>{% if s.title_2 != blank %}<span class="ft__line">{{ s.title_2 | escape }}</span>{% endif %}</h2>{% if s.lede != blank %}<p class="ft__lede">{{ s.lede | escape }}</p>{% endif %}</div>
+    <div class="ft__collage"><img class="ft__c-arch" src="{{ 'sj-visit-arch.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><img class="ft__c-swatch" src="{{ 'sj-visit-swatch.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><img class="ft__c-map" src="{{ 'sj-visit-map.webp' | asset_url }}" alt="" aria-hidden="true" loading="lazy"><div class="ft__head">{% if s.eyebrow != blank %}<p class="ft__eyebrow">{{ s.eyebrow | escape }}</p>{% endif %}<h2 class="ft__title" id="ft-title-{{ sid }}"><span class="ft__line">{{ t1 }}</span>{% if s.title_2 != blank %}<span class="ft__line">{{ s.title_2 | escape }}</span>{% endif %}</h2>{% if s.lede != blank %}<p class="ft__lede">{{ s.lede | escape }}</p>{% endif %}</div>
     {%- for b in section.blocks -%}
       {%- liquid
         assign c = b.settings

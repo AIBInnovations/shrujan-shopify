@@ -17,7 +17,8 @@
 
   var doc = document;
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var ic = function (name) { return '<i class="ph-light ph-' + name + '" aria-hidden="true"></i>'; };
+  // an interface icon (icons.py): a Material Symbol, or a brand mark for the *-logo ones
+  var ic = function (name) { return '<i class="sj-i sj-i--' + name + (/-logo$/.test(name) ? ' fab' : ' ms') + '" aria-hidden="true"></i>'; };
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var wa = function (text) { return 'https://api.whatsapp.com/send?phone=' + CFG.whatsapp + (text ? '&text=' + encodeURIComponent(text) : ''); };
   var make = function (html) { var d = doc.createElement('div'); d.innerHTML = html.trim(); return d.firstChild; };
@@ -279,16 +280,16 @@
   /* ---------- 3. the Enquire tab ---------- */
   var KINDS = [
     ['Collaborations', 'handshake'], ['Corporate gifting', 'gift'], ['Weddings & occasions', 'sparkle'],
-    ['Custom pieces', 'needle'], ['Retail & wholesale', 'storefront'], ['Something else', 'chat-teardrop-text'],
+    ['Custom pieces', 'needle'], ['Retail & wholesale', 'storefront'], ['Something else', 'chat-circle-dots'],
   ];
   var tab = make('<button class="sje__tab" type="button" aria-haspopup="dialog" aria-controls="sje-panel">' + ic('handshake') + '<span>Enquire</span></button>');
   var drawer = make(
     '<div class="sje" id="sje-panel" role="dialog" aria-modal="true" aria-labelledby="sje-title" hidden>' +
       '<div class="sje__scrim" data-close></div>' +
-      '<div class="sje__drawer">' +
+      '<div class="sje__drawer" data-lenis-prevent>' +
         '<header class="sje__head"><p class="sje__eyebrow">Work with Shrujan</p>' +
           '<h2 class="sje__title" id="sje-title">Collaborations, gifting and custom orders</h2>' +
-          '<p class="sje__lede">Designers, organisations, families planning an occasion, stores: tell us what you have in mind.</p>' +
+          '<p class="sje__lede">Designers, organisations, families, stores: tell us what you have in mind.</p>' +
           '<button class="sje__x" type="button" data-close aria-label="Close">' + ic('x') + '</button></header>' +
         '<form class="sje__form" method="post" action="/contact#sje" accept-charset="UTF-8">' +
           '<input type="hidden" name="form_type" value="contact"><input type="hidden" name="utf8" value="✓">' +
@@ -305,9 +306,9 @@
             '<label class="sje__field"><span>Phone / WhatsApp</span><input type="tel" name="contact[phone]" autocomplete="tel"></label></div>' +
           '<div class="sje__row"><label class="sje__field"><span>How many pieces</span><select name="contact[Quantity]"><option>Not sure yet</option><option>1–10</option><option>10–50</option><option>50–200</option><option>More than 200</option></select></label>' +
             '<label class="sje__field"><span>Needed by</span><input type="text" name="contact[Needed by]" placeholder="e.g. March 2027"></label></div>' +
-          '<label class="sje__field"><span>Tell us about it</span><textarea name="contact[body]" rows="4" required></textarea></label>' +
+          '<label class="sje__field sje__field--grow"><span>Tell us about it</span><textarea name="contact[body]" rows="3" required></textarea></label>' +
           '<button class="sje__send" type="submit">Send enquiry ' + ic('paper-plane-tilt') + '</button>' +
-          '<p class="sje__note">We read every enquiry and reply personally, ' + esc(CFG.hours) + '. In a hurry? <a href="' + wa('Hello Shrujan, I have an enquiry about ') + '" target="_blank" rel="noopener">WhatsApp us</a>.</p>' +
+          '<p class="sje__note">We reply personally, ' + esc(CFG.hours) + '. In a hurry? <a href="' + wa('Hello Shrujan, I have an enquiry about ') + '" target="_blank" rel="noopener">WhatsApp us</a>.</p>' +
         '</form>' +
         '<div class="sje__done" hidden role="status">' + ic('check-circle') + '<h3>Thank you, it’s with us.</h3>' +
           '<p>The team will write back to you soon. For anything urgent, call ' + esc(CFG.phone) + '.</p></div>' +

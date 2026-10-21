@@ -85,9 +85,8 @@
     {%- endcase -%}
     {%- if font_display == blank -%}{%- assign font_display = font_serif -%}{%- endif -%}
     <link href="https://fonts.googleapis.com/css2?{{ font_families }}&display=swap" rel="stylesheet">
-    {%- comment -%} the interface icons: the Phosphor set, light weight (awwwards-preview/icons.py swaps the hand-drawn ones) {%- endcomment %}
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/light/style.css">
+    {%- comment -%} the interface icons: Google's Material Symbols, cut down to the ones the site uses (awwwards-preview/icons.py writes the list and the glyph rules in sj-site.css) {%- endcomment %}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&amp;icon_names=add,apparel,arrow_back,arrow_downward,arrow_forward,auto_awesome,calendar_month,call,chat,check,check_circle,chevron_left,chevron_right,close,content_cut,description,design_services,eco,expand_less,expand_more,favorite,forum,front_hand,globe_asia,grid_view,handshake,history,home,info,local_shipping,location_on,mail,map,menu,menu_book,package_2,pause,person,play_arrow,redeem,remove,search,sell,send,shopping_bag,soap,star,storefront,straighten,support_agent,sync,verified,videocam&amp;display=block">
     <link rel="stylesheet" href="{{ 'shrujan-global.css' | asset_url }}">
     <link rel="stylesheet" href="{{ 'shrujan-pages.css' | asset_url }}">
     {%- comment -%} commerce pages (collection, cart, search, blog, account) {%- endcomment -%}

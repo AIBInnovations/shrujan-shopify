@@ -164,113 +164,195 @@ body {
 }
 
 /* ============================================================
-   The header in one short row (the user: shorter, without the
-   currency, the language, the shipping line or the tagline): the
-   menu on the left, the mark in the middle, search, account and bag
-   as icons on the right, the bag with its count. The offer bar above
-   it slimmer too.
+   The header (the user: the grey offer bar on top, no shipping line,
+   the words two points smaller and the logo a little smaller than the
+   theme's, so the bar is lower; search, account and bag on the right
+   as words with their icons). One row: the menu on the left, the logo
+   in the middle, the utilities on the right; on phones the bag carries
+   its count.
    ============================================================ */
+/* the grey offer bar on top, a little lower and finer */
 :root:has(.offer-bar) {
-  --offer-h: 34px;
+  --offer-h: 36px;
 }
 
-.site-header {
-  --topbar-h: 0px;
-  --header-row-min: 60px;
+.offer-bar {
+  font-size: calc(var(--fs-xs) - 1px);
 }
 
-.site-header .topbar,
-.site-header .brand__tag {
-  display: none !important;
+.site-header .site-header__inner {
+  --header-row-min: 68px;
 }
 
-.site-header__inner {
-  min-height: 60px;
+.site-header .brand {
+  --logo-h: clamp(40px, 3.1vw, 50px);
 }
 
-/* above 1080px the mark floats in the middle of the row; below it, it is
-   the middle cell of the bar's grid (shrujan-global.css), only smaller */
-@media (min-width: 1081px) {
-  .site-header .brand {
-    --logo-h: clamp(34px, 2.5vw, 42px);
-    top: 50%;
-    gap: 0;
-    padding: 0 clamp(20px, 2.4vw, 40px);
-    transform: translate(-50%, -50%);
-    background: transparent;
-  }
+.nav-item__link,
+.utility-link {
+  font-size: calc(var(--fs-base) - 2px);
+  letter-spacing: 0.2em;
 }
 
-@media (max-width: 1080px) {
-  .site-header .brand {
-    --logo-h: 32px;
-    padding: 0;
-  }
-
-  .site-header .site-header__inner {
-    --header-row-min: 54px;
-  }
-}
-
-/* the utilities as icons; their words stay, for screen readers */
 .header-utils {
-  gap: clamp(10px, 1.3vw, 20px);
+  gap: clamp(14px, 1.6vw, 26px);
 }
 
 .header-utils .utility-link {
-  position: relative;
-  padding: 6px;
-}
-
-.header-utils .utility-link > span {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
+  gap: 7px;
 }
 
 .header-utils .utility-link > i,
 .menu-toggle > i {
-  font-size: 21px;
+  font-size: 19px;
 }
 
 .utility-count {
   position: absolute;
   top: 0;
   right: -4px;
+  display: none;
   min-width: 16px;
   height: 16px;
   padding: 0 4px;
   border-radius: 8px;
-  background: var(--indigo, #924241);
+  background: var(--ink, #404041);
   font:600 var(--fs-2xs)/16px var(--font-sans);
   text-align: center;
   color: var(--page-bg, #f6f4e6);
 }
 
-@media (max-width: 767px) {
-  :root:has(.offer-bar) {
-    --offer-h: 32px;
+@media (max-width: 1080px) {
+  .site-header .site-header__inner {
+    --header-row-min: 58px;
   }
 
-  .site-header__inner {
-    min-height: 54px;
+  .site-header .brand {
+    --logo-h: 34px;
+    padding: 6px 0 8px;
+  }
+
+  .header-utils .utility-link {
+    position: relative;
+  }
+
+  .utility-count {
+    display: block;
   }
 }
 
-/* ---- the interface icons (the Phosphor set, light; icons.py) ---- */
-i.ph-light {
+/* icons:start (written by convert_icons.py from icons.py) */
+/* ---- the interface icons (Material Symbols, Font Awesome brands; icons.py) ---- */
+@font-face {
+  font-family: 'Font Awesome 6 Brands';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/webfonts/fa-brands-400.woff2) format('woff2');
+}
+
+i.sj-i {
   display: inline-block;
   flex: none;
+  width: 1em;
+  height: 1em;
+  overflow: hidden;
+  font-style: normal;
   line-height: 1;
-  vertical-align: -0.14em;
+  vertical-align: -0.16em;
   transition: transform 0.3s ease;
 }
 
-a:hover > i.ph-arrow-right,
-button:hover > i.ph-arrow-right {
+i.sj-i::before {
+  display: block;
+  width: 1em;
+  font-size: 1em;
+  line-height: 1;
+  text-align: center;
+}
+
+i.ms::before {
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  direction: ltr;
+  font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'opsz' 24, 'wght' 400;
+}
+
+i.fab::before {
+  font-family: 'Font Awesome 6 Brands';
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  transform: scale(0.84);
+}
+
+.sj-i--arrow-right::before { content: 'arrow_forward'; }
+.sj-i--arrow-left::before { content: 'arrow_back'; }
+.sj-i--arrow-down::before { content: 'arrow_downward'; }
+.sj-i--caret-down::before { content: 'expand_more'; }
+.sj-i--caret-up::before { content: 'expand_less'; }
+.sj-i--caret-left::before { content: 'chevron_left'; }
+.sj-i--caret-right::before { content: 'chevron_right'; }
+.sj-i--plus::before { content: 'add'; }
+.sj-i--minus::before { content: 'remove'; }
+.sj-i--x::before { content: 'close'; }
+.sj-i--check::before { content: 'check'; }
+.sj-i--check-circle::before { content: 'check_circle'; }
+.sj-i--magnifying-glass::before { content: 'search'; }
+.sj-i--user::before { content: 'person'; }
+.sj-i--handbag::before { content: 'shopping_bag'; }
+.sj-i--list::before { content: 'menu'; }
+.sj-i--heart::before { content: 'favorite'; }
+.sj-i--tag::before { content: 'sell'; }
+.sj-i--squares-four::before { content: 'grid_view'; }
+.sj-i--info::before { content: 'info'; }
+.sj-i--truck::before { content: 'local_shipping'; }
+.sj-i--package::before { content: 'package_2'; }
+.sj-i--arrows-counter-clockwise::before { content: 'sync'; }
+.sj-i--clock-counter-clockwise::before { content: 'history'; }
+.sj-i--headset::before { content: 'support_agent'; }
+.sj-i--phone::before { content: 'call'; }
+.sj-i--envelope-simple::before { content: 'mail'; }
+.sj-i--chat-circle-dots::before { content: 'chat'; }
+.sj-i--chat-teardrop-text::before { content: 'forum'; }
+.sj-i--paper-plane-tilt::before { content: 'send'; }
+.sj-i--handshake::before { content: 'handshake'; }
+.sj-i--gift::before { content: 'redeem'; }
+.sj-i--sparkle::before { content: 'auto_awesome'; }
+.sj-i--needle::before { content: 'design_services'; }
+.sj-i--scissors::before { content: 'content_cut'; }
+.sj-i--t-shirt::before { content: 'apparel'; }
+.sj-i--storefront::before { content: 'storefront'; }
+.sj-i--hand::before { content: 'front_hand'; }
+.sj-i--hand-soap::before { content: 'soap'; }
+.sj-i--leaf::before { content: 'eco'; }
+.sj-i--ruler::before { content: 'straighten'; }
+.sj-i--video-camera::before { content: 'videocam'; }
+.sj-i--book-open::before { content: 'menu_book'; }
+.sj-i--map-pin::before { content: 'location_on'; }
+.sj-i--map-trifold::before { content: 'map'; }
+.sj-i--globe-hemisphere-east::before { content: 'globe_asia'; }
+.sj-i--house-line::before { content: 'home'; }
+.sj-i--file-text::before { content: 'description'; }
+.sj-i--seal-check::before { content: 'verified'; }
+.sj-i--calendar::before { content: 'calendar_month'; }
+.sj-i--star::before { content: 'star'; }
+.sj-i--play::before { content: 'play_arrow'; }
+.sj-i--pause::before { content: 'pause'; }
+.sj-i--facebook-logo::before { content: '\f39e'; }
+.sj-i--pinterest-logo::before { content: '\f231'; }
+.sj-i--whatsapp-logo::before { content: '\f232'; }
+.sj-i--instagram-logo::before { content: '\f16d'; }
+.sj-i--youtube-logo::before { content: '\f167'; }
+.sj-i--x-logo::before { content: '\e61b'; }
+/* icons:end */
+
+a:hover > i.sj-i--arrow-right,
+button:hover > i.sj-i--arrow-right {
   transform: translateX(3px);
 }
 

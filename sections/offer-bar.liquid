@@ -90,11 +90,11 @@
       </div>
 
       {%- if os.link_label != blank -%}
-        <a class="offer-bar__cta" href="{{ os.link | default: '/pages/sale' }}">{{ os.link_label }}<i class="ph-light ph-arrow-right" style="font-size:13px" aria-hidden="true"></i></a>
+        <a class="offer-bar__cta" href="{{ os.link | default: '/pages/sale' }}">{{ os.link_label }}<i class="sj-i sj-i--arrow-right ms" style="font-size:13px" aria-hidden="true"></i></a>
       {%- endif -%}
 
       {%- if os.dismissible -%}
-        <button class="offer-bar__close" type="button" aria-label="Dismiss this announcement"><i class="ph-light ph-x" style="font-size:14px" aria-hidden="true"></i></button>
+        <button class="offer-bar__close" type="button" aria-label="Dismiss this announcement"><i class="sj-i sj-i--x ms" style="font-size:14px" aria-hidden="true"></i></button>
       {%- endif -%}
     </div>
   </div>

@@ -7,7 +7,7 @@
    at the foot of the screen on the right and answers from Shrujan's own
    policies, then hands over to a person. The Enquire tab rides the right
    edge and opens a drawer for collaborations, gifting, custom and
-   wholesale enquiries. Behaviour in ui.js; icons from the Phosphor set.
+   wholesale enquiries. Behaviour in ui.js; icons from Material Symbols (icons.py).
    ============================================================ */
 .sjs,
 .sjh,
@@ -644,7 +644,17 @@ html.sj-pre .sje__tab {
   font-size: 18px;
 }
 
-/* ---------- 3. the Enquire tab ---------- */
+/* ---------- 3. the Enquire tab ----------
+   In the brand's dark grey (the user: grey, not maroon). The tab reads top
+   to bottom with its icon upright; the drawer holds everything in one
+   screen's height, without scrolling: the topics three to a row, the fields
+   two to a row, the message box taking whatever height is left. */
+.sje,
+.sje__tab {
+  --sje-ink: var(--ui-ink);
+  --sje-deep: #2f2f30;
+}
+
 .sje__tab {
   position: fixed;
   top: 50%;
@@ -656,31 +666,31 @@ html.sj-pre .sje__tab {
   padding: 16px 11px;
   border: 0;
   border-radius: 10px 0 0 10px;
-  background: var(--indigo, #924241);
-  box-shadow: -10px 12px 26px -16px rgba(80, 26, 24, 0.7);
+  background: var(--sje-ink);
+  box-shadow: -10px 12px 26px -16px rgba(20, 20, 20, 0.6);
   font:500 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--page-bg, #f6f4e6);
   writing-mode: vertical-rl;
-  transform: translateY(-50%) rotate(180deg);
+  transform: translateY(-50%);
   cursor: pointer;
   transition: padding 0.35s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s ease;
 }
 
 .sje__tab i {
-  font-size: 18px;
-  transform: rotate(90deg);
+  font-size: 19px;
+  writing-mode: horizontal-tb;
   transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .sje__tab:hover {
   padding-right: 15px;
-  background: #7d3332;
+  background: var(--sje-deep);
 }
 
 .sje__tab:hover i {
-  transform: rotate(90deg) scale(1.15);
+  transform: scale(1.15);
 }
 
 .sje {
@@ -692,7 +702,7 @@ html.sj-pre .sje__tab {
 .sje__scrim {
   position: absolute;
   inset: 0;
-  background: rgba(40, 32, 26, 0.4);
+  background: rgba(30, 30, 30, 0.42);
   opacity: 0;
   transition: opacity 0.4s ease;
 }
@@ -704,10 +714,13 @@ html.sj-pre .sje__tab {
   bottom: 0;
   display: flex;
   flex-direction: column;
-  width: min(460px, 100vw);
-  overflow: auto;
+  width: min(480px, 100vw);
+  height: 100vh;
+  height: 100dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   background: var(--ui-bg);
-  box-shadow: -30px 0 60px -30px rgba(40, 28, 18, 0.5);
+  box-shadow: -30px 0 60px -30px rgba(30, 30, 30, 0.5);
   transform: translateX(104%);
   transition: transform 0.6s var(--ui-ease);
 }
@@ -722,38 +735,39 @@ html.sj-pre .sje__tab {
 
 .sje__head {
   position: relative;
-  padding: 30px 28px 22px;
-  background: var(--ui-red);
+  flex: none;
+  padding: clamp(16px, 2.6vh, 26px) 64px clamp(14px, 2.2vh, 20px) 26px;
+  background: var(--sje-ink);
   color: var(--ui-bg);
 }
 
 .sje__eyebrow {
-  margin: 0 0 10px;
+  margin: 0 0 8px;
   font:500 var(--fs-2xs)/1.3 var(--font-sans);
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
 .sje__title {
   margin: 0;
-  font:400 var(--fs-2xl) / 1.1 var(--font-display);
+  font:400 var(--fs-xl) / 1.15 var(--font-display);
 }
 
 .sje__lede {
-  margin: 10px 0 0;
-  font:400 var(--fs-sm)/1.55 var(--font-sans);
-  opacity: 0.88;
+  margin: 8px 0 0;
+  font:400 var(--fs-xs)/1.5 var(--font-sans);
+  opacity: 0.82;
 }
 
 .sje__x {
   position: absolute;
-  top: 18px;
-  right: 18px;
+  top: 14px;
+  right: 14px;
   display: grid;
   place-items: center;
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   border: 1px solid rgba(246, 244, 230, 0.35);
   border-radius: 50%;
   background: transparent;
@@ -768,24 +782,27 @@ html.sj-pre .sje__tab {
 }
 
 .sje__x i {
-  font-size: 18px;
+  font-size: 19px;
 }
 
 .sje__form {
-  display: grid;
-  gap: 14px;
-  padding: 22px 28px 30px;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: clamp(8px, 1.5vh, 14px);
+  min-height: 0;
+  padding: clamp(14px, 2.2vh, 22px) 26px clamp(14px, 2.2vh, 22px);
 }
 
 .sje__legend {
-  margin: 0 0 10px;
+  margin: 0 0 8px;
   padding: 0;
-  font:400 var(--fs-md)/1.2 var(--font-display);
+  font:400 var(--fs-base)/1.2 var(--font-display);
 }
 
 .sje__kinds {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
   margin: 0;
   padding: 0;
@@ -804,47 +821,61 @@ html.sj-pre .sje__tab {
 
 .sje__kind span {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 5px;
   height: 100%;
-  padding: 12px;
+  min-height: clamp(58px, 8vh, 72px);
+  padding: 9px 6px;
   border: 1px solid var(--ui-line);
   border-radius: 10px;
-  font:400 var(--fs-xs)/1.25 var(--font-sans);
+  background: rgba(255, 255, 255, 0.5);
+  font:400 var(--fs-2xs)/1.25 var(--font-sans);
+  text-align: center;
   cursor: pointer;
-  transition: border-color 0.25s ease, background 0.25s ease, transform 0.3s var(--ui-ease);
+  transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease, transform 0.3s var(--ui-ease);
 }
 
 .sje__kind span i {
   font-size: 22px;
-  color: var(--ui-red);
+  color: var(--sje-ink);
+  transition: color 0.25s ease;
 }
 
 .sje__kind span:hover {
   transform: translateY(-2px);
-  border-color: var(--ui-ink);
+  border-color: var(--sje-ink);
 }
 
 .sje__kind input:checked + span {
-  border-color: var(--ui-red);
-  background: rgba(146, 66, 65, 0.07);
-  box-shadow: inset 0 0 0 1px var(--ui-red);
+  border-color: var(--sje-ink);
+  background: var(--sje-ink);
+  color: var(--ui-bg);
+}
+
+.sje__kind input:checked + span i {
+  color: var(--ui-bg);
 }
 
 .sje__kind input:focus-visible + span {
-  outline: 2px solid var(--ui-red);
+  outline: 2px solid var(--sje-ink);
   outline-offset: 2px;
 }
 
 .sje__row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 10px;
+}
+
+.sje__field {
+  display: block;
 }
 
 .sje__field span {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 5px;
   font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -855,7 +886,7 @@ html.sj-pre .sje__tab {
 .sje__field select,
 .sje__field textarea {
   width: 100%;
-  padding: 12px 13px;
+  padding: clamp(8px, 1.15vh, 11px) 12px;
   border: 1px solid var(--ui-line);
   border-radius: 8px;
   background: #fff;
@@ -868,26 +899,50 @@ html.sj-pre .sje__tab {
 .sje__field input:focus,
 .sje__field select:focus,
 .sje__field textarea:focus {
-  border-color: var(--ui-red);
-  box-shadow: 0 0 0 3px rgba(146, 66, 65, 0.12);
+  border-color: var(--sje-ink);
+  box-shadow: 0 0 0 3px rgba(64, 64, 65, 0.12);
+}
+
+/* the message box takes the height that is left */
+.sje__field--grow {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.sje__field--grow textarea {
+  flex: 1 1 auto;
+  min-height: 52px;
+  resize: none;
 }
 
 .sje__send {
   position: relative;
   display: inline-flex;
+  flex: none;
   align-items: center;
   justify-content: center;
   gap: 10px;
   overflow: hidden;
-  padding: 15px 22px;
+  padding: clamp(12px, 1.7vh, 15px) 22px;
   border: 0;
   border-radius: 999px;
-  background: var(--ui-ink);
+  background: var(--sje-ink);
   font:500 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--ui-bg);
   cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.sje__send:hover {
+  background: var(--sje-deep);
+}
+
+.sje__send i {
+  font-size: 17px;
 }
 
 .sje__send::before {
@@ -909,20 +964,24 @@ html.sj-pre .sje__tab {
 }
 
 .sje__note {
+  flex: none;
   margin: 0;
-  font:400 var(--fs-sm)/1.55 var(--font-sans);
+  font:400 var(--fs-2xs)/1.5 var(--font-sans);
+  text-align: center;
   color: var(--ui-soft);
 }
 
 .sje__note a {
-  color: var(--ui-red);
+  color: var(--ui-ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .sje__done {
   display: grid;
   justify-items: start;
   gap: 10px;
-  padding: 34px 28px;
+  padding: 34px 26px;
 }
 
 .sje__done[hidden] {
@@ -931,7 +990,7 @@ html.sj-pre .sje__tab {
 
 .sje__done i {
   font-size: 46px;
-  color: var(--ui-red);
+  color: var(--sje-ink);
   animation: sje-pop 0.6s var(--ui-ease);
 }
 
@@ -970,6 +1029,31 @@ html.sj-pre .sje__tab {
   from {
     opacity: 0;
     transform: translateY(14px);
+  }
+}
+
+/* short screens: the line under the title goes, the topics get lower */
+@media (max-height: 760px) {
+  .sje__lede {
+    display: none;
+  }
+
+  .sje__kind span {
+    flex-direction: row;
+    gap: 6px;
+    min-height: 44px;
+    text-align: left;
+  }
+
+  .sje__kind span i {
+    font-size: 18px;
+  }
+}
+
+@media (max-height: 640px) {
+  .sje__eyebrow,
+  .sje__note {
+    display: none;
   }
 }
 
@@ -1017,7 +1101,7 @@ html.sj-pre .sje__tab {
     top: auto;
     bottom: 76px;
     padding: 11px 9px;
-    transform: rotate(180deg);
+    transform: none;
   }
 
   .sje__tab span {
@@ -1029,11 +1113,23 @@ html.sj-pre .sje__tab {
   }
 
   .sje__tab i {
-    font-size: 19px;
+    font-size: 20px;
   }
 
-  .sje__row {
-    grid-template-columns: 1fr;
+  .sje__head {
+    padding-left: 20px;
+  }
+
+  .sje__form {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  .sje__kind span {
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px 4px;
+    text-align: center;
   }
 }
 

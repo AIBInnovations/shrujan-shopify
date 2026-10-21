@@ -97,7 +97,7 @@
           {%- if block.settings.note != blank %}
           <span class="strand-card__copy">{{ block.settings.note | escape }}</span>
           {%- endif %}
-          <span class="strand-card__cta">{{ block.settings.cta_label | escape }} <i class="ph-light ph-arrow-right" style="font-size:15px" aria-hidden="true"></i></span>
+          <span class="strand-card__cta">{{ block.settings.cta_label | escape }} <i class="sj-i sj-i--arrow-right ms" style="font-size:15px" aria-hidden="true"></i></span>
         </a>
       </li>
       {%- endif -%}
@@ -135,7 +135,7 @@
           {%- endfor %}
         </ul>
 
-        <a class="arrow-link studio-row__link" href="{{ block.settings.link | default: '/pages/studio-heritage' | escape }}">{{ block.settings.link_label | escape }} <i class="ph-light ph-arrow-right" style="font-size:16px" aria-hidden="true"></i></a>
+        <a class="arrow-link studio-row__link" href="{{ block.settings.link | default: '/pages/studio-heritage' | escape }}">{{ block.settings.link_label | escape }} <i class="sj-i sj-i--arrow-right ms" style="font-size:16px" aria-hidden="true"></i></a>
       </div>
     </article>
     {%- endif -%}
@@ -146,7 +146,7 @@
 
   <section class="section container page-cta" data-reveal>
     <p>{{ section.settings.cta_copy | escape }}</p>
-    <a class="btn" href="{{ section.settings.cta_link | escape }}">{{ section.settings.cta_label | escape }} <i class="ph-light ph-arrow-right" style="font-size:16px" aria-hidden="true"></i></a>
+    <a class="btn" href="{{ section.settings.cta_link | escape }}">{{ section.settings.cta_label | escape }} <i class="sj-i sj-i--arrow-right ms" style="font-size:16px" aria-hidden="true"></i></a>
   </section>
 {%- endif %}
 </div>

@@ -54,12 +54,12 @@
   <div class="marquee__track">
     <div class="marquee__group">
       {%- for block in section.blocks %}
-      <span class="marquee__item"{% if block.shopify_attributes != blank %} {{ block.shopify_attributes }}{% endif %}>{{ block.settings.name | escape }}<i class="ph-light ph-sparkle" style="font-size:11px" aria-hidden="true"></i></span>
+      <span class="marquee__item"{% if block.shopify_attributes != blank %} {{ block.shopify_attributes }}{% endif %}>{{ block.settings.name | escape }}<i class="sj-i sj-i--sparkle ms" style="font-size:11px" aria-hidden="true"></i></span>
       {%- endfor %}
     </div>
     <div class="marquee__group" aria-hidden="true">
       {%- for block in section.blocks %}
-      <span class="marquee__item">{{ block.settings.name | escape }}<i class="ph-light ph-sparkle" style="font-size:11px" aria-hidden="true"></i></span>
+      <span class="marquee__item">{{ block.settings.name | escape }}<i class="sj-i sj-i--sparkle ms" style="font-size:11px" aria-hidden="true"></i></span>
       {%- endfor %}
     </div>
   </div>

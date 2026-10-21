@@ -234,20 +234,20 @@
   assign rail_max = 5
 -%}
 {%- capture icon_star -%}<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.6L12 17.6 6.1 20.7l1.2-6.6L2.5 9.5l6.6-.9Z"></path></svg>{%- endcapture -%}
-{%- capture icon_arrow_15 -%}<i class="ph-light ph-arrow-right" style="font-size:15px" aria-hidden="true"></i>{%- endcapture -%}
-{%- capture icon_arrow_16 -%}<i class="ph-light ph-arrow-right" style="font-size:16px" aria-hidden="true"></i>{%- endcapture -%}
-{%- capture pdpi_making -%}<i class="ph-light ph-needle" style="font-size:20px" aria-hidden="true"></i>{%- endcapture -%}
-{%- capture pdpi_call -%}<i class="ph-light ph-video-camera" style="font-size:20px" aria-hidden="true"></i>{%- endcapture -%}
-{%- capture pdpi_story -%}<i class="ph-light ph-book-open" style="font-size:20px" aria-hidden="true"></i>{%- endcapture -%}
-{%- capture pdpi_care -%}<i class="ph-light ph-hand-soap" style="font-size:20px" aria-hidden="true"></i>{%- endcapture -%}
-{%- capture pdpi_ship -%}<i class="ph-light ph-truck" style="font-size:22px" aria-hidden="true"></i>{%- endcapture -%}
-{%- capture pdpi_since -%}<i class="ph-light ph-clock-counter-clockwise" style="font-size:22px" aria-hidden="true"></i>{%- endcapture -%}
-{%- capture pdpi_assist -%}<i class="ph-light ph-headset" style="font-size:22px" aria-hidden="true"></i>{%- endcapture -%}
-{%- capture pdpi_hand -%}<i class="ph-light ph-hand" style="font-size:22px" aria-hidden="true"></i>{%- endcapture -%}
-{%- capture pdpi_wa -%}<i class="ph-light ph-whatsapp-logo" style="font-size:17px" aria-hidden="true"></i>{%- endcapture -%}
-{%- capture pdpi_phone -%}<i class="ph-light ph-phone" style="font-size:17px" aria-hidden="true"></i>{%- endcapture -%}
-{%- capture pdpi_mail -%}<i class="ph-light ph-envelope-simple" style="font-size:17px" aria-hidden="true"></i>{%- endcapture -%}
-{%- capture icon_plus -%}<i class="ph-light ph-plus" style="font-size:16px" aria-hidden="true"></i>{%- endcapture -%}
+{%- capture icon_arrow_15 -%}<i class="sj-i sj-i--arrow-right ms" style="font-size:15px" aria-hidden="true"></i>{%- endcapture -%}
+{%- capture icon_arrow_16 -%}<i class="sj-i sj-i--arrow-right ms" style="font-size:16px" aria-hidden="true"></i>{%- endcapture -%}
+{%- capture pdpi_making -%}<i class="sj-i sj-i--needle ms" style="font-size:20px" aria-hidden="true"></i>{%- endcapture -%}
+{%- capture pdpi_call -%}<i class="sj-i sj-i--video-camera ms" style="font-size:20px" aria-hidden="true"></i>{%- endcapture -%}
+{%- capture pdpi_story -%}<i class="sj-i sj-i--book-open ms" style="font-size:20px" aria-hidden="true"></i>{%- endcapture -%}
+{%- capture pdpi_care -%}<i class="sj-i sj-i--hand-soap ms" style="font-size:20px" aria-hidden="true"></i>{%- endcapture -%}
+{%- capture pdpi_ship -%}<i class="sj-i sj-i--truck ms" style="font-size:22px" aria-hidden="true"></i>{%- endcapture -%}
+{%- capture pdpi_since -%}<i class="sj-i sj-i--clock-counter-clockwise ms" style="font-size:22px" aria-hidden="true"></i>{%- endcapture -%}
+{%- capture pdpi_assist -%}<i class="sj-i sj-i--headset ms" style="font-size:22px" aria-hidden="true"></i>{%- endcapture -%}
+{%- capture pdpi_hand -%}<i class="sj-i sj-i--hand ms" style="font-size:22px" aria-hidden="true"></i>{%- endcapture -%}
+{%- capture pdpi_wa -%}<i class="sj-i sj-i--whatsapp-logo fab" style="font-size:17px" aria-hidden="true"></i>{%- endcapture -%}
+{%- capture pdpi_phone -%}<i class="sj-i sj-i--phone ms" style="font-size:17px" aria-hidden="true"></i>{%- endcapture -%}
+{%- capture pdpi_mail -%}<i class="sj-i sj-i--envelope-simple ms" style="font-size:17px" aria-hidden="true"></i>{%- endcapture -%}
+{%- capture icon_plus -%}<i class="sj-i sj-i--plus ms" style="font-size:16px" aria-hidden="true"></i>{%- endcapture -%}
 {%- capture stars_rating -%}<span class="pdp__stars" aria-label="{{ star_n }} out of 5 stars">{% for i in (1..star_n) %}{{ icon_star }}{% endfor %}</span>{%- endcapture -%}
 {%- comment -%}
   The four packaged portraits the "worn by" row was built with. An image picked
@@ -457,7 +457,7 @@
           </ul>
         {%- endif -%}
         {%- if cfg.reassure != blank -%}
-          <p class="pdp__reassure"><i class="ph-light ph-sparkle" style="font-size:13px" aria-hidden="true"></i> {{ cfg.reassure }}</p>
+          <p class="pdp__reassure"><i class="sj-i sj-i--sparkle ms" style="font-size:13px" aria-hidden="true"></i> {{ cfg.reassure }}</p>
         {%- endif -%}
 
         {%- if cfg.show_details -%}
@@ -671,7 +671,7 @@
             <p class="pdp-guide__eyebrow">Size guide</p>
             <h2 class="pdp-guide__title" id="pdp-guide-title-{{ section.id }}" data-pdp-guide-title>{{ cfg.size_guide_page.title }}</h2>
           </div>
-          <button type="button" class="pdp-guide__close" data-pdp-guide-close aria-label="Close the size guide"><i class="ph-light ph-x" style="font-size:18px" aria-hidden="true"></i></button>
+          <button type="button" class="pdp-guide__close" data-pdp-guide-close aria-label="Close the size guide"><i class="sj-i sj-i--x ms" style="font-size:18px" aria-hidden="true"></i></button>
         </div>
         <div class="pdp-guide__body store-article">
           {{ cfg.size_guide_page.content | replace: '<p>&nbsp;</p>', '' | replace: '<p> </p>', '' | replace: '<p></p>', '' }}

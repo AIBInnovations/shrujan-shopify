@@ -3623,12 +3623,12 @@ html.sj-pre .dh__strip {
    The user's mock-up, every piece placed as a share of its own frame
    (1448 x 1086) and the words sized by the collage's width (cqi), so it
    keeps its proportions at any desktop width: the head at the top left,
-   the campus photograph over torn paper with the Visit Shrujan card
+   the campus photograph with the Visit Shrujan card
    beside it, the palace photograph across the foot with the Visit Kutch
    card over an olive arch, an embroidered swatch at the right edge and the
    paper map of Kutch with its dotted way; one thread runs through it all,
-   drawing itself as the collage scrolls (the user had the flowers taken
-   out). Below 1200px: the head, then each
+   drawing itself as the collage scrolls (the user had the flowers and
+   the torn paper taken out). Below 1200px: the head, then each
    photograph with its card over its foot; the loose pieces stay out.
    ============================================================ */
 .ft--collage {
@@ -3654,21 +3654,6 @@ html.sj-pre .dh__strip {
   display: block;
   height: auto;
   max-width: none;
-}
-
-.ft__c-paper--a {
-  left: 42.6%;
-  top: 2.6%;
-  z-index: 1;
-  width: 41%;
-}
-
-.ft__c-paper--b {
-  left: 15%;
-  top: 61%;
-  z-index: 1;
-  width: 60%;
-  transform: scaleX(-1);
 }
 
 .ft__c-arch {
@@ -3926,7 +3911,6 @@ html.sj-pre .dh__strip {
     height: auto;
   }
 
-  .ft__c-paper,
   .ft__c-arch,
   .ft__c-swatch,
   .ft__c-map,
