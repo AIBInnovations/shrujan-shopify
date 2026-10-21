@@ -696,6 +696,54 @@ button:hover > i.sj-i--arrow-right {
   color: var(--ink-soft);
 }
 
+/* on the hero's picture (the user: on the image, not under it): a frosted
+   strip across its foot */
+.ch__media {
+  position: relative;
+}
+
+.ch__media .ch__promises {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  left: 12px;
+  z-index: 2;
+  margin: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: rgba(246, 244, 230, 0.86);
+  -webkit-backdrop-filter: blur(12px) saturate(1.1);
+  backdrop-filter: blur(12px) saturate(1.1);
+  box-shadow: 0 14px 34px -20px rgba(30, 20, 10, 0.55);
+}
+
+.ch__media .ch__promise {
+  gap: 10px;
+  padding: 12px 14px;
+  border: 0 !important;
+}
+
+.ch__media .ch__promise + .ch__promise {
+  box-shadow: inset 1px 0 0 rgba(64, 64, 65, 0.12);
+}
+
+.ch__media .ch__promise > i {
+  width: 34px;
+  height: 34px;
+  font-size: 18px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.ch__media .ch__promise b {
+  font-size: var(--fs-sm);
+}
+
+.ch__media .ch__promise span {
+  margin-top: 2px;
+  font-size: var(--fs-2xs);
+  line-height: 1.35;
+}
+
 /* the shop under it: chips that filter the grid in place (the Sale page) */
 .ch-chips {
   display: flex;
@@ -780,6 +828,34 @@ button:hover > i.sj-i--arrow-right {
 
   .ch__promise:nth-child(n + 3) {
     border-top: 1px solid var(--hairline);
+  }
+  /* on a phone's picture: two by two, the titles only */
+  .ch__media .ch__promises {
+    right: 8px;
+    bottom: 8px;
+    left: 8px;
+  }
+
+  .ch__media .ch__promise {
+    padding: 9px 10px;
+  }
+
+  .ch__media .ch__promise:nth-child(n + 3) {
+    box-shadow: inset 0 1px 0 rgba(64, 64, 65, 0.12);
+  }
+
+  .ch__media .ch__promise:nth-child(4) {
+    box-shadow: inset 1px 1px 0 rgba(64, 64, 65, 0.12);
+  }
+
+  .ch__media .ch__promise span {
+    display: none;
+  }
+
+  .ch__media .ch__promise > i {
+    width: 28px;
+    height: 28px;
+    font-size: 15px;
   }
 }
 

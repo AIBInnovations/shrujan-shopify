@@ -138,6 +138,20 @@
     assign promise_icons = 'truck,hand,arrows-counter-clockwise,headset' | split: ','
   -%}
   <section class="ch" aria-labelledby="ch-title-{{ section.id }}">
+    {%- if cfg.show_promises -%}
+    {%- comment -%} the promises sit on the hero's picture (the user: on the hero image, not under it) {%- endcomment -%}
+    {%- capture promises_html -%}
+    <ul class="ch__promises">
+      {%- for icon_name in promise_icons -%}
+        {%- assign pk_t = 'promise' | append: forloop.index | append: '_title' -%}
+        {%- assign pk_x = 'promise' | append: forloop.index | append: '_text' -%}
+        {%- if cfg[pk_t] != blank -%}
+        <li class="ch__promise"><i class="sj-i sj-i--{{ icon_name }} ms" aria-hidden="true"></i><div><b>{{ cfg[pk_t] }}</b><span>{{ cfg[pk_x] }}</span></div></li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+    {%- endcapture -%}
+    {%- endif -%}
     <div class="ch__main">
       <div class="ch__text" data-reveal>
         <nav class="ch__crumbs" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><i class="sj-i sj-i--caret-right ms" aria-hidden="true"></i><a href="{{ routes.all_products_collection_url }}">Shop</a><i class="sj-i sj-i--caret-right ms" aria-hidden="true"></i><span aria-current="page">{{ head_title }}</span></nav>
@@ -161,20 +175,11 @@
             {%- endif -%}
           {%- endfor -%}
         {%- endif -%}
+        {{ promises_html }}
       </div>
       {%- endif -%}
     </div>
-    {%- if cfg.show_promises -%}
-    <ul class="ch__promises">
-      {%- for icon_name in promise_icons -%}
-        {%- assign pk_t = 'promise' | append: forloop.index | append: '_title' -%}
-        {%- assign pk_x = 'promise' | append: forloop.index | append: '_text' -%}
-        {%- if cfg[pk_t] != blank -%}
-        <li class="ch__promise"><i class="sj-i sj-i--{{ icon_name }} ms" aria-hidden="true"></i><div><b>{{ cfg[pk_t] }}</b><span>{{ cfg[pk_x] }}</span></div></li>
-        {%- endif -%}
-      {%- endfor -%}
-    </ul>
-    {%- endif -%}
+    {%- unless cfg.show_hero_images and shot_n > 0 -%}{{ promises_html }}{%- endunless -%}
   </section>
 
   {%- paginate collection.products by section.settings.per_page -%}

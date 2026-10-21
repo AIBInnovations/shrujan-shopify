@@ -34,6 +34,15 @@
 
   assign chips = s.chips | split: ','
 -%}
+{%- comment -%} the promises sit on the hero's picture (the user: on the hero image, not under it) {%- endcomment -%}
+{%- capture promises_html -%}
+  <ul class="ch__promises">
+    <li class="ch__promise"><i class="sj-i sj-i--tag ms" aria-hidden="true"></i><div><b>{{ s.promise1_title }}</b><span>{{ s.promise1_text }}</span></div></li>
+    <li class="ch__promise"><i class="sj-i sj-i--truck ms" aria-hidden="true"></i><div><b>{{ s.promise2_title }}</b><span>{{ s.promise2_text }}</span></div></li>
+    <li class="ch__promise"><i class="sj-i sj-i--info ms" aria-hidden="true"></i><div><b>{{ s.promise3_title }}</b><span>{{ s.promise3_text }}</span></div></li>
+    <li class="ch__promise"><i class="sj-i sj-i--hand ms" aria-hidden="true"></i><div><b>{{ s.promise4_title }}</b><span>{{ s.promise4_text }}</span></div></li>
+  </ul>
+{%- endcapture -%}
 <section class="ch" aria-labelledby="sale-title-{{ section.id }}">
   <div class="ch__main">
     <div class="ch__text" data-reveal>
@@ -54,15 +63,11 @@
           {%- assign shown = shown | plus: 1 -%}
         {%- endif -%}
       {%- endfor -%}
+      {{ promises_html }}
     </div>
     {%- endif -%}
   </div>
-  <ul class="ch__promises">
-    <li class="ch__promise"><i class="sj-i sj-i--tag ms" aria-hidden="true"></i><div><b>{{ s.promise1_title }}</b><span>{{ s.promise1_text }}</span></div></li>
-    <li class="ch__promise"><i class="sj-i sj-i--truck ms" aria-hidden="true"></i><div><b>{{ s.promise2_title }}</b><span>{{ s.promise2_text }}</span></div></li>
-    <li class="ch__promise"><i class="sj-i sj-i--info ms" aria-hidden="true"></i><div><b>{{ s.promise3_title }}</b><span>{{ s.promise3_text }}</span></div></li>
-    <li class="ch__promise"><i class="sj-i sj-i--hand ms" aria-hidden="true"></i><div><b>{{ s.promise4_title }}</b><span>{{ s.promise4_text }}</span></div></li>
-  </ul>
+  {%- if shot_n == 0 -%}{{ promises_html }}{%- endif -%}
 </section>
 
 {%- paginate sale.products by 50 -%}
