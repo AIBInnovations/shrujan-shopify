@@ -678,15 +678,17 @@
 })();
 
 /* Six pairs of hands: hovering a panel of the painting (keyboard focus, or
-   a tap on phones) plays its craft's film inside the panel's window; the
-   head, the painting and the crafts' names rise in as the section comes up;
-   the pot in the corner moves at its own depth while it passes. */
+   a tap on phones) widens it, the others narrowing (has-on on the row,
+   is-on on the panel), and plays its craft's film over the whole panel; the
+   head, the panels and the way on rise in as the section comes up; the pot
+   in the corner moves at its own depth while it passes. */
 (function () {
   var root = document.querySelector('.sx');
   if (!root) return;
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   var items = [].slice.call(root.querySelectorAll('.sx__craft'));
+  var row = root.querySelector('.sx__panels');
 
   // a film is loaded on first use, starts where the hands are at work, and
   // goes back there before it reaches its closing card
@@ -709,12 +711,14 @@
   }
   function off(it) {
     it.classList.remove('is-on', 'is-playing');
+    if (row && !row.querySelector('.is-on')) row.classList.remove('has-on');
     var v = it.querySelector('.sx__film');
     if (v && !v.paused) v.pause();
   }
   function on(it) {
     items.forEach(function (o) { if (o !== it) off(o); });
     it.classList.add('is-on');
+    if (row) row.classList.add('has-on');
     var v = it.querySelector('.sx__film');
     if (!v || !v.getAttribute('data-src')) return;
     prep(v);
@@ -747,13 +751,9 @@
       y: 0, opacity: 1, duration: 1.1, stagger: 0.08, ease: 'expo.out',
       scrollTrigger: { trigger: root, start: 'top 78%' },
     });
-    gsap.fromTo(root.querySelector('.sx__art'), { y: 40, opacity: 0 }, {
-      y: 0, opacity: 1, duration: 1.3, ease: 'expo.out',
-      scrollTrigger: { trigger: root.querySelector('.sx__art'), start: 'top 88%' },
-    });
-    gsap.fromTo(root.querySelectorAll('.sx__txt'), { y: 18, opacity: 0 }, {
-      y: 0, opacity: 1, duration: 1, stagger: 0.07, ease: 'power3.out',
-      scrollTrigger: { trigger: root.querySelector('.sx__txts'), start: 'top 92%' },
+    gsap.fromTo(items, { y: 40, opacity: 0 }, {
+      y: 0, opacity: 1, duration: 1.2, stagger: 0.07, ease: 'expo.out', clearProps: 'transform,opacity',
+      scrollTrigger: { trigger: row, start: 'top 88%' },
     });
     gsap.fromTo(root.querySelectorAll('.sx__foot > *'), { y: 20, opacity: 0 }, {
       y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: 'power3.out',

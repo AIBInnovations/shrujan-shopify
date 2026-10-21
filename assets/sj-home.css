@@ -1842,15 +1842,15 @@ html.sj-pre .dh__strip {
 }
 
 /* ============================================================
-   Six pairs of hands — the Kaarigar painting, its films inside it
+   Six pairs of hands — the Kaarigar painting's panels in a row, each
+   widening on hover to play its film
    ------------------------------------------------------------
-   A centred head; then the painting itself: six makers, each in a painted
-   arch, the lettering across the middle two. Over each panel lies a hover
-   area (six_shapes.py places it from the panel traced in the painting):
-   hovering it, focusing it or tapping it on a phone plays the craft's film
-   inside the panel's own window, cut to the arch's outline (the panel's
-   shape below the lettering, for the middle two). Each craft's name, mark
-   and line sit under its panel; the line and the way on at the foot. A pot
+   A centred head; then the painting's six panels side by side (the
+   user's Kaarigar painting, a maker in each). Hovering a panel, focusing
+   it or tapping it on a phone widens it while the others narrow, and plays
+   the craft's film over the whole panel. Each craft's name, mark and line
+   sit under its panel and move with it; the line and the way on at the
+   foot. A pot
    on its wall, its inner edges faded into the page, moves at its own depth
    in the lower left corner (six.js). Below 1024px the painting
    scrolls sideways and the corners are set aside.
@@ -1974,59 +1974,81 @@ html.sj-pre .dh__strip {
   color: var(--ink-soft);
 }
 
-/* the painting, and the hover areas over its panels */
+/* the painting's six panels side by side; hovering one widens it while
+   the others narrow (flex-grow), and its film plays over the whole panel */
 .sx__scroll {
+  position: relative;
+  z-index: 2;
   margin-top: clamp(28px, 3vw, 48px);
 }
 
-.sx__track {
-  width: min(100% - 2 * var(--gutter, 24px), 1280px);
+.sx__panels {
+  display: flex;
+  gap: clamp(10px, 1.1vw, 18px);
+  width: min(100% - 2 * var(--gutter, 24px), 1320px);
   margin: 0 auto;
-}
-
-.sx__art {
-  position: relative;
-  width: 100%;
-}
-
-.sx__img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  color: transparent;
-  user-select: none;
-  -webkit-user-drag: none;
-}
-
-.sx__zones {
-  position: absolute;
-  inset: 0;
-  margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .sx__craft {
-  position: absolute;
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
   cursor: pointer;
   outline: none;
+  transition: flex-grow 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sx__panels.has-on .sx__craft {
+  flex-grow: 0.72;
+}
+
+.sx__panels.has-on .sx__craft.is-on {
+  flex-grow: 2.4;
 }
 
 /* keyboard focus rings the panel */
-.sx__craft:focus-visible {
+.sx__craft:focus-visible .sx__frame {
   outline: 2px solid #924241;
   outline-offset: 4px;
-  border-radius: 6px;
 }
 
-/* the window is the whole panel, a rectangle with softly rounded corners;
-   the film fills it from the top, a little taller than it so the ticker
-   burned into its foot stays out of sight, and shows once it plays */
+.sx__frame {
+  position: relative;
+  height: clamp(320px, 33vw, 500px);
+  overflow: hidden;
+  border-radius: clamp(14px, 1.4vw, 22px) clamp(14px, 1.4vw, 22px) 6px 6px;
+  background: #d9c9ad;
+  box-shadow: 0 24px 40px -30px rgba(60, 40, 24, 0.55);
+  transition: box-shadow 0.6s ease;
+}
+
+.sx__craft.is-on .sx__frame {
+  box-shadow: 0 34px 56px -30px rgba(60, 40, 24, 0.7);
+}
+
+.sx__pic {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 60%;
+  user-select: none;
+  -webkit-user-drag: none;
+  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sx__craft.is-on .sx__pic {
+  transform: scale(1.04);
+}
+
+/* the film fills the panel from the top, a little taller than it so the
+   ticker burned into its foot stays out of sight, and shows once it plays */
 .sx__win {
   position: absolute;
+  inset: 0;
   overflow: hidden;
-  border-radius: 4px;
   pointer-events: none;
 }
 
@@ -2048,29 +2070,15 @@ html.sj-pre .dh__strip {
   transform: none;
 }
 
-/* each craft's name, mark and line under its panel, dotted rules between */
-.sx__txts {
-  display: grid;
-  align-items: start;
-  margin-top: clamp(14px, 1.4vw, 22px);
-}
-
+/* each craft's name, mark and line under its panel, moving with it */
 .sx__txt {
-  grid-row: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   min-width: 0;
+  margin-top: clamp(14px, 1.4vw, 22px);
   padding: 0 4px;
   text-align: center;
-}
-
-.sx__rule {
-  grid-row: 1;
-  justify-self: center;
-  align-self: stretch;
-  width: 0;
-  border-left: 1px dotted rgba(161, 48, 42, 0.4);
 }
 
 .sx__name {
@@ -2184,10 +2192,12 @@ html.sj-pre .dh__strip {
     font-size: var(--fs-base);
   }
 
+  /* the panels scroll sideways, each a fixed width; a tap plays its film */
   .sx__scroll {
     margin-top: 24px;
     overflow-x: auto;
     overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
   }
@@ -2196,9 +2206,20 @@ html.sj-pre .dh__strip {
     display: none;
   }
 
-  .sx__track {
-    width: max(100% - 2 * var(--gutter, 16px), 940px);
+  .sx__panels {
+    width: max-content;
     padding: 0 var(--gutter, 16px);
+  }
+
+  .sx__craft,
+  .sx__panels.has-on .sx__craft,
+  .sx__panels.has-on .sx__craft.is-on {
+    flex: 0 0 clamp(200px, 46vw, 300px);
+    scroll-snap-align: center;
+  }
+
+  .sx__frame {
+    height: clamp(340px, 92vw, 520px);
   }
 
   .sx__say {
@@ -4571,12 +4592,6 @@ section.idx {
    1100px one card at a time, the others waiting either side; on phones
    the buttons sit with the dots.
    ============================================================ */
-@property --pv-k {
-  syntax: '<number>';
-  inherits: true;
-  initial-value: 1;
-}
-
 .pv {
   --pv-red: var(--indigo, #924241);
   --pv-ink: var(--ink, #404041);
@@ -4584,10 +4599,11 @@ section.idx {
   --pv-line: rgba(120, 92, 70, 0.2);
   --pv-card: #f8f5ee;
   --pv-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  /* the open card, the cards beside it, and the gap between them */
-  --pv-wc: clamp(420px, 32vw, 600px);
-  --pv-ws: clamp(320px, 24vw, 450px);
-  --pv-gap: 12px;
+  /* every card is the open card's size; the ones beside it are drawn
+     smaller (a transform, so nothing reflows and nothing jumps) */
+  --pv-wc: clamp(420px, 31.5vw, 600px);
+  --pv-s: 0.76;
+  --pv-gap: 14px;
   position: relative;
   margin-inline: var(--gutter, 5.2vw);
   padding: var(--sec-pad, clamp(64px, 8vw, 120px)) 0;
@@ -4648,39 +4664,39 @@ section.idx {
 }
 
 .pv__card {
-  --pv-k: 0.84;
   --pv-x: 0px;
+  --pv-sc: var(--pv-s);
   grid-area: 1 / 1;
   position: relative;
   z-index: 1;
-  width: var(--pv-ws);
-  padding: calc(30px * var(--pv-k)) calc(30px * var(--pv-k)) calc(26px * var(--pv-k));
+  width: var(--pv-wc);
+  padding: 30px 32px 26px;
   border: 1px solid var(--pv-line);
   border-radius: 10px;
   background: var(--pv-card);
   box-shadow: 0 22px 40px -32px rgba(70, 46, 28, 0.45);
-  transform: translateX(var(--pv-x));
+  transform: translateX(var(--pv-x)) scale(var(--pv-sc));
   cursor: pointer;
+  will-change: transform;
   transition:
     transform 0.9s var(--pv-ease),
-    width 0.9s var(--pv-ease),
-    --pv-k 0.9s var(--pv-ease),
     box-shadow 0.9s var(--pv-ease),
+    border-color 0.9s ease,
     opacity 0.6s ease;
 }
 
+/* beside the open card: its edge a gap from the open card's edge */
 .pv__card[data-pos='-1'] {
-  --pv-x: calc(-1 * (var(--pv-wc) / 2 + var(--pv-gap) + var(--pv-ws) / 2));
+  --pv-x: calc(-1 * (var(--pv-wc) / 2 + var(--pv-gap) + var(--pv-wc) * var(--pv-s) / 2));
 }
 
 .pv__card[data-pos='1'] {
-  --pv-x: calc(var(--pv-wc) / 2 + var(--pv-gap) + var(--pv-ws) / 2);
+  --pv-x: calc(var(--pv-wc) / 2 + var(--pv-gap) + var(--pv-wc) * var(--pv-s) / 2);
 }
 
 .pv__card[data-pos='0'] {
-  --pv-k: 1;
+  --pv-sc: 1;
   z-index: 3;
-  width: var(--pv-wc);
   border-color: rgba(146, 66, 65, 0.28);
   box-shadow: 0 40px 70px -40px rgba(70, 46, 28, 0.55), 0 2px 0 rgba(255, 255, 255, 0.6) inset;
   cursor: default;
@@ -4694,11 +4710,11 @@ section.idx {
 }
 
 .pv__card[data-pos='far-l'] {
-  --pv-x: calc(-1 * (var(--pv-wc) / 2 + var(--pv-gap) * 2 + var(--pv-ws) * 1.5));
+  --pv-x: calc(-1 * (var(--pv-wc) / 2 + var(--pv-gap) * 2 + var(--pv-wc) * var(--pv-s) * 1.5));
 }
 
 .pv__card[data-pos='far-r'] {
-  --pv-x: calc(var(--pv-wc) / 2 + var(--pv-gap) * 2 + var(--pv-ws) * 1.5);
+  --pv-x: calc(var(--pv-wc) / 2 + var(--pv-gap) * 2 + var(--pv-wc) * var(--pv-s) * 1.5);
 }
 
 .pv__card:not([data-pos='0']):hover {
@@ -4711,7 +4727,7 @@ section.idx {
   justify-content: center;
   gap: 18px;
   margin: 0;
-  font:400 calc(var(--fs-xl) * var(--pv-k))/1 var(--font-display);
+  font:400 var(--fs-xl)/1 var(--font-display);
   font-variant-numeric: lining-nums;
   letter-spacing: 0.08em;
   color: var(--pv-red);
@@ -4726,22 +4742,22 @@ section.idx {
 }
 
 .pv__name {
-  margin: calc(14px * var(--pv-k)) 0 0;
-  font:400 calc(var(--fs-2xl) * var(--pv-k) * 1.1)/1.15 var(--font-display);
+  margin: 14px 0 0;
+  font:400 calc(var(--fs-2xl) * 1.1)/1.15 var(--font-display);
   color: var(--pv-ink);
 }
 
 .pv__copy {
   max-width: 21em;
-  margin: calc(12px * var(--pv-k)) auto 0;
-  font:400 calc(var(--fs-md) * (0.4 + var(--pv-k) * 0.6))/1.6 var(--font-sans);
+  margin: 12px auto 0;
+  font:400 var(--fs-md)/1.6 var(--font-sans);
   color: var(--pv-soft);
 }
 
 .pv__photo {
   display: block;
-  height: clamp(170px, 15vw, 270px);
-  margin: calc(22px * var(--pv-k)) 0 0;
+  height: clamp(180px, 15vw, 270px);
+  margin: 22px 0 0;
   overflow: hidden;
   border-radius: 6px;
   background: #e4ddcf;
@@ -4763,12 +4779,11 @@ section.idx {
 .pv__mark {
   display: block;
   width: 30px;
-  height: 0;
-  margin: 0 auto;
-  overflow: hidden;
+  height: 30px;
+  margin: 18px auto 0;
   color: var(--pv-red);
   opacity: 0;
-  transition: height 0.9s var(--pv-ease), margin 0.9s var(--pv-ease), opacity 0.5s ease;
+  transition: opacity 0.5s ease;
 }
 
 .pv__mark svg {
@@ -4778,10 +4793,8 @@ section.idx {
 }
 
 .pv__card[data-pos='0'] .pv__mark {
-  height: 30px;
-  margin-top: 18px;
   opacity: 1;
-  transition-delay: 0s, 0s, 0.3s;
+  transition-delay: 0.3s;
 }
 
 .pv__card:focus-visible {
@@ -4899,13 +4912,12 @@ section.idx {
 @media (max-width: 1100px) {
   .pv {
     --pv-wc: min(560px, calc(100% - 150px));
-    --pv-ws: var(--pv-wc);
-    --pv-gap: 40px;
+    --pv-s: 0.9;
+    --pv-gap: 60px;
   }
 
   .pv__card[data-pos='-1'],
   .pv__card[data-pos='1'] {
-    --pv-k: 1;
     opacity: 0;
     pointer-events: none;
   }

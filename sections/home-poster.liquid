@@ -1,16 +1,14 @@
 {%- render 'section-design', section: section -%}
 
 {%- comment -%}
-  Six pairs of hands: the Kaarigar painting, six makers each in a painted
-  arch. Over each panel lies a hover area; hovering it (focus, or a tap on a
-  phone) plays that craft's film inside the panel's own window, cut to the
-  arch's outline, in 1080p through snippets/sj-film-url. Each craft's name,
-  mark and line sit under its panel. A village and a pot on its wall sit in
-  the corners, moving at their own depths as the section passes.
+  Six pairs of hands: the Kaarigar painting's six panels side by side, a
+  maker in each. Hovering a panel (focus, or a tap on a phone) widens it
+  while the others narrow, and plays that craft's film over the whole
+  panel, in 1080p through snippets/sj-film-url. Each craft's name, mark and
+  line sit under its panel and move with it. A pot on its wall sits in the
+  corner, moving at its own depth as the section passes.
 
-  The panels and windows are traced from the painting
-  (awwwards-preview/six_geometry.json), so the six crafts are fixed
-  settings rather than blocks. Styles and behaviour are the home page
+  The six crafts are fixed settings rather than blocks. Styles and behaviour are the home page
   layer's (assets/sj-home.css and sj-home.js, from awwwards-preview/src/
   six.css and six.js).
 
@@ -19,7 +17,6 @@
 {%- endcomment -%}
 {%- liquid
   assign s = section.settings
-  assign art = s.art_asset | default: 'sj-karigar.webp' | asset_url
   if s.pot != blank
     assign corner_pot = s.pot | image_url: width: 1000
   else
@@ -43,26 +40,26 @@
     {%- if s.lede != blank %}<p class="sx__lede">{{ s.lede | escape }}</p>{% endif %}
   </div>
   <div class="sx__scroll">
-    <div class="sx__track">
-      <div class="sx__art" style="aspect-ratio:1761 / 752">
-        <img class="sx__img" src="{{ art }}" alt="{{ s.art_alt | escape }}" loading="lazy">
-        <ol class="sx__zones">
+    <ol class="sx__panels">
         {%- capture film_1 -%}{% render 'sj-film-url', src: s.film_1 %}{%- endcapture -%}
-        <li class="sx__craft" style="left:0.341%;top:1.330%;width:15.446%;height:97.739%" tabindex="0" aria-label="{{ s.name_1 | escape }}: play its film"><div class="sx__win" style="left:0;top:0;width:100%;height:100%"><video class="sx__film" data-src="{{ film_1 | strip }}" data-start="{{ s.start_1 | default: 0 }}" muted playsinline preload="none" aria-hidden="true"></video></div></li>
+        {%- if s.img_1 != blank -%}{%- assign pic_1 = s.img_1 | image_url: width: 900 -%}{%- else -%}{%- assign pic_1 = s.pic_1 | default: 'sj-kaarigar-1.webp' | asset_url -%}{%- endif -%}
+        <li class="sx__craft" tabindex="0" aria-label="{{ s.name_1 | escape }}: play its film"><div class="sx__frame"><img class="sx__pic" src="{{ pic_1 }}" alt="{{ s.alt_1 | escape }}" loading="lazy"><div class="sx__win"><video class="sx__film" data-src="{{ film_1 | strip }}" data-start="{{ s.start_1 | default: 0 }}" muted playsinline preload="none" aria-hidden="true"></video></div></div><div class="sx__txt"><h3 class="sx__name"><span>01</span>{{ s.name_1 | escape }}</h3><span class="sx__mark">{{ ic_kadhai }}</span><p class="sx__desc">{{ s.line_1 | escape }}</p></div></li>
         {%- capture film_2 -%}{% render 'sj-film-url', src: s.film_2 %}{%- endcapture -%}
-        <li class="sx__craft" style="left:17.093%;top:1.330%;width:15.730%;height:97.739%" tabindex="0" aria-label="{{ s.name_2 | escape }}: play its film"><div class="sx__win" style="left:0;top:0;width:100%;height:100%"><video class="sx__film" data-src="{{ film_2 | strip }}" data-start="{{ s.start_2 | default: 0 }}" muted playsinline preload="none" aria-hidden="true"></video></div></li>
+        {%- if s.img_2 != blank -%}{%- assign pic_2 = s.img_2 | image_url: width: 900 -%}{%- else -%}{%- assign pic_2 = s.pic_2 | default: 'sj-kaarigar-2.webp' | asset_url -%}{%- endif -%}
+        <li class="sx__craft" tabindex="0" aria-label="{{ s.name_2 | escape }}: play its film"><div class="sx__frame"><img class="sx__pic" src="{{ pic_2 }}" alt="{{ s.alt_2 | escape }}" loading="lazy"><div class="sx__win"><video class="sx__film" data-src="{{ film_2 | strip }}" data-start="{{ s.start_2 | default: 0 }}" muted playsinline preload="none" aria-hidden="true"></video></div></div><div class="sx__txt"><h3 class="sx__name"><span>02</span>{{ s.name_2 | escape }}</h3><span class="sx__mark">{{ ic_ajrakh }}</span><p class="sx__desc">{{ s.line_2 | escape }}</p></div></li>
         {%- capture film_3 -%}{% render 'sj-film-url', src: s.film_3 %}{%- endcapture -%}
-        <li class="sx__craft" style="left:34.128%;top:0.798%;width:15.219%;height:98.005%" tabindex="0" aria-label="{{ s.name_3 | escape }}: play its film"><div class="sx__win" style="left:0;top:0;width:100%;height:100%"><video class="sx__film" data-src="{{ film_3 | strip }}" data-start="{{ s.start_3 | default: 0 }}" muted playsinline preload="none" aria-hidden="true"></video></div></li>
+        {%- if s.img_3 != blank -%}{%- assign pic_3 = s.img_3 | image_url: width: 900 -%}{%- else -%}{%- assign pic_3 = s.pic_3 | default: 'sj-kaarigar-3.webp' | asset_url -%}{%- endif -%}
+        <li class="sx__craft" tabindex="0" aria-label="{{ s.name_3 | escape }}: play its film"><div class="sx__frame"><img class="sx__pic" src="{{ pic_3 }}" alt="{{ s.alt_3 | escape }}" loading="lazy"><div class="sx__win"><video class="sx__film" data-src="{{ film_3 | strip }}" data-start="{{ s.start_3 | default: 0 }}" muted playsinline preload="none" aria-hidden="true"></video></div></div><div class="sx__txt"><h3 class="sx__name"><span>03</span>{{ s.name_3 | escape }}</h3><span class="sx__mark">{{ ic_discharge }}</span><p class="sx__desc">{{ s.line_3 | escape }}</p></div></li>
         {%- capture film_4 -%}{% render 'sj-film-url', src: s.film_4 %}{%- endcapture -%}
-        <li class="sx__craft" style="left:50.426%;top:0.931%;width:15.275%;height:98.005%" tabindex="0" aria-label="{{ s.name_4 | escape }}: play its film"><div class="sx__win" style="left:0;top:0;width:100%;height:100%"><video class="sx__film" data-src="{{ film_4 | strip }}" data-start="{{ s.start_4 | default: 0 }}" muted playsinline preload="none" aria-hidden="true"></video></div></li>
+        {%- if s.img_4 != blank -%}{%- assign pic_4 = s.img_4 | image_url: width: 900 -%}{%- else -%}{%- assign pic_4 = s.pic_4 | default: 'sj-kaarigar-4.webp' | asset_url -%}{%- endif -%}
+        <li class="sx__craft" tabindex="0" aria-label="{{ s.name_4 | escape }}: play its film"><div class="sx__frame"><img class="sx__pic" src="{{ pic_4 }}" alt="{{ s.alt_4 | escape }}" loading="lazy"><div class="sx__win"><video class="sx__film" data-src="{{ film_4 | strip }}" data-start="{{ s.start_4 | default: 0 }}" muted playsinline preload="none" aria-hidden="true"></video></div></div><div class="sx__txt"><h3 class="sx__name"><span>04</span>{{ s.name_4 | escape }}</h3><span class="sx__mark">{{ ic_bunai }}</span><p class="sx__desc">{{ s.line_4 | escape }}</p></div></li>
         {%- capture film_5 -%}{% render 'sj-film-url', src: s.film_5 %}{%- endcapture -%}
-        <li class="sx__craft" style="left:67.064%;top:1.197%;width:15.786%;height:97.872%" tabindex="0" aria-label="{{ s.name_5 | escape }}: play its film"><div class="sx__win" style="left:0;top:0;width:100%;height:100%"><video class="sx__film" data-src="{{ film_5 | strip }}" data-start="{{ s.start_5 | default: 0 }}" muted playsinline preload="none" aria-hidden="true"></video></div></li>
+        {%- if s.img_5 != blank -%}{%- assign pic_5 = s.img_5 | image_url: width: 900 -%}{%- else -%}{%- assign pic_5 = s.pic_5 | default: 'sj-kaarigar-5.webp' | asset_url -%}{%- endif -%}
+        <li class="sx__craft" tabindex="0" aria-label="{{ s.name_5 | escape }}: play its film"><div class="sx__frame"><img class="sx__pic" src="{{ pic_5 }}" alt="{{ s.alt_5 | escape }}" loading="lazy"><div class="sx__win"><video class="sx__film" data-src="{{ film_5 | strip }}" data-start="{{ s.start_5 | default: 0 }}" muted playsinline preload="none" aria-hidden="true"></video></div></div><div class="sx__txt"><h3 class="sx__name"><span>05</span>{{ s.name_5 | escape }}</h3><span class="sx__mark">{{ ic_mitti }}</span><p class="sx__desc">{{ s.line_5 | escape }}</p></div></li>
         {%- capture film_6 -%}{% render 'sj-film-url', src: s.film_6 %}{%- endcapture -%}
-        <li class="sx__craft" style="left:84.270%;top:1.197%;width:15.332%;height:97.606%" tabindex="0" aria-label="{{ s.name_6 | escape }}: play its film"><div class="sx__win" style="left:0;top:0;width:100%;height:100%"><video class="sx__film" data-src="{{ film_6 | strip }}" data-start="{{ s.start_6 | default: 0 }}" muted playsinline preload="none" aria-hidden="true"></video></div></li>
-        </ol>
-      </div>
-      <div class="sx__txts" style="grid-template-columns:0.341% 15.446% 1.306% 15.730% 1.306% 15.219% 1.079% 15.275% 1.363% 15.786% 1.420% 15.332% 0.398%"><div class="sx__txt" style="grid-column:2"><h3 class="sx__name"><span>01</span>{{ s.name_1 | escape }}</h3><span class="sx__mark">{{ ic_kadhai }}</span><p class="sx__desc">{{ s.line_1 | escape }}</p></div><span class="sx__rule" style="grid-column:3" aria-hidden="true"></span><div class="sx__txt" style="grid-column:4"><h3 class="sx__name"><span>02</span>{{ s.name_2 | escape }}</h3><span class="sx__mark">{{ ic_ajrakh }}</span><p class="sx__desc">{{ s.line_2 | escape }}</p></div><span class="sx__rule" style="grid-column:5" aria-hidden="true"></span><div class="sx__txt" style="grid-column:6"><h3 class="sx__name"><span>03</span>{{ s.name_3 | escape }}</h3><span class="sx__mark">{{ ic_discharge }}</span><p class="sx__desc">{{ s.line_3 | escape }}</p></div><span class="sx__rule" style="grid-column:7" aria-hidden="true"></span><div class="sx__txt" style="grid-column:8"><h3 class="sx__name"><span>04</span>{{ s.name_4 | escape }}</h3><span class="sx__mark">{{ ic_bunai }}</span><p class="sx__desc">{{ s.line_4 | escape }}</p></div><span class="sx__rule" style="grid-column:9" aria-hidden="true"></span><div class="sx__txt" style="grid-column:10"><h3 class="sx__name"><span>05</span>{{ s.name_5 | escape }}</h3><span class="sx__mark">{{ ic_mitti }}</span><p class="sx__desc">{{ s.line_5 | escape }}</p></div><span class="sx__rule" style="grid-column:11" aria-hidden="true"></span><div class="sx__txt" style="grid-column:12"><h3 class="sx__name"><span>06</span>{{ s.name_6 | escape }}</h3><span class="sx__mark">{{ ic_tiedye }}</span><p class="sx__desc">{{ s.line_6 | escape }}</p></div></div>
-    </div>
+        {%- if s.img_6 != blank -%}{%- assign pic_6 = s.img_6 | image_url: width: 900 -%}{%- else -%}{%- assign pic_6 = s.pic_6 | default: 'sj-kaarigar-6.webp' | asset_url -%}{%- endif -%}
+        <li class="sx__craft" tabindex="0" aria-label="{{ s.name_6 | escape }}: play its film"><div class="sx__frame"><img class="sx__pic" src="{{ pic_6 }}" alt="{{ s.alt_6 | escape }}" loading="lazy"><div class="sx__win"><video class="sx__film" data-src="{{ film_6 | strip }}" data-start="{{ s.start_6 | default: 0 }}" muted playsinline preload="none" aria-hidden="true"></video></div></div><div class="sx__txt"><h3 class="sx__name"><span>06</span>{{ s.name_6 | escape }}</h3><span class="sx__mark">{{ ic_tiedye }}</span><p class="sx__desc">{{ s.line_6 | escape }}</p></div></li>
+    </ol>
   </div>
   <div class="sx__foot">
     <p class="sx__say"><span class="sx__orn">{{ orn }}</span><span>{{ s.say_1 | escape }}{% if s.say_2 != blank %}<br>{{ s.say_2 | escape }}{% endif %}</span><span class="sx__orn">{{ orn }}</span></p>
@@ -125,23 +122,11 @@
     },
     {
       "type": "header",
-      "content": "The painting"
+      "content": "The panels"
     },
     {
       "type": "paragraph",
-      "content": "Kaarigar: six makers, each in a painted arch. The hover areas and the film windows are traced from this painting, so a replacement must keep its layout."
-    },
-    {
-      "type": "text",
-      "id": "art_asset",
-      "label": "Painting (theme image file)",
-      "default": "sj-karigar.webp"
-    },
-    {
-      "type": "text",
-      "id": "art_alt",
-      "label": "Painting description",
-      "default": "Kaarigar: six makers of Kutch at work, embroidering, block printing ajrakh, printing discharge, weaving, painting a pot and holding up a tie-dyed cloth"
+      "content": "Kaarigar: six makers, each in a painted panel. Hovering a panel widens it and plays its film over the whole panel."
     },
     {
       "type": "header",
@@ -160,9 +145,26 @@
       "default": "Hand embroidery, the most famous craft of Kutch."
     },
     {
+      "type": "image_picker",
+      "id": "img_1",
+      "label": "Picture (tall, about 1 by 2)"
+    },
+    {
+      "type": "text",
+      "id": "pic_1",
+      "label": "Or theme image file",
+      "default": "sj-kaarigar-1.webp"
+    },
+    {
+      "type": "text",
+      "id": "alt_1",
+      "label": "Picture description",
+      "default": "A craftswoman embroidering a round cloth, painted in a terracotta panel"
+    },
+    {
       "type": "text",
       "id": "film_1",
-      "label": "Film played inside the arch on hover",
+      "label": "Film played over the panel on hover",
       "info": "A full URL from Content → Files, or a theme file. The craft films (craft-*.mp4) play in 1080p.",
       "default": "craft-embroidery.mp4"
     },
@@ -189,9 +191,26 @@
       "default": "Resist block printing in natural indigo and madder."
     },
     {
+      "type": "image_picker",
+      "id": "img_2",
+      "label": "Picture (tall, about 1 by 2)"
+    },
+    {
+      "type": "text",
+      "id": "pic_2",
+      "label": "Or theme image file",
+      "default": "sj-kaarigar-2.webp"
+    },
+    {
+      "type": "text",
+      "id": "alt_2",
+      "label": "Picture description",
+      "default": "A printer pressing a carved block onto ajrakh cloth"
+    },
+    {
       "type": "text",
       "id": "film_2",
-      "label": "Film played inside the arch on hover",
+      "label": "Film played over the panel on hover",
       "info": "A full URL from Content → Files, or a theme file. The craft films (craft-*.mp4) play in 1080p.",
       "default": "craft-ajrakh.mp4"
     },
@@ -218,9 +237,26 @@
       "default": "Carved blocks stamped on pre-coloured cloth."
     },
     {
+      "type": "image_picker",
+      "id": "img_3",
+      "label": "Picture (tall, about 1 by 2)"
+    },
+    {
+      "type": "text",
+      "id": "pic_3",
+      "label": "Or theme image file",
+      "default": "sj-kaarigar-3.webp"
+    },
+    {
+      "type": "text",
+      "id": "alt_3",
+      "label": "Picture description",
+      "default": "A printer stamping white motifs onto dark discharge-printed cloth"
+    },
+    {
       "type": "text",
       "id": "film_3",
-      "label": "Film played inside the arch on hover",
+      "label": "Film played over the panel on hover",
       "info": "A full URL from Content → Files, or a theme file. The craft films (craft-*.mp4) play in 1080p.",
       "default": "craft-discharge.mp4"
     },
@@ -247,9 +283,26 @@
       "default": "A basket weave, with an extra weft for the design."
     },
     {
+      "type": "image_picker",
+      "id": "img_4",
+      "label": "Picture (tall, about 1 by 2)"
+    },
+    {
+      "type": "text",
+      "id": "pic_4",
+      "label": "Or theme image file",
+      "default": "sj-kaarigar-4.webp"
+    },
+    {
+      "type": "text",
+      "id": "alt_4",
+      "label": "Picture description",
+      "default": "A weaver at his handloom, a striped cloth on the warp"
+    },
+    {
       "type": "text",
       "id": "film_4",
-      "label": "Film played inside the arch on hover",
+      "label": "Film played over the panel on hover",
       "info": "A full URL from Content → Files, or a theme file. The craft films (craft-*.mp4) play in 1080p.",
       "default": "craft-weaving.mp4"
     },
@@ -276,9 +329,26 @@
       "default": "Clay shaped on the wheel, painted by the women."
     },
     {
+      "type": "image_picker",
+      "id": "img_5",
+      "label": "Picture (tall, about 1 by 2)"
+    },
+    {
+      "type": "text",
+      "id": "pic_5",
+      "label": "Or theme image file",
+      "default": "sj-kaarigar-5.webp"
+    },
+    {
+      "type": "text",
+      "id": "alt_5",
+      "label": "Picture description",
+      "default": "A potter painting a large terracotta pot"
+    },
+    {
       "type": "text",
       "id": "film_5",
-      "label": "Film played inside the arch on hover",
+      "label": "Film played over the panel on hover",
       "info": "A full URL from Content → Files, or a theme file. The craft films (craft-*.mp4) play in 1080p.",
       "default": "craft-pottery.mp4"
     },
@@ -305,9 +375,26 @@
       "default": "Cloth tied and folded so it resists the dye."
     },
     {
+      "type": "image_picker",
+      "id": "img_6",
+      "label": "Picture (tall, about 1 by 2)"
+    },
+    {
+      "type": "text",
+      "id": "pic_6",
+      "label": "Or theme image file",
+      "default": "sj-kaarigar-6.webp"
+    },
+    {
+      "type": "text",
+      "id": "alt_6",
+      "label": "Picture description",
+      "default": "A craftswoman holding up a tie-dyed cloth"
+    },
+    {
       "type": "text",
       "id": "film_6",
-      "label": "Film played inside the arch on hover",
+      "label": "Film played over the panel on hover",
       "info": "A full URL from Content → Files, or a theme file. The craft films (craft-*.mp4) play in 1080p.",
       "default": "craft-tiedye.mp4"
     },
