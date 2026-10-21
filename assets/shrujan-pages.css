@@ -636,7 +636,7 @@
   margin-top: clamp(20px, 2.2vw, 36px);
   padding: clamp(12px, 1vw, 16px) clamp(34px, 3vw, 56px);
   border: 1px solid rgba(242, 237, 224, 0.7);
-  border-radius: 2px;
+  border-radius: var(--radius);
   font-size: var(--fs-base);
   font-weight: 500;
   letter-spacing: 0.24em;
@@ -2013,7 +2013,7 @@
   width: 100%;
   aspect-ratio: 3 / 4;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: var(--radius);
   background: var(--ivory-2);
   /* inset ring rather than a border, so the box never changes size when the
      active thumbnail changes and the rail does not twitch */
@@ -2411,7 +2411,7 @@
   aspect-ratio: 1;
   object-fit: cover;
   object-position: center 15%;
-  border-radius: 8px;
+  border-radius: var(--radius);
 }
 
 .pdp__quote {
@@ -2563,7 +2563,7 @@
   gap: 6px;
   list-style: none;
   padding: 6px;
-  border-radius: calc(var(--radius) + 4px);
+  border-radius: var(--radius);
   background: color-mix(in srgb, var(--ivory) 96%, transparent);
   border: 1px solid color-mix(in srgb, var(--maroon) 14%, transparent);
   box-shadow: 0 8px 26px rgba(43, 29, 25, 0.09);
@@ -3609,7 +3609,7 @@
   list-style: none;
   margin: 0;
   padding: 6px;
-  border-radius: calc(var(--radius) + 4px);
+  border-radius: var(--radius);
   /* the rail rides over body copy, so it needs to read as a solid object
      rather than a tint — 86% left the text beneath legible through it */
   background: color-mix(in srgb, var(--ivory) 96%, transparent);
@@ -4623,7 +4623,7 @@
 
 .sortmenu__option {
   padding: 10px 34px 10px 14px;
-  border-radius: 6px;
+  border-radius: var(--radius);
   font-size: var(--fs-sm);
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -4887,7 +4887,7 @@
   margin-top: clamp(20px, 2.2vw, 36px);
   padding: clamp(12px, 1vw, 16px) clamp(34px, 3vw, 56px);
   border: 1px solid rgba(242, 237, 224, 0.7);
-  border-radius: 2px;
+  border-radius: var(--radius);
   font-size: var(--fs-base);
   font-weight: 500;
   letter-spacing: 0.24em;
@@ -4939,7 +4939,7 @@
   display: flex;
   flex-direction: column;
   padding: clamp(12px, 1.1vw, 16px);
-  border-radius: clamp(14px, 1.2vw, 20px);
+  border-radius: var(--radius);
   background: var(--ivory-2);
   transition: background var(--dur-quick) var(--ease);
 }
@@ -4953,7 +4953,7 @@
   display: block;
   aspect-ratio: 4 / 3;
   overflow: hidden;
-  border-radius: clamp(10px, 0.9vw, 14px);
+  border-radius: var(--radius);
   background: var(--ivory);
 }
 
@@ -5077,7 +5077,7 @@
   display: flex;
   flex-direction: column;
   padding: clamp(18px, 1.8vw, 28px);
-  border-radius: clamp(14px, 1.2vw, 20px);
+  border-radius: var(--radius);
   background: var(--ivory-2);
 }
 
@@ -5114,7 +5114,7 @@
   justify-content: space-between;
   gap: clamp(16px, 2vw, 34px);
   padding: clamp(18px, 1.8vw, 30px);
-  border-radius: clamp(14px, 1.2vw, 20px);
+  border-radius: var(--radius);
   background: var(--maroon);
   color: var(--cream);
 }
@@ -5142,7 +5142,7 @@
   display: flex;
   flex-direction: column;
   padding: clamp(18px, 1.8vw, 28px);
-  border-radius: clamp(14px, 1.2vw, 20px);
+  border-radius: var(--radius);
   box-shadow: inset 0 0 0 1px var(--hairline-strong);
 }
 

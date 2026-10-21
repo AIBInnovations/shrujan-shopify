@@ -49,7 +49,7 @@
   --gutter: clamp(22px, 4vw, 60px);
   --section-gap: clamp(56px, calc(36px + 5.2vw), 168px);
 
-  --radius: 10px;            /* soft card corners, per the design system */
+  --radius: 20px;            /* one corner for every box on the site (the user: 20px everywhere) */
   --radius-pill: 30px;
 
   /* ---- Header geometry --------------------------------------- */
@@ -654,13 +654,13 @@ ul {
      line. Zeroed: dropping only the top edge made the air above the card
      larger than the air below it, and the panel is meant to read symmetrically
      top-to-bottom the same way it does left-to-right. */
-  --navlead-radius: 18px;
+  --navlead-radius: var(--radius);
   --navlead-drop: 0px;
 
   position: relative;
   display: block;
   overflow: hidden;
-  border-radius: var(--navlead-radius);
+  border-radius: var(--radius);
   margin-top: var(--navlead-drop);
   background: var(--ink-deep);
   /* fills the row rather than setting its own height — see align-items above.
@@ -776,7 +776,7 @@ ul {
   gap: 12px;
   padding: 8px 6px;
   margin-inline: -6px;
-  border-radius: 8px;
+  border-radius: var(--radius);
   transition: background var(--dur-quick) var(--ease);
 }
 
@@ -847,7 +847,7 @@ ul {
   gap: 12px;
   padding: 8px 6px;
   margin-inline: -6px;
-  border-radius: 8px;
+  border-radius: var(--radius);
   border-bottom: 1px solid transparent;
   font-family: var(--font-serif);
   font-weight: 500;
@@ -882,7 +882,7 @@ ul {
   gap: 6px;
   padding: 8px 6px;
   margin-inline: -6px;
-  border-radius: 8px;
+  border-radius: var(--radius);
   transition: background var(--dur-quick) var(--ease);
 }
 
@@ -1823,7 +1823,7 @@ a.hero-cell:hover .hero-cell__label svg {
 .tw-cell__person img {
   width: 40px;
   height: 40px;
-  border-radius: 6px;
+  border-radius: var(--radius);
   object-fit: cover;
   object-position: center 15%;
   flex-shrink: 0;
@@ -2992,7 +2992,7 @@ a.hero-cell:hover .hero-cell__label svg {
   width: clamp(130px, 10vw, 190px);
   height: clamp(160px, 13vw, 250px);
   border: 1px solid rgba(242, 237, 224, 0.65);
-  border-radius: 14px;
+  border-radius: var(--radius);
   z-index: 2;
   pointer-events: none;
 }
@@ -3060,7 +3060,7 @@ a.hero-cell:hover .hero-cell__label svg {
 .atelier__chip img {
   width: 36px;
   height: 36px;
-  border-radius: 6px;
+  border-radius: var(--radius);
   object-fit: cover;
 }
 
@@ -4013,7 +4013,7 @@ a.hero-cell:hover .hero-cell__label svg {
   height: 84px;
   object-fit: cover;
   object-position: center 18%;
-  border-radius: 4px;
+  border-radius: var(--radius);
   flex-shrink: 0;
 }
 

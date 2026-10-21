@@ -200,7 +200,7 @@ html.sj-pre .sje__tab {
 .sjs__product figure {
   margin: 0;
   overflow: hidden;
-  border-radius: 6px;
+  border-radius: var(--radius);
   aspect-ratio: 4 / 5;
   background: var(--ui-bg-2);
 }
@@ -388,7 +388,7 @@ html.sj-pre .sje__tab {
   width: min(370px, calc(100vw - 32px));
   height: min(560px, calc(100vh - 110px));
   overflow: hidden;
-  border-radius: 14px;
+  border-radius: var(--radius);
   background: var(--ui-bg);
   box-shadow: 0 30px 70px -26px rgba(40, 28, 18, 0.55), 0 0 0 1px var(--ui-line);
   transform-origin: 100% 100%;
@@ -477,7 +477,7 @@ html.sj-pre .sje__tab {
   max-width: 86%;
   margin: 0 0 10px;
   padding: 10px 13px;
-  border-radius: 12px 12px 12px 4px;
+  border-radius: var(--radius) var(--radius) var(--radius) 6px;
   background: var(--ui-bg-2);
   font:400 var(--fs-sm)/1.55 var(--font-sans);
   animation: sjh-msg 0.35s var(--ui-ease);
@@ -489,7 +489,7 @@ html.sj-pre .sje__tab {
 
 .sjh__msg--me {
   margin-left: auto;
-  border-radius: 12px 12px 4px 12px;
+  border-radius: var(--radius) var(--radius) 6px var(--radius);
   background: var(--ui-ink);
   color: var(--ui-bg);
 }
@@ -667,7 +667,7 @@ html.sj-pre .sje__tab {
   gap: 10px;
   padding: 16px 11px;
   border: 0;
-  border-radius: 10px 0 0 10px;
+  border-radius: var(--radius) 0 0 var(--radius);
   background: var(--sje-ink);
   box-shadow: -10px 12px 26px -16px rgba(20, 20, 20, 0.6);
   font:500 var(--fs-xs)/1 var(--font-sans);
@@ -831,7 +831,7 @@ html.sj-pre .sje__tab {
   min-height: clamp(58px, 8vh, 72px);
   padding: 9px 6px;
   border: 1px solid var(--ui-line);
-  border-radius: 10px;
+  border-radius: var(--radius);
   background: rgba(255, 255, 255, 0.5);
   font:400 var(--fs-2xs)/1.25 var(--font-sans);
   text-align: center;
@@ -890,7 +890,7 @@ html.sj-pre .sje__tab {
   width: 100%;
   padding: clamp(8px, 1.15vh, 11px) 12px;
   border: 1px solid var(--ui-line);
-  border-radius: 8px;
+  border-radius: var(--radius);
   background: #fff;
   font:400 var(--fs-sm)/1.4 var(--font-sans);
   color: var(--ui-ink);

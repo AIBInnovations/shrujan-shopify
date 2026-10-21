@@ -71,7 +71,7 @@
       { "type": "range", "id": "header_max", "label": "Header width", "min": 1200, "max": 1920, "step": 20, "unit": "px", "default": 1880 },
       { "type": "range", "id": "gutter_scale", "label": "Side gutters", "min": 60, "max": 160, "step": 5, "unit": "%", "default": 100 },
       { "type": "range", "id": "section_gap_scale", "label": "Space between sections", "min": 50, "max": 160, "step": 5, "unit": "%", "default": 100 },
-      { "type": "range", "id": "radius", "label": "Corner radius", "min": 0, "max": 28, "step": 1, "unit": "px", "default": 10 },
+      { "type": "range", "id": "radius", "label": "Corner radius", "min": 0, "max": 28, "step": 1, "unit": "px", "default": 20 },
       { "type": "range", "id": "radius_pill", "label": "Pill radius", "min": 0, "max": 40, "step": 2, "unit": "px", "default": 30 }
     ]
   },

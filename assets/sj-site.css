@@ -574,7 +574,7 @@ button:hover > i.sj-i--arrow-right {
   position: relative;
   overflow: hidden;
   margin: 0;
-  border-radius: 6px;
+  border-radius: var(--radius);
   background: var(--page-bg-2, #ede9d8);
 }
 
