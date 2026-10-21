@@ -172,7 +172,7 @@ body {
    its count.
    ============================================================ */
 /* the grey offer bar on top, a little lower and finer */
-:root:has(.offer-bar) {
+:root:has(.offer-bar:not(.offer-bar--gone)) {
   --offer-h: 36px;
 }
 

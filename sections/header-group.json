@@ -13,7 +13,9 @@
   "sections": {
     "offer_bar": {
       "type": "offer-bar",
-      "settings": {}
+      "settings": {
+        "dismissible": false
+      }
     },
     "header": {
       "type": "shrujan-header",

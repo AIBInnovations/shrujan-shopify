@@ -3650,9 +3650,8 @@ html.sj-pre .dh__strip {
    the campus photograph with the Visit Shrujan card
    beside it, the palace photograph across the foot with the Visit Kutch
    card over an olive arch, an embroidered swatch at the right edge and the
-   paper map of Kutch with its dotted way; one thread runs through it all,
-   drawing itself as the collage scrolls (the user had the flowers and
-   the torn paper taken out). Below 1200px: the head, then each
+   paper map of Kutch with its dotted way (the user had the flowers, the
+   torn paper and the thread drawn on scroll taken out). Below 1200px: the head, then each
    photograph with its card over its foot; the loose pieces stay out.
    ============================================================ */
 .ft--collage {
@@ -3844,44 +3843,6 @@ html.sj-pre .dh__strip {
   font-size: max(10px, 0.82cqi);
 }
 
-/* the drawn pieces, over everything */
-.ft__c-lines {
-  inset: 0;
-  z-index: 5;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-}
-
-.ft__c-lines path {
-  fill: none;
-  stroke: #5c4234;
-  stroke-width: 1.3;
-  stroke-linecap: round;
-}
-
-/* the thread: a little heavier than the route, drawn by feature.js */
-.ft__c-lines .ft__c-thread-path {
-  stroke: #6b4a3a;
-  stroke-width: 1.5;
-}
-
-.ft__c-lines .ft__c-route {
-  stroke: #7a5a46;
-  stroke-dasharray: 4 6;
-}
-
-.ft__c-ring {
-  fill: var(--page-bg, #f6f4e6);
-  stroke: #b0613a;
-  stroke-width: 1.6;
-}
-
-.ft__c-pin {
-  fill: #b86b3c;
-}
-
 .ft__c-tags,
 .ft__c-words {
   z-index: 5;
@@ -3938,7 +3899,6 @@ html.sj-pre .dh__strip {
   .ft__c-arch,
   .ft__c-swatch,
   .ft__c-map,
-  .ft__c-lines,
   .ft__c-tags,
   .ft__c-label,
   .ft__c-words {

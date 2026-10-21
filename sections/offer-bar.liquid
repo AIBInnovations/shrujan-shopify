@@ -120,7 +120,9 @@
       // Never in the theme editor though: a merchant who once closed the bar
       // would otherwise be editing something they cannot see.
       var editing = !!(window.Shopify && window.Shopify.designMode);
-      if (!editing && store && store.getItem(key) === '1') {
+      // a bar that cannot be closed ignores an old dismissal (the user: the
+      // banner always shows)
+      if (!editing && store && el.querySelector('.offer-bar__close') && store.getItem(key) === '1') {
         el.classList.add('offer-bar--gone');
         return;
       }
@@ -220,7 +222,7 @@
       "id": "dismissible",
       "label": "Let visitors close it",
       "info": "The dismissal is remembered against this message, so editing the wording brings the bar back.",
-      "default": true
+      "default": false
     },
     {
       "type": "select",

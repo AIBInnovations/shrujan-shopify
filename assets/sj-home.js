@@ -890,23 +890,6 @@
         gsap.fromTo(col.querySelectorAll('.ft__c-arch, .ft__c-swatch, .ft__c-map, .ft__c-tags, .ft__c-label, .ft__c-words'), { opacity: 0 }, {
           opacity: 1, duration: 1.6, stagger: 0.06, delay: 0.2, ease: 'power2.out', scrollTrigger: at,
         });
-        // the thread draws itself as the collage comes up the screen, and
-        // undraws if the page goes back; its dots come in as it reaches them
-        [].forEach.call(col.querySelectorAll('.ft__c-thread-path, .ft__c-route'), function (path, i) {
-          var len = path.getTotalLength();
-          path.style.strokeDasharray = path.classList.contains('ft__c-route') ? '' : len + ' ' + len;
-          if (path.classList.contains('ft__c-route')) {
-            gsap.fromTo(path, { opacity: 0 }, { opacity: 1, ease: 'none', scrollTrigger: { trigger: col, start: '55% 75%', end: '70% 60%', scrub: true } });
-            return;
-          }
-          gsap.fromTo(path, { strokeDashoffset: len }, {
-            strokeDashoffset: 0, ease: 'none',
-            scrollTrigger: { trigger: col, start: i ? '30% 80%' : 'top 75%', end: i ? '45% 60%' : '75% 55%', scrub: 0.6 },
-          });
-        });
-        gsap.fromTo(col.querySelectorAll('.ft__c-ring, .ft__c-pin'), { opacity: 0, scale: 0.4, transformOrigin: '50% 50%' }, {
-          opacity: 1, scale: 1, duration: 0.6, stagger: 0.25, ease: 'back.out(2)', scrollTrigger: { trigger: col, start: '20% 70%' },
-        });
       }
       // the banner's photograph drifts inside its frame as the page scrolls,
       // slower than the page (desktops: on phones it sits under the words)
