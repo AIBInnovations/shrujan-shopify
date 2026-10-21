@@ -3439,6 +3439,14 @@ html.sj-pre .dh__strip {
   opacity: 0.92;
 }
 
+/* the copy document's "Available by enquiry." under the Heritage words */
+.ft__scene .ft__note {
+  margin: 1.2cqi 0 0;
+  font: italic 400 2cqi / 1.4 var(--font-display);
+  color: inherit;
+  opacity: 0.85;
+}
+
 .ft__scene .ft__btn {
   margin-top: 3cqi;
   font-size: max(10px, 1.55cqi);

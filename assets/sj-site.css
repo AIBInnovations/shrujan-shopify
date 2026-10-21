@@ -260,6 +260,37 @@ body {
   border-radius: var(--radius);
 }
 
+/* ---- the Story page's Origins: the rest of the story behind READ MORE
+   (the copy document), opened in place ---- */
+.origin__more > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid currentColor;
+  font:500 var(--fs-xs)/1 var(--font-sans);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--indigo, #924241);
+  list-style: none;
+  cursor: pointer;
+}
+
+.origin__more > summary::-webkit-details-marker {
+  display: none;
+}
+
+.origin__more > summary::after {
+  content: '+';
+  font-size: 1.3em;
+  letter-spacing: 0;
+}
+
+.origin__more[open] > summary {
+  display: none;
+}
+
 /* icons:start (written by convert_icons.py from icons.py) */
 /* ---- the interface icons (Material Symbols, Font Awesome brands; icons.py) ---- */
 @font-face {

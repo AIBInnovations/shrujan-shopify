@@ -137,6 +137,7 @@
 {%- endif -%}
 {%- endfor %}
 
+{%- if block.settings.fact_1 != blank or block.settings.fact_2 != blank or block.settings.fact_3 != blank %}
           <ul class="studio-row__facts">
 {%- if block.settings.fact_1 != blank %}
             <li>{{ block.settings.fact_1 }}</li>
@@ -148,8 +149,11 @@
             <li>{{ block.settings.fact_3 }}</li>
 {%- endif %}
           </ul>
+{%- endif %}
+{%- if block.settings.link_label != blank %}
 
           <a class="arrow-link studio-row__link" href="{{ offer_href }}">{{ block.settings.link_label }}</a>
+{%- endif %}
         </div>
       </article>
 {%- endfor %}
@@ -326,13 +330,13 @@
       "type": "text",
       "id": "hero_eyebrow",
       "label": "Hero eyebrow",
-      "default": "Studio Collection · Gifting & Collaborations"
+      "default": "Studio Collection"
     },
     {
       "type": "inline_richtext",
       "id": "hero_title",
       "label": "Hero title",
-      "default": "Gifts that carry a craft, and <em>a name</em>"
+      "default": "Gifting &amp; Collaborations"
     },
     {
       "type": "textarea",
@@ -361,7 +365,7 @@
       "type": "inline_richtext",
       "id": "ways_title",
       "label": "Offers title",
-      "default": "From a hundred pouches to a single commission"
+      "default": "Corporate, wedding and <em>custom</em>"
     },
     {
       "type": "text",
@@ -379,7 +383,7 @@
       "type": "textarea",
       "id": "pull",
       "label": "Pull quote",
-      "default": "A gift that names the woman who made it says something a logo cannot."
+      "default": "Each project is approached with attention to detail and an understanding that gifting can be both personal and deeply considered."
     },
     {
       "type": "text",

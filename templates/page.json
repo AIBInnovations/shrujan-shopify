@@ -16,40 +16,40 @@
           "type": "assure",
           "settings": {
             "icon": "needle",
-            "title": "Hand-embroidered",
-            "copy": "No machine touches the cloth"
+            "title": "Handcrafted",
+            "copy": "Made slowly, meant to last"
           }
         },
         "b2": {
           "type": "assure",
           "settings": {
             "icon": "leaf",
-            "title": "Naturally dyed",
-            "copy": "Madder, indigo, pomegranate"
+            "title": "Since 1969",
+            "copy": "A responsible social enterprise"
           }
         },
         "b3": {
           "type": "assure",
           "settings": {
-            "icon": "tape",
-            "title": "Made to measure",
-            "copy": "Free alterations on request"
+            "icon": "heart",
+            "title": "2,000+ craftswomen",
+            "copy": "In 66 villages of Kutch"
           }
         },
         "b4": {
           "type": "assure",
           "settings": {
             "icon": "truck",
-            "title": "Ships in 48 hours",
-            "copy": "From the Bhuj atelier"
+            "title": "Materials provided",
+            "copy": "Fabric and thread reach their villages"
           }
         },
         "b5": {
           "type": "assure",
           "settings": {
-            "icon": "heart",
-            "title": "Signed by her",
-            "copy": "Every piece carries her name"
+            "icon": "tape",
+            "title": "Fair dues",
+            "copy": "Paid at their doorstep"
           }
         },
         "b6": {
@@ -57,8 +57,8 @@
           "settings": {
             "img_asset": "bottom-left.webp",
             "alt": "Master weaver working threads at his handloom",
-            "title": "She is paid per piece, on time",
-            "copy": "Directly, and at a rate she agreed to. That arrangement was rare in 1969 and it still is."
+            "title": "Paid at her doorstep",
+            "copy": "Shrujan pays its craftswomen their fair dues at their doorstep, as soon as they have completed the embroidery."
           }
         },
         "b7": {
@@ -67,7 +67,7 @@
             "img_asset": "top-right.webp",
             "alt": "Close crop of mirror-work embroidery in crimson and gold threads",
             "title": "Nothing is rushed",
-            "copy": "A kanchli takes sixty hours. A bridal odhani takes months. We quote the real time, not a delivery promise."
+            "copy": "The craftswomen work from home, in their own villages, and each piece is made slowly by hand."
           }
         },
         "b8": {
@@ -75,8 +75,8 @@
           "settings": {
             "img_asset": "frame-r3t6.webp",
             "alt": "Embroidered cloth stretched on a wooden frame",
-            "title": "It is repaired, not replaced",
-            "copy": "Send it back whenever it needs work. Alterations and repairs are free for as long as you own it."
+            "title": "Made to last",
+            "copy": "Handcrafted with care and made slowly, each piece is meant to be worn and kept for years."
           }
         },
         "c1": {
@@ -328,7 +328,7 @@
             "asset": "story-chanda.webp",
             "name": "Chanda Shroff",
             "role": "Founder",
-            "copy": "She is the first Indian Laureate to be honoured with the prestigious Rolex Award for Enterprise. This historic event of 2006, that put the crafts of Kutch on the global map, can be traced back to two loves of her childhood. From her mother, whom she lost at age nine, came the love for the handmade. From her freedom-fighter father, she learnt the joy of being of use. Kaki passed away in 2016 at the age of 83. Her legacy is simple and radical: love your work; be mindful of each person’s dignity and self-respect; stay relevant and forward thinking and, find excellence and joy in life and work"
+            "copy": "She is the first Indian Laureate to be honoured with the prestigious Rolex Award for Enterprise. This historic event of 2006, that put the crafts of Kutch on the global map, can be traced back to two loves of her childhood. From her mother, whom she lost at age nine, came the love for the handmade. From her freedom-fighter father, she learnt the joy of being of use. Kaki passed away in 2016 at the age of 83. Her legacy is simple and radical: love your work; be mindful of each person’s dignity and self-respect; stay relevant and forward thinking and, find excellence and joy in life and work."
           }
         },
         "b20": {
@@ -337,7 +337,7 @@
             "asset": "story-dipesh.webp",
             "name": "Dipesh Shroff",
             "role": "Chairman",
-            "copy": "As Chairman, Dipesh provides steady guidance and oversight to the organisation. He supports Shrujan’s long-term direction while upholding the principles on which it was founded. His association reflects a shared belief in the importance of cultural continuity, responsible growth and the enduring value of craft"
+            "copy": "As Chairman, Dipesh provides steady guidance and oversight to the organisation. He supports Shrujan’s long-term direction while upholding the principles on which it was founded. His association reflects a shared belief in the importance of cultural continuity, responsible growth and the enduring value of craft."
           }
         },
         "b21": {
@@ -1078,9 +1078,9 @@
             "link": "/pages/studio-gifting",
             "asset": "sj-jat-garasiya-party-bag-1.webp",
             "image_alt": "Hand-embroidered Jat Garasiya party bag",
-            "name": "Gifting &amp; Collaborations",
-            "copy": "Handcrafted gifts and custom commissions, for organisations and occasions.",
-            "cta_label": "Open"
+            "name": "Gifting & Collaborations",
+            "copy": "We work with organisations and individuals on refined handcrafted gifting projects rooted in craft and thoughtful design.",
+            "cta_label": "Enquire About Gifting"
           }
         },
         "b4": {
@@ -1090,8 +1090,8 @@
             "image_alt": "Model in a dark embroidered kanchli with a black silk drape",
             "craft": "Aabhla · Kutch",
             "name": "The Kanchli, reworked",
-            "copy": "The Kutchi bodice cut for a modern silhouette, the mirror-work kept exactly as it has always been stitched. Sixty hours on the frame before a single seam is closed.",
-            "facts": "Hand-embroidered\n60 hours\nEdition of 24",
+            "copy": "The Kutchi bodice cut for a modern silhouette, the mirror-work kept exactly as it has always been stitched.",
+            "facts": "Hand-embroidered\nMirror-work",
             "link_label": "Enquire about this piece",
             "link": "mailto:marketing@shrujan.com?subject=Studio%20enquiry%20%E2%80%94%20The%20Kanchli%2C%20reworked"
           }
@@ -1103,8 +1103,8 @@
             "image_alt": "Blue and orange bandhani dupatta over an ivory kurta",
             "craft": "Bandhani · Kutch",
             "name": "Bandhani, tied by hand",
-            "copy": "Thousands of points tied one at a time before the cloth ever meets dye. The pattern only reveals itself when the knots come loose — no two lengths finish alike.",
-            "facts": "Natural dye\n3 weeks\nEdition of 18",
+            "copy": "Points tied one at a time before the cloth ever meets dye. The pattern only reveals itself when the knots come loose, and no two lengths finish alike.",
+            "facts": "Tied by hand",
             "link_label": "Enquire about this piece",
             "link": "mailto:marketing@shrujan.com?subject=Studio%20enquiry%20%E2%80%94%20Bandhani%2C%20tied%20by%20hand"
           }
@@ -1117,7 +1117,7 @@
             "craft": "Suf · Kutch",
             "name": "Suf, counted from the reverse",
             "copy": "Suf is worked from the back of the cloth, counted thread by thread, with no pattern ever drawn. The embroiderer holds the whole geometry in her head.",
-            "facts": "Counted thread\nNo pattern drawn\nEdition of 12",
+            "facts": "Counted thread\nNo pattern drawn",
             "link_label": "Enquire about this piece",
             "link": "mailto:marketing@shrujan.com?subject=Studio%20enquiry%20%E2%80%94%20Suf%2C%20counted%20from%20the%20reverse"
           }
@@ -1129,8 +1129,8 @@
             "image_alt": "Pink and grey handwoven stole",
             "craft": "Handloom · Bhujodi",
             "name": "Handloom, woven in Bhujodi",
-            "copy": "Woven on pit looms a few kilometres from the atelier, in wool and cotton spun for the desert winter. It softens with every wash rather than fading.",
-            "facts": "Pit loom\nWool & cotton\nEdition of 30",
+            "copy": "Woven on handlooms in Bhujodi, the village where the Shrujan campus stands.",
+            "facts": "Handloom\nBhujodi",
             "link_label": "Enquire about this piece",
             "link": "mailto:marketing@shrujan.com?subject=Studio%20enquiry%20%E2%80%94%20Handloom%2C%20woven%20in%20Bhujodi"
           }
@@ -1434,27 +1434,6 @@
             "current": true
           }
         },
-        "b4": {
-          "type": "meta",
-          "settings": {
-            "value": "25+",
-            "label": "Minimum order"
-          }
-        },
-        "b5": {
-          "type": "meta",
-          "settings": {
-            "value": "4–12",
-            "label": "Weeks to deliver"
-          }
-        },
-        "b6": {
-          "type": "meta",
-          "settings": {
-            "value": "40",
-            "label": "Villages at work"
-          }
-        },
         "b7": {
           "type": "offer",
           "settings": {
@@ -1462,10 +1441,10 @@
             "alt": "Hand-embroidered mobile pouches in Jat Garasiya work",
             "name": "Corporate & Institutional Gifting",
             "copy": "Shrujan collaborates with organisations seeking meaningful, high-quality gifts rooted in craft. These projects often mark important milestones, partnerships or occasions where the intention is to offer something lasting and thoughtfully made.\nOur focus is on craftsmanship, cultural integrity and thoughtful selection, ensuring each gift carries depth and value.",
-            "fact_1": "From 25 pieces",
-            "fact_2": "4–8 weeks",
-            "fact_3": "Presentation packaging",
-            "link_label": "Enquire about this"
+            "fact_1": "",
+            "fact_2": "",
+            "fact_3": "",
+            "link_label": ""
           }
         },
         "b8": {
@@ -1475,10 +1454,10 @@
             "alt": "Hand-embroidered party bags arranged together",
             "name": "Wedding & Occasion Gifting",
             "copy": "For weddings and special occasions, we offer handcrafted gifts that bring warmth and individuality to celebrations. These pieces are chosen not only for their beauty but for the stories and skills they carry, making them gifts that are remembered and valued.",
-            "fact_1": "From 50 pieces",
-            "fact_2": "6–10 weeks",
-            "fact_3": "Custom colourways",
-            "link_label": "Enquire about this"
+            "fact_1": "",
+            "fact_2": "",
+            "fact_3": "",
+            "link_label": ""
           }
         },
         "b9": {
@@ -1487,11 +1466,11 @@
             "asset": "sj-handloom-weaving-cushion-cover-5-1.webp",
             "alt": "Handloom cushion covers in natural dyed cotton",
             "name": "Custom Collaborations",
-            "copy": "Some projects call for something more specific. We work on custom commissions that may involve particular colours, materials or craft techniques, developed through dialogue and aligned with Shrujan’s craft values.\nAll collaborations are undertaken with care, respecting both timelines and the handmade nature of the work",
-            "fact_1": "By commission",
-            "fact_2": "12+ weeks",
-            "fact_3": "Developed with the artisans",
-            "link_label": "Enquire about this"
+            "copy": "Some projects call for something more specific. We work on custom commissions that may involve particular colours, materials or craft techniques, developed through dialogue and aligned with Shrujan’s craft values.\nAll collaborations are undertaken with care, respecting both timelines and the handmade nature of the work.",
+            "fact_1": "",
+            "fact_2": "",
+            "fact_3": "",
+            "link_label": ""
           }
         },
         "b10": {
@@ -1519,7 +1498,7 @@
           "type": "step",
           "settings": {
             "title": "Delivery",
-            "copy": "Packed, documented and shipped — with a card naming the craft and the community behind the piece."
+            "copy": "Packed with care and delivered to you."
           }
         }
       },
@@ -1527,9 +1506,6 @@
         "b1",
         "b2",
         "b3",
-        "b4",
-        "b5",
-        "b6",
         "b7",
         "b8",
         "b9",

@@ -189,6 +189,9 @@
 
   <div class="origin" data-reveal>
     <p class="origin__lead">{{ section.settings.origin_lead | escape }}</p>
+    {%- comment -%} the rest of the story behind READ MORE, as the copy document has it {%- endcomment %}
+    <details class="origin__more">
+      <summary>{{ section.settings.origin_more_label | default: 'Read more' | escape }}</summary>
     <div class="origin__body">
       {%- for block in section.blocks -%}
         {%- if block.type == 'origin_par' %}
@@ -196,6 +199,7 @@
         {%- endif -%}
       {%- endfor %}
     </div>
+    </details>
   </div>
 
   {%- if section.settings.show_origins_gallery %}
@@ -907,7 +911,7 @@
       "type": "textarea",
       "id": "hero_lede",
       "label": "Lede",
-      "default": "The first social enterprise in the crafts sector to turn embroidery into a livelihood for the craftswomen of Kutch."
+      "default": "Shrujan is the first social enterprise in the crafts sector to empower embroidery craftswomen of Kutch to use their skill and artistry to earn a dignified livelihood."
     },
     {
       "type": "text",
@@ -985,6 +989,7 @@
       "label": "Lead paragraph",
       "default": "Shrujan is the first social enterprise in the crafts sector to empower embroidery craftswomen of Kutch to use their skill and artistry to earn a dignified livelihood. Today, more than two thousand craftswomen in sixty-six remote villages are part of the Shrujan family. Their economic and social empowerment comes from Shrujan’s commitment to ensure that the craft has an urban market appeal and is sought after by those who cherish the work of the hand. In this way, for the past fifty years and more, Shrujan has ensured livelihood and, in doing so, also helped safeguard a precious cultural heritage."
     },
+    { "type": "text", "id": "origin_more_label", "label": "Label that opens the rest of the story", "default": "Read more" },
     {
       "type": "textarea",
       "id": "origin_quote",
