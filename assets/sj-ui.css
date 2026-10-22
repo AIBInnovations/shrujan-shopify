@@ -748,8 +748,8 @@ html.sj-pre .sje__tab {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  min-height: clamp(168px, 22vh, 214px);
-  padding: 20px 28px 20px;
+  min-height: clamp(146px, 18vh, 186px);
+  padding: 18px 28px 18px;
   overflow: hidden;
   background:
     linear-gradient(180deg, rgba(30, 26, 24, 0.35) 0%, rgba(30, 26, 24, 0.72) 48%, rgba(30, 26, 24, 0.94) 100%),
@@ -898,15 +898,15 @@ html.sj-pre .sje__tab {
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
-  gap: clamp(12px, 1.9vh, 20px);
+  gap: clamp(10px, 1.5vh, 16px);
   min-height: 0;
-  padding: clamp(16px, 2.2vh, 24px) 28px clamp(14px, 2vh, 20px);
+  padding: clamp(14px, 1.9vh, 20px) 28px clamp(12px, 1.7vh, 18px);
 }
 
 .sje__sec {
   display: flex;
   flex-direction: column;
-  gap: clamp(8px, 1.3vh, 12px);
+  gap: clamp(6px, 1vh, 10px);
   min-width: 0;
   margin: 0;
   padding: 0;
@@ -1141,7 +1141,30 @@ html.sj-pre .sje__tab {
   position: relative;
 }
 
-.sje__sec.is-raised {
+/* each topic's own questions: a group shown only for its topic */
+.sje__topic {
+  display: flex;
+  flex-direction: column;
+  gap: inherit;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.sje__topic[hidden] {
+  display: none;
+}
+
+.sje__cell {
+  min-width: 0;
+}
+
+.sje__topic.is-entering {
+  animation: sje-rise 0.45s var(--ui-ease) backwards;
+}
+
+.sje__form .is-raised {
   position: relative;
   z-index: 10;
 }
@@ -1164,7 +1187,15 @@ html.sj-pre .sje__tab {
   outline: none;
 }
 
+.sje__dd-btn span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .sje__dd-btn i {
+  flex: none;
   font-size: 18px;
   color: var(--ui-soft);
   transition: transform 0.35s var(--ui-ease), color 0.25s ease;
@@ -1175,31 +1206,84 @@ html.sj-pre .sje__tab {
   transform: rotate(180deg);
 }
 
-.sje__dd-list {
+/* the panel of choices: a search field at its top for a long list, the
+   list scrolling inside it */
+.sje__dd-pop {
   position: absolute;
   top: calc(100% + 6px);
   left: -6px;
   z-index: 5;
-  min-width: calc(100% + 12px);
-  margin: 0;
+  width: max(calc(100% + 12px), 230px);
+  max-width: min(330px, calc(100vw - 40px));
   padding: 6px;
   border: 1px solid var(--sje-line);
   border-radius: var(--radius);
   background: var(--grain-a, none) 0 0 / 240px 240px, #fbf9f1;
   box-shadow: 0 24px 44px -20px rgba(30, 22, 16, 0.38), 0 2px 6px -2px rgba(30, 22, 16, 0.12);
-  list-style: none;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-6px) scale(0.98);
+  /* closed, it takes no room at all (a hidden panel still lengthened the
+     drawer and made it scroll) */
+  display: none;
   transform-origin: top left;
-  transition: opacity 0.2s ease, transform 0.3s var(--ui-ease), visibility 0s linear 0.3s;
 }
 
-.sje__dd.is-open .sje__dd-list {
-  opacity: 1;
-  visibility: visible;
-  transform: none;
-  transition: opacity 0.2s ease, transform 0.3s var(--ui-ease), visibility 0s;
+/* the second field of a row opens its panel from its right edge */
+.sje__row > :last-child .sje__dd-pop {
+  right: -6px;
+  left: auto;
+  transform-origin: top right;
+}
+
+.sje__dd.is-open .sje__dd-pop {
+  display: block;
+  animation: sje-dd-in 0.28s var(--ui-ease);
+}
+
+@keyframes sje-dd-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+}
+
+.sje__dd-find {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  padding: 0 10px;
+  border: 1px solid var(--sje-line);
+  border-radius: calc(var(--radius) - 2px);
+  background: #fff;
+}
+
+.sje__dd-find[hidden] {
+  display: none;
+}
+
+.sje__dd-find i {
+  font-size: 16px;
+  color: var(--ui-soft);
+}
+
+.sje__dd-find input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font:400 var(--fs-sm)/1 var(--font-sans);
+  color: var(--ui-ink);
+  outline: none;
+}
+
+.sje__dd-list {
+  max-height: min(240px, 42vh);
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  list-style: none;
 }
 
 .sje__dd-list li {
@@ -1209,11 +1293,26 @@ html.sj-pre .sje__tab {
   gap: 12px;
   padding: 9px 10px;
   border-radius: calc(var(--radius) - 2px);
-  font:400 var(--fs-sm)/1.2 var(--font-sans);
+  font:400 var(--fs-sm)/1.25 var(--font-sans);
   color: var(--ui-ink);
-  white-space: nowrap;
   cursor: pointer;
   transition: background 0.15s ease;
+}
+
+.sje__dd-list li[hidden] {
+  display: none;
+}
+
+.sje__dd-list li span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sje__dd.is-off .sje__dd-btn {
+  color: var(--ui-soft);
+  cursor: default;
 }
 
 .sje__dd-list li.is-hl {
@@ -1221,6 +1320,7 @@ html.sj-pre .sje__tab {
 }
 
 .sje__dd-list li i {
+  flex: none;
   font-size: 15px;
   color: var(--sje-ink);
   opacity: 0;

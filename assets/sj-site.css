@@ -306,6 +306,17 @@ html.sj-scrolled .site-header {
   box-shadow: 0 10px 28px -20px rgba(30, 20, 10, 0.45);
 }
 
+/* it steps up out of the way while the page is read downward and comes
+   back as soon as the reader scrolls up (the user); ui.js sets sj-hdr-away */
+.site-header {
+  transition: box-shadow 0.35s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html.sj-hdr-away .site-header {
+  transform: translateY(-100%);
+  box-shadow: none;
+}
+
 /* ---- the store's spam check keeps its badge out of the corner, where it
    sat over the chat button (the user). Shopify's contact forms use hCaptcha
    (its badge is #shop-hcaptcha-badge-container, styled by Shopify with an

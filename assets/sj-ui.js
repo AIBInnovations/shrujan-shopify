@@ -283,17 +283,25 @@
      Shopify loads for contact forms) only comes in once someone is about to
      write. Three short steps, checked before sending; the reply is the
      store's own contact form, tagged "enquiry". */
-  // the four things people write to the studio about (the user: no
-  // weddings and occasions, no retail), each with a line saying what it is
+  // the four things people write to the studio about, in the user's order,
+  // each with a line saying what it is; each asks its own questions below
   var KINDS = [
-    ['Collaborations', 'handshake', 'Designers, brands and institutions'],
-    ['Corporate gifting', 'gift', 'For organisations and milestones'],
-    ['Custom pieces', 'needle', 'Your colours, materials or craft'],
-    ['Something else', 'chat-circle-dots', 'Ask us anything'],
+    ['custom', 'Custom pieces', 'needle', 'Your colours, materials or craft'],
+    ['collab', 'Collaborations', 'handshake', 'Designers, brands and institutions'],
+    ['corporate', 'Corporate gifting', 'gift', 'For organisations and milestones'],
+    ['other', 'Something else', 'chat-circle-dots', 'Ask us anything'],
   ];
+  // what each topic asks for in its third part
+  var TOPIC = {
+    custom: { sec: 'Your piece', ph: 'What would you like changed: the colours, the size, the craft or the motif' },
+    collab: { sec: 'The collaboration', ph: 'Tell us about your brand and the idea' },
+    corporate: { sec: 'The gifts', ph: 'The occasion, the delivery city, and anything we should know' },
+    other: { sec: 'Your message', ph: 'How can we help?' },
+  };
+  var opts = function (list) { return list.map(function (o) { return '<option>' + esc(o) + '</option>'; }).join(''); };
   var tab = make('<button class="sje__tab" type="button" aria-haspopup="dialog" aria-controls="sje-panel">' + ic('handshake') + '<span>Enquire</span></button>');
   doc.body.appendChild(tab);
-  var drawer = null, eForm = null, eDone = null, eError = null;
+  var drawer = null, eForm = null, eDone = null, eError = null, applyTopic = function () {};
 
   function buildEnquire() {
     if (drawer) return;
@@ -310,7 +318,6 @@
               [0, 90, 180, 270].map(function (k) { return '<path transform="rotate(' + k + ')" d="M0-4C4-8 4-13 0-18C-4-13-4-8 0-4Z"/>'; }).join('') +
               '<circle r="1.8" fill="currentColor"/></g></svg></span>Work with Shrujan</p>' +
             '<h2 class="sje__title" id="sje-title">Tell us what you <em>have in mind</em></h2>' +
-            '<p class="sje__lede">Collaborations, corporate gifting and custom pieces, made by hand in Kutch.</p>' +
             '<nav class="sje__quick" aria-label="Reach the studio directly">' +
               '<a href="' + wa('Hello Shrujan, I have an enquiry about ') + '" target="_blank" rel="noopener">' + ic('whatsapp-logo') + 'WhatsApp</a>' +
               '<a href="tel:' + CFG.phone.replace(/\s+/g, '') + '">' + ic('phone') + 'Call</a>' +
@@ -326,22 +333,49 @@
             '<fieldset class="sje__sec" data-step="1"><legend class="sje__lab"><b>01</b>What is it about</legend>' +
               '<div class="sje__kinds">' +
               KINDS.map(function (k, i) {
-                return '<label class="sje__kind"><input type="radio" name="contact[Enquiry]" value="' + esc(k[0]) + '"' + (i ? '' : ' checked') + '>' +
-                  '<span class="sje__kind-card"><span class="sje__kind-ic">' + ic(k[1]) + '</span><span class="sje__kind-t"><b>' + esc(k[0]) + '</b><small>' + esc(k[2]) + '</small></span>' +
+                return '<label class="sje__kind"><input type="radio" name="contact[Enquiry]" value="' + esc(k[1]) + '" data-kind="' + k[0] + '"' + (i ? '' : ' checked') + '>' +
+                  '<span class="sje__kind-card"><span class="sje__kind-ic">' + ic(k[2]) + '</span><span class="sje__kind-t"><b>' + esc(k[1]) + '</b><small>' + esc(k[3]) + '</small></span>' +
                   '<span class="sje__kind-tick">' + ic('check') + '</span></span></label>';
               }).join('') +
               '</div>' +
             '</fieldset>' +
+            // About you: the second field is the topic's own (a city, the
+            // brand, the company, an organisation)
             '<div class="sje__sec" data-step="2"><p class="sje__lab"><b>02</b>About you</p>' +
               '<div class="sje__row">' + field('', 'Name' + req, '<input type="text" name="contact[name]" autocomplete="name" placeholder=" " required>') +
-                field('', 'Organisation', '<input type="text" name="contact[Organisation]" autocomplete="organization" placeholder=" ">') + '</div>' +
+                '<div class="sje__cell">' +
+                  '<fieldset class="sje__topic" data-for="custom">' + field('', 'City', '<input type="text" name="contact[City]" autocomplete="address-level2" placeholder=" ">') + '</fieldset>' +
+                  '<fieldset class="sje__topic" data-for="collab">' + field('', 'Brand or studio' + req, '<input type="text" name="contact[Brand]" autocomplete="organization" placeholder=" " required>') + '</fieldset>' +
+                  '<fieldset class="sje__topic" data-for="corporate">' + field('', 'Company' + req, '<input type="text" name="contact[Company]" autocomplete="organization" placeholder=" " required>') + '</fieldset>' +
+                  '<fieldset class="sje__topic" data-for="other">' + field('', 'Organisation', '<input type="text" name="contact[Organisation]" autocomplete="organization" placeholder=" ">') + '</fieldset>' +
+                '</div></div>' +
               '<div class="sje__row">' + field('', 'Email' + req, '<input type="email" name="contact[email]" autocomplete="email" placeholder=" " required>') +
                 field('', 'Phone / WhatsApp', '<input type="tel" name="contact[phone]" autocomplete="tel" placeholder=" ">') + '</div>' +
             '</div>' +
-            '<div class="sje__sec sje__sec--grow" data-step="3"><p class="sje__lab"><b>03</b>Your idea</p>' +
-              '<div class="sje__row">' + field(' sje__field--up', 'How many pieces', '<select name="contact[Quantity]"><option>Not sure yet</option><option>1–10</option><option>10–50</option><option>50–200</option><option>More than 200</option></select>') +
-                field('', 'Needed by', '<input type="text" name="contact[Needed by]" placeholder=" ">') + '</div>' +
-              field(' sje__field--box', 'Tell us about it' + req, '<textarea name="contact[body]" rows="3" required placeholder="The occasion, the pieces, the colours or crafts you have in mind"></textarea>') +
+            // the topic's own questions
+            '<div class="sje__sec sje__sec--grow" data-step="3"><p class="sje__lab"><b>03</b><span data-sec3>Your piece</span></p>' +
+              '<fieldset class="sje__topic" data-for="custom">' +
+                '<div class="sje__row">' + field(' sje__field--up', 'Collection', '<select name="contact[Collection]" data-src="collections"><option>Any collection</option></select>') +
+                  field(' sje__field--up', 'Piece', '<select name="contact[Piece]" data-src="pieces"><option>Any piece</option></select>') + '</div>' +
+                '<div class="sje__row">' + field(' sje__field--up', 'How many', '<select name="contact[Quantity]">' + opts(['Just one', '2–5', '6–20', 'More than 20']) + '</select>') +
+                  field('', 'Needed by', '<input type="text" name="contact[Needed by]" placeholder=" ">') + '</div>' +
+              '</fieldset>' +
+              '<fieldset class="sje__topic" data-for="collab">' +
+                '<div class="sje__row">' + field(' sje__field--up', 'Kind of collaboration', '<select name="contact[Collaboration]">' + opts(['Design collaboration', 'Brand partnership', 'Exhibition or event', 'Institution or research', 'Something else']) + '</select>') +
+                  field('', 'Website or Instagram', '<input type="text" name="contact[Website]" placeholder=" " inputmode="url">') + '</div>' +
+                '<div class="sje__row">' + field(' sje__field--up', 'Timeline', '<select name="contact[Timeline]">' + opts(['Flexible', 'Within a month', '1–3 months', '3–6 months', 'Later this year']) + '</select>') +
+                  field('', 'City', '<input type="text" name="contact[Brand city]" placeholder=" ">') + '</div>' +
+              '</fieldset>' +
+              '<fieldset class="sje__topic" data-for="corporate">' +
+                '<div class="sje__row">' + field(' sje__field--up', 'Number of gifts', '<select name="contact[Number of gifts]">' + opts(['10–25', '25–50', '50–100', '100–250', 'More than 250']) + '</select>') +
+                  field(' sje__field--up', 'Budget per gift', '<select name="contact[Budget per gift]">' + opts(['Not sure yet', 'Under ₹1,000', '₹1,000–2,500', '₹2,500–5,000', 'Above ₹5,000']) + '</select>') + '</div>' +
+                '<div class="sje__row">' + field(' sje__field--up', 'Gifts from', '<select name="contact[Gift collection]" data-src="collections"><option>Help me choose</option></select>') +
+                  field('', 'Needed by', '<input type="text" name="contact[Gifts needed by]" placeholder=" ">') + '</div>' +
+              '</fieldset>' +
+              '<fieldset class="sje__topic" data-for="other">' +
+                field('', 'Subject', '<input type="text" name="contact[Subject]" placeholder=" ">') +
+              '</fieldset>' +
+              field(' sje__field--box', 'Tell us about it' + req, '<textarea name="contact[body]" rows="3" required placeholder="' + TOPIC.custom.ph + '"></textarea>') +
             '</div>' +
             '<p class="sje__error" role="alert" hidden></p>' +
             '<button class="sje__send" type="submit"><span>Send enquiry</span>' + ic('arrow-right') + '</button>' +
@@ -361,45 +395,66 @@
     doc.body.appendChild(drawer);
     // the drop-downs drawn in the site's own hand (the user: the browser's
     // menu looked out of place); the real select stays, hidden, and carries
-    // the value when the form is sent
-    [].forEach.call(drawer.querySelectorAll('.sje__field--up select'), function (sel, n) {
+    // the value when the form is sent. A long list (the pieces of a
+    // collection) gets a search field at its top.
+    var ddN = 0;
+    var makeDD = function (sel) {
+      var n = ddN++;
       var dd = make('<div class="sje__dd"><button type="button" class="sje__dd-btn" aria-haspopup="listbox" aria-expanded="false" aria-controls="sje-dd-' + n + '"><span></span>' + ic('caret-down') + '</button>' +
-        '<ul class="sje__dd-list" id="sje-dd-' + n + '" role="listbox" tabindex="-1"></ul></div>');
+        '<div class="sje__dd-pop"><label class="sje__dd-find" hidden>' + ic('magnifying-glass') + '<input type="search" placeholder="Search" aria-label="Search the list"></label>' +
+        '<ul class="sje__dd-list" id="sje-dd-' + n + '" role="listbox" tabindex="-1"></ul></div></div>');
       var btn = dd.querySelector('button'), label = btn.querySelector('span'), list = dd.querySelector('ul');
-      [].forEach.call(sel.options, function (o, k) {
-        list.insertAdjacentHTML('beforeend', '<li role="option" id="sje-dd-' + n + '-' + k + '" data-k="' + k + '"><span>' + esc(o.text) + '</span>' + ic('check') + '</li>');
-      });
-      var items = [].slice.call(list.children), at = sel.selectedIndex, hl = at;
+      var find = dd.querySelector('.sje__dd-find'), q = find.querySelector('input');
+      var items = [], at = 0, hl = 0;
       sel.parentNode.insertBefore(dd, sel);
       sel.tabIndex = -1;
       sel.setAttribute('aria-hidden', 'true');
+      var visible = function () { return items.filter(function (li) { return !li.hidden; }); };
       var mark = function (k) {
         hl = k;
         items.forEach(function (li, j) { li.classList.toggle('is-hl', j === k); });
-        btn.setAttribute('aria-activedescendant', items[k].id);
+        if (items[k]) { btn.setAttribute('aria-activedescendant', items[k].id); items[k].scrollIntoView({ block: 'nearest' }); }
       };
-      var set = function (k) {
+      var set = function (k, quiet) {
         at = k;
         sel.selectedIndex = k;
-        label.textContent = sel.options[k].text;
+        label.textContent = sel.options[k] ? sel.options[k].text : '';
         items.forEach(function (li, j) { li.setAttribute('aria-selected', j === k ? 'true' : 'false'); });
-        sel.dispatchEvent(new Event('change', { bubbles: true }));
+        if (!quiet) sel.dispatchEvent(new Event('change', { bubbles: true }));
       };
       var open = function (on) {
+        if (on && sel.disabled) return;
         dd.classList.toggle('is-open', on);
         btn.setAttribute('aria-expanded', on ? 'true' : 'false');
-        // the part of the form holding the open list rises above the parts
-        // after it, so the list is not hidden under the button
-        var sec = dd.closest('.sje__sec');
-        if (sec) sec.classList.toggle('is-raised', on);
-        if (on) mark(at);
+        // the open list and everything holding it rise above what follows
+        // them, so the fields below never show through it
+        for (var up = dd.parentElement; up && !up.classList.contains('sje__form'); up = up.parentElement) up.classList.toggle('is-raised', on);
+        if (on) {
+          mark(at);
+          if (!find.hidden) { q.value = ''; filter(); setTimeout(function () { q.focus({ preventScroll: true }); }, 30); }
+        }
       };
-      set(at);
+      var filter = function () {
+        var t = q.value.trim().toLowerCase();
+        items.forEach(function (li) { li.hidden = !!t && li.textContent.toLowerCase().indexOf(t) < 0; });
+        var v = visible();
+        if (v.length) mark(items.indexOf(v[0]));
+      };
+      var refresh = function () {
+        list.innerHTML = [].map.call(sel.options, function (o, k) {
+          return '<li role="option" id="sje-dd-' + n + '-' + k + '" data-k="' + k + '"><span>' + esc(o.text) + '</span>' + ic('check') + '</li>';
+        }).join('');
+        items = [].slice.call(list.children);
+        find.hidden = items.length <= 10;
+        dd.classList.toggle('is-off', sel.disabled);
+        set(Math.max(0, sel.selectedIndex), true);
+      };
+      refresh();
       btn.addEventListener('click', function () { open(!dd.classList.contains('is-open')); });
-      list.addEventListener('click', function (e) {
+      dd.addEventListener('click', function (e) {
         // the list sits inside the field's label, which would pass the click
         // on to the button and open the list again
-        e.preventDefault();
+        if (!e.target.closest('.sje__dd-btn')) e.preventDefault();
         var li = e.target.closest('li');
         if (!li) return;
         set(+li.getAttribute('data-k'));
@@ -407,13 +462,21 @@
         btn.focus();
       });
       list.addEventListener('mousemove', function (e) { var li = e.target.closest('li'); if (li) mark(+li.getAttribute('data-k')); });
-      btn.addEventListener('keydown', function (e) {
+      q.addEventListener('input', filter);
+      var keys = function (e) {
         var isOpen = dd.classList.contains('is-open');
         if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
           e.preventDefault();
           if (!isOpen) { open(true); return; }
-          mark(Math.max(0, Math.min(items.length - 1, hl + (e.key === 'ArrowDown' ? 1 : -1))));
-        } else if ((e.key === 'Enter' || e.key === ' ') && isOpen) {
+          var v = visible(), i = v.indexOf(items[hl]);
+          var next = v[Math.max(0, Math.min(v.length - 1, i + (e.key === 'ArrowDown' ? 1 : -1)))];
+          if (next) mark(items.indexOf(next));
+        } else if (e.key === 'Enter' && isOpen) {
+          e.preventDefault();
+          if (items[hl] && !items[hl].hidden) set(hl);
+          open(false);
+          btn.focus();
+        } else if (e.key === ' ' && isOpen && e.target === btn) {
           e.preventDefault();
           set(hl);
           open(false);
@@ -421,12 +484,69 @@
           e.preventDefault();
           e.stopPropagation(); // closes the list, not the drawer
           open(false);
+          btn.focus();
         } else if (e.key === 'Tab' && isOpen) {
           open(false);
         }
-      });
+      };
+      btn.addEventListener('keydown', keys);
+      q.addEventListener('keydown', keys);
       doc.addEventListener('click', function (e) { if (dd.classList.contains('is-open') && !dd.contains(e.target)) open(false); });
-    });
+      sel.__dd = { refresh: refresh };
+    };
+    [].forEach.call(drawer.querySelectorAll('.sje__field--up select'), makeDD);
+
+    // the store's own collections and pieces fill the lists (the custom
+    // piece's collection and piece, the gifts' collection); empty, internal
+    // and sale collections are left out
+    var SKIP = /^(all-products|sale-|frontpage|heritage$|new-arrival$)/;
+    var fill = function (sel, names, first) {
+      sel.innerHTML = '<option>' + esc(first) + '</option>' + names.map(function (t) { return '<option>' + esc(t) + '</option>'; }).join('');
+      if (sel.__dd) sel.__dd.refresh();
+    };
+    var cols = [];
+    fetch('/collections.json?limit=250', { credentials: 'same-origin' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (!d || !d.collections) return;
+        cols = d.collections.filter(function (c) { return c.products_count >= 4 && !SKIP.test(c.handle); })
+          .sort(function (x, y) { return x.title.localeCompare(y.title); });
+        [].forEach.call(drawer.querySelectorAll('select[data-src="collections"]'), function (sel) {
+          fill(sel, cols.map(function (c) { return c.title; }), sel.options[0] ? sel.options[0].text : 'Any collection');
+        });
+      })
+      .catch(function () {});
+    var pieceSel = drawer.querySelector('select[data-src="pieces"]');
+    var colSel = drawer.querySelector('.sje__topic[data-for="custom"] select[data-src="collections"]');
+    if (pieceSel && colSel) {
+      colSel.addEventListener('change', function () {
+        var c = cols[colSel.selectedIndex - 1];
+        if (!c) { fill(pieceSel, [], 'Any piece'); return; }
+        fill(pieceSel, [], 'Loading pieces…');
+        fetch('/collections/' + c.handle + '/products.json?limit=250', { credentials: 'same-origin' })
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (d) {
+            // several pieces can share a name ("Hand Bag"): those carry their
+            // price, and a number if the price is shared too
+            var ps = d && d.products ? d.products : [];
+            var t = function (p) { return p.title.replace(/\s+/g, ' ').trim(); };
+            var count = {};
+            ps.forEach(function (p) { count[t(p)] = (count[t(p)] || 0) + 1; });
+            var seen = {};
+            var names = ps.map(function (p) {
+              var n = t(p);
+              if (count[n] < 2) return n;
+              var pr = p.variants && p.variants[0] ? ' · ₹' + Math.round(parseFloat(p.variants[0].price)).toLocaleString('en-IN') : '';
+              var key = n + pr;
+              seen[key] = (seen[key] || 0) + 1;
+              return key + (seen[key] > 1 ? ' (' + seen[key] + ')' : '');
+            });
+            fill(pieceSel, names, 'Any piece from ' + c.title);
+          })
+          .catch(function () { fill(pieceSel, [], 'Any piece'); });
+      });
+    }
+
     eForm = drawer.querySelector('.sje__form');
     eDone = drawer.querySelector('.sje__done');
     eError = drawer.querySelector('.sje__error');
@@ -434,9 +554,11 @@
     // a field is marked as soon as it is put right; the line under the
     // header fills, and each part ticks itself off, as the form is filled
     var bar = drawer.querySelector('.sje__progress i');
-    var ok = function (n) { var el = eForm.querySelector('[name="' + n + '"]'); var v = el ? el.value.trim() : ''; return n === 'contact[email]' ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) : !!v; };
+    var valid = function (el) { var v = el.value.trim(); return el.type === 'email' ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) : !!v; };
+    var filled = function (sec) { return [].every.call(sec.querySelectorAll('[required]:not(:disabled)'), valid); };
+    var secs = eForm.querySelectorAll('.sje__sec');
     var progress = function () {
-      var done = [true, ok('contact[name]') && ok('contact[email]'), ok('contact[body]')];
+      var done = [true, filled(secs[1]), filled(secs[2])];
       [].forEach.call(eForm.querySelectorAll('.sje__sec'), function (sec, k) { sec.classList.toggle('is-done', done[k]); });
       bar.style.transform = 'scaleX(' + (done.filter(Boolean).length / 3) + ')';
     };
@@ -446,10 +568,29 @@
       progress();
     });
     eForm.addEventListener('change', progress);
-    progress();
+    // the topic's own questions: the others are hidden and switched off, so
+    // they are neither checked nor sent
+    var sec3 = drawer.querySelector('[data-sec3]');
+    var msg = eForm.querySelector('textarea[name="contact[body]"]');
+    applyTopic = function () {
+      var k = (eForm.querySelector('input[name="contact[Enquiry]"]:checked') || {}).getAttribute ? eForm.querySelector('input[name="contact[Enquiry]"]:checked').getAttribute('data-kind') : 'custom';
+      var first = !eForm.hasAttribute('data-topic');
+      [].forEach.call(eForm.querySelectorAll('.sje__topic'), function (fs) {
+        var on = fs.getAttribute('data-for') === k;
+        if (on && fs.hidden && !first) { fs.classList.remove('is-entering'); void fs.offsetWidth; fs.classList.add('is-entering'); }
+        fs.hidden = !on;
+        fs.disabled = !on;
+        if (!on) [].forEach.call(fs.querySelectorAll('.is-invalid'), function (f) { f.classList.remove('is-invalid'); });
+      });
+      if (TOPIC[k]) { sec3.textContent = TOPIC[k].sec; msg.placeholder = TOPIC[k].ph; }
+      eForm.setAttribute('data-topic', k);
+      progress();
+    };
+    [].forEach.call(eForm.querySelectorAll('input[name="contact[Enquiry]"]'), function (r) { r.addEventListener('change', applyTopic); });
+    applyTopic();
     eForm.addEventListener('submit', function (e) {
       e.preventDefault();
-      var bad = [].slice.call(eForm.querySelectorAll('[required]')).filter(function (el) {
+      var bad = [].slice.call(eForm.querySelectorAll('[required]:not(:disabled)')).filter(function (el) {
         var v = el.value.trim();
         var wrong = !v || (el.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v));
         el.closest('.sje__field').classList.toggle('is-invalid', wrong);
@@ -483,8 +624,8 @@
     drawer.hidden = false;
     hold(true);
     if (kind) {
-      var r = drawer.querySelector('input[value="' + kind + '"]');
-      if (r) r.checked = true;
+      var r = drawer.querySelector('input[name="contact[Enquiry]"][value="' + kind + '"]');
+      if (r) { r.checked = true; applyTopic(); }
     }
     requestAnimationFrame(function () { drawer.classList.add('is-open'); var f = drawer.querySelector('input[name="contact[name]"]'); if (f && !window.matchMedia('(hover: none)').matches) f.focus({ preventScroll: true }); });
   }
@@ -517,11 +658,24 @@
     }
   });
 
-  /* ---------- the header, stuck to the top: a soft shadow once the page runs under it ---------- */
-  var scrolled = false;
+  /* ---------- the header: stuck to the top, a soft shadow once the page runs under it ---------- */
+  // it also steps away while the page is read downward and comes back on
+  // the way up; never while a menu, the search or a drawer is open
+  var scrolled = false, away = false, lastY = window.scrollY;
+  var root = doc.documentElement;
+  var busy = function () {
+    return root.style.overflow === 'hidden' || doc.querySelector('.site-header.nav-open, .site-header .nav-item.is-open, .site-header:hover, .site-header:focus-within');
+  };
   var onScroll = function () {
-    var on = window.scrollY > 40;
-    if (on !== scrolled) { scrolled = on; doc.documentElement.classList.toggle('sj-scrolled', on); }
+    var y = window.scrollY, dy = y - lastY;
+    var on = y > 40;
+    if (on !== scrolled) { scrolled = on; root.classList.toggle('sj-scrolled', on); }
+    var hide = away;
+    if (y < 120) hide = false;
+    else if (dy > 6 && !busy()) hide = true;
+    else if (dy < -6) hide = false;
+    if (Math.abs(dy) > 6 || y < 120) lastY = y;
+    if (hide !== away) { away = hide; root.classList.toggle('sj-hdr-away', hide); }
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
