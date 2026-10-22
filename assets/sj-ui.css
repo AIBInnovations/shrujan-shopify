@@ -1684,18 +1684,18 @@ html.sj-pre .sje__tab {
     top: 50%;
     right: 0;
     bottom: auto;
-    gap: 8px;
-    padding: 13px 8px;
-    border-radius: var(--radius) 0 0 var(--radius);
-    font-size: 10px;
-    letter-spacing: 0.18em;
+    gap: 7px;
+    padding: 11px 5px;
+    border-radius: 6px 0 0 6px;
+    font-size: 9px;
+    letter-spacing: 0.16em;
     writing-mode: vertical-rl;
     transform: translateY(-50%);
     box-shadow: -8px 10px 22px -14px rgba(20, 20, 20, 0.6);
   }
 
   .sje__tab i {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .sje__head {
