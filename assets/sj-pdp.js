@@ -204,7 +204,12 @@
       pk.querySelector('.pdpx-book__pbtn').addEventListener('click', () => openPick(pk.classList.contains('is-open') ? null : pk.dataset.pdpxPick));
       pk.querySelectorAll('[data-pdpx-close]').forEach((x) => x.addEventListener('click', () => openPick(null)));
     });
-    document.addEventListener('click', (e) => { if (!e.target.closest('[data-pdpx-pick]') && !e.target.closest('.pdpx-scrim') && picks.some((pk) => pk.classList.contains('is-open'))) openPick(null); });
+    // a click outside closes the picker (a click on a day redraws the
+    // calendar, so its target has left the page by now: that one is inside)
+    document.addEventListener('click', (e) => {
+      if (!e.target.isConnected || e.target.closest('[data-pdpx-pick]') || e.target.closest('.pdpx-scrim')) return;
+      if (picks.some((pk) => pk.classList.contains('is-open'))) openPick(null);
+    });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && picks.some((pk) => pk.classList.contains('is-open'))) openPick(null); });
 
     const drawSummary = () => {
