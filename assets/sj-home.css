@@ -310,462 +310,498 @@ html.sj-pre .offer-bar {
   display: inline-block;
 }
 
-/* ---------- 3. wear the craft ---------- */
-/* the figure rises into place as the section arrives (moved by craft3d.js) */
-.craft3d__rise {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  will-change: transform;
-}
-
-.craft3d__loading {
-  position: absolute;
-  z-index: 1;
-  left: 50%;
-  top: 50%;
-  translate: -50% -50%;
-  font:500 var(--fs-2xs)/1 var(--font-sans);
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  color: var(--ink-soft, #706e68);
-  transition: opacity 0.6s ease;
-}
-
-.craft3d.is-ready .craft3d__loading {
-  opacity: 0;
-}
-
-@media (max-width: 720px) {
-  .craft3d {
-    height: 430vh;
-  }
-
-}
-
-/* Tall, with its stage sticky: a screen to arrive in and 3.7 more (3.3 on a
-   phone) for the camera and the cloths. */
-/* --col-x: the side margin every other section has, the 1080px column
-   centred in the page; the text on the left and the list on the right sit on
-   it, so this section lines up with the ones above and below */
-.craft3d {
-  --col-x: calc((100% - var(--col)) / 2);
+/* ---------- 3. the crafts, on real pieces ----------
+   No 3D form (the user): each craft on a Shrujan piece, its photograph worn
+   and its cloth up close. Wide screens: the section holds still for one
+   screen per craft (craft3d.js), the words on the left, the photograph in
+   the middle, the list of crafts on the right. Phones: one after another. */
+.cw {
+  --cw-ease: cubic-bezier(0.22, 1, 0.36, 1);
   position: relative;
-  height: 470vh;
-  margin-top: 5px;
-  background: transparent;
+  height: calc(var(--n, 4) * 85vh + 15vh);
+  margin-inline: var(--gutter, 5.2vw);
 }
 
-.craft3d__stage {
+.cw__stage {
   position: sticky;
   top: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr) auto;
+  align-items: center;
+  gap: clamp(28px, 4vw, 72px);
   height: 100vh;
   height: 100svh;
-  overflow: hidden;
-  background: transparent;
+  padding: clamp(70px, 9vh, 96px) 28px clamp(28px, 5vh, 48px) 0;
 }
 
-.craft3d__canvas {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  display: block;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  transition: opacity 0.8s ease;
+/* the words */
+.cw__side {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(18px, 3vh, 32px);
+  min-width: 0;
 }
 
-.craft3d.is-ready .craft3d__canvas {
-  opacity: 1;
-}
-
-/* the craft's name, enormous and faint, behind the form */
-.craft3d__ghosts {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
-
-/* giant pale type behind the dress, which passes in front of it */
-.craft3d__ghost {
-  position: absolute;
-  left: 50%;
-  top: 22%;
-  translate: -50% -50%;
-  /* sized so the longest word, EMBROIDERY (6.9 times its size in
-     Baskerville), stays inside the screen */
-  font: 400 clamp(64px, 13.2vw, 250px)/1 var(--font-display), Georgia, serif;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  /* a quiet backdrop in the page's own beige, not a headline */
-  color: #c9b897;
-  opacity: 0;
-  transform: translateY(40px);
-  /* the old word leaves quickly; the new one waits for it before rising */
-  transition: opacity 0.25s ease, transform 0.4s ease;
-}
-
-.craft3d__ghost.is-active {
-  opacity: 1;
-  transform: none;
-  transition: opacity 0.6s ease 0.25s, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.25s;
-}
-
-/* where the craft panels will sit, so it never crosses the form */
-/* the hem melts into the page */
-.craft3d__fade {
-  position: absolute;
-  z-index: 1;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 22vh;
-  background: linear-gradient(rgba(246, 244, 230, 0), var(--page-bg, #f6f4e6) 85%);
-  pointer-events: none;
-}
-
-.craft3d__intro {
-  position: absolute;
-  z-index: 2;
-  left: var(--col-x);
-  top: 58%;
-  width: min(420px, 28vw);
-  translate: 0 -50%;
-  display: grid;
-  justify-items: start;
-  gap: 14px;
-  text-align: left;
-  pointer-events: none;
-  transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.craft3d__intro.is-gone {
-  opacity: 0;
-  transform: translateY(-24px);
-}
-
-.craft3d__eyebrow {
-  font:500 var(--fs-xs)/1 var(--font-sans);
+.cw__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 12px;
+  font:500 var(--fs-2xs)/1.2 var(--font-sans);
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--gerua, #924241);
+  color: var(--ink-soft, #706e68);
 }
 
-.craft3d__intro-title {
-  font: 400 var(--h-size)/0.95 var(--font-display), Georgia, serif;
-  letter-spacing: -0.015em;
-  color: var(--ink, #404041);
+.cw__eyebrow::after {
+  content: '';
+  flex: 0 0 40px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
 }
 
-.craft3d__intro-title span {
-  color: var(--gerua, #924241);
+.cw__title {
+  margin: 0;
+  font:400 var(--fs-4xl)/1 var(--font-display);
+  color: var(--ink);
 }
 
-/* on the left, beside the bodice and waist where the dress is narrow, below
-   the giant word and above the flare of the hem */
-.craft3d__panels {
-  position: absolute;
-  z-index: 2;
-  left: var(--col-x);
-  top: 58%;
-  width: min(330px, 24vw);
-  height: 300px;
-  translate: 0 -50%;
+.cw__title em {
+  display: block;
+  font-style: normal;
+  color: var(--indigo, #924241);
 }
 
-.craft3d__panel {
-  position: absolute;
-  inset: 0;
+.cw__texts {
   display: grid;
-  align-content: center;
-  gap: 14px;
-  opacity: 0;
-  transform: translateY(26px);
-  pointer-events: none;
-  transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  min-height: 0;
 }
 
-.craft3d__panel.is-active {
+.cw__text {
+  grid-area: 1 / 1;
+  visibility: hidden;
+}
+
+.cw__text > * {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.45s ease, transform 0.7s var(--cw-ease);
+}
+
+.cw__text.is-on {
+  visibility: visible;
+}
+
+.cw__text.is-on > * {
   opacity: 1;
   transform: none;
-  pointer-events: auto;
 }
 
-.craft3d__no {
-  font:500 var(--fs-xs)/1 var(--font-sans);
-  letter-spacing: 0.26em;
+.cw__text.is-on > :nth-child(2) { transition-delay: 0.05s; }
+.cw__text.is-on > :nth-child(3) { transition-delay: 0.1s; }
+.cw__text.is-on > :nth-child(4) { transition-delay: 0.15s; }
+.cw__text.is-on > :nth-child(5) { transition-delay: 0.2s; }
+
+.cw__no {
+  margin: 0;
+  font:400 var(--fs-sm)/1 var(--font-display);
   color: var(--ink-soft, #706e68);
 }
 
-.craft3d__no b {
-  font-weight: 500;
-  color: var(--gerua, #924241);
+.cw__no b {
+  font-weight: 400;
+  color: var(--indigo, #924241);
 }
 
-.craft3d__name {
-  font:400 var(--fs-4xl)/1.04 var(--font-display), Georgia, serif;
-  color: var(--ink, #404041);
+.cw__name {
+  margin: 12px 0 0;
+  font:400 var(--fs-3xl)/1.05 var(--font-display);
+  color: var(--ink);
 }
 
-.craft3d__tags {
-  font:500 var(--fs-xs)/1.4 var(--font-sans);
-  letter-spacing: 0.24em;
+.cw__tags {
+  margin: 10px 0 0;
+  font:500 var(--fs-2xs)/1.4 var(--font-sans);
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--gerua, #924241);
+  color: var(--indigo, #924241);
 }
 
-.craft3d__copy {
-  max-width: 34ch;
-  font:400 var(--fs-base)/1.65 var(--font-sans);
+.cw__copy {
+  max-width: 34em;
+  margin: 14px 0 0;
+  font:400 var(--fs-md)/1.65 var(--font-sans);
   color: var(--ink-soft, #706e68);
 }
 
-.craft3d__link {
-  justify-self: start;
+/* the piece itself, to see or to buy */
+.cw__piece {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 420px;
+  margin-top: clamp(16px, 2.6vh, 24px);
+  padding: 12px 14px;
+  border: 1px solid var(--hairline, rgba(64, 64, 65, 0.14));
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.45);
+  color: var(--ink);
+  text-decoration: none;
+  transition: border-color 0.3s ease, background 0.3s ease, transform 0.4s var(--cw-ease);
+}
+
+.cw__piece:hover {
+  border-color: var(--ink);
+  background: rgba(255, 255, 255, 0.8);
+  transform: translateY(-2px);
+}
+
+.cw__piece-t {
+  display: grid;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.cw__piece-t small {
+  font:500 9.5px/1.3 var(--font-sans);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-soft, #706e68);
+}
+
+.cw__piece-t b {
+  overflow: hidden;
+  font:400 var(--fs-base)/1.3 var(--font-display);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cw__piece-p {
+  flex: none;
+  font:500 var(--fs-sm)/1 var(--font-sans);
+  color: var(--indigo, #924241);
+}
+
+.cw__piece i {
+  flex: none;
+  font-size: 18px;
+  transition: transform 0.35s var(--cw-ease);
+}
+
+.cw__piece:hover i {
+  transform: translateX(3px);
+}
+
+.cw__all {
   display: inline-flex;
+  align-self: flex-start;
   align-items: center;
   gap: 10px;
-  margin-top: 6px;
-  padding-bottom: 5px;
+  padding-bottom: 6px;
   border-bottom: 1px solid currentColor;
   font:500 var(--fs-xs)/1 var(--font-sans);
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--ink, #404041);
+  text-decoration: none;
+  color: var(--ink);
 }
 
-.craft3d__link:hover {
-  color: var(--gerua, #924241);
+.cw__all i {
+  font-size: 16px;
 }
 
-/* the four crafts, with a swatch of each cloth */
-.craft3d__list {
+/* the photographs: the piece worn, and its cloth up close */
+.cw__frame {
+  position: relative;
+  align-self: stretch;
+  min-height: 0;
+}
+
+.cw__shot {
   position: absolute;
+  inset: 0;
+  margin: 0;
+  z-index: 1;
+  visibility: hidden;
+}
+
+.cw__main {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius);
+  object-fit: cover;
+  object-position: 50% 30%;
+  background: var(--page-bg-2, #ede9d8);
+  box-shadow: 0 40px 70px -46px rgba(50, 32, 20, 0.6);
+}
+
+/* the coming piece rises over the last like a curtain */
+.cw__shot.is-on {
+  z-index: 3;
+  visibility: visible;
+}
+
+.cw__shot.was-on {
   z-index: 2;
-  right: var(--col-x);
-  top: 50%;
-  translate: 0 -50%;
+  visibility: visible;
+}
+
+.cw.is-ready .cw__shot.is-on .cw__main {
+  animation: cw-curtain 0.95s var(--cw-ease) both;
+}
+
+.cw__shot.was-on .cw__main {
+  animation: cw-settle 0.95s var(--cw-ease) both;
+}
+
+@keyframes cw-curtain {
+  from {
+    clip-path: inset(100% 0 0 0 round var(--radius));
+    transform: scale(1.06);
+  }
+  to {
+    clip-path: inset(0 0 0 0 round var(--radius));
+    transform: none;
+  }
+}
+
+@keyframes cw-settle {
+  to {
+    transform: scale(0.97);
+    filter: brightness(0.92);
+  }
+}
+
+.cw__detail {
+  position: absolute;
+  bottom: clamp(16px, 3vh, 28px);
+  left: calc(-1 * clamp(28px, 4vw, 64px));
+  z-index: 2;
+  display: block;
+  width: clamp(130px, 13vw, 200px);
+  padding: 6px 6px 8px;
+  border-radius: var(--radius);
+  background: var(--page-bg, #f6f4e6);
+  box-shadow: 0 24px 44px -24px rgba(50, 32, 20, 0.55);
+  transform: rotate(-3deg);
+}
+
+.cw__detail img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: calc(var(--radius) - 3px);
+  object-fit: cover;
+}
+
+.cw__detail small {
+  display: block;
+  margin-top: 6px;
+  font:500 9px/1.2 var(--font-sans);
+  letter-spacing: 0.18em;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--ink-soft, #706e68);
+}
+
+.cw.is-ready .cw__shot.is-on .cw__detail {
+  animation: cw-card 0.9s var(--cw-ease) 0.25s both;
+}
+
+@keyframes cw-card {
+  from {
+    opacity: 0;
+    transform: translate(-14px, 18px) rotate(-8deg);
+  }
+}
+
+/* the list of crafts, with a line that fills as the section is read */
+.cw__list {
+  position: relative;
   display: grid;
-  gap: 16px;
-  padding-left: 22px;
+  align-self: center;
+  gap: 18px;
+  margin: 0;
+  padding: 0 0 0 20px;
   list-style: none;
 }
 
-.craft3d__list::before,
-.craft3d__progress {
-  content: '';
+.cw__track {
   position: absolute;
+  top: 4px;
+  bottom: 4px;
   left: 0;
-  top: 0;
   width: 1px;
-  height: 100%;
-  background: rgba(40, 40, 41, 0.14);
+  background: var(--hairline, rgba(64, 64, 65, 0.14));
 }
 
-.craft3d__progress {
-  background: var(--gerua, #924241);
-  transform-origin: top;
+.cw__track i {
+  position: absolute;
+  inset: 0;
+  background: var(--indigo, #924241);
   transform: scaleY(0);
-}
-
-.craft3d__item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font:500 var(--fs-xs)/1 var(--font-sans);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: rgba(40, 40, 41, 0.42);
-  transition: color 0.4s ease;
-}
-
-.craft3d__item i {
-  width: 30px;
-  height: 30px;
-  flex: none;
-  border-radius: 50%;
-  background-size: cover;
-  box-shadow: 0 0 0 1px rgba(40, 40, 41, 0.12);
-  opacity: 0.55;
-  transform: scale(0.86);
-  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
-}
-
-.craft3d__item.is-active {
-  color: var(--ink, #404041);
-}
-
-.craft3d__item.is-active i {
-  opacity: 1;
-  transform: none;
-  box-shadow: 0 0 0 1px var(--ivory, #faf9f0), 0 0 0 2px var(--gerua, #924241);
-}
-
-/* points on the form, named for the craft on it */
-.craft3d__poi {
-  position: absolute;
-  z-index: 2;
-  left: 0;
-  top: 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font:500 var(--fs-2xs)/1.3 var(--font-sans);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: var(--ink, #404041);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.35s ease;
-}
-
-.craft3d__poi.is-on {
-  opacity: 1;
-}
-
-.craft3d__poi.is-left {
-  flex-direction: row-reverse;
-}
-
-.craft3d__poi-dot {
-  position: relative;
-  width: 10px;
-  height: 10px;
-  flex: none;
-  border-radius: 50%;
-  background: var(--ivory, #faf9f0);
-  box-shadow: 0 0 0 2px var(--gerua, #924241);
-}
-
-.craft3d__poi-dot::after {
-  content: '';
-  position: absolute;
-  inset: -6px;
-  border-radius: 50%;
-  border: 1px solid var(--gerua, #924241);
-  animation: sj-poi 2.2s ease-out infinite;
-}
-
-@keyframes sj-poi {
-  from { transform: scale(0.6); opacity: 0.8; }
-  to { transform: scale(1.8); opacity: 0; }
-}
-
-.craft3d__poi-line {
-  width: 34px;
-  height: 1px;
-  background: rgba(40, 40, 41, 0.4);
-}
-
-.craft3d__poi-label {
-  padding: 6px 10px;
-  border-radius: var(--radius);
-  background: rgba(246, 244, 230, 0.92);
-  box-shadow: 0 0 0 1px rgba(40, 40, 41, 0.1);
-}
-
-.craft3d__hint {
-  position: absolute;
-  z-index: 2;
-  left: 50%;
-  bottom: clamp(18px, 4vh, 36px);
-  translate: -50% 0;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font:500 var(--fs-2xs)/1 var(--font-sans);
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--ink-soft, #706e68);
-  transition: opacity 0.5s ease;
-}
-
-.craft3d__hint span {
-  width: 1px;
-  height: 28px;
-  background: linear-gradient(var(--gerua, #924241), transparent);
-  animation: sj-hint 1.8s ease-in-out infinite;
   transform-origin: top;
 }
 
-@keyframes sj-hint {
-  0% { transform: scaleY(0); }
-  50% { transform: scaleY(1); }
-  100% { transform: scaleY(1); opacity: 0; }
+.cw__item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font:400 var(--fs-sm)/1.2 var(--font-display);
+  color: var(--ink-soft, #706e68);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.4s var(--cw-ease);
 }
 
-.craft3d__hint.is-gone {
-  opacity: 0;
+.cw__item span {
+  font:500 var(--fs-2xs)/1 var(--font-sans);
+  letter-spacing: 0.1em;
 }
 
-@media (max-width: 900px) {
-  .craft3d__list {
+.cw__item:hover {
+  color: var(--ink);
+}
+
+.cw__item.is-on {
+  color: var(--ink);
+  transform: translateX(4px);
+}
+
+.cw__item.is-on span {
+  color: var(--indigo, #924241);
+}
+
+/* ---- phones, and reduced motion: the crafts one after another ---- */
+@media (max-width: 899px), (prefers-reduced-motion: reduce) {
+  .cw {
+    height: auto;
+    padding: var(--sec-pad, 40px) 0;
+  }
+
+  /* the wrappers step aside so each photograph sits with its own words */
+  .cw__stage {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    padding: 0;
+  }
+
+  .cw__shot[data-i='0'] { order: 1; }
+  .cw__text[data-i='0'] { order: 2; }
+  .cw__shot[data-i='1'] { order: 3; }
+  .cw__text[data-i='1'] { order: 4; }
+  .cw__shot[data-i='2'] { order: 5; }
+  .cw__text[data-i='2'] { order: 6; }
+  .cw__shot[data-i='3'] { order: 7; }
+  .cw__text[data-i='3'] { order: 8; }
+
+  .cw__all {
+    order: 9;
+  }
+
+  .cw__side {
+    display: contents;
+  }
+
+  .cw__head {
+    margin-bottom: 26px;
+  }
+
+  .cw__texts,
+  .cw__frame {
+    display: contents;
+  }
+
+  .cw__list {
     display: none;
   }
-}
 
-@media (max-width: 720px) {
-  .craft3d__intro {
-    left: 16px;
-    right: 16px;
-    top: auto;
-    bottom: 6vh;
-    width: auto;
-    translate: none;
-    justify-items: center;
-    text-align: center;
+  /* each craft: its photograph, then its words */
+  .cw__shot,
+  .cw__text {
+    position: relative;
+    inset: auto;
+    visibility: visible;
   }
 
-
-  .craft3d__panels {
-    left: 16px;
-    right: 16px;
-    top: auto;
-    bottom: 4vh;
-    width: auto;
-    height: 236px;
-    translate: none;
+  .cw__shot {
+    margin-top: 34px;
   }
 
-  .craft3d__panel {
-    align-content: end;
-    gap: 9px;
-    padding: 18px 16px 16px;
-    border-radius: var(--radius);
-    background: rgba(246, 244, 230, 0.92);
-    box-shadow: 0 0 0 1px rgba(40, 40, 41, 0.08);
-    backdrop-filter: blur(6px);
+  .cw__shot:first-of-type {
+    margin-top: 0;
   }
 
-  .craft3d__name {
-    font-size: var(--fs-4xl);
+  .cw__main {
+    height: auto;
+    aspect-ratio: 4 / 5;
   }
 
-  .craft3d__copy {
+  .cw__detail {
+    bottom: 12px;
+    left: 12px;
+    width: 104px;
+  }
+
+  .cw__text > * {
+    opacity: 1;
+    transform: none;
+  }
+
+  .cw__text {
+    margin-top: 18px;
+  }
+
+  .cw__name {
+    font-size: var(--fs-2xl);
+  }
+
+  .cw__copy {
     font-size: var(--fs-sm);
   }
 
-  /* above the head, clear of the form, in front of it; sized so the
-     longest word, EMBROIDERY, still fits the screen */
-  .craft3d__ghosts {
-    z-index: 2;
+  .cw__piece {
+    max-width: none;
   }
 
-  .craft3d__ghost {
-    top: 5.4%;
-    font-size: 12.8vw;
+  .cw__all {
+    align-self: flex-start;
+    margin-top: 30px;
   }
 
-  .craft3d__poi-line {
-    width: 18px;
+  .cw.is-ready .cw__shot.is-on .cw__main,
+  .cw__shot.was-on .cw__main,
+  .cw.is-ready .cw__shot.is-on .cw__detail {
+    animation: none;
   }
 
-  .craft3d__hint {
-    display: none;
+  /* each rises in as it reaches the screen */
+  .cw__shot,
+  .cw__text {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.8s var(--cw-ease);
+  }
+
+  .cw__shot.is-seen,
+  .cw__text.is-seen {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cw__shot,
+  .cw__text {
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -6155,16 +6191,4 @@ section[aria-label="What our customers say"],
   display: none;
 }
 
-/* the Wear-the-craft form meets the hero with no gap, and its foot fades
-   into the page with the page's own grain in the fade (the fade was a flat,
-   grainless strip, which showed as a seam over the studio archive below) */
-.craft3d {
-  margin-top: 0;
-}
-
-.craft3d__fade {
-  background: var(--grain-a) 0 0 / 240px 240px, var(--page-bg);
-  -webkit-mask-image: linear-gradient(transparent, #000 85%);
-  mask-image: linear-gradient(transparent, #000 85%);
-}
 
