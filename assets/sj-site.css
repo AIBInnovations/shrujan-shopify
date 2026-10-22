@@ -766,6 +766,24 @@ html.sj-hdr-away .site-header {
   color: var(--indigo, #924241);
 }
 
+/* ---- the Story page's Origins photos (the user: not aligned, moved to the
+   right). All three were locked to 4/3 at the row's full height, so the two
+   narrower columns' photos came out as wide as the first, and the row ran
+   past the right edge. Each photo now fills its own column; the first, wide
+   one sets the row's height. ---- */
+@media (min-width: 721px) {
+  .origin__gallery > .origin__shot {
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    aspect-ratio: auto;
+  }
+
+  .origin__gallery > .origin__shot:first-child {
+    aspect-ratio: 4 / 3;
+  }
+}
+
 /* ---- the Shop page's hero (the user: one screen, cut across the middle:
    the picture in the top half with what every piece comes with large on it,
    the collection circles sliding as before in the bottom half). The circles
