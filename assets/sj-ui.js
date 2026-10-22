@@ -323,7 +323,7 @@
             '<input type="hidden" name="form_type" value="contact"><input type="hidden" name="utf8" value="✓">' +
             '<input type="hidden" name="contact[tags]" value="enquiry">' +
             '<input type="hidden" name="contact[Page]" value="' + esc(location.pathname) + '">' +
-            '<fieldset class="sje__sec" data-step="1"><legend class="sje__lab"><b>01</b>What is it about' + ic('check') + '</legend>' +
+            '<fieldset class="sje__sec" data-step="1"><legend class="sje__lab"><b>01</b>What is it about</legend>' +
               '<div class="sje__kinds">' +
               KINDS.map(function (k, i) {
                 return '<label class="sje__kind"><input type="radio" name="contact[Enquiry]" value="' + esc(k[0]) + '"' + (i ? '' : ' checked') + '>' +
@@ -332,13 +332,13 @@
               }).join('') +
               '</div>' +
             '</fieldset>' +
-            '<div class="sje__sec" data-step="2"><p class="sje__lab"><b>02</b>About you' + ic('check') + '</p>' +
+            '<div class="sje__sec" data-step="2"><p class="sje__lab"><b>02</b>About you</p>' +
               '<div class="sje__row">' + field('', 'Name' + req, '<input type="text" name="contact[name]" autocomplete="name" placeholder=" " required>') +
                 field('', 'Organisation', '<input type="text" name="contact[Organisation]" autocomplete="organization" placeholder=" ">') + '</div>' +
               '<div class="sje__row">' + field('', 'Email' + req, '<input type="email" name="contact[email]" autocomplete="email" placeholder=" " required>') +
                 field('', 'Phone / WhatsApp', '<input type="tel" name="contact[phone]" autocomplete="tel" placeholder=" ">') + '</div>' +
             '</div>' +
-            '<div class="sje__sec sje__sec--grow" data-step="3"><p class="sje__lab"><b>03</b>Your idea' + ic('check') + '</p>' +
+            '<div class="sje__sec sje__sec--grow" data-step="3"><p class="sje__lab"><b>03</b>Your idea</p>' +
               '<div class="sje__row">' + field(' sje__field--up', 'How many pieces', '<select name="contact[Quantity]"><option>Not sure yet</option><option>1–10</option><option>10–50</option><option>50–200</option><option>More than 200</option></select>') +
                 field('', 'Needed by', '<input type="text" name="contact[Needed by]" placeholder=" ">') + '</div>' +
               field(' sje__field--box', 'Tell us about it' + req, '<textarea name="contact[body]" rows="3" required placeholder="The occasion, the pieces, the colours or crafts you have in mind"></textarea>') +

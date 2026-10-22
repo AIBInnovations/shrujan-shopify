@@ -913,8 +913,8 @@ html.sj-pre .sje__tab {
   border: 0;
 }
 
-/* a part's heading: its number in italic, its name, a hairline, and a tick
-   once it is filled */
+/* a part's heading: its number in italic (darker once the part is
+   filled), its name and a hairline to the edge */
 .sje__lab {
   display: flex;
   align-items: baseline;
@@ -946,27 +946,8 @@ html.sj-pre .sje__tab {
   background: var(--sje-line);
 }
 
-.sje__lab i {
-  order: 4;
-  display: grid;
-  place-items: center;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--sje-ink);
-  align-self: center;
-  font-size: 12px;
-  color: var(--ui-bg);
-  transform: scale(0);
-  transition: transform 0.4s var(--ui-ease);
-}
-
 .sje__sec.is-done .sje__lab b {
   color: var(--sje-ink);
-}
-
-.sje__sec.is-done .sje__lab i {
-  transform: scale(1);
 }
 
 /* the topics: four cards, two to a row, each an icon in a round badge, a
