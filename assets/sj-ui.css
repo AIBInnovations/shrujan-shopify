@@ -967,7 +967,8 @@ html.sj-pre .sje__tab {
   transform: scale(1);
 }
 
-/* the topics: two to a row, an icon and a name */
+/* the topics: four cards, two to a row, each an icon in a round badge, a
+   name and a line saying what it is; a tick fills its corner once chosen */
 .sje__kinds {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -976,6 +977,7 @@ html.sj-pre .sje__tab {
 
 .sje__kind {
   position: relative;
+  display: block;
 }
 
 .sje__kind input {
@@ -984,54 +986,112 @@ html.sj-pre .sje__tab {
   pointer-events: none;
 }
 
-.sje__kind span {
-  display: flex;
+.sje__kind-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
   align-items: center;
-  gap: 10px;
+  gap: 11px;
   height: 100%;
-  min-height: 41px;
-  padding: 8px 12px;
+  padding: 11px 30px 11px 11px;
   border: 1px solid var(--sje-line);
   border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.5);
   cursor: pointer;
-  transition: border-color 0.25s ease, background 0.3s ease, color 0.3s ease, transform 0.35s var(--ui-ease), box-shadow 0.35s ease;
+  transition: border-color 0.25s ease, background 0.35s ease, transform 0.35s var(--ui-ease), box-shadow 0.35s ease;
 }
 
-.sje__kind span i {
-  flex: none;
-  font-size: 19px;
+.sje__kind-ic {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--ui-bg-2);
+  color: var(--ui-ink);
+  transition: background 0.35s ease, color 0.35s ease, transform 0.45s var(--ui-ease);
+}
+
+.sje__kind-ic i {
+  font-size: 18px;
+}
+
+.sje__kind-t {
+  min-width: 0;
+}
+
+.sje__kind-t b {
+  display: block;
+  font:500 var(--fs-xs)/1.2 var(--font-sans);
+  letter-spacing: 0.02em;
+  color: var(--ui-ink);
+  transition: color 0.3s ease;
+}
+
+.sje__kind-t small {
+  display: block;
+  margin-top: 3px;
+  font:400 var(--fs-2xs)/1.35 var(--font-sans);
   color: var(--ui-soft);
   transition: color 0.3s ease;
 }
 
-.sje__kind span b {
-  min-width: 0;
-  font:400 var(--fs-xs)/1.25 var(--font-sans);
-  color: var(--ui-ink);
+.sje__kind-tick {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--sje-line);
+  border-radius: 50%;
+  color: transparent;
+  transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.4s var(--ui-ease);
 }
 
-.sje__kind span:hover {
-  border-color: rgba(64, 64, 65, 0.45);
-  background: rgba(255, 255, 255, 0.75);
+.sje__kind-tick i {
+  font-size: 11px;
+}
+
+.sje__kind-card:hover {
+  border-color: rgba(64, 64, 65, 0.42);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 14px 26px -22px rgba(20, 16, 14, 0.6);
   transform: translateY(-1px);
 }
 
-.sje__kind input:checked + span {
-  border-color: var(--sje-ink);
-  background: var(--sje-ink);
-  box-shadow: 0 12px 22px -16px rgba(20, 16, 14, 0.7);
+.sje__kind-card:hover .sje__kind-ic {
+  transform: scale(1.06);
 }
 
-.sje__kind input:checked + span b {
+.sje__kind input:checked + .sje__kind-card {
+  border-color: var(--sje-ink);
+  background: var(--sje-ink);
+  box-shadow: 0 16px 28px -18px rgba(20, 16, 14, 0.75);
+}
+
+.sje__kind input:checked + .sje__kind-card .sje__kind-ic {
+  background: var(--sje-warm);
+  color: var(--sje-deep);
+}
+
+.sje__kind input:checked + .sje__kind-card b {
   color: var(--ui-bg);
 }
 
-.sje__kind input:checked + span i {
-  color: var(--sje-warm);
+.sje__kind input:checked + .sje__kind-card small {
+  color: rgba(246, 244, 230, 0.7);
 }
 
-.sje__kind input:focus-visible + span {
+.sje__kind input:checked + .sje__kind-card .sje__kind-tick {
+  border-color: var(--sje-warm);
+  background: var(--sje-warm);
+  color: var(--sje-deep);
+  transform: scale(1.05);
+}
+
+.sje__kind input:focus-visible + .sje__kind-card {
   outline: 2px solid var(--sje-ink);
   outline-offset: 2px;
 }
@@ -1403,10 +1463,9 @@ html.sj-pre .sje__tab {
     padding-top: 10px;
   }
 
-  .sje__kind span {
-    min-height: 40px;
-    padding-top: 7px;
-    padding-bottom: 7px;
+  .sje__kind-card {
+    padding-top: 8px;
+    padding-bottom: 8px;
   }
 }
 
@@ -1436,10 +1495,24 @@ html.sj-pre .sje__tab {
     gap: 6px;
   }
 
-  .sje__kind span {
-    min-height: 34px;
-    padding-top: 5px;
-    padding-bottom: 5px;
+  .sje__kind-card {
+    grid-template-columns: 28px minmax(0, 1fr);
+    gap: 9px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+
+  .sje__kind-ic {
+    width: 28px;
+    height: 28px;
+  }
+
+  .sje__kind-ic i {
+    font-size: 15px;
+  }
+
+  .sje__kind-t small {
+    display: none;
   }
 
   .sje__field {
@@ -1556,14 +1629,19 @@ html.sj-pre .sje__tab {
     gap: 4px 16px;
   }
 
-  .sje__kind span {
-    gap: 8px;
-    padding-right: 10px;
-    padding-left: 10px;
+  .sje__kind-card {
+    grid-template-columns: 30px minmax(0, 1fr);
+    gap: 9px;
+    padding: 10px 26px 10px 9px;
   }
 
-  .sje__kind span i {
-    font-size: 17px;
+  .sje__kind-ic {
+    width: 30px;
+    height: 30px;
+  }
+
+  .sje__kind-ic i {
+    font-size: 16px;
   }
 
   .sje__quick a {

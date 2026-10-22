@@ -283,9 +283,13 @@
      Shopify loads for contact forms) only comes in once someone is about to
      write. Three short steps, checked before sending; the reply is the
      store's own contact form, tagged "enquiry". */
+  // the four things people write to the studio about (the user: no
+  // weddings and occasions, no retail), each with a line saying what it is
   var KINDS = [
-    ['Collaborations', 'handshake'], ['Corporate gifting', 'gift'], ['Weddings & occasions', 'sparkle'],
-    ['Custom pieces', 'needle'], ['Retail & wholesale', 'storefront'], ['Something else', 'chat-circle-dots'],
+    ['Collaborations', 'handshake', 'Designers, brands and institutions'],
+    ['Corporate gifting', 'gift', 'For organisations and milestones'],
+    ['Custom pieces', 'needle', 'Your colours, materials or craft'],
+    ['Something else', 'chat-circle-dots', 'Ask us anything'],
   ];
   var tab = make('<button class="sje__tab" type="button" aria-haspopup="dialog" aria-controls="sje-panel">' + ic('handshake') + '<span>Enquire</span></button>');
   doc.body.appendChild(tab);
@@ -306,7 +310,7 @@
               [0, 90, 180, 270].map(function (k) { return '<path transform="rotate(' + k + ')" d="M0-4C4-8 4-13 0-18C-4-13-4-8 0-4Z"/>'; }).join('') +
               '<circle r="1.8" fill="currentColor"/></g></svg></span>Work with Shrujan</p>' +
             '<h2 class="sje__title" id="sje-title">Tell us what you <em>have in mind</em></h2>' +
-            '<p class="sje__lede">Collaborations, gifting, occasions and custom pieces, made by hand in Kutch.</p>' +
+            '<p class="sje__lede">Collaborations, corporate gifting and custom pieces, made by hand in Kutch.</p>' +
             '<nav class="sje__quick" aria-label="Reach the studio directly">' +
               '<a href="' + wa('Hello Shrujan, I have an enquiry about ') + '" target="_blank" rel="noopener">' + ic('whatsapp-logo') + 'WhatsApp</a>' +
               '<a href="tel:' + CFG.phone.replace(/\s+/g, '') + '">' + ic('phone') + 'Call</a>' +
@@ -322,7 +326,9 @@
             '<fieldset class="sje__sec" data-step="1"><legend class="sje__lab"><b>01</b>What is it about' + ic('check') + '</legend>' +
               '<div class="sje__kinds">' +
               KINDS.map(function (k, i) {
-                return '<label class="sje__kind"><input type="radio" name="contact[Enquiry]" value="' + esc(k[0]) + '"' + (i ? '' : ' checked') + '><span>' + ic(k[1]) + '<b>' + esc(k[0]) + '</b></span></label>';
+                return '<label class="sje__kind"><input type="radio" name="contact[Enquiry]" value="' + esc(k[0]) + '"' + (i ? '' : ' checked') + '>' +
+                  '<span class="sje__kind-card"><span class="sje__kind-ic">' + ic(k[1]) + '</span><span class="sje__kind-t"><b>' + esc(k[0]) + '</b><small>' + esc(k[2]) + '</small></span>' +
+                  '<span class="sje__kind-tick">' + ic('check') + '</span></span></label>';
               }).join('') +
               '</div>' +
             '</fieldset>' +
