@@ -772,7 +772,8 @@ html.sj-hdr-away .site-header {
    take their size from the half's height, so the whole of it is one
    screen. Phones: the same order, the promises as cards to swipe. ---- */
 .shop-banner {
-  --hero-h: clamp(560px, calc(100svh - var(--header-h, 110px) - 6px), 1000px);
+  /* the screen less the offer bar, the header and the 6px above and below */
+  --hero-h: clamp(540px, calc(100svh - var(--header-h, 68px) - var(--offer-h, 0px) - 12px), 1000px);
   display: grid;
   grid-template-columns: minmax(0, 1fr);
 }
@@ -793,7 +794,8 @@ html.sj-hdr-away .site-header {
   grid-row: 1;
   grid-column: 1;
   align-self: end;
-  margin: 0 16px 16px !important;
+  /* clear of the Enquire tab on the right edge */
+  margin: 0 clamp(16px, 4vw, 60px) 16px !important;
   padding: 0 !important;
   border-radius: var(--radius);
   background: rgba(246, 244, 230, 0.9);
@@ -872,7 +874,7 @@ html.sj-hdr-away .site-header {
 }
 
 .shop-banner__side .shop-head .section-title {
-  font-size: var(--fs-4xl);
+  font-size: var(--fs-3xl);
   line-height: 1.05;
 }
 
@@ -889,7 +891,7 @@ html.sj-hdr-away .site-header {
   .shop-banner--split {
     /* what the bottom half spends besides the circles: its paddings, its
        heading, the names under the circles and the slider's own padding */
-    --reserve: clamp(196px, 15vw + 40px, 236px);
+    --reserve: calc(150px + 2vw);
     --disc: clamp(96px, calc(var(--hero-h) / 2 - var(--reserve)), 250px);
     grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
     height: var(--hero-h);
@@ -982,7 +984,7 @@ html.sj-hdr-away .site-header {
 /* a tall screen has room for the words under the heading */
 @media (min-width: 721px) and (min-height: 1000px) {
   .shop-banner--split {
-    --reserve: 262px;
+    --reserve: calc(196px + 2vw);
   }
 
   .shop-banner--split .shop-head__copy {
@@ -1059,7 +1061,12 @@ html.sj-hdr-away .site-header {
    of the cards, then the circles to swipe ---- */
 @media (max-width: 720px) {
   .shop-banner--split > .shop-banner__frame {
-    height: clamp(380px, 56svh, 520px) !important;
+    height: clamp(340px, 48svh, 480px) !important;
+  }
+
+  .shop-banner--split .shop-head .orn,
+  .shop-banner--split .shop-head__copy {
+    display: none;
   }
 
   .shop-banner--split .shop-banner__overlay {
@@ -1072,7 +1079,7 @@ html.sj-hdr-away .site-header {
   }
 
   .shop-banner__side {
-    padding-top: 30px;
+    padding-top: 24px;
   }
 }
 
