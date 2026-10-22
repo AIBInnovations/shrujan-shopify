@@ -573,6 +573,120 @@ html.sj-scrolled .site-header {
   }
 }
 
+/* ---- phones: one left and right margin for everything (the user:
+   spacing not proper, content hidden, left and right spacing off on many
+   pages). Blocks used to step out to a 5px screen edge while their text
+   kept the 16px gutter, so pictures, cards and boxes ran nearer the edge
+   than the words around them, text inside them came within a few pixels
+   of the screen, and a block narrower than the screen (the founder's
+   portrait) moved to one side. Every block now keeps the gutter the text
+   keeps; the swipe rows start on it; nothing is pulled past it. ---- */
+@media (max-width: 720px) {
+  .poster__art,
+  .house__strip,
+  .craft__stats,
+  .curated__promises,
+  .tw,
+  .journal-feature,
+  .journal-grid,
+  .faq,
+  .shopcta__grid,
+  .store-grid,
+  .shop-grid,
+  .pdp__media,
+  .spotlight-col__media,
+  .why-card__media,
+  .lldc-show,
+  .visit-plates,
+  .visit-bar,
+  .craft-atlas__media,
+  .craft-atlas__text,
+  .store-reads,
+  .origin__gallery,
+  .legacy__list,
+  .founder,
+  .value,
+  .honours,
+  .press-also,
+  .shop-rail,
+  .strands__list,
+  .studio-row__media,
+  .gloss,
+  .enquiry__form,
+  .way,
+  .plan__invite,
+  .ch__media,
+  .tq {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .arch__strips {
+    --row: calc(100vw - 2 * var(--gutter));
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* a picture set straight in a padded figure stays inside it */
+  figure.container > img {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* the founder's portrait, narrower than the screen, in the middle */
+  .founder-story__portrait {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .shop-assure {
+    margin-left: var(--gutter) !important;
+    margin-right: var(--gutter) !important;
+  }
+
+  /* text that had been brought back in from the 5px edge */
+  .craft-credit,
+  .founder-story__cap {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .store-grid .piece__info,
+  .shop-grid .piece__info {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* the swipe rows run to the screen's edges, but their first and last
+     cards sit on the gutter, level with the words above them */
+  .house__grid,
+  .manifesto__grid,
+  .craft-wall,
+  .curated__grid:not(.shop-grid),
+  .curated__filters,
+  .jr__grid,
+  .col__grid,
+  .reels__rail {
+    padding-left: var(--gutter) !important;
+    padding-right: var(--gutter) !important;
+    scroll-padding-inline: var(--gutter) !important;
+  }
+
+  /* the footer's sign-up keeps inside its column (its one-line form had
+     pushed the column 11px past the screen) */
+  .ftop {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .fletters,
+  .fletters__copy,
+  .fletters__form {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
 /* icons:start (written by convert_icons.py from icons.py) */
 /* ---- the interface icons (Material Symbols, Font Awesome brands; icons.py) ---- */
 @font-face {
@@ -738,12 +852,7 @@ button:hover > i.sj-i--arrow-right {
   overflow-x: auto;
 }
 
-@media (max-width: 720px) {
-  .shop-assure {
-    margin-left: var(--edge, 5px) !important;
-    margin-right: var(--edge, 5px) !important;
-  }
-}
+
 
 /* ============================================================
    The collection hero (collection pages and the Sale page): one
