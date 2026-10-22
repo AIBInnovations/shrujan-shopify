@@ -920,7 +920,7 @@ html.sj-pre .sje__tab {
   align-items: baseline;
   gap: 10px;
   width: 100%;
-  margin: 0;
+  margin: 0 0 6px;
   padding: 0;
   font:500 var(--fs-2xs)/1 var(--font-sans);
   letter-spacing: 0.22em;
@@ -957,6 +957,9 @@ html.sj-pre .sje__tab {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-auto-rows: 1fr;
   gap: 8px;
+  /* (a fieldset's heading stands outside its gaps: the room under it is
+     set here, to match the other parts') */
+  margin-top: 10px;
 }
 
 .sje__kind {
@@ -973,11 +976,11 @@ html.sj-pre .sje__tab {
 .sje__kind-card {
   position: relative;
   display: grid;
-  grid-template-columns: 34px minmax(0, 1fr);
+  grid-template-columns: 32px minmax(0, 1fr);
   align-items: start;
   gap: 11px;
   height: 100%;
-  padding: 12px;
+  padding: 10px 11px;
   border: 1px solid var(--sje-line);
   border-radius: var(--radius);
   background: rgba(255, 255, 255, 0.5);
@@ -988,8 +991,8 @@ html.sj-pre .sje__tab {
 .sje__kind-ic {
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: var(--ui-bg-2);
   color: var(--ui-ink);
@@ -1003,7 +1006,7 @@ html.sj-pre .sje__tab {
 /* the name sits level with the middle of its badge, every card alike */
 .sje__kind-t {
   min-width: 0;
-  padding-top: 8px;
+  padding-top: 7px;
 }
 
 .sje__kind-t b {
@@ -1088,13 +1091,16 @@ html.sj-pre .sje__tab {
 /* the fields: a line to write on, the label lifting as it is filled */
 .sje__row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* minmax(0, …): a long chosen name shortens with an ellipsis instead of
+     pushing its column past the form */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 4px 22px;
 }
 
 .sje__field {
   position: relative;
   display: block;
+  min-width: 0;
   padding-top: 15px;
 }
 
@@ -1310,6 +1316,106 @@ html.sj-pre .sje__tab {
   white-space: nowrap;
 }
 
+.sje__dd--multi .sje__dd-pop {
+  width: min(380px, calc(100vw - 40px));
+  max-width: none;
+}
+
+.sje__dd--multi .sje__dd-list li span {
+  white-space: normal;
+  line-height: 1.3;
+}
+
+/* several to choose: a tick box on each, Clear and Done at the foot */
+.sje__dd-count {
+  display: none;
+}
+
+.sje__dd-box {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  border: 1.5px solid rgba(64, 64, 65, 0.4);
+  border-radius: 4px;
+  background: #fff;
+  color: transparent;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.sje__dd-box i {
+  font-size: 13px;
+}
+
+.sje__dd--multi .sje__dd-list li {
+  justify-content: flex-start;
+}
+
+.sje__dd--multi .sje__dd-list li span {
+  flex: 1 1 auto;
+}
+
+.sje__dd--multi .sje__dd-list li[aria-selected='true'] {
+  font-weight: 400;
+}
+
+/* every box shows, ticked or not (single lists hide their tick until chosen) */
+.sje__dd-list li .sje__dd-box {
+  opacity: 1;
+}
+
+.sje__dd--multi .sje__dd-list li[aria-selected='true'] .sje__dd-box {
+  border-color: var(--sje-ink);
+  background: var(--sje-ink);
+  color: var(--ui-bg);
+}
+
+.sje__dd-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 6px -6px -6px;
+  padding: 8px 8px 8px 12px;
+  border-top: 1px solid var(--sje-line);
+}
+
+.sje__dd-foot button {
+  border: 0;
+  background: none;
+  font:500 var(--fs-2xs)/1 var(--font-sans);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ui-soft);
+  cursor: pointer;
+}
+
+.sje__dd-foot button:hover {
+  color: var(--ui-ink);
+}
+
+.sje__dd-foot [data-done] {
+  padding: 9px 14px;
+  border-radius: calc(var(--radius) - 2px);
+  background: var(--sje-ink);
+  color: var(--ui-bg);
+}
+
+.sje__dd-foot [data-done]:hover {
+  background: var(--sje-deep);
+  color: var(--ui-bg);
+}
+
+/* a chosen value reads in ink, the prompt in grey */
+.sje__dd--multi .sje__dd-btn span {
+  color: var(--ui-soft);
+}
+
+.sje__dd--multi.has-value .sje__dd-btn span {
+  color: var(--ui-ink);
+}
+
 .sje__dd.is-off .sje__dd-btn {
   color: var(--ui-soft);
   cursor: default;
@@ -1319,7 +1425,7 @@ html.sj-pre .sje__tab {
   background: var(--ui-bg-2);
 }
 
-.sje__dd-list li i {
+.sje__dd-list li > i:not(.sje__dd-box) {
   flex: none;
   font-size: 15px;
   color: var(--sje-ink);
@@ -1330,7 +1436,13 @@ html.sj-pre .sje__tab {
   font-weight: 500;
 }
 
-.sje__dd-list li[aria-selected='true'] i {
+.sje__dd-list li[aria-selected='true'] > i:not(.sje__dd-box) {
+  opacity: 1;
+}
+
+/* the tick inside a box: white on the dark box once chosen */
+.sje__dd-box i {
+  color: inherit;
   opacity: 1;
 }
 
@@ -1662,8 +1774,8 @@ html.sj-pre .sje__tab {
   }
 
   .sje__head {
-    padding-top: 18px;
-    padding-bottom: 14px;
+    padding-top: 12px;
+    padding-bottom: 12px;
   }
 
   .sje__title {
@@ -1672,9 +1784,18 @@ html.sj-pre .sje__tab {
   }
 
   .sje__form {
-    gap: 10px;
-    padding-top: 12px;
-    padding-bottom: 12px;
+    gap: 8px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .sje__kinds {
+    margin-top: 8px;
+  }
+
+  .sje__quick {
+    margin-top: 8px;
+    padding-top: 8px;
   }
 
   .sje__sec {
@@ -1720,7 +1841,7 @@ html.sj-pre .sje__tab {
   }
 
   .sje__field--box textarea {
-    min-height: 50px;
+    min-height: 40px;
   }
 
   .sje__send {
@@ -1814,12 +1935,22 @@ html.sj-pre .sje__tab {
 
   .sje__kind-card {
     grid-template-columns: 30px minmax(0, 1fr);
+    align-items: center;
     gap: 9px;
-    padding: 10px;
+    padding: 9px 10px;
   }
 
   .sje__kind-t {
-    padding-top: 7px;
+    padding-top: 0;
+  }
+
+  .sje__kind-t small {
+    display: none;
+  }
+
+  .sje__head {
+    padding-top: 14px;
+    padding-bottom: 14px;
   }
 
   .sje__kind-ic {

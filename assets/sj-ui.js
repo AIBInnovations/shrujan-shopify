@@ -355,8 +355,8 @@
             // the topic's own questions
             '<div class="sje__sec sje__sec--grow" data-step="3"><p class="sje__lab"><b>03</b><span data-sec3>Your piece</span></p>' +
               '<fieldset class="sje__topic" data-for="custom">' +
-                '<div class="sje__row">' + field(' sje__field--up', 'Collection', '<select name="contact[Collection]" data-src="collections"><option>Any collection</option></select>') +
-                  field(' sje__field--up', 'Piece', '<select name="contact[Piece]" data-src="pieces"><option>Any piece</option></select>') + '</div>' +
+                '<div class="sje__row">' + field(' sje__field--up', 'Collections', '<select multiple data-name="contact[Collections]" data-src="collections"><option data-ph value="">Any collection</option></select>') +
+                  field(' sje__field--up', 'Pieces', '<select multiple data-name="contact[Pieces]" data-src="pieces"><option data-ph value="">Choose collections first</option></select>') + '</div>' +
                 '<div class="sje__row">' + field(' sje__field--up', 'How many', '<select name="contact[Quantity]">' + opts(['Just one', '2–5', '6–20', 'More than 20']) + '</select>') +
                   field('', 'Needed by', '<input type="text" name="contact[Needed by]" placeholder=" ">') + '</div>' +
               '</fieldset>' +
@@ -369,7 +369,7 @@
               '<fieldset class="sje__topic" data-for="corporate">' +
                 '<div class="sje__row">' + field(' sje__field--up', 'Number of gifts', '<select name="contact[Number of gifts]">' + opts(['10–25', '25–50', '50–100', '100–250', 'More than 250']) + '</select>') +
                   field(' sje__field--up', 'Budget per gift', '<select name="contact[Budget per gift]">' + opts(['Not sure yet', 'Under ₹1,000', '₹1,000–2,500', '₹2,500–5,000', 'Above ₹5,000']) + '</select>') + '</div>' +
-                '<div class="sje__row">' + field(' sje__field--up', 'Gifts from', '<select name="contact[Gift collection]" data-src="collections"><option>Help me choose</option></select>') +
+                '<div class="sje__row">' + field(' sje__field--up', 'Gifts from', '<select multiple data-name="contact[Gift collections]" data-src="collections"><option data-ph value="">Help me choose</option></select>') +
                   field('', 'Needed by', '<input type="text" name="contact[Gifts needed by]" placeholder=" ">') + '</div>' +
               '</fieldset>' +
               '<fieldset class="sje__topic" data-for="other">' +
@@ -400,39 +400,60 @@
     var ddN = 0;
     var makeDD = function (sel) {
       var n = ddN++;
-      var dd = make('<div class="sje__dd"><button type="button" class="sje__dd-btn" aria-haspopup="listbox" aria-expanded="false" aria-controls="sje-dd-' + n + '"><span></span>' + ic('caret-down') + '</button>' +
+      // several can be chosen from a multiple select (the collections and
+      // pieces): each option has a tick box, a click ticks or unticks it, and
+      // Clear and Done sit at the panel's foot; the choice travels in a hidden
+      // field, as one line
+      var multi = sel.multiple;
+      var hidden = null;
+      if (multi) {
+        hidden = make('<input type="hidden" name="' + sel.getAttribute('data-name') + '">');
+        sel.parentNode.insertBefore(hidden, sel);
+      }
+      var dd = make('<div class="sje__dd' + (multi ? ' sje__dd--multi' : '') + '"><button type="button" class="sje__dd-btn" aria-haspopup="listbox" aria-expanded="false" aria-controls="sje-dd-' + n + '"><span></span>' + (multi ? '<b class="sje__dd-count" hidden></b>' : '') + ic('caret-down') + '</button>' +
         '<div class="sje__dd-pop"><label class="sje__dd-find" hidden>' + ic('magnifying-glass') + '<input type="search" placeholder="Search" aria-label="Search the list"></label>' +
-        '<ul class="sje__dd-list" id="sje-dd-' + n + '" role="listbox" tabindex="-1"></ul></div></div>');
-      var btn = dd.querySelector('button'), label = btn.querySelector('span'), list = dd.querySelector('ul');
+        '<ul class="sje__dd-list" id="sje-dd-' + n + '" role="listbox" tabindex="-1"' + (multi ? ' aria-multiselectable="true"' : '') + '></ul>' +
+        (multi ? '<div class="sje__dd-foot"><button type="button" data-clear>Clear</button><button type="button" data-done>Done</button></div>' : '') +
+        '</div></div>');
+      var btn = dd.querySelector('.sje__dd-btn'), label = btn.querySelector('span'), count = btn.querySelector('.sje__dd-count'), list = dd.querySelector('ul');
       var find = dd.querySelector('.sje__dd-find'), q = find.querySelector('input');
       var items = [], at = 0, hl = 0;
       sel.parentNode.insertBefore(dd, sel);
       sel.tabIndex = -1;
       sel.setAttribute('aria-hidden', 'true');
+      var real = function () { return [].filter.call(sel.options, function (o) { return !o.hasAttribute('data-ph'); }); };
+      var ph = function () { var o = sel.querySelector('option[data-ph]'); return o ? o.text : ''; };
       var visible = function () { return items.filter(function (li) { return !li.hidden; }); };
       var mark = function (k) {
         hl = k;
         items.forEach(function (li, j) { li.classList.toggle('is-hl', j === k); });
         if (items[k]) { btn.setAttribute('aria-activedescendant', items[k].id); items[k].scrollIntoView({ block: 'nearest' }); }
       };
-      var set = function (k, quiet) {
-        at = k;
-        sel.selectedIndex = k;
-        label.textContent = sel.options[k] ? sel.options[k].text : '';
-        items.forEach(function (li, j) { li.setAttribute('aria-selected', j === k ? 'true' : 'false'); });
-        if (!quiet) sel.dispatchEvent(new Event('change', { bubbles: true }));
-      };
-      var open = function (on) {
-        if (on && sel.disabled) return;
-        dd.classList.toggle('is-open', on);
-        btn.setAttribute('aria-expanded', on ? 'true' : 'false');
-        // the open list and everything holding it rise above what follows
-        // them, so the fields below never show through it
-        for (var up = dd.parentElement; up && !up.classList.contains('sje__form'); up = up.parentElement) up.classList.toggle('is-raised', on);
-        if (on) {
-          mark(at);
-          if (!find.hidden) { q.value = ''; filter(); setTimeout(function () { q.focus({ preventScroll: true }); }, 30); }
+      var show = function () {
+        if (multi) {
+          var chosen = real().filter(function (o) { return o.selected; }).map(function (o) { return o.text; });
+          // one name; two short ones side by side; otherwise the first and a count
+          label.textContent = !chosen.length ? ph() : chosen.length === 1 ? chosen[0]
+            : (chosen.length === 2 && chosen.join(', ').length <= 26) ? chosen.join(', ') : chosen[0] + ' + ' + (chosen.length - 1) + ' more';
+          dd.classList.toggle('has-value', chosen.length > 0);
+          if (count) { count.hidden = chosen.length < 2; count.textContent = chosen.length; }
+          hidden.value = chosen.join('; ');
+          items.forEach(function (li, j) { li.setAttribute('aria-selected', real()[j].selected ? 'true' : 'false'); });
+        } else {
+          label.textContent = sel.options[at] ? sel.options[at].text : '';
+          items.forEach(function (li, j) { li.setAttribute('aria-selected', j === at ? 'true' : 'false'); });
         }
+      };
+      var set = function (k, quiet) {
+        if (multi) {
+          var o = real()[k];
+          if (o) o.selected = !o.selected;
+        } else {
+          at = k;
+          sel.selectedIndex = k;
+        }
+        show();
+        if (!quiet) sel.dispatchEvent(new Event('change', { bubbles: true }));
       };
       var filter = function () {
         var t = q.value.trim().toLowerCase();
@@ -440,14 +461,29 @@
         var v = visible();
         if (v.length) mark(items.indexOf(v[0]));
       };
+      var open = function (on) {
+        if (on && (sel.disabled || !items.length)) return;
+        dd.classList.toggle('is-open', on);
+        btn.setAttribute('aria-expanded', on ? 'true' : 'false');
+        // the open list and everything holding it rise above what follows
+        // them, so the fields below never show through it
+        for (var up = dd.parentElement; up && !up.classList.contains('sje__form'); up = up.parentElement) up.classList.toggle('is-raised', on);
+        if (on) {
+          mark(multi ? 0 : at);
+          if (!find.hidden) { q.value = ''; filter(); setTimeout(function () { q.focus({ preventScroll: true }); }, 30); }
+        }
+      };
       var refresh = function () {
-        list.innerHTML = [].map.call(sel.options, function (o, k) {
-          return '<li role="option" id="sje-dd-' + n + '-' + k + '" data-k="' + k + '"><span>' + esc(o.text) + '</span>' + ic('check') + '</li>';
+        var opts = multi ? real() : [].slice.call(sel.options);
+        list.innerHTML = opts.map(function (o, k) {
+          return '<li role="option" id="sje-dd-' + n + '-' + k + '" data-k="' + k + '">' + (multi ? '<i class="sje__dd-box" aria-hidden="true">' + ic('check') + '</i>' : '') +
+            '<span>' + esc(o.text) + '</span>' + (multi ? '' : ic('check')) + '</li>';
         }).join('');
         items = [].slice.call(list.children);
         find.hidden = items.length <= 10;
-        dd.classList.toggle('is-off', sel.disabled);
-        set(Math.max(0, sel.selectedIndex), true);
+        dd.classList.toggle('is-off', sel.disabled || (multi && !items.length));
+        if (!multi) at = Math.max(0, sel.selectedIndex);
+        show();
       };
       refresh();
       btn.addEventListener('click', function () { open(!dd.classList.contains('is-open')); });
@@ -455,11 +491,17 @@
         // the list sits inside the field's label, which would pass the click
         // on to the button and open the list again
         if (!e.target.closest('.sje__dd-btn')) e.preventDefault();
+        if (e.target.closest('[data-clear]')) {
+          real().forEach(function (o) { o.selected = false; });
+          show();
+          sel.dispatchEvent(new Event('change', { bubbles: true }));
+          return;
+        }
+        if (e.target.closest('[data-done]')) { open(false); btn.focus(); return; }
         var li = e.target.closest('li');
         if (!li) return;
         set(+li.getAttribute('data-k'));
-        open(false);
-        btn.focus();
+        if (!multi) { open(false); btn.focus(); }
       });
       list.addEventListener('mousemove', function (e) { var li = e.target.closest('li'); if (li) mark(+li.getAttribute('data-k')); });
       q.addEventListener('input', filter);
@@ -474,12 +516,11 @@
         } else if (e.key === 'Enter' && isOpen) {
           e.preventDefault();
           if (items[hl] && !items[hl].hidden) set(hl);
-          open(false);
-          btn.focus();
+          if (!multi) { open(false); btn.focus(); }
         } else if (e.key === ' ' && isOpen && e.target === btn) {
           e.preventDefault();
           set(hl);
-          open(false);
+          if (!multi) open(false);
         } else if (e.key === 'Escape' && isOpen) {
           e.preventDefault();
           e.stopPropagation(); // closes the list, not the drawer
@@ -501,7 +542,11 @@
     // and sale collections are left out
     var SKIP = /^(all-products|sale-|frontpage|heritage$|new-arrival$)/;
     var fill = function (sel, names, first) {
-      sel.innerHTML = '<option>' + esc(first) + '</option>' + names.map(function (t) { return '<option>' + esc(t) + '</option>'; }).join('');
+      var keep = {};
+      [].forEach.call(sel.options, function (o) { if (o.selected && !o.hasAttribute('data-ph')) keep[o.text] = true; });
+      sel.innerHTML = '<option data-ph value="">' + esc(first) + '</option>' + names.map(function (t) {
+        return '<option' + (keep[t] ? ' selected' : '') + '>' + esc(t) + '</option>';
+      }).join('');
       if (sel.__dd) sel.__dd.refresh();
     };
     var cols = [];
@@ -512,38 +557,48 @@
         cols = d.collections.filter(function (c) { return c.products_count >= 4 && !SKIP.test(c.handle); })
           .sort(function (x, y) { return x.title.localeCompare(y.title); });
         [].forEach.call(drawer.querySelectorAll('select[data-src="collections"]'), function (sel) {
-          fill(sel, cols.map(function (c) { return c.title; }), sel.options[0] ? sel.options[0].text : 'Any collection');
+          var p0 = sel.querySelector('option[data-ph]');
+          fill(sel, cols.map(function (c) { return c.title; }), p0 ? p0.text : 'Any collection');
         });
       })
       .catch(function () {});
     var pieceSel = drawer.querySelector('select[data-src="pieces"]');
     var colSel = drawer.querySelector('.sje__topic[data-for="custom"] select[data-src="collections"]');
     if (pieceSel && colSel) {
-      colSel.addEventListener('change', function () {
-        var c = cols[colSel.selectedIndex - 1];
-        if (!c) { fill(pieceSel, [], 'Any piece'); return; }
-        fill(pieceSel, [], 'Loading pieces…');
-        fetch('/collections/' + c.handle + '/products.json?limit=250', { credentials: 'same-origin' })
+      // the pieces of every chosen collection, each collection asked for once;
+      // several pieces can share a name ("Hand Bag"): those carry their price,
+      // and a number if the price is shared too
+      var cache = {};
+      var piecesOf = function (c) {
+        if (cache[c.handle]) return cache[c.handle];
+        cache[c.handle] = fetch('/collections/' + c.handle + '/products.json?limit=250', { credentials: 'same-origin' })
           .then(function (r) { return r.ok ? r.json() : null; })
-          .then(function (d) {
-            // several pieces can share a name ("Hand Bag"): those carry their
-            // price, and a number if the price is shared too
-            var ps = d && d.products ? d.products : [];
-            var t = function (p) { return p.title.replace(/\s+/g, ' ').trim(); };
-            var count = {};
-            ps.forEach(function (p) { count[t(p)] = (count[t(p)] || 0) + 1; });
-            var seen = {};
-            var names = ps.map(function (p) {
-              var n = t(p);
-              if (count[n] < 2) return n;
-              var pr = p.variants && p.variants[0] ? ' · ₹' + Math.round(parseFloat(p.variants[0].price)).toLocaleString('en-IN') : '';
-              var key = n + pr;
-              seen[key] = (seen[key] || 0) + 1;
-              return key + (seen[key] > 1 ? ' (' + seen[key] + ')' : '');
-            });
-            fill(pieceSel, names, 'Any piece from ' + c.title);
-          })
-          .catch(function () { fill(pieceSel, [], 'Any piece'); });
+          .then(function (d) { return d && d.products ? d.products : []; })
+          .catch(function () { return []; });
+        return cache[c.handle];
+      };
+      colSel.addEventListener('change', function () {
+        var chosen = [].filter.call(colSel.options, function (o) { return o.selected && !o.hasAttribute('data-ph'); })
+          .map(function (o) { return cols.filter(function (c) { return c.title === o.text; })[0]; }).filter(Boolean);
+        if (!chosen.length) { fill(pieceSel, [], 'Choose collections first'); return; }
+        fill(pieceSel, [], 'Loading pieces…');
+        Promise.all(chosen.map(piecesOf)).then(function (lists) {
+          var t = function (p) { return p.title.replace(/\s+/g, ' ').trim(); };
+          var ps = [], had = {};
+          lists.forEach(function (l) { l.forEach(function (p) { if (!had[p.id]) { had[p.id] = true; ps.push(p); } }); });
+          var cnt = {};
+          ps.forEach(function (p) { cnt[t(p)] = (cnt[t(p)] || 0) + 1; });
+          var seen = {};
+          var names = ps.map(function (p) {
+            var nm = t(p);
+            if (cnt[nm] < 2) return nm;
+            var pr = p.variants && p.variants[0] ? ' · ₹' + Math.round(parseFloat(p.variants[0].price)).toLocaleString('en-IN') : '';
+            var key = nm + pr;
+            seen[key] = (seen[key] || 0) + 1;
+            return key + (seen[key] > 1 ? ' (' + seen[key] + ')' : '');
+          });
+          fill(pieceSel, names, names.length ? 'Any of these pieces' : 'No pieces found');
+        });
       });
     }
 
