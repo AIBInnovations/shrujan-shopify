@@ -168,33 +168,16 @@
 {%- endif -%}
 <div class="page">
   <!-- ---- hero banner ----
-       The user: half the hero is the picture, the other half the collection
-       circles, and what every piece comes with large, across its foot. On a
-       phone the picture comes first, the promises on it as cards to swipe,
-       and the circles straight after. -->
+       The user: one screen, cut across the middle: the picture in the top
+       half, the promises large on it, and the collection circles sliding as
+       before in the bottom half. -->
 {%- liquid
   assign split = false
   if section.settings.show_cats and has_cols
     assign split = true
   endif
-  comment
-    How the circles are laid out on a wide screen, from how many there are:
-    up to four in one row, up to eight in two, more in three (two on a short
-    screen). Counted here because CSS cannot round a division up.
-  endcomment
-  assign cat_n = col_keys.size
-  assign cat_r3 = 3
-  assign cat_r2 = 2
-  if cat_n <= 4
-    assign cat_r3 = 1
-    assign cat_r2 = 1
-  elsif cat_n <= 8
-    assign cat_r3 = 2
-  endif
-  assign cat_c3 = cat_n | times: 1.0 | divided_by: cat_r3 | ceil
-  assign cat_c2 = cat_n | times: 1.0 | divided_by: cat_r2 | ceil
 -%}
-  <section class="shop-banner{% if split %} shop-banner--split{% endif %}" aria-label="The handcrafted edit"{% if split %} style="--c3: {{ cat_c3 }}; --r3: {{ cat_r3 }}; --c2: {{ cat_c2 }}; --r2: {{ cat_r2 }}"{% endif %}>
+  <section class="shop-banner{% if split %} shop-banner--split{% endif %}" aria-label="The handcrafted edit">
     <div class="shop-banner__frame">
       <img src="{{ 'shop-hero.webp' | asset_url }}" alt="Embroidered tote and potli, a handwoven cushion, and models in a bandhani dupatta and an embroidered blouse" fetchpriority="high">
 

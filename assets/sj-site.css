@@ -766,14 +766,13 @@ html.sj-hdr-away .site-header {
   color: var(--indigo, #924241);
 }
 
-/* ---- the Shop page's hero (the user: half the picture, half the
-   collection circles, and what every piece comes with large, on the hero
-   itself). Wide screens: the picture on the left, the circles on a paper
-   panel on the right, the five promises as a frosted bar across the foot of
-   both. Narrower: the picture with the promises on it, then the circles.
-   page-shop.liquid sets --c3/--r3 (columns and rows of circles) and
-   --c2/--r2 (the same for a short screen) from how many there are. ---- */
+/* ---- the Shop page's hero (the user: one screen, cut across the middle:
+   the picture in the top half with what every piece comes with large on it,
+   the collection circles sliding as before in the bottom half). The circles
+   take their size from the half's height, so the whole of it is one
+   screen. Phones: the same order, the promises as cards to swipe. ---- */
 .shop-banner {
+  --hero-h: clamp(560px, calc(100svh - var(--header-h, 110px) - 6px), 1000px);
   display: grid;
   grid-template-columns: minmax(0, 1fr);
 }
@@ -783,13 +782,18 @@ html.sj-hdr-away .site-header {
   grid-column: 1;
 }
 
+.shop-banner > .shop-banner__side {
+  grid-row: 2;
+  grid-column: 1;
+}
+
 /* the promises sit on the foot of the picture */
 .shop-banner > .shop-assure {
   z-index: 3;
   grid-row: 1;
   grid-column: 1;
   align-self: end;
-  margin: 0 14px 14px !important;
+  margin: 0 16px 16px !important;
   padding: 0 !important;
   border-radius: var(--radius);
   background: rgba(246, 244, 230, 0.9);
@@ -817,7 +821,7 @@ html.sj-hdr-away .site-header {
   justify-items: start;
   column-gap: 14px;
   row-gap: 3px;
-  padding: clamp(16px, 1.6vw, 22px) clamp(14px, 1.5vw, 24px);
+  padding: clamp(14px, 1.4vw, 20px) clamp(14px, 1.5vw, 24px);
   border: 0;
   border-radius: 0;
   background: none;
@@ -831,7 +835,7 @@ html.sj-hdr-away .site-header {
 
 .shop-banner .shop-assure__mark {
   grid-row: 1 / span 2;
-  width: clamp(40px, 3.3vw, 50px);
+  width: clamp(40px, 3.2vw, 48px);
   height: auto;
   aspect-ratio: 1;
   margin: 0;
@@ -840,198 +844,161 @@ html.sj-hdr-away .site-header {
 }
 
 .shop-banner .shop-assure__mark i {
-  font-size: clamp(19px, 1.5vw, 23px) !important;
+  font-size: clamp(19px, 1.5vw, 22px) !important;
 }
 
 .shop-banner .shop-assure__title {
   margin: 0;
-  font-size: clamp(17px, 1.35vw, 21px);
+  font-size: clamp(17px, 1.3vw, 20px);
   line-height: 1.15;
 }
 
 .shop-banner .shop-assure__copy {
   display: block;
   margin: 0;
-  font-size: clamp(12.5px, 0.95vw, 14px);
+  font-size: clamp(12.5px, 0.92vw, 14px);
   line-height: 1.4;
 }
 
-/* the circles under the picture, before the wide layout takes over */
+/* the circles: the slider as it was, under the picture */
 .shop-banner__side {
-  padding: clamp(40px, 6vw, 64px) var(--gutter) clamp(8px, 2vw, 24px);
+  position: relative;
+  padding: clamp(26px, 4vh, 44px) var(--gutter) clamp(14px, 2.4vh, 26px);
 }
 
 .shop-banner__side .shop-head {
-  margin-bottom: clamp(14px, 2vw, 24px);
+  gap: 8px;
+  margin-bottom: clamp(6px, 1.2vh, 14px);
 }
 
-/* ---- wide: the picture and the circles side by side ---- */
-@media (min-width: 1100px) {
+.shop-banner__side .shop-head .section-title {
+  font-size: var(--fs-4xl);
+  line-height: 1.05;
+}
+
+.shop-banner__side .shop-head__copy {
+  font-size: var(--fs-md);
+}
+
+.shop-banner--split .medallion__go {
+  display: none;
+}
+
+/* ---- tablets and up: the two halves make one screen ---- */
+@media (min-width: 721px) {
   .shop-banner--split {
-    --hero-h: clamp(600px, calc(100svh - var(--header-h, 110px) - 6px), 1000px);
-    --rows: var(--r3, 3);
-    --cols: var(--c3, 4);
-    /* the panel's height less its paddings, its heading and the bar */
-    --reserve: clamp(250px, 21vw, 300px);
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    grid-template-rows: minmax(0, 1fr) auto;
-    column-gap: 6px;
+    /* what the bottom half spends besides the circles: its paddings, its
+       heading, the names under the circles and the slider's own padding */
+    --reserve: clamp(196px, 15vw + 40px, 236px);
+    --disc: clamp(96px, calc(var(--hero-h) / 2 - var(--reserve)), 250px);
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
     height: var(--hero-h);
   }
 
-  /* the paper behind the circles, under the bar like the picture */
-  .shop-banner--split::before {
-    content: '';
-    grid-row: 1 / -1;
-    grid-column: 2;
-    background: var(--ivory-2, #eae3d2);
-    background-image: radial-gradient(circle at 80% 0%, rgba(255, 255, 255, 0.55), transparent 60%);
-  }
-
   .shop-banner--split > .shop-banner__frame {
-    grid-row: 1 / -1;
-    grid-column: 1;
     height: auto !important;
     min-height: 0;
   }
 
+  /* the top half is a wide slice of the picture: the faces kept in it */
   .shop-banner--split > .shop-banner__frame img {
-    object-position: 50% 40%;
+    object-position: 50% 22%;
   }
 
-  /* the title over the wall in the middle of the picture */
+  /* the title sits in the picture above the promises */
   .shop-banner--split .shop-banner__overlay {
-    transform: translateY(-14%);
+    padding-bottom: clamp(96px, 8vw, 118px);
+    transform: none;
   }
 
   .shop-banner--split .shop-banner__overlay > * {
-    max-width: min(40vw, 480px);
+    max-width: min(60vw, 560px);
   }
 
-  .shop-banner--split > .shop-assure {
-    grid-row: 2;
-    grid-column: 1 / -1;
-    margin: 0 18px 18px !important;
+  .shop-banner--split .shop-banner__title {
+    margin-top: 6px;
+    font-size: clamp(36px, 3.6vw, 60px);
+  }
+
+  .shop-banner--split .shop-banner__copy {
+    margin-top: 8px;
+    max-width: none;
+    font-size: var(--fs-base);
+  }
+
+  .shop-banner--split .shop-banner__view {
+    margin-top: clamp(12px, 1.6vh, 20px);
+    padding: 10px clamp(28px, 2.4vw, 44px);
   }
 
   .shop-banner--split > .shop-banner__side {
-    z-index: 1;
-    grid-row: 1;
-    grid-column: 2;
     display: flex;
     flex-direction: column;
     justify-content: center;
     min-height: 0;
-    padding: clamp(24px, 3.4vh, 44px) clamp(28px, 3vw, 56px) clamp(16px, 2.4vh, 28px);
   }
 
-  .shop-banner--split .shop-head {
-    gap: 8px;
-    margin-bottom: clamp(16px, 2.6vh, 30px);
-  }
-
-  .shop-banner--split .shop-head .section-title {
-    font-size: var(--fs-4xl);
-    line-height: 1.05;
+  .shop-banner--split .shop-head .orn {
+    display: none;
   }
 
   .shop-banner--split .shop-head__copy {
-    max-width: 46ch;
-    font-size: var(--fs-md);
-    line-height: 1.5;
+    display: none;
   }
 
-  /* every circle in view at once, sized to the screen's height */
-  .shop-banner--split .shop-cats__wrap {
-    min-height: 0;
-  }
-
-  .shop-banner--split .shop-cats__rail {
-    --disc: clamp(70px, calc((var(--hero-h) - var(--reserve)) / var(--rows) - 66px), 168px);
-    display: grid;
-    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
-    gap: clamp(14px, 2vh, 22px) clamp(12px, 1.4vw, 24px);
-    overflow: visible;
-    margin: 0;
-    padding: 8px 0 0;
-    scroll-snap-type: none;
-  }
-
-  .shop-banner--split .medallion {
-    flex: none;
-    min-width: 0;
-  }
-
+  /* each circle no taller than the half allows */
   .shop-banner--split .medallion__disc {
     width: min(100%, var(--disc));
-    box-shadow: 0 0 0 1px var(--hairline), 0 0 0 5px var(--ivory), 0 0 0 6px transparent;
-  }
-
-  .shop-banner--split .medallion:hover .medallion__disc {
-    transform: translateY(-4px);
-    box-shadow: 0 0 0 1px var(--hairline), 0 0 0 5px var(--ivory), 0 0 0 6px var(--gerua);
   }
 
   .shop-banner--split .medallion__name {
-    max-width: 100%;
-    margin-top: 12px;
-    font-size: clamp(15px, 1.15vw, 19px);
-    line-height: 1.15;
+    margin-top: 10px;
+    font-size: clamp(16px, 1.25vw, 20px);
   }
 
   .shop-banner--split .medallion__sub {
-    margin-top: 3px;
-    font-size: var(--fs-2xs);
+    margin-top: 2px;
   }
 
-  .shop-banner--split .medallion__go,
+  /* the arrows either side of the circles, not under them */
   .shop-banner--split .shop-cats__arrows {
-    display: none;
+    position: absolute;
+    top: calc(20px + var(--disc) / 2);
+    right: calc(-1 * var(--gutter) + 10px);
+    left: calc(-1 * var(--gutter) + 10px);
+    z-index: 2;
+    justify-content: space-between;
+    margin: 0;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  .shop-banner--split .shop-cats__arrows button {
+    background: var(--ivory, #f6f4e6);
+    pointer-events: auto;
   }
 }
 
-/* a short screen: the circles in two rows, and the panel's words shorter */
-@media (min-width: 1100px) and (max-height: 820px) {
+/* a tall screen has room for the words under the heading */
+@media (min-width: 721px) and (min-height: 1000px) {
   .shop-banner--split {
-    --rows: var(--r2, 2);
-    --cols: var(--c2, 6);
-    --reserve: 230px;
+    --reserve: 262px;
   }
 
   .shop-banner--split .shop-head__copy {
+    display: block;
+  }
+}
+
+/* a short one drops the line under the title */
+@media (min-width: 721px) and (max-height: 820px) {
+  .shop-banner--split .shop-banner__copy {
     display: none;
   }
 }
 
-/* a tall one has room for the words under the heading */
-@media (min-width: 1100px) and (min-height: 821px) and (max-height: 940px) {
-  .shop-banner--split .shop-head__copy {
-    display: none;
-  }
-}
-
-/* ---- tablets: the five promises side by side, each stacked ---- */
-@media (min-width: 721px) and (max-width: 1099px) {
-  .shop-banner .shop-assure__row li,
-  .shop-banner .shop-assure__row li:nth-child(n) {
-    grid-template-columns: minmax(0, 1fr);
-    justify-items: center;
-    text-align: center;
-    row-gap: 6px;
-    padding: 16px 10px;
-  }
-
-  .shop-banner .shop-assure__mark {
-    grid-row: auto;
-  }
-
-  .shop-banner .shop-assure__title {
-    font-size: 16px;
-  }
-}
-
-/* ---- phones: the promises as large cards to swipe along the picture's foot ---- */
-@media (max-width: 720px) {
+/* ---- below the widest screens: the promises as cards to swipe ---- */
+@media (max-width: 1099px) {
   .shop-banner > .shop-assure {
     margin: 0 0 12px !important;
     border-radius: 0;
@@ -1062,7 +1029,7 @@ html.sj-hdr-away .site-header {
     flex: 0 0 auto;
     width: min(66vw, 250px);
     column-gap: 12px;
-    padding: 14px 14px;
+    padding: 13px 14px;
     border-radius: var(--radius);
     background: rgba(246, 244, 230, 0.92);
     -webkit-backdrop-filter: blur(12px);
@@ -1086,10 +1053,26 @@ html.sj-hdr-away .site-header {
   .shop-banner .shop-assure__copy {
     font-size: 13px;
   }
+}
 
-  /* the title clear of the cards */
-  .shop-banner .shop-banner__overlay {
-    transform: translateY(-20%);
+/* ---- phones: the picture a little over half the screen, the title clear
+   of the cards, then the circles to swipe ---- */
+@media (max-width: 720px) {
+  .shop-banner--split > .shop-banner__frame {
+    height: clamp(380px, 56svh, 520px) !important;
+  }
+
+  .shop-banner--split .shop-banner__overlay {
+    padding-bottom: 92px;
+    transform: none;
+  }
+
+  .shop-banner--split .shop-cats__arrows {
+    display: none;
+  }
+
+  .shop-banner__side {
+    padding-top: 30px;
   }
 }
 
