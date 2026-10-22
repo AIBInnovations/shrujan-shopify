@@ -157,6 +157,56 @@
       if (chosenEl) chosenEl.textContent = longLabel(chosenDay);
     };
 
+    // the two buttons say what is chosen
+    const shortLabel = (day) => `${DAY[day.getDay()]}, ${day.getDate()} ${MON[day.getMonth()]}`;
+    const dateLab = card.querySelector('[data-pdpx-date-label]');
+    const timeLab = card.querySelector('[data-pdpx-time-label]');
+    const drawLabels = () => {
+      if (dateLab) dateLab.textContent = shortLabel(chosenDay);
+      if (timeLab) timeLab.textContent = timeIn.value ? `${timeIn.value}` : 'Choose a time';
+      card.querySelectorAll('[data-pdpx-pick]').forEach((pk) => pk.classList.toggle('has-value', pk.dataset.pdpxPick === 'date' || !!timeIn.value));
+    };
+
+    // each picker opens in a pop-up under its button (a sheet from the foot
+    // of the screen on a phone); one at a time; choosing a day moves on to the
+    // time, choosing a time closes it
+    const picks = [...card.querySelectorAll('[data-pdpx-pick]')];
+    let scrim = null;
+    const phone = () => window.matchMedia('(max-width: 720px)').matches;
+    const openPick = (name) => {
+      picks.forEach((pk) => {
+        const on = pk.dataset.pdpxPick === name;
+        const pop = pk.querySelector('.pdpx-pop');
+        const btn = pk.querySelector('.pdpx-book__pbtn');
+        if (pop) pop.hidden = !on;
+        if (btn) btn.setAttribute('aria-expanded', on ? 'true' : 'false');
+        pk.classList.toggle('is-open', on);
+      });
+      if (name && phone()) {
+        if (!scrim) {
+          scrim = document.createElement('div');
+          scrim.className = 'pdpx-scrim';
+          scrim.addEventListener('click', () => openPick(null));
+          document.body.appendChild(scrim);
+        }
+        scrim.hidden = false;
+        document.documentElement.classList.add('pdpx-sheet-open');
+      } else {
+        if (scrim) scrim.hidden = true;
+        document.documentElement.classList.remove('pdpx-sheet-open');
+      }
+      if (name) {
+        const first = card.querySelector(`[data-pdpx-pick="${name}"] .pdpx-cal__d.is-on, [data-pdpx-pick="${name}"] .pdpx-book__slot input:checked, [data-pdpx-pick="${name}"] .pdpx-book__slot input:not(:disabled)`);
+        if (first) setTimeout(() => first.focus({ preventScroll: true }), 40);
+      }
+    };
+    picks.forEach((pk) => {
+      pk.querySelector('.pdpx-book__pbtn').addEventListener('click', () => openPick(pk.classList.contains('is-open') ? null : pk.dataset.pdpxPick));
+      pk.querySelectorAll('[data-pdpx-close]').forEach((x) => x.addEventListener('click', () => openPick(null)));
+    });
+    document.addEventListener('click', (e) => { if (!e.target.closest('[data-pdpx-pick]') && !e.target.closest('.pdpx-scrim') && picks.some((pk) => pk.classList.contains('is-open'))) openPick(null); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && picks.some((pk) => pk.classList.contains('is-open'))) openPick(null); });
+
     const drawSummary = () => {
       if (!summary) return;
       const mode = field('Call type');
@@ -193,6 +243,7 @@
     dateIn.value = label(chosenDay);
     drawCal();
     drawTimes();
+    drawLabels();
     const section = card.closest('.pdpx-book');
     if (section) section.setAttribute('data-ready', '');
 
@@ -211,17 +262,21 @@
       dateIn.value = label(chosenDay);
       drawCal();
       drawTimes();
+      drawLabels();
       drawSummary();
       syncWa();
-      const sel = daysEl.querySelector('.pdpx-cal__d.is-on');
-      if (sel) sel.focus();
+      // on to the time
+      openPick('time');
     });
 
     timesEl.addEventListener('change', (e) => {
       timeIn.value = e.target.value;
       timesEl.classList.remove('is-missing');
+      card.querySelector('[data-pdpx-pick="time"]').classList.remove('is-missing');
+      drawLabels();
       drawSummary();
       syncWa();
+      setTimeout(() => openPick(null), 180);
     });
 
     form.addEventListener('input', syncWa);
@@ -231,7 +286,10 @@
       if (timeIn.value) return;
       e.preventDefault();
       timesEl.classList.add('is-missing');
-      timesEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const tp = card.querySelector('[data-pdpx-pick="time"]');
+      tp.classList.add('is-missing');
+      tp.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => openPick('time'), 350);
     });
 
     syncWa();

@@ -70,29 +70,39 @@
             </div>
           </fieldset>
 
-          <div class="pdpx-book__when">
-            <fieldset class="pdpx-book__step pdpx-book__step--cal">
-              <legend class="pdpx-book__lab"><b>02</b>Choose a day</legend>
-              <div class="pdpx-book__days" data-pdpx-days data-days="{{ s.days_ahead }}" data-closed="{{ s.closed_days | escape }}"></div>
-              <input type="hidden" name="contact[Date]" data-pdpx-date>
-            </fieldset>
-
-            <fieldset class="pdpx-book__step pdpx-book__step--time">
-              <legend class="pdpx-book__lab"><b>03</b>Choose a time <span class="pdpx-book__tz">IST</span></legend>
-              <p class="pdpx-book__chosen" data-pdpx-chosen aria-live="polite"></p>
-              <div class="pdpx-book__times" data-pdpx-times data-open="{{ s.open_at }}" data-close="{{ s.close_at }}" data-step="{{ s.slot_minutes }}"></div>
-              <input type="text" class="pdpx-book__free" name="contact[Time]" data-pdpx-time placeholder="Preferred time, e.g. Tuesday 11 AM">
-            </fieldset>
-          </div>
+          <fieldset class="pdpx-book__step">
+            <legend class="pdpx-book__lab"><b>02</b>When <span class="pdpx-book__tz">IST</span></legend>
+            <div class="pdpx-book__when">
+              {%- comment -%} the day and the time, each a button that opens its picker (a pop-up; a sheet from the foot on a phone) {%- endcomment -%}
+              <div class="pdpx-book__pick" data-pdpx-pick="date">
+                <button type="button" class="pdpx-book__pbtn" aria-haspopup="dialog" aria-expanded="false"><i class="sj-i sj-i--calendar ms" aria-hidden="true"></i><span class="pdpx-book__pval"><small>Day</small><b data-pdpx-date-label>Choose a day</b></span><i class="sj-i sj-i--caret-down ms pdpx-book__pcaret" aria-hidden="true"></i></button>
+                <div class="pdpx-pop" role="dialog" aria-label="Choose a day" hidden>
+                  <div class="pdpx-pop__head"><p>Choose a day</p><button type="button" class="pdpx-pop__x" data-pdpx-close aria-label="Close"><i class="sj-i sj-i--x ms" aria-hidden="true"></i></button></div>
+                  <div class="pdpx-book__days" data-pdpx-days data-days="{{ s.days_ahead }}" data-closed="{{ s.closed_days | escape }}"></div>
+                </div>
+                <input type="hidden" name="contact[Date]" data-pdpx-date>
+              </div>
+              <div class="pdpx-book__pick" data-pdpx-pick="time">
+                <button type="button" class="pdpx-book__pbtn" aria-haspopup="dialog" aria-expanded="false"><i class="sj-i sj-i--clock-counter-clockwise ms" aria-hidden="true"></i><span class="pdpx-book__pval"><small>Time</small><b data-pdpx-time-label>Choose a time</b></span><i class="sj-i sj-i--caret-down ms pdpx-book__pcaret" aria-hidden="true"></i></button>
+                <div class="pdpx-pop pdpx-pop--time" role="dialog" aria-label="Choose a time" hidden>
+                  <div class="pdpx-pop__head"><p data-pdpx-chosen>Choose a time</p><button type="button" class="pdpx-pop__x" data-pdpx-close aria-label="Close"><i class="sj-i sj-i--x ms" aria-hidden="true"></i></button></div>
+                  <div class="pdpx-book__times" data-pdpx-times data-open="{{ s.open_at }}" data-close="{{ s.close_at }}" data-step="{{ s.slot_minutes }}"></div>
+                </div>
+              </div>
+            </div>
+            <input type="text" class="pdpx-book__free" name="contact[Time]" data-pdpx-time placeholder="Preferred day and time, e.g. Tuesday 11 AM">
+          </fieldset>
 
           <fieldset class="pdpx-book__step pdpx-book__you">
-            <legend class="pdpx-book__lab"><b>04</b>Your details</legend>
+            <legend class="pdpx-book__lab"><b>03</b>Your details</legend>
             <div class="pdpx-book__row">
               <label><span>Name</span><input type="text" name="contact[name]" autocomplete="name" required></label>
               <label><span>Phone / WhatsApp</span><input type="tel" name="contact[phone]" autocomplete="tel" required></label>
             </div>
-            <label><span>Email</span><input type="email" name="contact[email]" autocomplete="email" required></label>
-            <label><span>What would you like to talk about?</span><textarea name="contact[body]" rows="3" data-pdpx-body>{% if p_title != blank %}I would like to know more about {{ p_title }}.{% endif %}</textarea></label>
+            <div class="pdpx-book__row">
+              <label><span>Email</span><input type="email" name="contact[email]" autocomplete="email" required></label>
+              <label><span>Anything we should know?</span><input type="text" name="contact[body]" data-pdpx-body value="{% if p_title != blank %}About {{ p_title | escape }}{% endif %}"></label>
+            </div>
           </fieldset>
 
           <p class="pdpx-book__summary" data-pdpx-summary hidden><i class="sj-i sj-i--calendar ms" aria-hidden="true"></i><span></span></p>
