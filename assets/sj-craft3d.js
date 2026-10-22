@@ -22,9 +22,9 @@ if (root) {
   let started = false;
   const go = () => { if (started) return; started = true; try { init().catch(fail); } catch (e) { fail(e); } };
   const soon = () => { if (window.requestIdleCallback) requestIdleCallback(go, { timeout: 1500 }); else setTimeout(go, 300); };
-  new IntersectionObserver((e, io) => { if (e[0].isIntersecting) { io.disconnect(); go(); } }, { rootMargin: '60% 0px' }).observe(root);
-  if (window.__sjRevealed || !document.querySelector('.sj-loader')) soon();
-  else document.addEventListener('sj:revealed', () => setTimeout(soon, 500), { once: true });
+  // started as the section comes within two screens, in idle time: nothing
+  // of it runs while the loader, the hero and the first sections are read
+  new IntersectionObserver((e, io) => { if (e[0].isIntersecting) { io.disconnect(); soon(); } }, { rootMargin: '200% 0px' }).observe(root);
 }
 
 // phones build the sculpted shapes a little coarser: quicker to make and to draw
@@ -779,18 +779,36 @@ async function init() {
   // ---------- cloth: kora first, then the four crafts ----------
   // a tile of 1024 px is about 22 cm of cloth on the form, finer than the
   // screen ever shows it, even close up
+  // The build is cut into short steps with a pause between them, so the
+  // page keeps scrolling smoothly while it happens (in one go it held the
+  // page still for most of a second on a phone).
+  const pause = () => new Promise((r) => (window.requestIdleCallback ? requestIdleCallback(() => r(), { timeout: 120 }) : setTimeout(r, 16)));
   const S = 1024;
   const koraC = canvasOf(S);
   drawKora(koraC.getContext('2d'), S);
-  // kora's white work stands out of it by its own lightness
-  const cloths = [{ color: koraC, height: koraC }, embroideryCloth(S), ajrakhCloth(S), bandhaniCloth(S), weavingCloth(S)];
-  items.forEach((item, i) => {
-    const sw = document.createElement('canvas');
-    sw.width = sw.height = 96;
-    sw.getContext('2d').drawImage(cloths[i + 1].color, 0, 0, S / 4, S / 4, 0, 0, 96, 96);
-    const dot = item.querySelector('i');
-    if (dot) dot.style.backgroundImage = `url(${sw.toDataURL()})`;
-  });
+  await pause();
+  // The four crafts wear photographs of Shrujan's own pieces (PHOTO_CLOTH,
+  // below). Until one arrives its cloth is a plain tile of the piece's
+  // colour: drawing the four by hand first, only for the photographs to
+  // replace them, cost more than anything else on the page. Without the
+  // theme's assets (no SHRUJAN_ASSET_BASE) they are drawn as before.
+  const tile = (css) => { const c = canvasOf(8); const x = c.getContext('2d'); x.fillStyle = css; x.fillRect(0, 0, 8, 8); return c; };
+  const photoCloth = !!window.SHRUJAN_ASSET_BASE;
+  const cloths = [{ color: koraC, height: koraC }].concat(photoCloth
+    ? [['#a8241f', 'rgb(255,190,10)'], ['#3d4a52'], ['#c27f8d'], ['#5c8f2b']].map(([hex, sh]) => ({ color: tile(hex), height: tile('#808080'), shine: sh ? tile(sh) : null }))
+    : [embroideryCloth(S), ajrakhCloth(S), bandhaniCloth(S), weavingCloth(S)]);
+  // the little round swatch beside each craft's name in the list
+  const swatch = (k, src, sx, sy, sw0) => {
+    const dot = items[k - 1] && items[k - 1].querySelector('i');
+    if (!dot) return;
+    try {
+      const sw = document.createElement('canvas');
+      sw.width = sw.height = 96;
+      sw.getContext('2d').drawImage(src, sx, sy, sw0, sw0, 0, 0, 96, 96);
+      dot.style.backgroundImage = `url(${sw.toDataURL()})`;
+    } catch (e) { /* a picture the page may not read keeps the dot plain */ }
+  };
+  if (!photoCloth) cloths.slice(1).forEach((c, i) => swatch(i + 1, c.color, 0, 0, S / 4));
 
   // ---------- renderer ----------
   // fewer pixels and no extra smoothing on a sharp phone screen, where it is
@@ -903,6 +921,7 @@ async function init() {
     return { height: c, shine: shineC };
   };
   const base = window.SHRUJAN_ASSET_BASE;
+  let reliefQueue = Promise.resolve();
   if (base) {
     Object.keys(PHOTO_CLOTH).forEach((key) => {
       const k = +key, file = PHOTO_CLOTH[key][0], round = PHOTO_CLOTH[key][1];
@@ -911,15 +930,20 @@ async function init() {
       img.decoding = 'async';
       img.onload = () => {
         const n = img.naturalWidth;
+        swatch(k, img, 0, 0, Math.round(n / 2));
         textures[k].image = img;
         textures[k].repeat.set(round, round * 1.2);
         textures[k].needsUpdate = true;
-        try {
-          const r = reliefOf(img, n, k);
-          heights[k].image = r.height;
-          heights[k].needsUpdate = true;
-          if (r.shine) { shine.image = r.shine; shine.needsUpdate = true; }
-        } catch (e) { /* a picture the page may not read keeps the drawn relief */ }
+        // the relief is read from the photograph a moment later, one cloth
+        // at a time, in idle time
+        reliefQueue = reliefQueue.then(pause).then(() => {
+          try {
+            const r = reliefOf(img, n, k);
+            heights[k].image = r.height;
+            heights[k].needsUpdate = true;
+            if (r.shine) { shine.image = r.shine; shine.needsUpdate = true; }
+          } catch (e) { /* a picture the page may not read keeps the plain relief */ }
+        });
       };
       img.src = base + file;
     });
@@ -1042,7 +1066,9 @@ async function init() {
     parent.add(mesh);
     return mesh;
   };
+  await pause();
   const shapes = await buildShapes();
+  await pause();
   const formGeo = shapes.form;
   if (!formGeo.attributes.uv) wrapUV(formGeo);
   addMesh(dress, formGeo, skin);
@@ -1086,8 +1112,12 @@ async function init() {
   dressIn(4, [[shapes.kurta, textures[4], WEA], ...buildKurtaLower().map((g) => [g, textures[4], WEA])]);
   // every piece's shaders compiled now, behind the loader, so no change of
   // cloth stalls the page later
+  // (compileAsync lets the browser compile them in the background where it
+  // can, instead of holding the page still)
   states.forEach((st) => { st.group.visible = true; });
-  renderer.compile(scene, camera);
+  await pause();
+  if (renderer.compileAsync) await renderer.compileAsync(scene, camera);
+  else renderer.compile(scene, camera);
   states.forEach((st) => { st.group.visible = false; });
 
   // ---------- points on each piece ----------
