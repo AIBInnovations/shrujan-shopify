@@ -92,7 +92,7 @@ body {
 .eyebrow,
 .section-intro .eyebrow,
 .arch__meta,
-.cw__eyebrow {
+.craft3d__eyebrow {
   letter-spacing: 0.22em;
 }
 
@@ -893,7 +893,9 @@ html.sj-hdr-away .site-header {
        heading, the names under the circles and the slider's own padding */
     --reserve: calc(150px + 2vw);
     --disc: clamp(96px, calc(var(--hero-h) / 2 - var(--reserve)), 250px);
-    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+    /* the circles take what they need and the picture the rest, so no
+       empty band is left under the circles (the user: too much gap) */
+    grid-template-rows: minmax(0, 1fr) auto;
     height: var(--hero-h);
   }
 
@@ -909,7 +911,7 @@ html.sj-hdr-away .site-header {
 
   /* the title sits in the picture above the promises */
   .shop-banner--split .shop-banner__overlay {
-    padding-bottom: clamp(96px, 8vw, 118px);
+    padding-bottom: clamp(90px, 7.4vw, 112px);
     transform: none;
   }
 
@@ -926,11 +928,6 @@ html.sj-hdr-away .site-header {
     margin-top: 8px;
     max-width: none;
     font-size: var(--fs-base);
-  }
-
-  .shop-banner--split .shop-banner__view {
-    margin-top: clamp(12px, 1.6vh, 20px);
-    padding: 10px clamp(28px, 2.4vw, 44px);
   }
 
   .shop-banner--split > .shop-banner__side {
@@ -997,6 +994,11 @@ html.sj-hdr-away .site-header {
   .shop-banner--split .shop-banner__copy {
     display: none;
   }
+}
+
+/* the catalogue follows the circles closely (the user: too much gap) */
+.shop-banner + .shop-body {
+  padding-top: clamp(18px, 2.2vw, 34px);
 }
 
 /* ---- below the widest screens: the promises as cards to swipe ---- */
