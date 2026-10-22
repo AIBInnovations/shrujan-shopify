@@ -359,6 +359,74 @@
       '</div>'
     );
     doc.body.appendChild(drawer);
+    // the drop-downs drawn in the site's own hand (the user: the browser's
+    // menu looked out of place); the real select stays, hidden, and carries
+    // the value when the form is sent
+    [].forEach.call(drawer.querySelectorAll('.sje__field--up select'), function (sel, n) {
+      var dd = make('<div class="sje__dd"><button type="button" class="sje__dd-btn" aria-haspopup="listbox" aria-expanded="false" aria-controls="sje-dd-' + n + '"><span></span>' + ic('caret-down') + '</button>' +
+        '<ul class="sje__dd-list" id="sje-dd-' + n + '" role="listbox" tabindex="-1"></ul></div>');
+      var btn = dd.querySelector('button'), label = btn.querySelector('span'), list = dd.querySelector('ul');
+      [].forEach.call(sel.options, function (o, k) {
+        list.insertAdjacentHTML('beforeend', '<li role="option" id="sje-dd-' + n + '-' + k + '" data-k="' + k + '"><span>' + esc(o.text) + '</span>' + ic('check') + '</li>');
+      });
+      var items = [].slice.call(list.children), at = sel.selectedIndex, hl = at;
+      sel.parentNode.insertBefore(dd, sel);
+      sel.tabIndex = -1;
+      sel.setAttribute('aria-hidden', 'true');
+      var mark = function (k) {
+        hl = k;
+        items.forEach(function (li, j) { li.classList.toggle('is-hl', j === k); });
+        btn.setAttribute('aria-activedescendant', items[k].id);
+      };
+      var set = function (k) {
+        at = k;
+        sel.selectedIndex = k;
+        label.textContent = sel.options[k].text;
+        items.forEach(function (li, j) { li.setAttribute('aria-selected', j === k ? 'true' : 'false'); });
+        sel.dispatchEvent(new Event('change', { bubbles: true }));
+      };
+      var open = function (on) {
+        dd.classList.toggle('is-open', on);
+        btn.setAttribute('aria-expanded', on ? 'true' : 'false');
+        // the part of the form holding the open list rises above the parts
+        // after it, so the list is not hidden under the button
+        var sec = dd.closest('.sje__sec');
+        if (sec) sec.classList.toggle('is-raised', on);
+        if (on) mark(at);
+      };
+      set(at);
+      btn.addEventListener('click', function () { open(!dd.classList.contains('is-open')); });
+      list.addEventListener('click', function (e) {
+        // the list sits inside the field's label, which would pass the click
+        // on to the button and open the list again
+        e.preventDefault();
+        var li = e.target.closest('li');
+        if (!li) return;
+        set(+li.getAttribute('data-k'));
+        open(false);
+        btn.focus();
+      });
+      list.addEventListener('mousemove', function (e) { var li = e.target.closest('li'); if (li) mark(+li.getAttribute('data-k')); });
+      btn.addEventListener('keydown', function (e) {
+        var isOpen = dd.classList.contains('is-open');
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          if (!isOpen) { open(true); return; }
+          mark(Math.max(0, Math.min(items.length - 1, hl + (e.key === 'ArrowDown' ? 1 : -1))));
+        } else if ((e.key === 'Enter' || e.key === ' ') && isOpen) {
+          e.preventDefault();
+          set(hl);
+          open(false);
+        } else if (e.key === 'Escape' && isOpen) {
+          e.preventDefault();
+          e.stopPropagation(); // closes the list, not the drawer
+          open(false);
+        } else if (e.key === 'Tab' && isOpen) {
+          open(false);
+        }
+      });
+      doc.addEventListener('click', function (e) { if (dd.classList.contains('is-open') && !dd.contains(e.target)) open(false); });
+    });
     eForm = drawer.querySelector('.sje__form');
     eDone = drawer.querySelector('.sje__done');
     eError = drawer.querySelector('.sje__error');
