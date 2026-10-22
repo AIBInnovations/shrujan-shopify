@@ -797,7 +797,10 @@ async function init() {
   // not seen; the drawing only happens when something has changed (below)
   const small = window.matchMedia('(max-width: 720px)').matches;
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: !(small && window.devicePixelRatio >= 2), alpha: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+  // phones and modest machines draw at plain density: the form is soft-lit
+  // cloth, and a doubled canvas cost far more than it showed
+  const modest = small || (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, modest ? 1 : 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.97;
@@ -958,7 +961,9 @@ async function init() {
       bumpMap: weave,
       bumpScale: 5.5,
       roughness: 0.96,
-      sheen: 0.18,
+      // the cloth's soft sheen, left out where the device is modest (it is a
+      // whole extra lighting pass)
+      sheen: modest ? 0 : 0.18,
       sheenRoughness: 0.85,
       sheenColor: new THREE.Color('#ffffff'),
       envMapIntensity: 0.28,

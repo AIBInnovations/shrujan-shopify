@@ -1180,6 +1180,10 @@
         "c1",
         "c2"
       ]
+    },
+    "home-stores": {
+      "type": "home-stores",
+      "settings": {}
     }
   },
   "order": [
@@ -1195,6 +1199,7 @@
     "feature-gifting",
     "home-reels",
     "feature-visit",
+    "home-stores",
     "home-craft-story",
     "home-testimonials",
     "home-journal",

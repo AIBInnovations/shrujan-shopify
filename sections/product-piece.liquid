@@ -884,16 +884,21 @@
     sizeGuideBtn.addEventListener('click', function () {
       var i = detailEls.indexOf(fitEl);
       if (i < 0) return;
-      open = i;
-      applyOpen();
+      fitEl.classList.add('is-open');
+      fitEl.querySelector('.pdp__detail-summary').setAttribute('aria-expanded', 'true');
       if (detailsEl) scrollTo(detailsEl.getBoundingClientRect().top + window.scrollY - 120);
     });
   }
 
-  detailEls.forEach(function (d, i) {
-    d.querySelector('.pdp__detail-summary').addEventListener('click', function () {
-      open = open === i ? -1 : i;
-      applyOpen();
+  // each panel opens and closes on its own, downward: closing the one above
+  // as another opened pulled the clicked one up the screen (the user: it
+  // opened up, not down)
+  detailEls.forEach(function (d) {
+    var btn = d.querySelector('.pdp__detail-summary');
+    btn.addEventListener('click', function () {
+      var on = !d.classList.contains('is-open');
+      d.classList.toggle('is-open', on);
+      btn.setAttribute('aria-expanded', on ? 'true' : 'false');
     });
   });
 

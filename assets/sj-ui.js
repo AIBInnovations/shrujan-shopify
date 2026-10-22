@@ -277,50 +277,107 @@
     reply(match(q), q);
   });
 
-  /* ---------- 3. the Enquire tab ---------- */
+  /* ---------- 3. the Enquire tab ----------
+     The drawer is built the first time it opens, not with the page: the
+     page stays lighter, and the store's spam check (Google reCAPTCHA, which
+     Shopify loads for contact forms) only comes in once someone is about to
+     write. Three short steps, checked before sending; the reply is the
+     store's own contact form, tagged "enquiry". */
   var KINDS = [
     ['Collaborations', 'handshake'], ['Corporate gifting', 'gift'], ['Weddings & occasions', 'sparkle'],
     ['Custom pieces', 'needle'], ['Retail & wholesale', 'storefront'], ['Something else', 'chat-circle-dots'],
   ];
   var tab = make('<button class="sje__tab" type="button" aria-haspopup="dialog" aria-controls="sje-panel">' + ic('handshake') + '<span>Enquire</span></button>');
-  var drawer = make(
-    '<div class="sje" id="sje-panel" role="dialog" aria-modal="true" aria-labelledby="sje-title" hidden>' +
-      '<div class="sje__scrim" data-close></div>' +
-      '<div class="sje__drawer" data-lenis-prevent>' +
-        '<header class="sje__head"><p class="sje__eyebrow">Work with Shrujan</p>' +
-          '<h2 class="sje__title" id="sje-title">Collaborations, gifting and custom orders</h2>' +
-          '<p class="sje__lede">Designers, organisations, families, stores: tell us what you have in mind.</p>' +
-          '<button class="sje__x" type="button" data-close aria-label="Close">' + ic('x') + '</button></header>' +
-        '<form class="sje__form" method="post" action="/contact#sje" accept-charset="UTF-8">' +
-          '<input type="hidden" name="form_type" value="contact"><input type="hidden" name="utf8" value="✓">' +
-          '<input type="hidden" name="contact[tags]" value="enquiry">' +
-          '<input type="hidden" name="contact[Page]" value="' + esc(location.pathname) + '">' +
-          '<fieldset class="sje__kinds"><legend class="sje__legend">What is it about?</legend>' +
-            KINDS.map(function (k, i) {
-              return '<label class="sje__kind"><input type="radio" name="contact[Enquiry]" value="' + esc(k[0]) + '"' + (i ? '' : ' checked') + '><span>' + ic(k[1]) + esc(k[0]) + '</span></label>';
-            }).join('') +
-          '</fieldset>' +
-          '<div class="sje__row"><label class="sje__field"><span>Name</span><input type="text" name="contact[name]" autocomplete="name" required></label>' +
-            '<label class="sje__field"><span>Organisation</span><input type="text" name="contact[Organisation]" autocomplete="organization"></label></div>' +
-          '<div class="sje__row"><label class="sje__field"><span>Email</span><input type="email" name="contact[email]" autocomplete="email" required></label>' +
-            '<label class="sje__field"><span>Phone / WhatsApp</span><input type="tel" name="contact[phone]" autocomplete="tel"></label></div>' +
-          '<div class="sje__row"><label class="sje__field"><span>How many pieces</span><select name="contact[Quantity]"><option>Not sure yet</option><option>1–10</option><option>10–50</option><option>50–200</option><option>More than 200</option></select></label>' +
-            '<label class="sje__field"><span>Needed by</span><input type="text" name="contact[Needed by]" placeholder="e.g. March 2027"></label></div>' +
-          '<label class="sje__field sje__field--grow"><span>Tell us about it</span><textarea name="contact[body]" rows="3" required></textarea></label>' +
-          '<button class="sje__send" type="submit">Send enquiry ' + ic('paper-plane-tilt') + '</button>' +
-          '<p class="sje__note">We reply personally, ' + esc(CFG.hours) + '. In a hurry? <a href="' + wa('Hello Shrujan, I have an enquiry about ') + '" target="_blank" rel="noopener">WhatsApp us</a>.</p>' +
-        '</form>' +
-        '<div class="sje__done" hidden role="status">' + ic('check-circle') + '<h3>Thank you, it’s with us.</h3>' +
-          '<p>The team will write back to you soon. For anything urgent, call ' + esc(CFG.phone) + '.</p></div>' +
-      '</div>' +
-    '</div>'
-  );
   doc.body.appendChild(tab);
-  doc.body.appendChild(drawer);
-  var eForm = drawer.querySelector('.sje__form');
-  var eDone = drawer.querySelector('.sje__done');
+  var drawer = null, eForm = null, eDone = null, eError = null;
+
+  function buildEnquire() {
+    if (drawer) return;
+    drawer = make(
+      '<div class="sje" id="sje-panel" role="dialog" aria-modal="true" aria-labelledby="sje-title" hidden>' +
+        '<div class="sje__scrim" data-close></div>' +
+        '<div class="sje__drawer" data-lenis-prevent>' +
+          '<header class="sje__head"><p class="sje__eyebrow">Work with Shrujan</p>' +
+            '<h2 class="sje__title" id="sje-title">Tell us what you have in mind</h2>' +
+            '<p class="sje__lede">Collaborations, gifting, occasions and custom pieces. Write to us here, or reach the studio directly.</p>' +
+            '<div class="sje__quick">' +
+              '<a href="' + wa('Hello Shrujan, I have an enquiry about ') + '" target="_blank" rel="noopener">' + ic('whatsapp-logo') + 'WhatsApp</a>' +
+              '<a href="tel:' + CFG.phone.replace(/\s+/g, '') + '">' + ic('phone') + 'Call</a>' +
+              '<a href="mailto:' + CFG.email + '">' + ic('envelope-simple') + 'Email</a>' +
+            '</div>' +
+            '<button class="sje__x" type="button" data-close aria-label="Close">' + ic('x') + '</button></header>' +
+          '<form class="sje__form" method="post" action="/contact#sje" accept-charset="UTF-8" novalidate>' +
+            '<input type="hidden" name="form_type" value="contact"><input type="hidden" name="utf8" value="✓">' +
+            '<input type="hidden" name="contact[tags]" value="enquiry">' +
+            '<input type="hidden" name="contact[Page]" value="' + esc(location.pathname) + '">' +
+            '<fieldset class="sje__kinds"><legend class="sje__step"><b>1</b>What is it about?</legend>' +
+              KINDS.map(function (k, i) {
+                return '<label class="sje__kind"><input type="radio" name="contact[Enquiry]" value="' + esc(k[0]) + '"' + (i ? '' : ' checked') + '><span>' + ic(k[1]) + esc(k[0]) + '</span></label>';
+              }).join('') +
+            '</fieldset>' +
+            '<div class="sje__group"><p class="sje__step"><b>2</b>About you</p>' +
+              '<div class="sje__row"><label class="sje__field"><span>Name <em aria-hidden="true">*</em></span><input type="text" name="contact[name]" autocomplete="name" required></label>' +
+                '<label class="sje__field"><span>Organisation</span><input type="text" name="contact[Organisation]" autocomplete="organization"></label></div>' +
+              '<div class="sje__row"><label class="sje__field"><span>Email <em aria-hidden="true">*</em></span><input type="email" name="contact[email]" autocomplete="email" required></label>' +
+                '<label class="sje__field"><span>Phone / WhatsApp</span><input type="tel" name="contact[phone]" autocomplete="tel"></label></div>' +
+            '</div>' +
+            '<div class="sje__group sje__group--grow"><p class="sje__step"><b>3</b>Your idea</p>' +
+              '<div class="sje__row"><label class="sje__field"><span>How many pieces</span><select name="contact[Quantity]"><option>Not sure yet</option><option>1–10</option><option>10–50</option><option>50–200</option><option>More than 200</option></select></label>' +
+                '<label class="sje__field"><span>Needed by</span><input type="text" name="contact[Needed by]" placeholder="e.g. March 2027"></label></div>' +
+              '<label class="sje__field sje__field--grow"><span>Tell us about it <em aria-hidden="true">*</em></span><textarea name="contact[body]" rows="3" required placeholder="The occasion, the pieces, the colours or crafts you have in mind"></textarea></label>' +
+            '</div>' +
+            '<p class="sje__error" role="alert" hidden></p>' +
+            '<button class="sje__send" type="submit">Send enquiry ' + ic('paper-plane-tilt') + '</button>' +
+            '<p class="sje__note">We reply personally, ' + esc(CFG.hours) + '. Protected by reCAPTCHA: the Google <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms</a> apply.</p>' +
+          '</form>' +
+          '<div class="sje__done" hidden role="status">' + ic('check-circle') + '<h3>Thank you, it’s with us.</h3>' +
+            '<p>The team will write back to you soon. For anything urgent, call ' + esc(CFG.phone) + ' or <a href="' + wa('Hello Shrujan, I sent an enquiry on the website about ') + '" target="_blank" rel="noopener">WhatsApp us</a>.</p>' +
+            '<button class="sje__send sje__send--quiet" type="button" data-close>Close</button></div>' +
+        '</div>' +
+      '</div>'
+    );
+    doc.body.appendChild(drawer);
+    eForm = drawer.querySelector('.sje__form');
+    eDone = drawer.querySelector('.sje__done');
+    eError = drawer.querySelector('.sje__error');
+    drawer.addEventListener('click', function (e) { if (e.target.closest('[data-close]')) closeEnquire(); });
+    // a field is marked as soon as it is put right
+    eForm.addEventListener('input', function (e) {
+      var f = e.target.closest('.sje__field');
+      if (f && f.classList.contains('is-invalid') && e.target.checkValidity()) f.classList.remove('is-invalid');
+    });
+    eForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var bad = [].slice.call(eForm.querySelectorAll('[required]')).filter(function (el) {
+        var v = el.value.trim();
+        var wrong = !v || (el.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v));
+        el.closest('.sje__field').classList.toggle('is-invalid', wrong);
+        return wrong;
+      });
+      if (bad.length) {
+        eError.textContent = bad.length === 1 ? 'Please fill in the field marked in red.' : 'Please fill in the fields marked in red.';
+        eError.hidden = false;
+        bad[0].focus();
+        return;
+      }
+      eError.hidden = true;
+      var btn = eForm.querySelector('.sje__send');
+      btn.disabled = true;
+      fetch(eForm.action.split('#')[0], { method: 'POST', body: new FormData(eForm), credentials: 'same-origin' })
+        .then(function (res) {
+          if (!res.ok) throw new Error(res.status);
+          // the store asks a person to prove they are one: let the page go there
+          if (/\/challenge/.test(res.url)) { eForm.submit(); return; }
+          eForm.hidden = true;
+          eDone.hidden = false;
+        })
+        .catch(function () { eForm.submit(); })
+        .then(function () { btn.disabled = false; });
+    });
+  }
 
   function openEnquire(kind) {
+    buildEnquire();
     lastFocus = doc.activeElement;
     drawer.hidden = false;
     hold(true);
@@ -328,16 +385,16 @@
       var r = drawer.querySelector('input[value="' + kind + '"]');
       if (r) r.checked = true;
     }
-    requestAnimationFrame(function () { drawer.classList.add('is-open'); var f = drawer.querySelector('input[name="contact[name]"]'); if (f) f.focus({ preventScroll: true }); });
+    requestAnimationFrame(function () { drawer.classList.add('is-open'); var f = drawer.querySelector('input[name="contact[name]"]'); if (f && !window.matchMedia('(hover: none)').matches) f.focus({ preventScroll: true }); });
   }
   function closeEnquire() {
+    if (!drawer) return;
     drawer.classList.remove('is-open');
     hold(false);
     setTimeout(function () { drawer.hidden = true; }, reduced ? 0 : 560);
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
   tab.addEventListener('click', function () { openEnquire(); });
-  drawer.addEventListener('click', function (e) { if (e.target.closest('[data-close]')) closeEnquire(); });
   doc.addEventListener('click', function (e) {
     var a = e.target.closest && e.target.closest('[data-enquire], a[href="#enquire"]');
     if (!a) return;
@@ -345,34 +402,28 @@
     closeHelp();
     openEnquire(a.getAttribute('data-enquire') || '');
   });
-  eForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-    var btn = eForm.querySelector('.sje__send');
-    btn.disabled = true;
-    fetch(eForm.action.split('#')[0], { method: 'POST', body: new FormData(eForm), credentials: 'same-origin' })
-      .then(function (res) {
-        if (!res.ok) throw new Error(res.status);
-        // the store asks a person to prove they are one: let the page go there
-        if (/\/challenge/.test(res.url)) { eForm.submit(); return; }
-        eForm.hidden = true;
-        eDone.hidden = false;
-      })
-      .catch(function () { eForm.submit(); })
-      .then(function () { btn.disabled = false; });
-  });
 
   /* ---------- the keyboard ---------- */
   doc.addEventListener('keydown', function (e) {
     var typing = /input|textarea|select/i.test((e.target && e.target.tagName) || '') || (e.target && e.target.isContentEditable);
     if (e.key === 'Escape') {
       if (!search.hidden) closeSearch();
-      else if (!drawer.hidden) closeEnquire();
+      else if (drawer && !drawer.hidden) closeEnquire();
       else if (!hPanel.hidden) closeHelp();
     } else if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) || (e.key === '/' && !typing)) {
       e.preventDefault();
       if (search.hidden) openSearch();
     }
   });
+
+  /* ---------- the header, stuck to the top: a soft shadow once the page runs under it ---------- */
+  var scrolled = false;
+  var onScroll = function () {
+    var on = window.scrollY > 40;
+    if (on !== scrolled) { scrolled = on; doc.documentElement.classList.toggle('sj-scrolled', on); }
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
 
   window.SJUI = { openSearch: openSearch, openHelp: openHelp, openEnquire: openEnquire };
 })();

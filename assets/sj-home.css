@@ -3263,7 +3263,7 @@ html.sj-pre .dh__strip {
 .ft__scenes {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(14px, 1.5vw, 24px);
+  gap: clamp(20px, 2.2vw, 36px);
   max-width: 1520px;
   margin: clamp(24px, 2.4vw, 40px) auto 0;
 }
@@ -3322,17 +3322,19 @@ html.sj-pre .dh__strip {
   width: 52%;
 }
 
+/* the cloth and the props keep to the right, the words their own room on
+   the left (the user: the spacing in Heritage and Avinya) */
 .ft__cloth {
-  right: -3%;
+  right: -6%;
   bottom: -1%;
-  width: 76%;
+  width: 64%;
   filter: drop-shadow(0 18px 18px rgba(30, 12, 6, 0.32));
 }
 
 .ft__scene--light .ft__cloth {
-  right: 4%;
+  right: 1%;
   bottom: -1%;
-  width: 70%;
+  width: 60%;
 }
 
 /* the props: the pots from the left of their picture, or the tools from its right */
@@ -3346,7 +3348,7 @@ html.sj-pre .dh__strip {
 }
 
 .ft__front--left {
-  left: 40%;
+  left: 46%;
   bottom: 5%;
   width: 28%;
   aspect-ratio: 0.675;
@@ -3384,14 +3386,14 @@ html.sj-pre .dh__strip {
 /* the words, on the left */
 .ft__copy {
   position: absolute;
-  top: 11%;
+  top: 9%;
   left: 7.5%;
   z-index: 2;
-  width: 37%;
+  width: 35%;
 }
 
 .ft__scene--light .ft__copy {
-  width: 36%;
+  width: 35%;
 }
 
 .ft__no {
@@ -3463,8 +3465,8 @@ html.sj-pre .dh__strip {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: stretch;
-  width: 51%;
-  height: 31%;
+  width: 47%;
+  height: 27%;
   padding: 1.2%;
   border-radius: var(--radius);
   background: var(--paper) center / cover, #efe6d3;

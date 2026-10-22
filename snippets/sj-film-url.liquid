@@ -1,5 +1,7 @@
 {%- comment -%}
-  The URL of a film. The six craft films are played from the 1080p copies
+  The URL of a film. The six craft films are played from the 720p copies
+  (4.5 Mbps; the 1080p ones at 7.2 Mbps made the hero lag on most devices,
+  and scripts drop to the 480p copy on phones and for small windows)
   Shopify hosts for the store (Content → Files), not from the theme: the theme
   assets are 960×540 re-encodes made to fit the 50 MB theme cap, and look soft
   full screen. So a setting may keep naming the theme file — `craft-weaving.mp4`
@@ -17,17 +19,17 @@
   else
     case s
       when 'craft-embroidery.mp4'
-        echo 'https://cdn.shopify.com/videos/c/vp/8fefd4db0d5441eeb8e15016ec66e7dd/8fefd4db0d5441eeb8e15016ec66e7dd.HD-1080p-7.2Mbps-68331064.mp4'
+        echo 'https://cdn.shopify.com/videos/c/vp/8fefd4db0d5441eeb8e15016ec66e7dd/8fefd4db0d5441eeb8e15016ec66e7dd.HD-720p-4.5Mbps-68331064.mp4'
       when 'craft-ajrakh.mp4'
-        echo 'https://cdn.shopify.com/videos/c/vp/d8960a37325247d88bf9a30db00e9346/d8960a37325247d88bf9a30db00e9346.HD-1080p-7.2Mbps-68331075.mp4'
+        echo 'https://cdn.shopify.com/videos/c/vp/d8960a37325247d88bf9a30db00e9346/d8960a37325247d88bf9a30db00e9346.HD-720p-4.5Mbps-68331075.mp4'
       when 'craft-discharge.mp4'
-        echo 'https://cdn.shopify.com/videos/c/vp/1a17cdd1cbca4ed8995af8ed2fa528b4/1a17cdd1cbca4ed8995af8ed2fa528b4.HD-1080p-7.2Mbps-74991788.mp4'
+        echo 'https://cdn.shopify.com/videos/c/vp/1a17cdd1cbca4ed8995af8ed2fa528b4/1a17cdd1cbca4ed8995af8ed2fa528b4.HD-720p-4.5Mbps-74991788.mp4'
       when 'craft-weaving.mp4'
-        echo 'https://cdn.shopify.com/videos/c/vp/0b9846db2b6c4ebea08f337e316c3e9e/0b9846db2b6c4ebea08f337e316c3e9e.HD-1080p-7.2Mbps-68331073.mp4'
+        echo 'https://cdn.shopify.com/videos/c/vp/0b9846db2b6c4ebea08f337e316c3e9e/0b9846db2b6c4ebea08f337e316c3e9e.HD-720p-4.5Mbps-68331073.mp4'
       when 'craft-pottery.mp4'
-        echo 'https://cdn.shopify.com/videos/c/vp/46415d0546ad4093bbc77e16662fd653/46415d0546ad4093bbc77e16662fd653.HD-1080p-7.2Mbps-68331069.mp4'
+        echo 'https://cdn.shopify.com/videos/c/vp/46415d0546ad4093bbc77e16662fd653/46415d0546ad4093bbc77e16662fd653.HD-720p-4.5Mbps-68331069.mp4'
       when 'craft-tiedye.mp4'
-        echo 'https://cdn.shopify.com/videos/c/vp/26980cbaaeba4ea4b8e6846d628093cf/26980cbaaeba4ea4b8e6846d628093cf.HD-1080p-7.2Mbps-68331071.mp4'
+        echo 'https://cdn.shopify.com/videos/c/vp/26980cbaaeba4ea4b8e6846d628093cf/26980cbaaeba4ea4b8e6846d628093cf.HD-720p-4.5Mbps-68331071.mp4'
       else
         if s != blank
           echo s | asset_url

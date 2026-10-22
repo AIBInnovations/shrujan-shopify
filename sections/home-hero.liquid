@@ -57,7 +57,7 @@
       {%- for r in rows -%}
         {%- assign f = r | split: '|' -%}
         {%- capture film -%}{% render 'sj-film-url', src: f[0] %}{%- endcapture -%}
-        <div class="dh__media{% if forloop.first %} is-active{% endif %}"><video class="dh__video" {% if forloop.first %}src="{{ film }}" preload="auto"{% else %}data-src="{{ film }}" preload="none"{% endif %} poster="{{ f[1] }}" data-start="{{ f[2] | default: 0 }}" muted playsinline aria-hidden="true"></video></div>
+        <div class="dh__media{% if forloop.first %} is-active{% endif %}"><video class="dh__video" data-src="{{ film }}" preload="{% if forloop.first %}auto{% else %}none{% endif %}" poster="{{ f[1] }}" data-start="{{ f[2] | default: 0 }}" muted playsinline aria-hidden="true"></video></div>
       {%- endfor -%}
     </div>
     <div class="dh__content">

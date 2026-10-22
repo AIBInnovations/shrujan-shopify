@@ -915,8 +915,14 @@ html.sj-pre .sje__tab {
 
 .sje__field--grow textarea {
   flex: 1 1 auto;
-  min-height: 52px;
+  min-height: 64px;
   resize: none;
+}
+
+/* the box keeps its height: a message that appears under it takes room from
+   the space above the button, not from the box */
+.sje__form .sje__group--grow {
+  flex-shrink: 0;
 }
 
 .sje__send {
@@ -1034,6 +1040,128 @@ html.sj-pre .sje__tab {
   }
 }
 
+/* the quick ways to reach the studio, under the title */
+.sje__quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: clamp(10px, 1.6vh, 16px);
+}
+
+.sje__quick a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border: 1px solid rgba(246, 244, 230, 0.32);
+  border-radius: var(--radius);
+  font:500 var(--fs-2xs)/1 var(--font-sans);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ui-bg);
+  text-decoration: none;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.sje__quick a:hover {
+  border-color: rgba(246, 244, 230, 0.7);
+  background: rgba(246, 244, 230, 0.12);
+}
+
+.sje__quick i {
+  font-size: 15px;
+}
+
+/* the three steps */
+.sje__step {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 8px;
+  padding: 0;
+  font:400 var(--fs-base)/1.2 var(--font-display);
+  color: var(--ui-ink);
+}
+
+.sje__step b {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--sje-ink);
+  font: 600 10px/1 var(--font-sans);
+  color: var(--ui-bg);
+}
+
+.sje__group {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 1.2vh, 11px);
+}
+
+.sje__group .sje__step {
+  margin-bottom: 0;
+}
+
+.sje__group--grow {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.sje__field em {
+  font-style: normal;
+  color: var(--ui-red);
+}
+
+.sje__field input::placeholder,
+.sje__field textarea::placeholder {
+  color: rgba(64, 64, 65, 0.42);
+}
+
+.sje__field.is-invalid span {
+  color: #a3261e;
+}
+
+.sje__field.is-invalid input,
+.sje__field.is-invalid textarea {
+  border-color: #a3261e;
+  box-shadow: 0 0 0 3px rgba(163, 38, 30, 0.12);
+}
+
+.sje__error {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  margin: 0;
+  padding: 9px 12px;
+  border-radius: var(--radius);
+  background: rgba(163, 38, 30, 0.08);
+  font:400 var(--fs-xs)/1.4 var(--font-sans);
+  color: #8c1d18;
+}
+
+.sje__error[hidden] {
+  display: none;
+}
+
+.sje__send--quiet {
+  margin-top: 8px;
+  border: 1px solid var(--sje-ink);
+  background: transparent;
+  color: var(--sje-ink);
+}
+
+.sje__send--quiet:hover {
+  background: var(--sje-ink);
+  color: var(--ui-bg);
+}
+
+.sje__done a {
+  color: var(--ui-ink);
+}
+
 /* short screens: the line under the title goes, the topics get lower */
 @media (max-height: 760px) {
   .sje__lede {
@@ -1079,13 +1207,24 @@ html.sj-pre .sje__tab {
     display: none;
   }
 
+  /* the chat and Enquire buttons: one size, on one edge, one above the
+     other, clear of the phone's home bar */
   .sjh {
-    right: 12px;
-    bottom: 12px;
+    right: max(14px, env(safe-area-inset-right));
+    bottom: max(14px, env(safe-area-inset-bottom));
   }
 
-  .sjh__launch {
+  .sjh__launch,
+  .sjh__launch:hover,
+  .sjh__launch:focus-visible {
+    justify-content: center;
+    width: 48px;
     height: 48px;
+    padding: 0;
+  }
+
+  .sjh__launch-label {
+    display: none;
   }
 
   .sjh__panel {
@@ -1099,11 +1238,19 @@ html.sj-pre .sje__tab {
 
   /* on a phone the tab is its icon alone, low on the edge, so it covers
      no words */
-  .sje__tab {
+  .sje__tab,
+  .sje__tab:hover {
     top: auto;
-    bottom: 76px;
-    padding: 11px 9px;
+    right: max(14px, env(safe-area-inset-right));
+    bottom: calc(max(14px, env(safe-area-inset-bottom)) + 58px);
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border-radius: var(--radius);
+    writing-mode: horizontal-tb;
     transform: none;
+    box-shadow: 0 14px 30px -14px rgba(20, 20, 20, 0.55);
   }
 
   .sje__tab span {
@@ -1132,6 +1279,17 @@ html.sj-pre .sje__tab {
     gap: 4px;
     padding: 8px 4px;
     text-align: center;
+  }
+  .sje__quick {
+    flex-wrap: nowrap;
+    gap: 6px;
+  }
+
+  .sje__quick a {
+    flex: 1 1 0;
+    justify-content: center;
+    padding: 8px 6px;
+    letter-spacing: 0.1em;
   }
 }
 

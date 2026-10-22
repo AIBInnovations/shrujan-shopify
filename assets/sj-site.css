@@ -291,6 +291,284 @@ body {
   display: none;
 }
 
+/* ---- the header stays at the top of the screen on every page while the
+   page scrolls (the user: the header should be visible when scrolling);
+   the grey bar above it scrolls away. A soft shadow once the page runs
+   under it (ui.js sets sj-scrolled). ---- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 70;
+  transition: box-shadow 0.35s ease;
+}
+
+html.sj-scrolled .site-header {
+  box-shadow: 0 10px 28px -20px rgba(30, 20, 10, 0.45);
+}
+
+/* ---- the store's spam check (Google reCAPTCHA, which Shopify loads with
+   its contact forms) keeps its badge out of the corner, where it sat over
+   the chat button (the user); its notice is printed in the forms instead,
+   as Google asks ---- */
+.grecaptcha-badge {
+  visibility: hidden !important;
+}
+
+.sj-recaptcha {
+  margin: 8px 0 0;
+  font:400 var(--fs-2xs)/1.5 var(--font-sans);
+  color: var(--ink-soft, #706e68);
+}
+
+.sj-recaptcha a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ---- the footer on a phone, shorter (the user: too long and tall): the
+   sign-up on one line, the mark smaller, the folded groups lower, the
+   small print closer ---- */
+@media (max-width: 560px) {
+  .footer {
+    padding-top: 34px !important;
+    padding-bottom: 18px !important;
+  }
+
+  .fletters__eyebrow {
+    font-size: var(--fs-2xs);
+  }
+
+  .fletters__title {
+    margin-top: 6px;
+    font-size: var(--fs-xl);
+  }
+
+  .fletters__copy {
+    margin-top: 6px;
+    font-size: var(--fs-sm);
+    line-height: 1.5;
+  }
+
+  .fletters__form {
+    flex-wrap: nowrap;
+    margin-top: 14px !important;
+    padding: 6px 6px 6px 14px;
+  }
+
+  .fletters__form input {
+    flex: 1 1 auto;
+    flex-basis: auto;
+    min-width: 0;
+    padding-inline: 0;
+  }
+
+  .fletters__form button {
+    flex: none;
+    width: auto;
+    padding: 11px 14px;
+  }
+
+  .ftop {
+    gap: 18px;
+    padding-bottom: 16px;
+  }
+
+  .fbrand {
+    gap: 8px;
+  }
+
+  .fbrand__mark {
+    width: 104px;
+  }
+
+  .fbrand__tag {
+    line-height: 1.5;
+  }
+
+  .fbrand__tag span {
+    display: inline;
+  }
+
+  .fbrand__tag span::before {
+    content: ' · ';
+  }
+
+  .fmap__group {
+    padding: 11px 0;
+  }
+
+  .footer__bottom {
+    gap: 6px;
+    margin-top: 14px !important;
+    padding-top: 12px !important;
+  }
+
+  .footer__legal {
+    gap: 4px 12px !important;
+    font-size: var(--fs-2xs);
+  }
+}
+
+/* ---- Shrujan stores on the home page (stores_section.py): the head
+   centred, the six stores as cards, three to a row; on phones a row that
+   scrolls sideways, so the section stays short ---- */
+.st {
+  margin-inline: var(--gutter, 5.2vw);
+  padding: var(--sec-pad, clamp(48px, 6vw, 96px)) 0;
+}
+
+.st__head {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+}
+
+.st__eyebrow {
+  margin: 0 0 14px;
+  font:500 var(--fs-2xs)/1.3 var(--font-sans);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink-soft, #706e68);
+}
+
+.st__title {
+  margin: 0;
+  font:400 var(--fs-5xl)/0.96 var(--font-display);
+  color: var(--ink);
+}
+
+.st__title span,
+.st__title em {
+  display: block;
+}
+
+.st__title em {
+  font-style: normal;
+  color: var(--indigo, #924241);
+}
+
+.st__lede {
+  max-width: 46ch;
+  margin: clamp(12px, 1.4vw, 20px) 0 0;
+  font:400 var(--fs-md)/1.55 var(--font-sans);
+  color: var(--ink-soft, #706e68);
+}
+
+.st__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(12px, 1.4vw, 20px);
+  margin: clamp(28px, 3vw, 46px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.st__card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: clamp(20px, 2vw, 28px);
+  border: 1px solid var(--hairline, rgba(64, 64, 65, 0.14));
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.38);
+  transition: border-color 0.3s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+}
+
+.st__card:hover {
+  border-color: rgba(146, 66, 65, 0.35);
+  box-shadow: 0 22px 40px -32px rgba(60, 40, 24, 0.5);
+  transform: translateY(-3px);
+}
+
+.st__pin {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--page-bg-2, #ede9d8);
+  font-size: 19px;
+  color: var(--indigo, #924241);
+}
+
+.st__name {
+  margin: 6px 0 0;
+  font:400 var(--fs-xl)/1.2 var(--font-display);
+  color: var(--ink);
+}
+
+.st__addr {
+  margin: 0;
+  font:400 var(--fs-sm)/1.55 var(--font-sans);
+  color: var(--ink-soft, #706e68);
+}
+
+.st__tel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 2px 0 0;
+  font:400 var(--fs-sm)/1.4 var(--font-sans);
+}
+
+.st__tel a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.st__tel a:hover {
+  color: var(--indigo, #924241);
+}
+
+.st__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 10px;
+  font:500 var(--fs-2xs)/1 var(--font-sans);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--indigo, #924241);
+}
+
+.st__go i {
+  font-size: 15px;
+}
+
+@media (max-width: 1024px) {
+  .st__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .st__title {
+    font-size: var(--fs-4xl);
+  }
+
+  .st__grid {
+    display: flex;
+    gap: 10px;
+    margin-inline: calc(-1 * var(--gutter, 18px));
+    padding: 4px var(--gutter, 18px) 10px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .st__grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .st__card {
+    flex: 0 0 82%;
+    scroll-snap-align: center;
+  }
+}
+
 /* icons:start (written by convert_icons.py from icons.py) */
 /* ---- the interface icons (Material Symbols, Font Awesome brands; icons.py) ---- */
 @font-face {

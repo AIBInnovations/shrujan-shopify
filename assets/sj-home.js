@@ -48,7 +48,7 @@
   var MIN_MS = reduced ? 400 : 2000;
   // the page opens once the film and the type are ready, but never makes
   // anyone wait longer than this
-  var MAX_MS = 6000;
+  var MAX_MS = 4500;
   var t0 = performance.now();
   var ready = { film: false, fonts: false };
   var shown = 0;
@@ -139,7 +139,11 @@
       cut.className = 'sj-cloth__cut';
       // cover the piece with the cloth part of the photograph
       var cw = (c[5] - c[3]) * c[1], ch = (c[6] - c[4]) * c[2], k = Math.max(w / cw, h / ch);
-      cut.style.backgroundImage = 'url("' + base + c[0] + '")';
+      // the photograph at the size it is drawn (the store's CDN resizes it):
+      // full-size pictures for twelve small cloths slowed the page's start
+      var px = Math.min(c[1], Math.ceil(c[1] * k * Math.min(window.devicePixelRatio || 1, 2) / 50) * 50);
+      var src = base + c[0] + '?width=' + px;
+      cut.style.backgroundImage = 'url("' + src + '")';
       cut.style.backgroundSize = (c[1] * k).toFixed(1) + 'px ' + (c[2] * k).toFixed(1) + 'px';
       cut.style.backgroundPosition = (-(c[3] * c[1] * k) - (cw * k - w) / 2).toFixed(1) + 'px ' + (-(c[4] * c[2] * k) - (ch * k - h) / 2).toFixed(1) + 'px';
       cut.style.clipPath = cutPath(edge, w, h);
@@ -179,8 +183,8 @@
         if (piece.started || done) return;
         piece.started = true;
         gsap.to(el, { x: piece.home.x, y: piece.home.y, duration: 1.4, ease: 'expo.out', delay: 0.1 + i * 0.05 });
-        var breath = (side === 'left' || side === 'right') ? { x: (side === 'left' ? 1 : -1) * 5 } : { y: (side === 'top' ? 1 : -1) * 5 };
-        piece.float = gsap.to(inner, Object.assign({ duration: 2.4, ease: 'sine.inOut', yoyo: true, repeat: -1, delay: 1.2 }, breath));
+        // it lands and holds still: a cloth that kept breathing repainted
+        // its shadow every frame, which made the loader stutter
       };
       // the photograph is asked for first, ahead of the page's own images; a
       // cloth only comes in once it is here, so none arrives as a blank card
@@ -188,7 +192,7 @@
       img.fetchPriority = 'high';
       img.onload = go;
       img.onerror = function () { el.remove(); };
-      img.src = base + c[0];
+      img.src = src;
     });
   }
 
@@ -378,6 +382,14 @@
   var DUR = parseFloat(root.getAttribute('data-duration')) || 6.5;
   var cur = 0, prog = null, inView = true, running = false;
 
+  // the copy of a film to load: 720p, or 480p on a phone, on a slow or a
+  // data-saving connection (the 1080p ones made the hero lag)
+  var net = navigator.connection || {};
+  var light = window.innerWidth <= 720 || net.saveData || /(^|-)2g|3g/.test(net.effectiveType || '');
+  function sized(url) {
+    return light ? url.replace(/HD-(1080p-7\.2|720p-4\.5)Mbps/, 'SD-480p-1.5Mbps') : url.replace('HD-1080p-7.2Mbps', 'HD-720p-4.5Mbps');
+  }
+
   // a film starts where the hands are working, never reaches its closing
   // card, and goes back to its start
   function prep(v) {
@@ -386,7 +398,7 @@
     var start = parseFloat(v.getAttribute('data-start')) || 0;
     v.muted = true;
     v.loop = false;
-    if (!v.getAttribute('src') && v.getAttribute('data-src')) v.setAttribute('src', v.getAttribute('data-src'));
+    if (!v.getAttribute('src') && v.getAttribute('data-src')) v.setAttribute('src', sized(v.getAttribute('data-src')));
     var toStart = function () { if (start && v.currentTime < start - 0.4) { try { v.currentTime = start; } catch (e) {} } };
     v.addEventListener('loadedmetadata', toStart);
     v.addEventListener('timeupdate', function () {
@@ -698,7 +710,8 @@
     var start = parseFloat(v.getAttribute('data-start')) || 0;
     v.muted = true;
     v.loop = false;
-    v.setAttribute('src', v.getAttribute('data-src'));
+    // a panel is never wider than ~500px: the 480p copy is plenty, and light
+    v.setAttribute('src', v.getAttribute('data-src').replace(/HD-(1080p-7\.2|720p-4\.5)Mbps/, 'SD-480p-1.5Mbps'));
     v.addEventListener('loadedmetadata', function () { if (start) { try { v.currentTime = start; } catch (e) {} } });
     v.addEventListener('timeupdate', function () {
       if (v.duration && v.currentTime > v.duration - 5.4) { try { v.currentTime = start; } catch (e) {} }

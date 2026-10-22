@@ -689,9 +689,16 @@
     scroll-snap-align: start;
   }
 
+  /* minmax(0, …): a plain 1fr column grows to its content's narrowest
+     width, and the fortnight of day tiles made the form wider than a phone */
   .pdpx-book__grid,
   .pdpx-visit__pair {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pdpx-book__card,
+  .pdpx-book__step {
+    min-width: 0;
   }
 
   .pdpx-book__intro {
