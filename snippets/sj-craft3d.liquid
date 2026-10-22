@@ -15,10 +15,14 @@
     </div>
 
     <div class="craft3d__rise">
-      <canvas class="craft3d__canvas" aria-hidden="true"></canvas>
+      <div class="craft3d__shots">
+        <figure class="craft3d__shot"><img src="{{ 'sj-craft-emb.webp' | asset_url }}" alt="Shrujan’s blue Ikkat dress with Ahir embroidery, worn" width="1080" height="1080" decoding="async"></figure>
+        <figure class="craft3d__shot"><img src="{{ 'sj-craft-ajr.webp' | asset_url }}" alt="Shrujan’s modal hand block printed dress, worn" width="1024" height="1024" loading="lazy" decoding="async"></figure>
+        <figure class="craft3d__shot"><img src="{{ 'sj-craft-ban.webp' | asset_url }}" alt="Shrujan’s shibori sleeveless top with Pakko embroidery, laid flat" width="1200" height="1200" loading="lazy" decoding="async"></figure>
+        <figure class="craft3d__shot"><img src="{{ 'sj-craft-wea.webp' | asset_url }}" alt="Shrujan’s khadi dress with Pakko embroidery, worn" width="1024" height="1024" loading="lazy" decoding="async"></figure>
+      </div>
     </div>
     <span class="craft3d__fade" aria-hidden="true"></span>
-    <p class="craft3d__loading" aria-hidden="true">Dressing the form…</p>
 
     <div class="craft3d__intro">
       <p class="craft3d__eyebrow">Craft Traditions of Kutch</p>
@@ -58,14 +62,11 @@
 
     <ul class="craft3d__list" aria-label="Crafts">
       <li class="craft3d__progress" aria-hidden="true"></li>
-      <li class="craft3d__item"><i aria-hidden="true"></i>01 Embroidery</li>
-      <li class="craft3d__item"><i aria-hidden="true"></i>02 Block print</li>
-      <li class="craft3d__item"><i aria-hidden="true"></i>03 Tie-dye</li>
-      <li class="craft3d__item"><i aria-hidden="true"></i>04 Weaving</li>
+      <li class="craft3d__item"><i aria-hidden="true" style="background-image: url({{ 'sj-craft-emb.webp' | asset_url }}); background-position: 50% 42%; background-size: 380%"></i>01 Embroidery</li>
+      <li class="craft3d__item"><i aria-hidden="true" style="background-image: url({{ 'sj-craft-ajr.webp' | asset_url }}); background-position: 52% 50%; background-size: 380%"></i>02 Block print</li>
+      <li class="craft3d__item"><i aria-hidden="true" style="background-image: url({{ 'sj-craft-ban.webp' | asset_url }}); background-position: 60% 45%; background-size: 380%"></i>03 Tie-dye</li>
+      <li class="craft3d__item"><i aria-hidden="true" style="background-image: url({{ 'sj-craft-wea.webp' | asset_url }}); background-position: 50% 30%; background-size: 380%"></i>04 Weaving</li>
     </ul>
-
-    <div class="craft3d__poi" aria-hidden="true"><span class="craft3d__poi-dot"></span><span class="craft3d__poi-line"></span><span class="craft3d__poi-label"></span></div>
-    <div class="craft3d__poi" aria-hidden="true"><span class="craft3d__poi-dot"></span><span class="craft3d__poi-line"></span><span class="craft3d__poi-label"></span></div>
 
     <p class="craft3d__hint"><span aria-hidden="true"></span>Scroll to change the cloth</p>
   </div>

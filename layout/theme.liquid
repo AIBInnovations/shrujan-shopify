@@ -190,12 +190,10 @@
     {%- if template.name == 'index' %}
     {%- comment -%}
       The home page's own layer (awwwards-preview/export_theme.py writes its
-      files): three.js for the Wear-the-craft form, mapped before any module
-      script on the page loads, and its stylesheet, last in the head so it
-      wins over the theme's. The html classes above hold the page behind the
-      loader until sj-home.js lets it go.
+      files): its stylesheet, last in the head so it wins over the theme's.
+      The html classes above hold the page behind the loader until sj-home.js
+      lets it go.
     {%- endcomment %}
-    <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
     {%- comment -%} If sj-home.js never lets the page go (blocked, failed), it lets itself go after 14 seconds (the loader's own limit is 9); without JavaScript there is no loader at all. {%- endcomment %}
     <script>setTimeout(function(){if(window.__sjRevealed)return;var h=document.documentElement;h.classList.remove('sj-pre');var l=document.querySelector('.sj-loader');if(l)l.remove();if(window.Shrujan&&window.Shrujan.startScroll)window.Shrujan.startScroll();window.__sjRevealed=true;document.dispatchEvent(new CustomEvent('sj:revealed'));},14000);</script>
     <noscript><style>.sj-loader{display:none!important}html.sj-pre,html.sj-pre body{overflow:visible!important}html.sj-pre .dh__content,html.sj-pre .dh__strip,html.sj-pre .site-header,html.sj-pre .offer-bar{opacity:1!important}</style></noscript>
