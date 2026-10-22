@@ -5,8 +5,9 @@
    changed). The section is tall and its stage holds still while it is
    scrolled through: the words on the left, the craft's name enormous behind,
    the list on the right with its line filling, as they were; in the frame,
-   the Ikkat dress first, then the block printed dress, the shibori top and
-   the khadi dress, each coming up from below over the one before as its
+   the Ikkat dress first, then the block printed dress, the discharge printed
+   halter dress (tie-dye is made outside Shrujan, so it is not shown) and the
+   khadi dress, each coming up from below over the one before as its
    craft arrives, the one beneath settling back a little as it is covered.
    (Still loaded as the module sj-craft3d.js.) */
 const root = document.querySelector('.craft3d');

@@ -20,6 +20,28 @@
   --fs-display: clamp(40px, 26.63px + 3.429vw, 76px);
 }
 
+/* Figures that stand on the line (the user: "1969" with its 9s dropping
+   below the line and its 6 rising read "up and down"). Baskerville draws
+   old-style figures unless asked; every page asks for lining ones. The
+   `font` shorthand, used all over, resets this on each element it styles,
+   so it is set on every element and wins; the counters that need their
+   digits a fixed width keep that. */
+*,
+*::before,
+*::after {
+  font-variant-numeric: lining-nums !important;
+}
+
+.sj-loader__count,
+.stat__value,
+.strands__no,
+.chapters__no,
+.press__pageno,
+.lightbox__count,
+.shop-rail__n {
+  font-variant-numeric: lining-nums tabular-nums !important;
+}
+
 /* ============================================================
    Shrujan — the site's colours, on every page
    ------------------------------------------------------------

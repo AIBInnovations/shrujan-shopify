@@ -1,15 +1,15 @@
 {%- render 'section-design', section: section -%}
 
 {%- comment -%}
-  The Shrujan story — a Kutch terrace at sunset: one composed stage with
-  the bougainvillea behind, the terrace (mud wall, embroidered cloth, bhungas
-  beyond, its sky taken out) across the full width at the foot, the title, its lines and the way on in the middle,
-  the founder framed at the top right, the Rolex Award as a
-  plaque at the bottom right (or a photograph of it, when one is picked) and
-  a glass card with the Shrujan mark and the story of its peacock, and the
-  facts in a dark box at the foot (under the scene, on phones). As the section passes, every layer moves
-  at its own depth (data-depth): the tree lags behind and sways, the
-  photographs and the glass card come forward, the terrace stays put.
+  The Shrujan story: one composed stage with the bougainvillea behind, the
+  Shrujan campus at Ajrakhpur (its sky taken out) across the full width at
+  the foot (the user: the campus, not a scenic still life), the title, its
+  lines and the way on in the middle, the founder framed at the top right,
+  the Rolex Award as a plaque at the bottom right (or a photograph of it, when
+  one is picked), and the facts in a dark box at the foot (under the scene,
+  on phones). The glass card with the mark is gone (the user). As the section
+  passes, every layer moves at its own depth (data-depth): the tree lags
+  behind and sways, the photographs come forward, the campus stays put.
 
   Styles and behaviour are the home page layer's (assets/sj-home.css and
   sj-home.js, from awwwards-preview/src/legacy.css and legacy.js). The
@@ -30,7 +30,7 @@
   if s.scene != blank
     assign scene = s.scene | image_url: width: 1800
   else
-    assign scene = s.scene_asset | default: 'sj-heritage-terrace-full.webp' | asset_url
+    assign scene = s.scene_asset | default: 'sj-heritage-campus-full.webp' | asset_url
   endif
   if s.tree_m != blank
     assign tree_m = s.tree_m | image_url: width: 900
@@ -40,12 +40,7 @@
   if s.scene_m != blank
     assign scene_m = s.scene_m | image_url: width: 1000
   else
-    assign scene_m = s.scene_m_asset | default: 'sj-heritage-terrace-m.webp' | asset_url
-  endif
-  if s.logo != blank
-    assign logo = s.logo | image_url: width: 400
-  else
-    assign logo = s.logo_asset | default: 'logo-shrujan.png' | asset_url
+    assign scene_m = s.scene_m_asset | default: 'sj-heritage-campus-m.webp' | asset_url
   endif
   assign depths = '0.8' | split: ','
   assign card_defaults = 'story-chanda.webp' | split: ','
@@ -77,12 +72,6 @@
       {%- else -%}
         <figure class="hst__card hst__card--3 hst__award" data-depth="0.7"><a class="hst__award-in" href="{{ s.award_link | escape }}" target="_blank" rel="noopener"><div class="hst__award-seal"><svg class="hst__laurel" viewBox="0 0 100 100" aria-hidden="true"><g fill="currentColor"><path d="M43.9 88.5A35 35 0 0 1 36.9 21.5" fill="none" stroke="currentColor" stroke-width="1.1"/><path transform="translate(39.6 86.1) rotate(-124) scale(1.00)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(38.8 88.4) rotate(-200) scale(1.00)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(31.4 82.2) rotate(-109) scale(0.97)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(30.1 84.2) rotate(-185) scale(0.97)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(24.6 76.3) rotate(-93) scale(0.94)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(22.8 77.9) rotate(-169) scale(0.94)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(19.6 68.8) rotate(-78) scale(0.92)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(17.5 69.9) rotate(-154) scale(0.92)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(16.8 60.3) rotate(-63) scale(0.89)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(14.4 60.7) rotate(-139) scale(0.89)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(16.3 51.3) rotate(-47) scale(0.86)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(13.9 51.1) rotate(-123) scale(0.86)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(18.2 42.4) rotate(-32) scale(0.83)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(16.0 41.6) rotate(-108) scale(0.83)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(22.4 34.5) rotate(-17) scale(0.81)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(20.5 33.1) rotate(-93) scale(0.81)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(28.6 27.9) rotate(-1) scale(0.78)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(27.1 26.0) rotate(-77) scale(0.78)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(36.3 23.1) rotate(14) scale(0.75)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(35.3 20.9) rotate(-62) scale(0.75)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(39.2 20.7) rotate(342) scale(.7)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path d="M56.1 88.5A35 35 0 0 0 63.1 21.5" fill="none" stroke="currentColor" stroke-width="1.1"/><path transform="translate(60.4 86.1) rotate(304) scale(1.00)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(61.2 88.4) rotate(380) scale(1.00)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(68.6 82.2) rotate(289) scale(0.97)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(69.9 84.2) rotate(365) scale(0.97)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(75.4 76.3) rotate(273) scale(0.94)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(77.2 77.9) rotate(349) scale(0.94)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(80.4 68.8) rotate(258) scale(0.92)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(82.5 69.9) rotate(334) scale(0.92)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(83.2 60.3) rotate(243) scale(0.89)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(85.6 60.7) rotate(319) scale(0.89)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(83.7 51.3) rotate(227) scale(0.86)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(86.1 51.1) rotate(303) scale(0.86)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(81.8 42.4) rotate(212) scale(0.83)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(84.0 41.6) rotate(288) scale(0.83)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(77.6 34.5) rotate(197) scale(0.81)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(79.5 33.1) rotate(273) scale(0.81)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(71.4 27.9) rotate(181) scale(0.78)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(72.9 26.0) rotate(257) scale(0.78)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(63.7 23.1) rotate(166) scale(0.75)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(64.7 20.9) rotate(242) scale(0.75)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/><path transform="translate(60.8 20.7) rotate(-162) scale(.7)" d="M0 0Q4.5-3 10 0Q4.5 3 0 0Z"/></g></svg><b>{{ s.award_year | escape }}</b></div><span class="hst__award-name">{{ s.award_name | escape }}</span><i class="hst__award-rule" aria-hidden="true"></i><span class="hst__award-who">{{ s.award_who | escape }}</span></a></figure>
       {%- endif -%}
-      <aside class="hst__glass" data-depth="0.6" aria-label="{{ s.glass_label | escape }}">
-        <img class="hst__mark" src="{{ logo }}" alt="{{ s.logo_alt | escape }}" loading="lazy">
-        <i class="hst__dash" aria-hidden="true"></i>
-        {%- if s.peacock != blank %}<p>{{ s.peacock }}</p>{% endif %}
-        {%- if s.glass_link != blank %}<a class="hst__go" href="{{ s.glass_link | escape }}" aria-label="{{ s.btn_label | escape }}">{{ arrow }}</a>{% endif %}
-      </aside>
     </div>
     {%- liquid
       assign has_facts = false
@@ -128,13 +117,13 @@
     { "type": "header", "content": "The scene" },
     { "type": "image_picker", "id": "tree", "label": "Tree behind (transparent PNG)" },
     { "type": "text", "id": "tree_asset", "label": "Or theme image file", "default": "sj-heritage-tree.webp" },
-    { "type": "image_picker", "id": "scene", "label": "Terrace across the full width (sky transparent)" },
-    { "type": "text", "id": "scene_asset", "label": "Or theme image file", "default": "sj-heritage-terrace-full.webp" },
+    { "type": "image_picker", "id": "scene", "label": "Campus across the full width (sky transparent)" },
+    { "type": "text", "id": "scene_asset", "label": "Or theme image file", "default": "sj-heritage-campus-full.webp" },
     { "type": "image_picker", "id": "tree_m", "label": "Phones: tree (transparent PNG)" },
     { "type": "text", "id": "tree_m_asset", "label": "Or theme image file", "default": "sj-heritage-tree-m.webp" },
-    { "type": "image_picker", "id": "scene_m", "label": "Phones: terrace (transparent sky)" },
-    { "type": "text", "id": "scene_m_asset", "label": "Or theme image file", "default": "sj-heritage-terrace-m.webp" },
-    { "type": "text", "id": "scene_alt", "label": "Terrace description", "default": "A Kutch terrace at golden hour: embroidered cloth over a mud wall, a cushion, a brass pot, a rug and a charpai, with bhungas beyond" },
+    { "type": "image_picker", "id": "scene_m", "label": "Phones: campus (transparent sky)" },
+    { "type": "text", "id": "scene_m_asset", "label": "Or theme image file", "default": "sj-heritage-campus-m.webp" },
+    { "type": "text", "id": "scene_alt", "label": "Campus description", "default": "The Shrujan campus at Ajrakhpur: round white buildings with tiled roofs among trees and a lawn" },
     { "type": "header", "content": "Photographs at the corners" },
     { "type": "image_picker", "id": "card1", "label": "Top right: the founder" },
     { "type": "text", "id": "card1_asset", "label": "Or theme image file", "default": "story-chanda.webp" },
@@ -154,15 +143,8 @@
     { "type": "text", "id": "fact2_label", "label": "Second: label", "default": "Craftswomen" },
     { "type": "text", "id": "fact3_num", "label": "Third: number", "default": "66" },
     { "type": "text", "id": "fact3_label", "label": "Third: label", "default": "Villages of Kutch" },
-    { "type": "text", "id": "fact4_num", "label": "Fourth: number", "default": "6" },
-    { "type": "text", "id": "fact4_label", "label": "Fourth: label", "default": "Craft traditions" },
-    { "type": "header", "content": "The glass card" },
-    { "type": "text", "id": "glass_label", "label": "Name read out to screen readers", "default": "Our mark" },
-    { "type": "image_picker", "id": "logo", "label": "Mark", "info": "Light on transparent." },
-    { "type": "text", "id": "logo_asset", "label": "Or theme image file", "default": "logo-shrujan.png" },
-    { "type": "text", "id": "logo_alt", "label": "Mark description", "default": "The Shrujan mark: the peacock over the name, since 1969" },
-    { "type": "inline_richtext", "id": "peacock", "label": "The story of the peacock", "info": "Italic words are set in the title face.", "default": "The peacock on our mark is the <em>mor</em>, a bird the embroiderers of Kutch have long stitched into their cloth." },
-    { "type": "text", "id": "glass_link", "label": "Arrow link", "default": "/pages/the-shrujan-story" }
+    { "type": "text", "id": "fact4_num", "label": "Fourth: number", "default": "5" },
+    { "type": "text", "id": "fact4_label", "label": "Fourth: label", "default": "Craft traditions" }
   ],
   "presets": [ { "name": "Home — Shrujan story" } ]
 }

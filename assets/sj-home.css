@@ -115,55 +115,6 @@ html.sj-skip .sj-loader {
   --win-h: 24vh;
 }
 
-/* The cloths: Shrujan's fabrics, cut like paper with pinking shears and held
-   down with tape, fly in from every edge while the page loads and back out
-   as the window opens (loader.js builds and moves them). */
-.sj-loader__cloths {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.sj-cloth {
-  position: absolute;
-  left: 0;
-  top: 0;
-  will-change: transform;
-  filter: drop-shadow(0 1px 1px rgba(40, 40, 41, 0.22)) drop-shadow(0 10px 16px rgba(40, 40, 41, 0.2));
-}
-
-.sj-cloth__in {
-  position: absolute;
-  inset: 0;
-}
-
-.sj-cloth__cut {
-  position: absolute;
-  inset: 0;
-  background-repeat: no-repeat;
-}
-
-/* a little paper grain over the cloth, so it reads as a cut-out */
-.sj-cloth__cut::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 38%, rgba(0, 0, 0, 0.1));
-  mix-blend-mode: soft-light;
-}
-
-.sj-cloth__tape {
-  position: absolute;
-  width: 46%;
-  height: clamp(14px, 1.6vw, 26px);
-  background:
-    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.12) 0 2px, rgba(255, 255, 255, 0) 2px 6px),
-    linear-gradient(180deg, rgba(246, 244, 230, 0.86), rgba(236, 224, 199, 0.78));
-  clip-path: polygon(0 8%, 6% 0, 12% 10%, 18% 0, 24% 8%, 30% 0, 70% 0, 76% 9%, 82% 0, 88% 10%, 94% 0, 100% 8%, 100% 92%, 94% 100%, 88% 90%, 82% 100%, 76% 91%, 70% 100%, 30% 100%, 24% 92%, 18% 100%, 12% 90%, 6% 100%, 0 92%);
-  box-shadow: 0 1px 2px rgba(40, 40, 41, 0.12);
-}
-
 .sj-loader__top,
 .sj-loader__bottom {
   position: absolute;
@@ -2177,16 +2128,16 @@ html.sj-pre .dh__strip {
 }
 
 /* ============================================================
-   The Shrujan story — a Kutch terrace at sunset
+   The Shrujan story
    ------------------------------------------------------------
    One composed stage, laid out on a 1536 × 1264 frame: the bougainvillea
-   behind, the golden-hour terrace (mud wall, embroidered cloth, bhungas
-   beyond, its sky taken out) across the full width at the foot, the title,
-   its lines and the way on in the middle, the founder and the Rolex Award
-   down the right, a glass card with the Shrujan mark and the story of its
-   peacock, and the facts in a dark box at the foot. As the section passes, each layer moves at its own
-   depth (legacy.js): the tree lags behind, the photographs and the glass
-   card come forward, the terrace stays put.
+   behind, the Shrujan campus at Ajrakhpur (its sky taken out, the tree at its top left faded) across the
+   full width at the foot (the user: the campus, not a scenic still life),
+   the title, its lines and the way on in the middle, the founder and the
+   Rolex Award down the right, and the facts in a dark box at the foot (the
+   glass card with the mark is gone, the user). As the section passes, each
+   layer moves at its own depth (legacy.js): the tree lags behind, the
+   photographs come forward, the campus stays put.
    Below 1024px the head comes first and the scene follows, re-laid.
    ============================================================ */
 .hst {
@@ -2213,7 +2164,6 @@ html.sj-pre .dh__strip {
 .hst__tree,
 .hst__scene,
 .hst__card,
-.hst__glass,
 .hst__head,
 .hst__orn--c {
   position: absolute;
@@ -2351,78 +2301,6 @@ html.sj-pre .dh__strip {
   font: 400 6.6cqw / 1.35 var(--font-sans);
   letter-spacing: 0.04em;
   color: rgba(228, 220, 198, 0.85);
-}
-
-/* the glass card: the mark, a rule, the peacock's story, the way on */
-.hst__glass {
-  left: 2.15%;
-  top: 41.7cqw;
-  width: 15.1%;
-  min-height: 20.5cqw;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 1.7cqw 1.6cqw 1.6cqw;
-  border-radius: var(--radius);
-  background: rgba(44, 44, 45, 0.6);
-  -webkit-backdrop-filter: blur(14px) saturate(1.1);
-  backdrop-filter: blur(14px) saturate(1.1);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 248, 0.12), 0 1.8cqw 3.2cqw -1.4cqw rgba(30, 30, 31, 0.6);
-  color: #f6f4e6;
-}
-
-.hst__mark {
-  display: block;
-  width: 68%;
-  height: auto;
-}
-
-.hst__dash {
-  display: block;
-  width: 1.7cqw;
-  height: 1px;
-  margin: 1.2cqw 0 1.1cqw;
-  background: rgba(246, 244, 230, 0.7);
-}
-
-.hst__glass p {
-  margin: 0;
-  font: 400 max(12px, 0.92cqw) / 1.5 var(--font-sans);
-  color: rgba(246, 244, 230, 0.86);
-}
-
-.hst__glass p em {
-  font-family: var(--font-display);
-  font-style: normal;
-  font-size: 1.1em;
-  color: #f6f4e6;
-}
-
-.hst__go {
-  display: grid;
-  place-items: center;
-  width: max(36px, 2.8cqw);
-  height: max(36px, 2.8cqw);
-  margin-top: auto;
-  border: 1px solid rgba(246, 244, 230, 0.75);
-  border-radius: var(--radius);
-  color: #f6f4e6;
-  transition: background 0.3s ease, color 0.3s ease;
-}
-
-.hst__glass p + .hst__go {
-  margin-top: max(16px, 1.4cqw);
-}
-
-.hst__go svg {
-  width: 42%;
-  height: auto;
-}
-
-.hst__go:hover {
-  background: #f6f4e6;
-  color: #2f2f30;
 }
 
 /* the head: title, rule, lines, the way on */
@@ -2656,17 +2534,7 @@ html.sj-pre .dh__strip {
   .hst__card--1 { left: 6%; top: 0; width: 38%; }
   .hst__card--3 { left: 56%; top: 9%; width: 38%; }
 
-  .hst__glass {
-    left: 5%;
-    top: 36%;
-    width: 47%;
-    min-height: 0;
-    padding: 5cqw 4.6cqw 4.6cqw;
-    border-radius: var(--radius);
-  }
 
-  .hst__dash { width: 6cqw; margin: 3.6cqw 0 3.2cqw; }
-  .hst__glass p { font-size: max(12.5px, 2.2cqw); }
 
   .hst__orn--c {
     left: 46.5%;
@@ -2701,9 +2569,6 @@ html.sj-pre .dh__strip {
   .hst__card img { border-radius: var(--radius); }
   .hst__card--1 { left: 70%; top: 1%; width: 26%; }
   .hst__card--3 { left: 70%; top: 50%; width: 26%; }
-  .hst__glass { left: 3%; top: 60%; width: 32%; padding: 3.4cqw 3.2cqw 3.2cqw; border-radius: var(--radius); }
-  .hst__dash { width: 4cqw; margin: 2.4cqw 0 2.2cqw; }
-  .hst__glass p { font-size: max(13px, 1.6cqw); }
   .hst__orn--c { left: 50%; top: 32%; width: 4.5cqw; height: 4.5cqw; }
   .hst__facts { grid-template-columns: repeat(4, 1fr); margin: 8px auto 0; width: min(92%, 760px); }
   .hst__facts li:nth-child(3) { border-left: 1px solid rgba(246, 244, 230, 0.18); }
@@ -2723,11 +2588,6 @@ html.sj-pre .dh__strip {
   .hst__card--1 { left: 55%; top: 1%; width: 40%; }
   .hst__card--3 { left: 57%; top: 53%; width: 38%; }
 
-  .hst__glass {
-    left: 3%;
-    top: 27%;
-    width: 47%;
-  }
 
   .hst__tree--m {
     display: block;

@@ -4,9 +4,9 @@
       frame, its first film already playing, shrunk to a miniature (the
       user: the whole film small, not the middle of it); the Shrujan mark
       and a line of type above it, a running stitch and a count below it,
-      clear of it. The window grows in while the page loads, and Shrujan's
-      cloths slide in round the edge of the screen.
-   2. At 100 the type and the cloths go, and the window zooms up into the
+      clear of it. The window grows in while the page loads (no cloths round
+      the edge any more: the user had the fabric taken off the loader).
+   2. At 100 the type goes, and the window zooms up into the
       film's own place under the header, filling the screen.
    3. Then the bar and header come down, and the hero comes in: the title line
       by line, its button, the glass cards, the stories along the foot
@@ -14,8 +14,7 @@
    The window is the film's own frame, scaled (a transform, measured from
    where the frame really is), so nothing is laid out again while it opens. The loader shows once a visit: a reload, or coming
    back to the home page, opens straight onto the hero (the sj-skip class, set
-   in the head from sessionStorage). It does not wait for the 3D form, which
-   builds after the page has opened (craft3d.js). */
+   in the head from sessionStorage). */
 (function () {
   var html = document.documentElement;
   var loader = document.querySelector('.sj-loader');
@@ -53,161 +52,6 @@
   var ready = { film: false, fonts: false };
   var shown = 0;
   var done = false;
-
-  /* ---- the cloths ------------------------------------------------------
-     Shrujan's fabrics as paper-cut squares and rectangles (pinking shears or
-     a straight cut), taped down straight and spaced evenly round the edge of
-     the screen, each half off it. Each slides in from beyond its edge,
-     breathes a little while the page loads, and slides back out the way it
-     came as the window opens.
-     A cloth is [file, width, height, crop x0, y0, x1, y1]: the crop, in
-     fractions of the photograph, is the part of it that is only cloth. */
-  var CLOTHS = [
-    ['top-right.webp', 900, 600, 0.5, 0.3, 0.97, 0.94],                           // mirror-work, crimson and gold
-    ['frame-r5t15.webp', 720, 1280, 0.14, 0.2, 0.86, 0.68],                          // turquoise mirror-work
-    ['sj-handloom-weaving-cushion-cover-4-1.webp', 1100, 1100, 0.2, 0.2, 0.8, 0.8],  // handloom stripes
-    ['hero-beside-right.webp', 1024, 1536, 0.1, 0.14, 0.9, 0.72],                    // red Kutchi embroidery
-    ['sj-discharge-print-skirt-pants-1.webp', 832, 832, 0.38, 0.4, 0.62, 0.7],       // discharge print
-    ['sj-jat-garasiya-hand-embroidered-cushion-cover-1.webp', 1100, 1100, 0.2, 0.2, 0.8, 0.8], // Jat patchwork
-    ['frame-r1t4.webp', 720, 1280, 0, 0.52, 0.38, 0.96],                              // indigo embroidered panels
-    ['sj-mashroo-pant-1.webp', 938, 938, 0.4, 0.43, 0.6, 0.6],                        // mashroo stripes
-    ['sj-handloom-weaving-cushion-cover-7-1.webp', 1100, 1100, 0.16, 0.16, 0.84, 0.84], // woven lattice
-    ['hero-bottom-2.webp', 1374, 1145, 0.46, 0.46, 0.96, 0.96],                       // gold on plum
-    ['sj-shawl-copy-3-1.webp', 1100, 1100, 0.58, 0.4, 0.77, 0.82],                   // handwoven stole
-    ['sj-handloom-weaving-cushion-cover-3-1.webp', 1100, 1100, 0.16, 0.2, 0.84, 0.8], // woven squares
-    ['sj-hand-bag-copy-29-1.webp', 918, 918, 0.31, 0.56, 0.69, 0.88],                 // embroidered bag
-    ['sj-pakko-embroidered-with-applique-work-cushion-cover-copy-1.webp', 1100, 1100, 0.18, 0.18, 0.82, 0.8], // pakko and applique
-    ['sj-red-hand-ahir-embroidered-kanchli-1.webp', 1200, 1200, 0.34, 0.31, 0.52, 0.41], // Ahir kanchli
-    ['frame-r3t26.webp', 720, 1280, 0.5, 0.62, 0.8, 0.98]                              // embroidered coat
-  ];
-  // where each lands: spaced evenly round the edge of the screen, each
-  // straight and half off it — [x %, y % of the screen, size in vmin, form,
-  // edge, comes from]. form: sq (square) or rect; edge: pink (pinking shears)
-  // or cut (a straight edge).
-  var LAYOUT = [
-    [6, 0, 19, 'sq', 'pink', 'top'], [28, 0, 16, 'rect', 'cut', 'top'], [50, 0, 17, 'sq', 'pink', 'top'],
-    [72, 0, 16, 'rect', 'cut', 'top'], [94, 0, 19, 'sq', 'pink', 'top'],
-    [0, 50, 19, 'rect', 'pink', 'left'], [100, 50, 19, 'rect', 'pink', 'right'],
-    [6, 100, 19, 'rect', 'cut', 'bottom'], [28, 100, 16, 'sq', 'pink', 'bottom'], [50, 100, 17, 'rect', 'cut', 'bottom'],
-    [72, 100, 16, 'sq', 'pink', 'bottom'], [94, 100, 19, 'rect', 'cut', 'bottom']
-  ];
-  var LAYOUT_PHONE = [
-    [10, 0, 28, 'sq', 'pink', 'top'], [50, 0, 24, 'rect', 'cut', 'top'], [90, 0, 28, 'sq', 'pink', 'top'],
-    [0, 33, 26, 'rect', 'pink', 'left'], [100, 33, 26, 'rect', 'cut', 'right'],
-    [0, 67, 26, 'rect', 'cut', 'left'], [100, 67, 26, 'rect', 'pink', 'right'],
-    [10, 100, 28, 'rect', 'cut', 'bottom'], [50, 100, 24, 'sq', 'pink', 'bottom'], [90, 100, 28, 'rect', 'cut', 'bottom']
-  ];
-  var cloths = [];
-  var clothWrap = loader.querySelector('.sj-loader__cloths');
-
-  function rnd(seed) { return function () { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }; }
-
-  // the cut: pinking shears all round (a clip-path polygon in pixels for a
-  // w × h piece), or a clean straight edge (no clip at all)
-  function cutPath(edge, w, h) {
-    if (edge !== 'pink') return 'none';
-    var pts = [];
-    function pinkEdge(x0, y0, x1, y1, inward) {
-      var len = Math.hypot(x1 - x0, y1 - y0), teeth = Math.max(4, Math.round(len / 9)), depth = 3.6;
-      for (var k = 0; k < teeth; k++) {
-        var t = k / teeth, x = x0 + (x1 - x0) * t, y = y0 + (y1 - y0) * t;
-        if (k % 2) { x += inward[0] * depth; y += inward[1] * depth; }
-        pts.push([x, y]);
-      }
-    }
-    pinkEdge(0, 0, w, 0, [0, 1]); pinkEdge(w, 0, w, h, [-1, 0]); pinkEdge(w, h, 0, h, [0, -1]); pinkEdge(0, h, 0, 0, [1, 0]);
-    return 'polygon(' + pts.map(function (p) { return p[0].toFixed(1) + 'px ' + p[1].toFixed(1) + 'px'; }).join(',') + ')';
-  }
-
-  function buildCloths() {
-    var base = window.SHRUJAN_ASSET_BASE;
-    if (!clothWrap || !base || reduced || !gsap) return;
-    var vw = window.innerWidth, vh = window.innerHeight, vmin = Math.min(vw, vh) / 100;
-    var layout = phone() ? LAYOUT_PHONE : LAYOUT;
-    var r = rnd(1969);
-    layout.forEach(function (L, i) {
-      var c = CLOTHS[i % CLOTHS.length], s = L[2] * vmin, form = L[3], edge = L[4], side = L[5];
-      var w = s, h = s;
-      if (form === 'rect') { w = s * 1.4; h = s * 0.86; }
-      var el = document.createElement('div');
-      el.className = 'sj-cloth';
-      el.style.width = w + 'px';
-      el.style.height = h + 'px';
-      var inner = document.createElement('div');
-      inner.className = 'sj-cloth__in';
-      var cut = document.createElement('span');
-      cut.className = 'sj-cloth__cut';
-      // cover the piece with the cloth part of the photograph
-      var cw = (c[5] - c[3]) * c[1], ch = (c[6] - c[4]) * c[2], k = Math.max(w / cw, h / ch);
-      // the photograph at the size it is drawn (the store's CDN resizes it):
-      // full-size pictures for twelve small cloths slowed the page's start
-      var px = Math.min(c[1], Math.ceil(c[1] * k * Math.min(window.devicePixelRatio || 1, 2) / 50) * 50);
-      var src = base + c[0] + '?width=' + px;
-      cut.style.backgroundImage = 'url("' + src + '")';
-      cut.style.backgroundSize = (c[1] * k).toFixed(1) + 'px ' + (c[2] * k).toFixed(1) + 'px';
-      cut.style.backgroundPosition = (-(c[3] * c[1] * k) - (cw * k - w) / 2).toFixed(1) + 'px ' + (-(c[4] * c[2] * k) - (ch * k - h) / 2).toFixed(1) + 'px';
-      cut.style.clipPath = cutPath(edge, w, h);
-      inner.appendChild(cut);
-      // the tape, held straight across the edge that faces into the screen:
-      // one strip on a pinked piece, two on a straight-cut one
-      var tapes = {
-        top: edge === 'pink' ? [[50, 100, 0]] : [[20, 100, 0], [80, 100, 0]],
-        bottom: edge === 'pink' ? [[50, 0, 0]] : [[20, 0, 0], [80, 0, 0]],
-        left: edge === 'pink' ? [[100, 50, 90]] : [[100, 24, 90], [100, 76, 90]],
-        right: edge === 'pink' ? [[0, 50, 90]] : [[0, 24, 90], [0, 76, 90]]
-      }[side];
-      tapes.forEach(function (t) {
-        var tp = document.createElement('i');
-        tp.className = 'sj-cloth__tape';
-        tp.style.left = t[0] + '%';
-        tp.style.top = t[1] + '%';
-        tp.style.transform = 'translate(-50%, -50%) rotate(' + t[2].toFixed(1) + 'deg)';
-        inner.appendChild(tp);
-      });
-      el.appendChild(inner);
-      clothWrap.appendChild(el);
-      var left = (L[0] / 100) * vw - w / 2, top = (L[1] / 100) * vh - h / 2;
-      // straight off the screen, beyond the edge it sits on
-      var spare = 40;
-      var from = {
-        left: { x: -(left + w) - spare, y: 0 },
-        right: { x: vw - left + spare, y: 0 },
-        top: { x: 0, y: -(top + h) - spare },
-        bottom: { x: 0, y: vh - top + spare }
-      }[side];
-      gsap.set(el, { x: left + from.x, y: top + from.y, rotation: 0 });
-      var piece = { el: el, inner: inner, home: { x: left, y: top, rotation: 0 }, away: { x: left + from.x, y: top + from.y, rotation: 0 } };
-      cloths.push(piece);
-      // in once its photograph is here (or soon regardless), staggered round the screen
-      var go = function () {
-        if (piece.started || done) return;
-        piece.started = true;
-        gsap.to(el, { x: piece.home.x, y: piece.home.y, duration: 1.4, ease: 'expo.out', delay: 0.1 + i * 0.05 });
-        // it lands and holds still: a cloth that kept breathing repainted
-        // its shadow every frame, which made the loader stutter
-      };
-      // the photograph is asked for first, ahead of the page's own images; a
-      // cloth only comes in once it is here, so none arrives as a blank card
-      var img = new Image();
-      img.fetchPriority = 'high';
-      img.onload = go;
-      img.onerror = function () { el.remove(); };
-      img.src = src;
-    });
-  }
-
-  // back out the way they came, as the window opens
-  function clothsOut(tl) {
-    if (!cloths.length) return;
-    cloths.forEach(function (p) { if (p.float) p.float.kill(); gsap.killTweensOf(p.el); });
-    tl.to(cloths.map(function (p) { return p.el; }), {
-      x: function (i) { return cloths[i].away.x; },
-      y: function (i) { return cloths[i].away.y; },
-      duration: 1,
-      ease: 'power3.inOut',
-      stagger: 0.02
-    }, 0);
-  }
 
   // The page is held by the sj-pre class (overflow hidden) and, once the
   // theme's smooth scroller exists, by stopping it. Asking the theme to stop
@@ -275,8 +119,6 @@
       document.addEventListener('sj:revealed', function () { ro.disconnect(); }, { once: true });
     }
   }
-  buildCloths();
-
   // the Shrujan mark above the window, from the theme's own assets
   var brand = loader.querySelector('.sj-loader__brand');
   if (brand && window.SHRUJAN_ASSET_BASE) {
@@ -357,8 +199,6 @@
       .fromTo(H + '.dh__tab, ' + H + '.dh__remain', { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 1, stagger: 0.08, ease: 'expo.out', clearProps: 'transform,opacity' }, 'open+=0.5')
       .fromTo(H + '.dh__strip', { y: 30 }, { y: 0, duration: 1.2, ease: 'expo.out', clearProps: 'transform' }, 'open+=0.4')
       .add(finish, 'open+=0.4');
-    // the cloths leave with the type, gone before the window fills the screen
-    clothsOut(tl);
   }
 })();
 
@@ -789,9 +629,9 @@
 })();
 
 /* The Shrujan story: the head rises in as the section comes up; then every
-   layer of the terrace moves at its own depth while the section passes (the
-   bougainvillea lags behind and sways from its trunk, the photographs come
-   forward with the glass card; the terrace stays put). */
+   layer moves at its own depth while the section passes (the bougainvillea
+   lags behind and sways from its trunk, the photographs come forward; the
+   campus stays put). */
 (function () {
   var root = document.querySelector('.hst');
   if (!root) return;
@@ -805,7 +645,7 @@
       y: 0, opacity: 1, duration: 1.2, stagger: 0.09, ease: 'expo.out',
       scrollTrigger: { trigger: root, start: 'top 72%' },
     });
-    gsap.fromTo(root.querySelectorAll('.hst__card, .hst__glass'), { opacity: 0, scale: 0.94 }, {
+    gsap.fromTo(root.querySelectorAll('.hst__card'), { opacity: 0, scale: 0.94 }, {
       opacity: 1, scale: 1, duration: 1.3, stagger: 0.08, ease: 'expo.out',
       scrollTrigger: { trigger: root, start: 'top 62%' },
     });
