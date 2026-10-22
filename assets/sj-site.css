@@ -998,7 +998,13 @@ html.sj-hdr-away .site-header {
 
 /* the catalogue follows the circles closely (the user: too much gap) */
 .shop-banner + .shop-body {
-  padding-top: clamp(18px, 2.2vw, 34px);
+  padding-top: clamp(14px, 1.6vw, 24px);
+}
+
+@media (min-width: 721px) {
+  .shop-banner--split > .shop-banner__side {
+    padding-bottom: 4px;
+  }
 }
 
 /* ---- below the widest screens: the promises as cards to swipe ---- */
