@@ -279,7 +279,7 @@
 
   /* ---------- 3. the Enquire tab ----------
      The drawer is built the first time it opens, not with the page: the
-     page stays lighter, and the store's spam check (Google reCAPTCHA, which
+     page stays lighter, and the store's spam check (hCaptcha, which
      Shopify loads for contact forms) only comes in once someone is about to
      write. Three short steps, checked before sending; the reply is the
      store's own contact form, tagged "enquiry". */
@@ -345,7 +345,7 @@
             '</div>' +
             '<p class="sje__error" role="alert" hidden></p>' +
             '<button class="sje__send" type="submit"><span>Send enquiry</span>' + ic('arrow-right') + '</button>' +
-            '<p class="sje__note">We reply personally, ' + esc(CFG.hours) + '. Protected by reCAPTCHA: the Google <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms</a> apply.</p>' +
+            '<p class="sje__note">We reply personally, ' + esc(CFG.hours) + '. Protected by hCaptcha: its <a href="https://www.hcaptcha.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> and <a href="https://www.hcaptcha.com/terms" target="_blank" rel="noopener">Terms</a> apply.</p>' +
           '</form>' +
           '<div class="sje__done" hidden role="status">' +
             '<span class="sje__seal" aria-hidden="true">' + ic('check') + '</span>' +

@@ -306,11 +306,15 @@ html.sj-scrolled .site-header {
   box-shadow: 0 10px 28px -20px rgba(30, 20, 10, 0.45);
 }
 
-/* ---- the store's spam check (Google reCAPTCHA, which Shopify loads with
-   its contact forms) keeps its badge out of the corner, where it sat over
-   the chat button (the user); its notice is printed in the forms instead,
-   as Google asks ---- */
+/* ---- the store's spam check keeps its badge out of the corner, where it
+   sat over the chat button (the user). Shopify's contact forms use hCaptcha
+   (its badge is #shop-hcaptcha-badge-container, styled by Shopify with an
+   id rule, so this one needs !important too); Google's reCAPTCHA badge is
+   covered as well. The notice is printed in the forms instead, as hCaptcha
+   allows. ---- */
+#shop-hcaptcha-badge-container,
 .grecaptcha-badge {
+  display: none !important;
   visibility: hidden !important;
 }
 
