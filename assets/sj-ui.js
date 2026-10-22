@@ -293,46 +293,62 @@
 
   function buildEnquire() {
     if (drawer) return;
+    var base = window.SHRUJAN_ASSET_BASE;
+    var photo = base ? ' style="--sje-photo:url(' + base + 'top-right.webp?width=1000)"' : '';
+    var field = function (cls, label, control) { return '<label class="sje__field' + cls + '">' + control + '<span>' + label + '</span></label>'; };
+    var req = ' <em aria-hidden="true">*</em>';
     drawer = make(
       '<div class="sje" id="sje-panel" role="dialog" aria-modal="true" aria-labelledby="sje-title" hidden>' +
         '<div class="sje__scrim" data-close></div>' +
         '<div class="sje__drawer" data-lenis-prevent>' +
-          '<header class="sje__head"><p class="sje__eyebrow">Work with Shrujan</p>' +
-            '<h2 class="sje__title" id="sje-title">Tell us what you have in mind</h2>' +
-            '<p class="sje__lede">Collaborations, gifting, occasions and custom pieces. Write to us here, or reach the studio directly.</p>' +
-            '<div class="sje__quick">' +
+          '<header class="sje__head"' + photo + '>' +
+            '<p class="sje__eyebrow"><span class="sje__flower" aria-hidden="true"><svg viewBox="-20 -20 40 40"><g fill="none" stroke="currentColor" stroke-width="1.4">' +
+              [0, 90, 180, 270].map(function (k) { return '<path transform="rotate(' + k + ')" d="M0-4C4-8 4-13 0-18C-4-13-4-8 0-4Z"/>'; }).join('') +
+              '<circle r="1.8" fill="currentColor"/></g></svg></span>Work with Shrujan</p>' +
+            '<h2 class="sje__title" id="sje-title">Tell us what you <em>have in mind</em></h2>' +
+            '<p class="sje__lede">Collaborations, gifting, occasions and custom pieces, made by hand in Kutch.</p>' +
+            '<nav class="sje__quick" aria-label="Reach the studio directly">' +
               '<a href="' + wa('Hello Shrujan, I have an enquiry about ') + '" target="_blank" rel="noopener">' + ic('whatsapp-logo') + 'WhatsApp</a>' +
               '<a href="tel:' + CFG.phone.replace(/\s+/g, '') + '">' + ic('phone') + 'Call</a>' +
               '<a href="mailto:' + CFG.email + '">' + ic('envelope-simple') + 'Email</a>' +
-            '</div>' +
-            '<button class="sje__x" type="button" data-close aria-label="Close">' + ic('x') + '</button></header>' +
+            '</nav>' +
+            '<button class="sje__x" type="button" data-close aria-label="Close">' + ic('x') + '</button>' +
+            '<span class="sje__progress" aria-hidden="true"><i></i></span>' +
+          '</header>' +
           '<form class="sje__form" method="post" action="/contact#sje" accept-charset="UTF-8" novalidate>' +
             '<input type="hidden" name="form_type" value="contact"><input type="hidden" name="utf8" value="✓">' +
             '<input type="hidden" name="contact[tags]" value="enquiry">' +
             '<input type="hidden" name="contact[Page]" value="' + esc(location.pathname) + '">' +
-            '<fieldset class="sje__kinds"><legend class="sje__step"><b>1</b>What is it about?</legend>' +
+            '<fieldset class="sje__sec" data-step="1"><legend class="sje__lab"><b>01</b>What is it about' + ic('check') + '</legend>' +
+              '<div class="sje__kinds">' +
               KINDS.map(function (k, i) {
-                return '<label class="sje__kind"><input type="radio" name="contact[Enquiry]" value="' + esc(k[0]) + '"' + (i ? '' : ' checked') + '><span>' + ic(k[1]) + esc(k[0]) + '</span></label>';
+                return '<label class="sje__kind"><input type="radio" name="contact[Enquiry]" value="' + esc(k[0]) + '"' + (i ? '' : ' checked') + '><span>' + ic(k[1]) + '<b>' + esc(k[0]) + '</b></span></label>';
               }).join('') +
+              '</div>' +
             '</fieldset>' +
-            '<div class="sje__group"><p class="sje__step"><b>2</b>About you</p>' +
-              '<div class="sje__row"><label class="sje__field"><span>Name <em aria-hidden="true">*</em></span><input type="text" name="contact[name]" autocomplete="name" required></label>' +
-                '<label class="sje__field"><span>Organisation</span><input type="text" name="contact[Organisation]" autocomplete="organization"></label></div>' +
-              '<div class="sje__row"><label class="sje__field"><span>Email <em aria-hidden="true">*</em></span><input type="email" name="contact[email]" autocomplete="email" required></label>' +
-                '<label class="sje__field"><span>Phone / WhatsApp</span><input type="tel" name="contact[phone]" autocomplete="tel"></label></div>' +
+            '<div class="sje__sec" data-step="2"><p class="sje__lab"><b>02</b>About you' + ic('check') + '</p>' +
+              '<div class="sje__row">' + field('', 'Name' + req, '<input type="text" name="contact[name]" autocomplete="name" placeholder=" " required>') +
+                field('', 'Organisation', '<input type="text" name="contact[Organisation]" autocomplete="organization" placeholder=" ">') + '</div>' +
+              '<div class="sje__row">' + field('', 'Email' + req, '<input type="email" name="contact[email]" autocomplete="email" placeholder=" " required>') +
+                field('', 'Phone / WhatsApp', '<input type="tel" name="contact[phone]" autocomplete="tel" placeholder=" ">') + '</div>' +
             '</div>' +
-            '<div class="sje__group sje__group--grow"><p class="sje__step"><b>3</b>Your idea</p>' +
-              '<div class="sje__row"><label class="sje__field"><span>How many pieces</span><select name="contact[Quantity]"><option>Not sure yet</option><option>1–10</option><option>10–50</option><option>50–200</option><option>More than 200</option></select></label>' +
-                '<label class="sje__field"><span>Needed by</span><input type="text" name="contact[Needed by]" placeholder="e.g. March 2027"></label></div>' +
-              '<label class="sje__field sje__field--grow"><span>Tell us about it <em aria-hidden="true">*</em></span><textarea name="contact[body]" rows="3" required placeholder="The occasion, the pieces, the colours or crafts you have in mind"></textarea></label>' +
+            '<div class="sje__sec sje__sec--grow" data-step="3"><p class="sje__lab"><b>03</b>Your idea' + ic('check') + '</p>' +
+              '<div class="sje__row">' + field(' sje__field--up', 'How many pieces', '<select name="contact[Quantity]"><option>Not sure yet</option><option>1–10</option><option>10–50</option><option>50–200</option><option>More than 200</option></select>') +
+                field('', 'Needed by', '<input type="text" name="contact[Needed by]" placeholder=" ">') + '</div>' +
+              field(' sje__field--box', 'Tell us about it' + req, '<textarea name="contact[body]" rows="3" required placeholder="The occasion, the pieces, the colours or crafts you have in mind"></textarea>') +
             '</div>' +
             '<p class="sje__error" role="alert" hidden></p>' +
-            '<button class="sje__send" type="submit">Send enquiry ' + ic('paper-plane-tilt') + '</button>' +
+            '<button class="sje__send" type="submit"><span>Send enquiry</span>' + ic('arrow-right') + '</button>' +
             '<p class="sje__note">We reply personally, ' + esc(CFG.hours) + '. Protected by reCAPTCHA: the Google <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms</a> apply.</p>' +
           '</form>' +
-          '<div class="sje__done" hidden role="status">' + ic('check-circle') + '<h3>Thank you, it’s with us.</h3>' +
-            '<p>The team will write back to you soon. For anything urgent, call ' + esc(CFG.phone) + ' or <a href="' + wa('Hello Shrujan, I sent an enquiry on the website about ') + '" target="_blank" rel="noopener">WhatsApp us</a>.</p>' +
-            '<button class="sje__send sje__send--quiet" type="button" data-close>Close</button></div>' +
+          '<div class="sje__done" hidden role="status">' +
+            '<span class="sje__seal" aria-hidden="true">' + ic('check') + '</span>' +
+            '<p class="sje__eyebrow">Enquiry received</p>' +
+            '<h3>Thank you, it’s <em>with us.</em></h3>' +
+            '<p>Someone from the Shrujan studio will write back to you personally, ' + esc(CFG.hours) + '. For anything urgent, call ' + esc(CFG.phone) + '.</p>' +
+            '<div class="sje__done-acts"><a class="sje__send" href="' + wa('Hello Shrujan, I sent an enquiry on the website about ') + '" target="_blank" rel="noopener"><span>WhatsApp us</span>' + ic('whatsapp-logo') + '</a>' +
+            '<button class="sje__send sje__send--quiet" type="button" data-close><span>Close</span></button></div>' +
+          '</div>' +
         '</div>' +
       '</div>'
     );
@@ -341,11 +357,22 @@
     eDone = drawer.querySelector('.sje__done');
     eError = drawer.querySelector('.sje__error');
     drawer.addEventListener('click', function (e) { if (e.target.closest('[data-close]')) closeEnquire(); });
-    // a field is marked as soon as it is put right
+    // a field is marked as soon as it is put right; the line under the
+    // header fills, and each part ticks itself off, as the form is filled
+    var bar = drawer.querySelector('.sje__progress i');
+    var ok = function (n) { var el = eForm.querySelector('[name="' + n + '"]'); var v = el ? el.value.trim() : ''; return n === 'contact[email]' ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) : !!v; };
+    var progress = function () {
+      var done = [true, ok('contact[name]') && ok('contact[email]'), ok('contact[body]')];
+      [].forEach.call(eForm.querySelectorAll('.sje__sec'), function (sec, k) { sec.classList.toggle('is-done', done[k]); });
+      bar.style.transform = 'scaleX(' + (done.filter(Boolean).length / 3) + ')';
+    };
     eForm.addEventListener('input', function (e) {
       var f = e.target.closest('.sje__field');
       if (f && f.classList.contains('is-invalid') && e.target.checkValidity()) f.classList.remove('is-invalid');
+      progress();
     });
+    eForm.addEventListener('change', progress);
+    progress();
     eForm.addEventListener('submit', function (e) {
       e.preventDefault();
       var bad = [].slice.call(eForm.querySelectorAll('[required]')).filter(function (el) {

@@ -695,18 +695,24 @@ html.sj-pre .sje__tab {
   transform: scale(1.15);
 }
 
+/* the drawer: a photograph of hands at work for its head, the form on the
+   page's own grained paper below, in one screen's height */
 .sje {
   position: fixed;
   inset: 0;
   z-index: 10001;
+  --sje-line: rgba(64, 64, 65, 0.22);
+  --sje-warm: #e8d6b2;
 }
 
 .sje__scrim {
   position: absolute;
   inset: 0;
-  background: rgba(30, 30, 30, 0.42);
+  background: rgba(24, 20, 18, 0.48);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.45s ease;
 }
 
 .sje__drawer {
@@ -716,15 +722,15 @@ html.sj-pre .sje__tab {
   bottom: 0;
   display: flex;
   flex-direction: column;
-  width: min(480px, 100vw);
+  width: min(500px, 100vw);
   height: 100vh;
   height: 100dvh;
   overflow-y: auto;
   overscroll-behavior: contain;
-  background: var(--ui-bg);
-  box-shadow: -30px 0 60px -30px rgba(30, 30, 30, 0.5);
+  background: var(--grain-a, none) 0 0 / 240px 240px, var(--ui-bg);
+  box-shadow: -40px 0 80px -40px rgba(20, 14, 10, 0.55);
   transform: translateX(104%);
-  transition: transform 0.6s var(--ui-ease);
+  transition: transform 0.7s var(--ui-ease);
 }
 
 .sje.is-open .sje__scrim {
@@ -735,51 +741,132 @@ html.sj-pre .sje__tab {
   transform: none;
 }
 
+/* ---- the head ---- */
 .sje__head {
   position: relative;
   flex: none;
-  padding: clamp(16px, 2.6vh, 26px) 64px clamp(14px, 2.2vh, 20px) 26px;
-  background: var(--sje-ink);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: clamp(168px, 22vh, 214px);
+  padding: 20px 28px 20px;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(30, 26, 24, 0.35) 0%, rgba(30, 26, 24, 0.72) 48%, rgba(30, 26, 24, 0.94) 100%),
+    var(--sje-photo, none) center 38% / cover,
+    #2f2a27;
   color: var(--ui-bg);
 }
 
 .sje__eyebrow {
-  margin: 0 0 8px;
-  font:500 var(--fs-2xs)/1.3 var(--font-sans);
-  letter-spacing: 0.22em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 10px;
+  font:500 var(--fs-2xs)/1.2 var(--font-sans);
+  letter-spacing: 0.28em;
   text-transform: uppercase;
-  opacity: 0.75;
+  color: var(--sje-warm);
+}
+
+.sje__eyebrow::after {
+  content: '';
+  flex: 0 0 34px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+.sje__flower {
+  display: block;
+  width: 15px;
+  height: 15px;
+}
+
+.sje__flower svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .sje__title {
   margin: 0;
-  font:400 var(--fs-xl) / 1.15 var(--font-display);
+  max-width: 15em;
+  font:400 calc(var(--fs-2xl) * 1.05) / 1.08 var(--font-display);
+  letter-spacing: -0.005em;
+}
+
+/* (the site sets everything upright with !important; this accent is the
+   exception, as the Studio Collection title is) */
+.sje__title em {
+  font-style: italic !important;
+  color: var(--sje-warm);
 }
 
 .sje__lede {
+  max-width: 34em;
   margin: 8px 0 0;
   font:400 var(--fs-xs)/1.5 var(--font-sans);
-  opacity: 0.82;
+  color: rgba(246, 244, 230, 0.78);
+}
+
+/* the studio, directly: three quiet links, a hairline between them */
+.sje__quick {
+  display: flex;
+  align-items: center;
+  margin-top: 16px;
+  border-top: 1px solid rgba(246, 244, 230, 0.16);
+  padding-top: 12px;
+}
+
+.sje__quick a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 2px 16px 2px 0;
+  font:500 var(--fs-2xs)/1 var(--font-sans);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ui-bg);
+  text-decoration: none;
+  opacity: 0.88;
+  transition: opacity 0.25s ease, color 0.25s ease;
+}
+
+.sje__quick a + a {
+  padding-left: 16px;
+  border-left: 1px solid rgba(246, 244, 230, 0.2);
+}
+
+.sje__quick a:hover {
+  color: var(--sje-warm);
+  opacity: 1;
+}
+
+.sje__quick i {
+  font-size: 15px;
 }
 
 .sje__x {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 16px;
+  right: 16px;
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
-  border: 1px solid rgba(246, 244, 230, 0.35);
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(246, 244, 230, 0.3);
   border-radius: var(--radius);
-  background: transparent;
-  color: inherit;
+  background: rgba(30, 26, 24, 0.35);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  color: var(--ui-bg);
   cursor: pointer;
-  transition: background 0.25s ease, transform 0.4s var(--ui-ease);
+  transition: background 0.25s ease, transform 0.45s var(--ui-ease);
 }
 
 .sje__x:hover {
-  background: rgba(246, 244, 230, 0.12);
+  background: rgba(246, 244, 230, 0.16);
   transform: rotate(90deg);
 }
 
@@ -787,28 +874,104 @@ html.sj-pre .sje__tab {
   font-size: 19px;
 }
 
+/* the line along the head's foot fills as the form is filled */
+.sje__progress {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: rgba(246, 244, 230, 0.12);
+}
+
+.sje__progress i {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #c9a46a, var(--sje-warm));
+  transform: scaleX(0.33);
+  transform-origin: left;
+  transition: transform 0.6s var(--ui-ease);
+}
+
+/* ---- the form ---- */
 .sje__form {
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
-  gap: clamp(8px, 1.5vh, 14px);
+  gap: clamp(12px, 1.9vh, 20px);
   min-height: 0;
-  padding: clamp(14px, 2.2vh, 22px) 26px clamp(14px, 2.2vh, 22px);
+  padding: clamp(16px, 2.2vh, 24px) 28px clamp(14px, 2vh, 20px);
 }
 
-.sje__legend {
-  margin: 0 0 8px;
-  padding: 0;
-  font:400 var(--fs-base)/1.2 var(--font-display);
-}
-
-.sje__kinds {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
+.sje__sec {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 1.3vh, 12px);
+  min-width: 0;
   margin: 0;
   padding: 0;
   border: 0;
+}
+
+/* a part's heading: its number in italic, its name, a hairline, and a tick
+   once it is filled */
+.sje__lab {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  font:500 var(--fs-2xs)/1 var(--font-sans);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ui-ink);
+}
+
+.sje__lab b {
+  font: 400 var(--fs-lg)/1 var(--font-display);
+  font-style: italic !important;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ui-soft);
+  transition: color 0.3s ease;
+}
+
+.sje__lab::after {
+  content: '';
+  flex: 1 1 auto;
+  order: 3;
+  height: 1px;
+  background: var(--sje-line);
+}
+
+.sje__lab i {
+  order: 4;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--sje-ink);
+  font-size: 12px;
+  color: var(--ui-bg);
+  transform: scale(0);
+  transition: transform 0.4s var(--ui-ease);
+}
+
+.sje__sec.is-done .sje__lab b {
+  color: var(--sje-ink);
+}
+
+.sje__sec.is-done .sje__lab i {
+  transform: scale(1);
+}
+
+/* the topics: two to a row, an icon and a name */
+.sje__kinds {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
 }
 
 .sje__kind {
@@ -823,41 +986,49 @@ html.sj-pre .sje__tab {
 
 .sje__kind span {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 5px;
+  gap: 10px;
   height: 100%;
-  min-height: clamp(58px, 8vh, 72px);
-  padding: 9px 6px;
-  border: 1px solid var(--ui-line);
+  min-height: 41px;
+  padding: 8px 12px;
+  border: 1px solid var(--sje-line);
   border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.5);
-  font:400 var(--fs-2xs)/1.25 var(--font-sans);
-  text-align: center;
+  background: rgba(255, 255, 255, 0.45);
   cursor: pointer;
-  transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease, transform 0.3s var(--ui-ease);
+  transition: border-color 0.25s ease, background 0.3s ease, color 0.3s ease, transform 0.35s var(--ui-ease), box-shadow 0.35s ease;
 }
 
 .sje__kind span i {
-  font-size: 22px;
-  color: var(--sje-ink);
-  transition: color 0.25s ease;
+  flex: none;
+  font-size: 19px;
+  color: var(--ui-soft);
+  transition: color 0.3s ease;
+}
+
+.sje__kind span b {
+  min-width: 0;
+  font:400 var(--fs-xs)/1.25 var(--font-sans);
+  color: var(--ui-ink);
 }
 
 .sje__kind span:hover {
-  transform: translateY(-2px);
-  border-color: var(--sje-ink);
+  border-color: rgba(64, 64, 65, 0.45);
+  background: rgba(255, 255, 255, 0.75);
+  transform: translateY(-1px);
 }
 
 .sje__kind input:checked + span {
   border-color: var(--sje-ink);
   background: var(--sje-ink);
+  box-shadow: 0 12px 22px -16px rgba(20, 16, 14, 0.7);
+}
+
+.sje__kind input:checked + span b {
   color: var(--ui-bg);
 }
 
 .sje__kind input:checked + span i {
-  color: var(--ui-bg);
+  color: var(--sje-warm);
 }
 
 .sje__kind input:focus-visible + span {
@@ -865,101 +1036,220 @@ html.sj-pre .sje__tab {
   outline-offset: 2px;
 }
 
+/* the fields: a line to write on, the label lifting as it is filled */
 .sje__row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 4px 22px;
 }
 
 .sje__field {
+  position: relative;
   display: block;
+  padding-top: 15px;
 }
 
-.sje__field span {
-  display: block;
-  margin-bottom: 5px;
-  font:500 var(--fs-2xs)/1 var(--font-sans);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+.sje__field > span {
+  position: absolute;
+  top: 24px;
+  left: 0;
+  font:400 var(--fs-sm)/1 var(--font-sans);
   color: var(--ui-soft);
+  white-space: nowrap;
+  pointer-events: none;
+  transform-origin: left top;
+  transition: transform 0.3s var(--ui-ease), color 0.25s ease, letter-spacing 0.3s ease;
+}
+
+.sje__field em {
+  font-style: normal;
+  color: #a3261e;
 }
 
 .sje__field input,
-.sje__field select,
-.sje__field textarea {
+.sje__field select {
   width: 100%;
-  padding: clamp(8px, 1.15vh, 11px) 12px;
-  border: 1px solid var(--ui-line);
-  border-radius: var(--radius);
-  background: #fff;
-  font:400 var(--fs-sm)/1.4 var(--font-sans);
+  height: 34px;
+  padding: 6px 0;
+  border: 0;
+  border-bottom: 1px solid var(--sje-line);
+  border-radius: 0;
+  background: transparent;
+  font:400 var(--fs-base)/1.3 var(--font-sans);
   color: var(--ui-ink);
   outline: none;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
-.sje__field input:focus,
-.sje__field select:focus,
-.sje__field textarea:focus {
-  border-color: var(--sje-ink);
-  box-shadow: 0 0 0 3px rgba(64, 64, 65, 0.12);
+.sje__field select {
+  padding-right: 22px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%23404041' stroke-width='1.3'/%3E%3C/svg%3E") right 2px center / 11px 8px no-repeat;
+  cursor: pointer;
 }
 
-/* the message box takes the height that is left */
-.sje__field--grow {
+/* the line darkens from the left as the field is focused */
+.sje__field::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1.5px;
+  background: var(--sje-ink);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s var(--ui-ease);
+}
+
+.sje__field:focus-within::after {
+  transform: scaleX(1);
+}
+
+.sje__field input:focus + span,
+.sje__field input:not(:placeholder-shown) + span,
+.sje__field--up > span,
+.sje__field--box > span {
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transform: translateY(-24px) scale(0.72);
+}
+
+.sje__field:focus-within > span {
+  color: var(--ui-ink);
+}
+
+/* the message: a soft box of its own, taking the height that is left */
+.sje__sec--grow {
+  flex: 1 0 auto;
+}
+
+.sje__field--box {
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
-  min-height: 0;
+  padding-top: 15px;
 }
 
-.sje__field--grow textarea {
+.sje__field--box::after {
+  display: none;
+}
+
+.sje__field--box textarea {
   flex: 1 1 auto;
+  width: 100%;
   min-height: 64px;
+  padding: 10px 13px;
+  border: 1px solid var(--sje-line);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.5);
+  font:400 var(--fs-sm)/1.5 var(--font-sans);
+  color: var(--ui-ink);
+  outline: none;
   resize: none;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
 }
 
-/* the box keeps its height: a message that appears under it takes room from
-   the space above the button, not from the box */
-.sje__form .sje__group--grow {
-  flex-shrink: 0;
+.sje__field--box textarea:focus {
+  border-color: var(--sje-ink);
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 0 3px rgba(64, 64, 65, 0.08);
 }
 
+.sje__field textarea::placeholder {
+  color: rgba(64, 64, 65, 0.4);
+}
+
+.sje__field--box > span {
+  top: 24px;
+}
+
+/* a field left empty, or an address that is not one */
+.sje__field.is-invalid > span {
+  color: #a3261e;
+}
+
+.sje__field.is-invalid input,
+.sje__field.is-invalid textarea {
+  border-color: #a3261e;
+}
+
+.sje__field.is-invalid::after {
+  background: #a3261e;
+  transform: scaleX(1);
+}
+
+.sje__error {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 9px 12px;
+  border-left: 2px solid #a3261e;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: rgba(163, 38, 30, 0.07);
+  font:400 var(--fs-xs)/1.4 var(--font-sans);
+  color: #8c1d18;
+}
+
+.sje__error[hidden] {
+  display: none;
+}
+
+/* the button: the words, and an arrow that leans on */
 .sje__send {
   position: relative;
-  display: inline-flex;
+  display: flex;
   flex: none;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
+  justify-content: space-between;
+  gap: 12px;
   overflow: hidden;
-  padding: clamp(12px, 1.7vh, 15px) 22px;
+  width: 100%;
+  min-height: 50px;
+  padding: 0 18px 0 24px;
   border: 0;
   border-radius: var(--radius);
   background: var(--sje-ink);
   font:500 var(--fs-xs)/1 var(--font-sans);
-  letter-spacing: 0.16em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--ui-bg);
+  text-decoration: none;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, box-shadow 0.35s ease;
+}
+
+.sje__send i {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius);
+  background: rgba(246, 244, 230, 0.12);
+  font-size: 17px;
+  transition: transform 0.4s var(--ui-ease), background 0.3s ease;
 }
 
 .sje__send:hover {
   background: var(--sje-deep);
+  box-shadow: 0 16px 30px -18px rgba(20, 16, 14, 0.8);
 }
 
-.sje__send i {
-  font-size: 17px;
+.sje__send:hover i {
+  background: var(--sje-warm);
+  color: var(--sje-deep);
+  transform: translateX(3px);
 }
 
 .sje__send::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(110deg, transparent 30%, rgba(246, 244, 230, 0.22) 50%, transparent 70%);
+  background: linear-gradient(110deg, transparent 30%, rgba(246, 244, 230, 0.16) 50%, transparent 70%);
   transform: translateX(-100%);
-  transition: transform 0.8s ease;
+  transition: transform 0.9s ease;
 }
 
 .sje__send:hover::before {
@@ -971,67 +1261,123 @@ html.sj-pre .sje__tab {
   cursor: progress;
 }
 
+.sje__send--quiet {
+  justify-content: center;
+  border: 1px solid var(--sje-line);
+  background: transparent;
+  color: var(--ui-ink);
+}
+
+.sje__send--quiet:hover {
+  border-color: var(--sje-ink);
+  background: transparent;
+  box-shadow: none;
+}
+
 .sje__note {
   flex: none;
-  margin: 0;
-  font:400 var(--fs-2xs)/1.5 var(--font-sans);
+  margin: -4px 0 0;
+  font:400 var(--fs-2xs)/1.55 var(--font-sans);
   text-align: center;
   color: var(--ui-soft);
 }
 
 .sje__note a {
-  color: var(--ui-ink);
+  color: inherit;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
+/* ---- thank you ---- */
 .sje__done {
-  display: grid;
-  justify-items: start;
-  gap: 10px;
-  padding: 34px 26px;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 34px;
+  text-align: center;
 }
 
-.sje__done[hidden] {
+.sje__done[hidden],
+.sje__form[hidden] {
   display: none;
 }
 
-.sje__done i {
-  font-size: 46px;
+.sje__seal {
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  margin-bottom: 8px;
+  border: 1px solid var(--sje-line);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.28);
+  animation: sje-pop 0.7s var(--ui-ease);
+}
+
+.sje__seal i {
+  font-size: 34px;
   color: var(--sje-ink);
-  animation: sje-pop 0.6s var(--ui-ease);
+}
+
+.sje__done .sje__eyebrow {
+  margin: 0;
+  color: var(--ui-soft);
+}
+
+.sje__done .sje__eyebrow::after {
+  display: none;
 }
 
 .sje__done h3 {
   margin: 0;
-  font:400 var(--fs-xl)/1.2 var(--font-display);
+  font:400 var(--fs-2xl)/1.15 var(--font-display);
+  color: var(--ui-ink);
+}
+
+.sje__done h3 em {
+  font-style: italic !important;
+  color: var(--indigo, #924241);
 }
 
 .sje__done p {
+  max-width: 32em;
   margin: 0;
-  font:400 var(--fs-sm)/1.6 var(--font-sans);
+  font:400 var(--fs-sm)/1.65 var(--font-sans);
   color: var(--ui-soft);
+}
+
+.sje__done-acts {
+  display: grid;
+  gap: 8px;
+  width: min(100%, 320px);
+  margin-top: 14px;
 }
 
 @keyframes sje-pop {
   from {
     opacity: 0;
-    transform: scale(0.5) rotate(-12deg);
+    transform: scale(0.6);
   }
 }
 
-/* the form's parts come in one after another as the drawer opens */
+/* the head's words and the form's parts come in one after another */
+.sje.is-open .sje__head > :not(.sje__progress):not(.sje__x),
 .sje.is-open .sje__form > * {
-  animation: sje-rise 0.6s var(--ui-ease) both;
+  animation: sje-rise 0.7s var(--ui-ease) both;
 }
 
-.sje.is-open .sje__form > *:nth-child(2) { animation-delay: 0.08s; }
-.sje.is-open .sje__form > *:nth-child(3) { animation-delay: 0.14s; }
-.sje.is-open .sje__form > *:nth-child(4) { animation-delay: 0.2s; }
-.sje.is-open .sje__form > *:nth-child(5) { animation-delay: 0.26s; }
-.sje.is-open .sje__form > *:nth-child(6) { animation-delay: 0.32s; }
-.sje.is-open .sje__form > *:nth-child(7) { animation-delay: 0.38s; }
-.sje.is-open .sje__form > *:nth-child(8) { animation-delay: 0.44s; }
+.sje.is-open .sje__head > :nth-child(2) { animation-delay: 0.06s; }
+.sje.is-open .sje__head > :nth-child(3) { animation-delay: 0.12s; }
+.sje.is-open .sje__head > :nth-child(4) { animation-delay: 0.18s; }
+.sje.is-open .sje__form > :nth-child(5) { animation-delay: 0.16s; }
+.sje.is-open .sje__form > :nth-child(6) { animation-delay: 0.22s; }
+.sje.is-open .sje__form > :nth-child(7) { animation-delay: 0.28s; }
+.sje.is-open .sje__form > :nth-child(8) { animation-delay: 0.32s; }
+.sje.is-open .sje__form > :nth-child(9) { animation-delay: 0.36s; }
 
 @keyframes sje-rise {
   from {
@@ -1040,150 +1386,81 @@ html.sj-pre .sje__tab {
   }
 }
 
-/* the quick ways to reach the studio, under the title */
-.sje__quick {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: clamp(10px, 1.6vh, 16px);
-}
+/* short screens: the line under the title goes, the head and gaps lower */
+@media (max-height: 780px) {
+  .sje__head {
+    min-height: 0;
+    padding-top: 56px;
+    padding-bottom: 18px;
+  }
 
-.sje__quick a {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 10px;
-  border: 1px solid rgba(246, 244, 230, 0.32);
-  border-radius: var(--radius);
-  font:500 var(--fs-2xs)/1 var(--font-sans);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ui-bg);
-  text-decoration: none;
-  transition: background 0.25s ease, border-color 0.25s ease;
-}
-
-.sje__quick a:hover {
-  border-color: rgba(246, 244, 230, 0.7);
-  background: rgba(246, 244, 230, 0.12);
-}
-
-.sje__quick i {
-  font-size: 15px;
-}
-
-/* the three steps */
-.sje__step {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  margin: 0 0 8px;
-  padding: 0;
-  font:400 var(--fs-base)/1.2 var(--font-display);
-  color: var(--ui-ink);
-}
-
-.sje__step b {
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--sje-ink);
-  font: 600 10px/1 var(--font-sans);
-  color: var(--ui-bg);
-}
-
-.sje__group {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(8px, 1.2vh, 11px);
-}
-
-.sje__group .sje__step {
-  margin-bottom: 0;
-}
-
-.sje__group--grow {
-  flex: 1 1 auto;
-  min-height: 0;
-}
-
-.sje__field em {
-  font-style: normal;
-  color: var(--ui-red);
-}
-
-.sje__field input::placeholder,
-.sje__field textarea::placeholder {
-  color: rgba(64, 64, 65, 0.42);
-}
-
-.sje__field.is-invalid span {
-  color: #a3261e;
-}
-
-.sje__field.is-invalid input,
-.sje__field.is-invalid textarea {
-  border-color: #a3261e;
-  box-shadow: 0 0 0 3px rgba(163, 38, 30, 0.12);
-}
-
-.sje__error {
-  position: relative;
-  z-index: 1;
-  flex: none;
-  margin: 0;
-  padding: 9px 12px;
-  border-radius: var(--radius);
-  background: rgba(163, 38, 30, 0.08);
-  font:400 var(--fs-xs)/1.4 var(--font-sans);
-  color: #8c1d18;
-}
-
-.sje__error[hidden] {
-  display: none;
-}
-
-.sje__send--quiet {
-  margin-top: 8px;
-  border: 1px solid var(--sje-ink);
-  background: transparent;
-  color: var(--sje-ink);
-}
-
-.sje__send--quiet:hover {
-  background: var(--sje-ink);
-  color: var(--ui-bg);
-}
-
-.sje__done a {
-  color: var(--ui-ink);
-}
-
-/* short screens: the line under the title goes, the topics get lower */
-@media (max-height: 760px) {
   .sje__lede {
     display: none;
   }
 
-  .sje__kind span {
-    flex-direction: row;
-    gap: 6px;
-    min-height: 44px;
-    text-align: left;
+  .sje__quick {
+    margin-top: 12px;
+    padding-top: 10px;
   }
 
-  .sje__kind span i {
-    font-size: 18px;
+  .sje__kind span {
+    min-height: 40px;
+    padding-top: 7px;
+    padding-bottom: 7px;
   }
 }
 
-@media (max-height: 640px) {
+@media (max-height: 720px) {
   .sje__eyebrow,
   .sje__note {
     display: none;
+  }
+
+  .sje__head {
+    padding-top: 18px;
+    padding-bottom: 14px;
+  }
+
+  .sje__title {
+    padding-right: 48px;
+    font-size: var(--fs-xl);
+  }
+
+  .sje__form {
+    gap: 10px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .sje__sec {
+    gap: 6px;
+  }
+
+  .sje__kind span {
+    min-height: 34px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+
+  .sje__field {
+    padding-top: 13px;
+  }
+
+  .sje__field input,
+  .sje__field select {
+    height: 31px;
+  }
+
+  .sje__field > span {
+    top: 21px;
+  }
+
+  .sje__field--box textarea {
+    min-height: 50px;
+  }
+
+  .sje__send {
+    min-height: 44px;
   }
 }
 
@@ -1266,6 +1543,7 @@ html.sj-pre .sje__tab {
   }
 
   .sje__head {
+    padding-right: 20px;
     padding-left: 20px;
   }
 
@@ -1274,22 +1552,27 @@ html.sj-pre .sje__tab {
     padding-left: 20px;
   }
 
-  .sje__kind span {
-    flex-direction: column;
-    gap: 4px;
-    padding: 8px 4px;
-    text-align: center;
+  .sje__row {
+    gap: 4px 16px;
   }
-  .sje__quick {
-    flex-wrap: nowrap;
-    gap: 6px;
+
+  .sje__kind span {
+    gap: 8px;
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .sje__kind span i {
+    font-size: 17px;
   }
 
   .sje__quick a {
-    flex: 1 1 0;
-    justify-content: center;
-    padding: 8px 6px;
-    letter-spacing: 0.1em;
+    padding-right: 12px;
+    letter-spacing: 0.14em;
+  }
+
+  .sje__quick a + a {
+    padding-left: 12px;
   }
 }
 
@@ -1298,7 +1581,10 @@ html.sj-pre .sje__tab {
   .sje__drawer,
   .sjh__panel,
   .sjh__msg,
-  .sje.is-open .sje__form > * {
+  .sje.is-open .sje__head > *,
+  .sje.is-open .sje__form > *,
+  .sje__field > span,
+  .sje__progress i {
     animation: none;
     transition: none;
   }
