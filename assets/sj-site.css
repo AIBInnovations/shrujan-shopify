@@ -687,6 +687,54 @@ html.sj-scrolled .site-header {
   }
 }
 
+/* ---- the Story page's head on phones and tablets (the user: the numbers
+   not visible): the faded 1969 sits whole inside the head instead of being
+   cut by its foot; the three figures stand in one row, a hairline between
+   them; the chapter bar fades at its edge, so it reads as one to swipe ---- */
+@media (max-width: 900px) {
+  .page-hero--ghost {
+    overflow: hidden;
+  }
+
+  .page-hero__ghost {
+    top: auto !important;
+    right: var(--gutter) !important;
+    bottom: 14px !important;
+    font-size: clamp(88px, 27vw, 190px) !important;
+    line-height: 1 !important;
+    transform: none !important;
+  }
+
+  .page-meta {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+  }
+
+  .page-meta li {
+    min-width: 0;
+    padding: 0 10px 0 0;
+  }
+
+  .page-meta li + li {
+    padding-left: 12px;
+  }
+
+  .page-meta__value {
+    font-size: var(--fs-2xl);
+  }
+
+  .page-meta__label {
+    letter-spacing: 0.12em;
+    line-height: 1.35;
+  }
+
+  .chapters__list {
+    -webkit-mask-image: linear-gradient(90deg, #000 82%, transparent);
+    mask-image: linear-gradient(90deg, #000 82%, transparent);
+  }
+}
+
 /* icons:start (written by convert_icons.py from icons.py) */
 /* ---- the interface icons (Material Symbols, Font Awesome brands; icons.py) ---- */
 @font-face {

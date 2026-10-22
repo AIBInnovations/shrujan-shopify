@@ -8,8 +8,9 @@
   store as a Shopify contact form, so it needs no app; the store confirms
   on WhatsApp or by email. The same choice can be sent on WhatsApp instead.
   With a booking page set (Calendly, Cal.com), a link to it shows as well.
-  The day and time pickers are drawn by assets/sj-pdp.js; without scripts
-  the form still sends, with a free-text time.
+  The calendar (a month at a time, the open days within reach) and the
+  times, grouped by part of the day, are drawn by assets/sj-pdp.js; without
+  scripts the form still sends, with a free-text time.
 {%- endcomment -%}
 {%- liquid
   assign s = section.settings
@@ -48,30 +49,44 @@
           <input type="hidden" name="contact[Page]" value="{{ request.path | escape }}">
 
           <fieldset class="pdpx-book__step">
-            <legend>1. How would you like to meet?</legend>
+            <legend class="pdpx-book__lab"><b>01</b>How would you like to meet?</legend>
             <div class="pdpx-book__modes">
               {%- assign modes = s.modes | split: ',' -%}
               {%- for m in modes -%}
-                {%- assign mm = m | strip -%}
-                <label class="pdpx-book__pill"><input type="radio" name="contact[Call type]" value="{{ mm | escape }}"{% if forloop.first %} checked{% endif %}><span>{{ mm | escape }}</span></label>
+                {%- liquid
+                  assign mm = m | strip
+                  assign mlow = mm | downcase
+                  assign micon = 'chat-circle-dots'
+                  if mlow contains 'video'
+                    assign micon = 'video-camera'
+                  elsif mlow contains 'phone' or mlow contains 'call'
+                    assign micon = 'phone'
+                  elsif mlow contains 'visit' or mlow contains 'store'
+                    assign micon = 'storefront'
+                  endif
+                -%}
+                <label class="pdpx-book__pill"><input type="radio" name="contact[Call type]" value="{{ mm | escape }}"{% if forloop.first %} checked{% endif %}><span><i class="sj-i sj-i--{{ micon }} ms" aria-hidden="true"></i>{{ mm | escape }}</span></label>
               {%- endfor -%}
             </div>
           </fieldset>
 
-          <fieldset class="pdpx-book__step">
-            <legend>2. Choose a day</legend>
-            <div class="pdpx-book__days" data-pdpx-days data-days="{{ s.days_ahead }}" data-closed="{{ s.closed_days | escape }}"></div>
-            <input type="hidden" name="contact[Date]" data-pdpx-date>
-          </fieldset>
+          <div class="pdpx-book__when">
+            <fieldset class="pdpx-book__step pdpx-book__step--cal">
+              <legend class="pdpx-book__lab"><b>02</b>Choose a day</legend>
+              <div class="pdpx-book__days" data-pdpx-days data-days="{{ s.days_ahead }}" data-closed="{{ s.closed_days | escape }}"></div>
+              <input type="hidden" name="contact[Date]" data-pdpx-date>
+            </fieldset>
 
-          <fieldset class="pdpx-book__step">
-            <legend>3. Choose a time <span class="pdpx-book__tz">(IST)</span></legend>
-            <div class="pdpx-book__times" data-pdpx-times data-open="{{ s.open_at }}" data-close="{{ s.close_at }}" data-step="{{ s.slot_minutes }}"></div>
-            <input type="text" class="pdpx-book__free" name="contact[Time]" data-pdpx-time placeholder="Preferred time, e.g. Tuesday 11 AM">
-          </fieldset>
+            <fieldset class="pdpx-book__step pdpx-book__step--time">
+              <legend class="pdpx-book__lab"><b>03</b>Choose a time <span class="pdpx-book__tz">IST</span></legend>
+              <p class="pdpx-book__chosen" data-pdpx-chosen aria-live="polite"></p>
+              <div class="pdpx-book__times" data-pdpx-times data-open="{{ s.open_at }}" data-close="{{ s.close_at }}" data-step="{{ s.slot_minutes }}"></div>
+              <input type="text" class="pdpx-book__free" name="contact[Time]" data-pdpx-time placeholder="Preferred time, e.g. Tuesday 11 AM">
+            </fieldset>
+          </div>
 
           <fieldset class="pdpx-book__step pdpx-book__you">
-            <legend>4. Your details</legend>
+            <legend class="pdpx-book__lab"><b>04</b>Your details</legend>
             <div class="pdpx-book__row">
               <label><span>Name</span><input type="text" name="contact[name]" autocomplete="name" required></label>
               <label><span>Phone / WhatsApp</span><input type="tel" name="contact[phone]" autocomplete="tel" required></label>
@@ -80,8 +95,9 @@
             <label><span>What would you like to talk about?</span><textarea name="contact[body]" rows="3" data-pdpx-body>{% if p_title != blank %}I would like to know more about {{ p_title }}.{% endif %}</textarea></label>
           </fieldset>
 
+          <p class="pdpx-book__summary" data-pdpx-summary hidden><i class="sj-i sj-i--calendar ms" aria-hidden="true"></i><span></span></p>
           <div class="pdpx-book__actions">
-            <button type="submit" class="btn pdpx-book__send">{{ s.send_label | escape }}</button>
+            <button type="submit" class="btn pdpx-book__send"><span>{{ s.send_label | escape }}</span><i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></button>
             {%- if s.whatsapp != blank -%}
               <a class="pdpx-book__wa" href="https://api.whatsapp.com/send?phone={{ s.whatsapp | remove: '+' | remove: ' ' }}" target="_blank" rel="noopener" data-pdpx-wa><i class="sj-i sj-i--whatsapp-logo fab" style="font-size:17px" aria-hidden="true"></i><span>{{ s.whatsapp_label | escape }}</span></a>
             {%- endif -%}
@@ -109,7 +125,7 @@
     { "type": "text", "id": "hours", "label": "Hours", "default": "Mon–Sat, 10 AM to 7 PM (IST)" },
     { "type": "header", "content": "The booking" },
     { "type": "text", "id": "modes", "label": "Ways to meet (comma separated)", "default": "Video call, Phone call, Visit a store" },
-    { "type": "range", "id": "days_ahead", "label": "Days to offer", "min": 5, "max": 30, "step": 1, "default": 14 },
+    { "type": "range", "id": "days_ahead", "label": "How far ahead can a day be booked (days)", "min": 7, "max": 90, "step": 1, "default": 45 },
     { "type": "text", "id": "closed_days", "label": "Closed on (0 = Sunday … 6 = Saturday, comma separated)", "default": "0" },
     { "type": "range", "id": "open_at", "label": "First slot (hour, IST)", "min": 6, "max": 14, "step": 1, "default": 10 },
     { "type": "range", "id": "close_at", "label": "Closes at (hour, IST)", "min": 15, "max": 22, "step": 1, "default": 19 },

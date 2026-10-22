@@ -92,34 +92,77 @@
       return out;
     };
 
-    // The days on offer: from today (if a slot is still open) for nDays open days.
-    const days = [];
-    const d = istNow();
-    d.setHours(12, 0, 0, 0);
-    for (let guard = 0; days.length < nDays && guard < nDays * 3; guard++) {
-      const ok = !closed.includes(d.getDay()) && slotsFor(d).some((s) => !s.shut);
-      if (ok) days.push(new Date(d));
-      d.setDate(d.getDate() + 1);
+    // The calendar: a month at a time; a day can be chosen when the studio is
+    // open that day, it is not past, a slot is still free, and it is within
+    // `horizon` days (the "how far ahead" setting).
+    const MONTH = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const horizon = Math.max(7, nDays);
+    const today = istNow();
+    today.setHours(12, 0, 0, 0);
+    const last = new Date(today);
+    last.setDate(last.getDate() + horizon);
+    const isOpen = (day) => day >= new Date(today.getFullYear(), today.getMonth(), today.getDate()) && day <= last
+      && !closed.includes(day.getDay()) && slotsFor(day).some((x) => !x.shut);
+    let chosenDay = null;
+    for (let d = new Date(today), g = 0; g <= horizon; g++, d.setDate(d.getDate() + 1)) {
+      if (isOpen(d)) { chosenDay = new Date(d); break; }
     }
-    if (!days.length) return;
+    if (!chosenDay) return;
+    let view = new Date(chosenDay.getFullYear(), chosenDay.getMonth(), 1, 12);
+    const firstView = new Date(today.getFullYear(), today.getMonth(), 1, 12);
+    const lastView = new Date(last.getFullYear(), last.getMonth(), 1, 12);
 
     const label = (day) => `${DAY[day.getDay()]}, ${day.getDate()} ${MON[day.getMonth()]} ${day.getFullYear()}`;
-    let chosenDay = days[0];
+    const longLabel = (day) => `${WEEK[(day.getDay() + 6) % 7]}, ${day.getDate()} ${MONTH[day.getMonth()]}`;
+    const chosenEl = card.querySelector('[data-pdpx-chosen]');
+    const summary = card.querySelector('[data-pdpx-summary]');
+    const icon = (n) => `<i class="sj-i sj-i--${n} ms" aria-hidden="true"></i>`;
 
-    daysEl.innerHTML = days.map((day, i) => `
-      <label class="pdpx-book__day">
-        <input type="radio" name="pdpx_day_${uid}" value="${i}"${i === 0 ? ' checked' : ''}>
-        <span>${DAY[day.getDay()]}<b>${day.getDate()}</b>${MON[day.getMonth()]}</span>
-      </label>`).join('');
+    const drawCal = () => {
+      const y = view.getFullYear(), m = view.getMonth();
+      const lead = (new Date(y, m, 1).getDay() + 6) % 7; // Monday first
+      const n = new Date(y, m + 1, 0).getDate();
+      let cells = '';
+      for (let i = 0; i < lead; i++) cells += '<span class="pdpx-cal__blank" aria-hidden="true"></span>';
+      for (let dn = 1; dn <= n; dn++) {
+        const day = new Date(y, m, dn, 12);
+        const ok = isOpen(day);
+        const on = sameDay(day, chosenDay);
+        const now = sameDay(day, today);
+        cells += `<button type="button" class="pdpx-cal__d${now ? ' is-today' : ''}${on ? ' is-on' : ''}" data-d="${dn}"${ok ? '' : ' disabled'} aria-pressed="${on}" aria-label="${longLabel(day)}${ok ? '' : ', not available'}">${dn}</button>`;
+      }
+      daysEl.innerHTML =
+        `<div class="pdpx-cal__head"><button type="button" class="pdpx-cal__nav" data-step="-1" aria-label="Previous month"${view <= firstView ? ' disabled' : ''}>${icon('caret-left')}</button>` +
+        `<p class="pdpx-cal__month" aria-live="polite">${MONTH[m]} <span>${y}</span></p>` +
+        `<button type="button" class="pdpx-cal__nav" data-step="1" aria-label="Next month"${view >= lastView ? ' disabled' : ''}>${icon('caret-right')}</button></div>` +
+        `<div class="pdpx-cal__week" aria-hidden="true">${['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map((w) => `<span>${w}</span>`).join('')}</div>` +
+        `<div class="pdpx-cal__grid">${cells}</div>`;
+    };
 
     const drawTimes = () => {
       const keep = timeIn.value;
-      timesEl.innerHTML = slotsFor(chosenDay).map((s) => {
-        const c = clock(s.t);
-        const on = !s.shut && c === keep;
-        return `<label class="pdpx-book__slot"><input type="radio" name="pdpx_slot_${uid}" value="${c}"${s.shut ? ' disabled' : ''}${on ? ' checked' : ''}><span>${c}</span></label>`;
+      const groups = [['Morning', 0, 12 * 60], ['Afternoon', 12 * 60, 17 * 60], ['Evening', 17 * 60, 24 * 60]];
+      const slots = slotsFor(chosenDay);
+      timesEl.innerHTML = groups.map(([name, a0, a1]) => {
+        const here = slots.filter((x) => x.t >= a0 && x.t < a1);
+        if (!here.length || here.every((x) => x.shut)) return '';
+        return `<div class="pdpx-book__tgroup"><p>${name}</p><div class="pdpx-book__tgrid">` + here.map((x) => {
+          const c = clock(x.t);
+          const on = !x.shut && c === keep;
+          return `<label class="pdpx-book__slot"><input type="radio" name="pdpx_slot_${uid}" value="${c}"${x.shut ? ' disabled' : ''}${on ? ' checked' : ''}><span>${c}</span></label>`;
+        }).join('') + '</div></div>';
       }).join('');
       if (!timesEl.querySelector('input:checked')) timeIn.value = '';
+      if (chosenEl) chosenEl.textContent = longLabel(chosenDay);
+    };
+
+    const drawSummary = () => {
+      if (!summary) return;
+      const mode = field('Call type');
+      const show = !!timeIn.value;
+      summary.hidden = !show;
+      if (show) summary.querySelector('span').textContent = `${mode ? mode + ': ' : ''}${longLabel(chosenDay)} · ${timeIn.value} IST`;
     };
 
     const wa = card.querySelector('[data-pdpx-wa]');
@@ -148,27 +191,41 @@
     };
 
     dateIn.value = label(chosenDay);
+    drawCal();
     drawTimes();
     const section = card.closest('.pdpx-book');
     if (section) section.setAttribute('data-ready', '');
 
-    daysEl.addEventListener('change', (e) => {
-      const i = parseInt(e.target.value, 10);
-      if (!days[i]) return;
-      chosenDay = days[i];
+    daysEl.addEventListener('click', (e) => {
+      const nav = e.target.closest('.pdpx-cal__nav');
+      if (nav && !nav.disabled) {
+        view = new Date(view.getFullYear(), view.getMonth() + parseInt(nav.dataset.step, 10), 1, 12);
+        drawCal();
+        const again = daysEl.querySelector(`.pdpx-cal__nav[data-step="${nav.dataset.step}"]`);
+        if (again && !again.disabled) again.focus();
+        return;
+      }
+      const btn = e.target.closest('.pdpx-cal__d');
+      if (!btn || btn.disabled) return;
+      chosenDay = new Date(view.getFullYear(), view.getMonth(), parseInt(btn.dataset.d, 10), 12);
       dateIn.value = label(chosenDay);
+      drawCal();
       drawTimes();
+      drawSummary();
       syncWa();
+      const sel = daysEl.querySelector('.pdpx-cal__d.is-on');
+      if (sel) sel.focus();
     });
 
     timesEl.addEventListener('change', (e) => {
       timeIn.value = e.target.value;
       timesEl.classList.remove('is-missing');
+      drawSummary();
       syncWa();
     });
 
     form.addEventListener('input', syncWa);
-    form.addEventListener('change', syncWa);
+    form.addEventListener('change', () => { syncWa(); drawSummary(); });
 
     form.addEventListener('submit', (e) => {
       if (timeIn.value) return;
