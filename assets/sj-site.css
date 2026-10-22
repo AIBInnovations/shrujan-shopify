@@ -746,6 +746,26 @@ html.sj-hdr-away .site-header {
   }
 }
 
+/* ---- the studio pages' enquiry: the note when it could not be sent ---- */
+.enquiry__error {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 11px 14px;
+  border-left: 2px solid var(--indigo, #924241);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: rgba(146, 66, 65, 0.07);
+  font:400 var(--fs-sm)/1.5 var(--font-sans);
+  color: var(--ink);
+}
+
+.enquiry__error[hidden] {
+  display: none;
+}
+
+.enquiry__error a {
+  color: var(--indigo, #924241);
+}
+
 /* icons:start (written by convert_icons.py from icons.py) */
 /* ---- the interface icons (Material Symbols, Font Awesome brands; icons.py) ---- */
 @font-face {

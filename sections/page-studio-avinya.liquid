@@ -273,9 +273,27 @@
     done.replaceWith(form);
   });
 
+  // the enquiry goes to Slide (assets/sj-ui.js, Theme settings → Slide);
+  // the thank-you shows once Slide has it, a note with the studio's numbers
+  // if it could not be sent
+  var err = document.createElement('p');
+  err.className = 'enquiry__error';
+  err.setAttribute('role', 'alert');
+  err.hidden = true;
+  err.innerHTML = 'It could not be sent just now. Please try again, or write to us on <a href="https://api.whatsapp.com/send?phone=919099974319" target="_blank" rel="noopener">WhatsApp</a> or call <a href="tel:+919099974319">+91 90999 74319</a>.';
+  form.querySelector('.enquiry__submit').before(err);
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    form.replaceWith(done);
+    var btn = form.querySelector('[type="submit"]');
+    var slide = window.SJSlide;
+    if (!slide) { form.replaceWith(done); return; }
+    btn.disabled = true;
+    err.hidden = true;
+    slide.sendForm(form, { form: 'Avinya enquiry', type: 'Avinya', tags: ['enquiry', 'studio'] }).then(function (ok) {
+      btn.disabled = false;
+      if (ok) form.replaceWith(done);
+      else err.hidden = false;
+    });
   });
 })();
 </script>

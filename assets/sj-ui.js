@@ -13,6 +13,9 @@
     phone: '+91 90999 74319',
     email: 'marketing@shrujan.com',
     hours: 'Mon–Sat, 10 AM to 7 PM (IST)',
+    // the Slide webhook every enquiry is sent to (layout/theme.liquid sets
+    // it from Theme settings → Slide); empty sends nothing
+    slideWebhook: '',
   }, window.SJ_UI || {});
 
   var doc = document;
@@ -27,6 +30,124 @@
     var S = window.Shrujan;
     if (S && (on ? S.stopScroll : S.startScroll)) (on ? S.stopScroll : S.startScroll)();
     doc.documentElement.style.overflow = on ? 'hidden' : '';
+  };
+
+  /* ---------- 0. Slide: every enquiry also becomes a Slide contact ----------
+     Each enquiry form on the site (the Enquire drawer, the product page's
+     "book a call", the Heritage, Avinya and Gifting enquiries) sends what was
+     written to the Slide webhook (CFG.slideWebhook, set from the theme's
+     settings), whose automation creates the contact in Slide.
+
+     The drawer and the product page's form are Shopify contact forms, sent
+     through Shopify's own spam check (hCaptcha), which reloads the page; so
+     their enquiry is kept in the tab (sessionStorage) as it is sent and goes
+     to Slide when the page comes back with contact_posted=true, that is,
+     only once Shopify has accepted it. The studio pages' forms have no other
+     destination and go straight to Slide.
+
+     The payload is flat JSON with the usual contact fields first (name,
+     first_name, last_name, email, phone, company, city, message), then every
+     other answer under `details`, all of it as one readable `notes` text,
+     `tags`, the page and the time. */
+  var SKIP_FIELDS = /^(form_type|utf8|tags|Page|form_key|h-captcha-response|g-recaptcha-response|recaptcha-v3-token|pdpx_(day|slot)_.*)$/;
+  var CORE = { name: 'name', email: 'email', phone: 'phone', body: 'message', message: 'message', looking: 'message', city: 'city',
+    company: 'company', brand: 'company', organisation: 'company', organization: 'company' };
+  var e164 = function (raw) {
+    var d = String(raw || '').replace(/[^\d+]/g, '');
+    if (!d) return '';
+    if (d.charAt(0) === '+') return d;
+    d = d.replace(/^00/, '');
+    if (d.length === 10) return '+91' + d;
+    if (d.length === 11 && d.charAt(0) === '0') return '+91' + d.slice(1);
+    if (d.length === 12 && d.indexOf('91') === 0) return '+' + d;
+    return d;
+  };
+  var slug = function (t) { return String(t || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); };
+  // what a form says, as a Slide contact; meta: { form, type, tags }
+  var slidePayload = function (form, meta) {
+    meta = meta || {};
+    var p = { event: 'enquiry.submitted', source: location.hostname || 'shrujan.com', form: meta.form || 'Enquiry', enquiry_type: meta.type || '',
+      name: '', first_name: '', last_name: '', email: '', phone: '', phone_raw: '', company: '', city: '', message: '', details: {}, notes: '',
+      tags: ['website'].concat(meta.tags || []), page_url: location.href.split('#')[0].replace(/[?&]contact_posted=true/, ''), page_title: doc.title, submitted_at: new Date().toISOString() };
+    var lines = [];
+    var labelOf = function (el, key) {
+      var l = el && el.id && form.querySelector('label[for="' + el.id + '"]');
+      var t = l ? l.textContent : (el && el.closest('label') ? (el.closest('label').querySelector('span') || {}).textContent : '');
+      return String(t || key).replace(/\*/g, '').replace(/\s+/g, ' ').trim() || key;
+    };
+    new FormData(form).forEach(function (v, k) {
+      var key = k.replace(/^contact\[(.*)\]$/, '$1');
+      v = String(v).trim();
+      if (!v || SKIP_FIELDS.test(key)) return;
+      if (key === 'Enquiry') { p.enquiry_type = v; return; }
+      if (key === 'Call type') { p.details['Call type'] = v; lines.push('Call type: ' + v); return; }
+      var core = CORE[key.toLowerCase()];
+      if (core && !p[core]) { p[core] = v; if (core === 'company') p.details[key] = v; return; }
+      var el = form.querySelector('[name="' + k + '"]');
+      var label = /^[a-z_]+$/.test(key) ? labelOf(el, key) : key;
+      p.details[label] = v;
+      lines.push(label + ': ' + v);
+    });
+    p.phone_raw = p.phone;
+    p.phone = e164(p.phone);
+    var parts = p.name.split(/\s+/);
+    p.first_name = parts.shift() || '';
+    p.last_name = parts.join(' ');
+    if (p.enquiry_type) p.tags.push(slug(p.enquiry_type));
+    var head = [p.form + (p.enquiry_type ? ' · ' + p.enquiry_type : '')];
+    if (p.company) head.push('Company/brand: ' + p.company);
+    if (p.city) head.push('City: ' + p.city);
+    p.notes = head.concat(lines, p.message ? ['Message: ' + p.message] : [], ['Page: ' + p.page_url]).join('\n');
+    return p;
+  };
+  // sends one enquiry; resolves true once Slide has taken it. Slide answers
+  // {"skipped": "inactive"} while its automation is switched off: that is
+  // not taken, so a form that goes only to Slide says it could not be sent
+  var slideSend = function (payload) {
+    if (!CFG.slideWebhook) return Promise.resolve(false);
+    return fetch(CFG.slideWebhook, { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+      .then(function (r) {
+        if (!r.ok) return false;
+        return r.text().then(function (t) {
+          var j = null;
+          try { j = JSON.parse(t); } catch (e) {}
+          if (j && j.skipped) { if (window.console) console.warn('Slide skipped the enquiry:', j.skipped); return false; }
+          return true;
+        });
+      })
+      .catch(function () { return false; });
+  };
+  var PENDING = 'sj-slide-pending';
+  var tabStore = function () { try { return window.sessionStorage; } catch (e) { return null; } };
+  var keepEnquiry = function (payload, kind) {
+    var s = tabStore();
+    if (!s) { slideSend(payload); return; } // no storage: send at once
+    try { s.setItem(PENDING, JSON.stringify({ t: Date.now(), kind: kind, payload: payload })); } catch (e) { slideSend(payload); }
+  };
+  var takePending = function () {
+    var s = tabStore();
+    if (!s) return null;
+    try {
+      var v = JSON.parse(s.getItem(PENDING) || 'null');
+      s.removeItem(PENDING);
+      return v && Date.now() - v.t < 30 * 60 * 1000 ? v : null;
+    } catch (e) { return null; }
+  };
+  // Shopify's contact forms (the product page's "book a call"): kept as they
+  // are sent, delivered once the page comes back accepted
+  doc.addEventListener('submit', function (e) {
+    var f = e.target;
+    if (!f || f.tagName !== 'FORM' || f.classList.contains('sje__form')) return;
+    var ft = f.querySelector('input[name="form_type"]');
+    if (!ft || ft.value !== 'contact') return;
+    var tags = (f.querySelector('input[name="contact[tags]"]') || {}).value || 'enquiry';
+    keepEnquiry(slidePayload(f, { form: tags === 'booking' ? 'Book a call' : 'Contact form', tags: [tags] }), tags);
+  }, true);
+  window.SJSlide = {
+    payload: slidePayload,
+    send: slideSend,
+    // a form that goes only to Slide (the studio pages' enquiries)
+    sendForm: function (form, meta) { return slideSend(slidePayload(form, meta)); },
   };
 
   /* ---------- 1. the search ---------- */
@@ -660,16 +781,28 @@
       eError.hidden = true;
       var btn = eForm.querySelector('.sje__send');
       btn.disabled = true;
+      btn.querySelector('span').textContent = 'Sending…';
+      // the enquiry, kept for Slide until Shopify has accepted it
+      var topic = (eForm.querySelector('input[name="contact[Enquiry]"]:checked') || {}).value || '';
+      var payload = slidePayload(eForm, { form: 'Enquire', type: topic, tags: ['enquiry'] });
+      keepEnquiry(payload, 'enquire');
+      // Shopify's spam check, once it has taken the form, sends it itself and
+      // the page comes back with contact_posted=true (handled at the foot of
+      // this file); without it the form is sent from here
+      if (eForm.getAttribute('data-hcaptcha-bound')) return;
+      var reset = function () { btn.disabled = false; btn.querySelector('span').textContent = 'Send enquiry'; };
       fetch(eForm.action.split('#')[0], { method: 'POST', body: new FormData(eForm), credentials: 'same-origin' })
         .then(function (res) {
           if (!res.ok) throw new Error(res.status);
-          // the store asks a person to prove they are one: let the page go there
-          if (/\/challenge/.test(res.url)) { eForm.submit(); return; }
-          eForm.hidden = true;
-          eDone.hidden = false;
+          if (/[?&]contact_posted=true/.test(res.url)) {
+            takePending();
+            return slideSend(payload).then(function () { eForm.hidden = true; eDone.hidden = false; reset(); });
+          }
+          // the store asks a person to prove they are one, or the form came
+          // back with something to correct: let the page go there
+          eForm.submit();
         })
-        .catch(function () { eForm.submit(); })
-        .then(function () { btn.disabled = false; });
+        .catch(function () { eForm.submit(); });
     });
   }
 
@@ -734,6 +867,20 @@
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+
+  /* ---------- back from Shopify with an accepted enquiry ---------- */
+  if (/[?&]contact_posted=true/.test(location.search)) {
+    var pend = takePending();
+    if (pend && pend.payload) {
+      slideSend(pend.payload);
+      if (pend.kind === 'enquire') {
+        // the drawer opens on its thank-you, and the page's address loses
+        // the flag, so a reload does not open it again
+        try { history.replaceState(null, '', location.pathname + location.search.replace(/[?&]contact_posted=true/, '').replace(/^&/, '?') + location.hash.replace('#sje', '')); } catch (e) {}
+        setTimeout(function () { openEnquire(); eForm.hidden = true; eDone.hidden = false; }, 400);
+      }
+    }
+  }
 
   window.SJUI = { openSearch: openSearch, openHelp: openHelp, openEnquire: openEnquire };
 })();
