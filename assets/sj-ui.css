@@ -1586,33 +1586,25 @@ html.sj-pre .sje__tab {
     height: min(560px, calc(100vh - 90px));
   }
 
-  /* on a phone the tab is its icon alone, low on the edge, so it covers
-     no words */
+  /* on a phone the tab is the desktop's own (the user): ENQUIRE reading
+     down the right edge with its icon, a little narrower */
   .sje__tab,
   .sje__tab:hover {
-    top: auto;
-    right: max(14px, env(safe-area-inset-right));
-    bottom: calc(max(14px, env(safe-area-inset-bottom)) + 58px);
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    padding: 0;
-    border-radius: var(--radius);
-    writing-mode: horizontal-tb;
-    transform: none;
-    box-shadow: 0 14px 30px -14px rgba(20, 20, 20, 0.55);
-  }
-
-  .sje__tab span {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
+    top: 50%;
+    right: 0;
+    bottom: auto;
+    gap: 8px;
+    padding: 13px 8px;
+    border-radius: var(--radius) 0 0 var(--radius);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    writing-mode: vertical-rl;
+    transform: translateY(-50%);
+    box-shadow: -8px 10px 22px -14px rgba(20, 20, 20, 0.6);
   }
 
   .sje__tab i {
-    font-size: 20px;
+    font-size: 16px;
   }
 
   .sje__head {
