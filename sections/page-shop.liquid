@@ -178,23 +178,24 @@
         <p class="shop-banner__copy">{{ section.settings.hero_copy }}</p>
         <a class="shop-banner__view" href="#catalogue">{{ section.settings.hero_view }}</a>
       </div>
+      {%- if section.settings.show_assure %}
+
+        {%- comment -%} what every piece comes with, on the picture itself (the user: on the hero, not under it) {%- endcomment -%}
+        <div class="shop-assure" aria-label="What every piece comes with">
+          <ul class="container shop-assure__row" data-reveal-child>
+            {%- for block in section.blocks %}{% if block.type == 'assure' %}
+            <li{{ block.shopify_attributes }}>
+              <span class="shop-assure__mark" aria-hidden="true">{% case block.settings.icon %}{% when 'leaf' %}<i class="sj-i sj-i--leaf ms" style="font-size:19px" aria-hidden="true"></i>{% when 'tape' %}<i class="sj-i sj-i--ruler ms" style="font-size:19px" aria-hidden="true"></i>{% when 'truck' %}<i class="sj-i sj-i--truck ms" style="font-size:19px" aria-hidden="true"></i>{% when 'heart' %}<i class="sj-i sj-i--heart ms" style="font-size:19px" aria-hidden="true"></i>{% else %}<i class="sj-i sj-i--needle ms" style="font-size:19px" aria-hidden="true"></i>{% endcase %}</span>
+              <span class="shop-assure__title">{{ block.settings.title }}</span>
+              <span class="shop-assure__copy">{{ block.settings.copy }}</span>
+            </li>
+            {%- endif %}{% endfor %}
+          </ul>
+        </div>
+      {%- endif %}
     </div>
   </section>
-{%- if section.settings.show_assure %}
 
-  <!-- ---- what every piece comes with ---- -->
-  <section class="shop-assure" aria-label="What every piece comes with">
-    <ul class="container shop-assure__row" data-reveal-child>
-      {%- for block in section.blocks %}{% if block.type == 'assure' %}
-      <li{{ block.shopify_attributes }}>
-        <span class="shop-assure__mark" aria-hidden="true">{% case block.settings.icon %}{% when 'leaf' %}<i class="sj-i sj-i--leaf ms" style="font-size:19px" aria-hidden="true"></i>{% when 'tape' %}<i class="sj-i sj-i--ruler ms" style="font-size:19px" aria-hidden="true"></i>{% when 'truck' %}<i class="sj-i sj-i--truck ms" style="font-size:19px" aria-hidden="true"></i>{% when 'heart' %}<i class="sj-i sj-i--heart ms" style="font-size:19px" aria-hidden="true"></i>{% else %}<i class="sj-i sj-i--needle ms" style="font-size:19px" aria-hidden="true"></i>{% endcase %}</span>
-        <span class="shop-assure__title">{{ block.settings.title }}</span>
-        <span class="shop-assure__copy">{{ block.settings.copy }}</span>
-      </li>
-      {%- endif %}{% endfor %}
-    </ul>
-  </section>
-{%- endif %}
 {%- if section.settings.show_cats and has_cols %}
 
   <!-- ---- categories as medallions ---- -->
