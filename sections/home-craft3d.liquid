@@ -1,25 +1,24 @@
 {%- comment -%}
-  The crafts on real pieces: four Kutch crafts, each shown on a Shrujan piece
-  (the piece worn and its cloth up close), changing as the page scrolls. The
-  markup is snippets/sj-craft3d.liquid, generated from the awwwards preview
-  (awwwards-preview/export_theme.py); the scrolling is assets/sj-craft3d.js
-  and the styles assets/sj-home.css, both of which layout/theme.liquid loads
-  on the home page only.
+  Wear the craft: a dress form turning through four Kutch crafts as the page
+  scrolls. The markup is snippets/sj-craft3d.liquid, generated from the
+  awwwards preview (awwwards-preview/export_theme.py); the form itself is drawn
+  by assets/sj-craft3d.js with three.js, and styled by assets/sj-home.css, both
+  of which layout/theme.liquid loads on the home page only.
 {%- endcomment -%}
 {% render 'sj-craft3d' %}
 
 {% schema %}
 {
-  "name": "Crafts on real pieces",
+  "name": "Wear the craft (3D)",
   "settings": [
     {
       "type": "paragraph",
-      "content": "Four Kutch crafts, each on a Shrujan piece, changing as the page scrolls. Its words and photographs come from the home page design files; it runs on the home page only."
+      "content": "A dress form turning through four Kutch crafts as the page scrolls. Its words and motion come from the home page design files; it runs on the home page only."
     }
   ],
   "presets": [
     {
-      "name": "Crafts on real pieces"
+      "name": "Wear the craft (3D)"
     }
   ],
   "enabled_on": {
