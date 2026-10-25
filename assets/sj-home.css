@@ -657,7 +657,9 @@ html.sj-pre .offer-bar {
     /* the longest craft's words */
     --c3-text: 205px;
     /* what is left for the photograph once the word and the words are in */
-    --c3-room: calc(100svh - var(--c3-word) - var(--c3-text) - 46px);
+    /* the space between the photograph and its words (the user: more) */
+    --c3-gap: 34px;
+    --c3-room: calc(100svh - var(--c3-word) - var(--c3-text) - var(--c3-gap) - 28px);
     --c3-fw: min(calc(100vw - 32px), var(--c3-room));
     /* as tall as the room allows, from square up to 2:3 */
     --c3-fh: min(calc(var(--c3-fw) * 1.5), var(--c3-room));
@@ -677,7 +679,7 @@ html.sj-pre .offer-bar {
   .craft3d__intro {
     left: 16px;
     right: 16px;
-    top: calc(var(--c3-top) + var(--c3-fh) + 18px);
+    top: calc(var(--c3-top) + var(--c3-fh) + var(--c3-gap));
     bottom: auto;
     width: auto;
     height: var(--c3-text);
