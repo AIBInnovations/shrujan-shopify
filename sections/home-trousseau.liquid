@@ -198,8 +198,12 @@
   </div>
 
   <div class="curated__promises">
+    {%- comment -%} each promise's icon (shown on phones, where the promises are an icon and a heading in one row) {%- endcomment -%}
+    {%- assign promise_icons = 'truck,arrows-counter-clockwise,map-pin,clock-counter-clockwise' | split: ',' -%}
     {%- for block in section.blocks %}
+    {%- assign p_icon = block.settings.icon | default: promise_icons[forloop.index0] | default: 'sparkle' -%}
     <div class="promise" {{ block.shopify_attributes }}>
+      <span class="promise__icon" aria-hidden="true"><i class="sj-i sj-i--{{ p_icon }} ms"></i></span>
       <p class="promise__title">{{ block.settings.title }}</p>
       <p class="promise__copy">{{ block.settings.copy }}</p>
     </div>
@@ -722,6 +726,23 @@
       "type": "promise",
       "name": "Promise",
       "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "info": "Shown on phones, above the title.",
+          "default": "truck",
+          "options": [
+            { "value": "truck", "label": "Delivery van" },
+            { "value": "arrows-counter-clockwise", "label": "Exchange" },
+            { "value": "map-pin", "label": "Place" },
+            { "value": "clock-counter-clockwise", "label": "Since (history)" },
+            { "value": "needle", "label": "Handmade" },
+            { "value": "handshake", "label": "Craftspeople" },
+            { "value": "gift", "label": "Gift" },
+            { "value": "sparkle", "label": "Sparkle" }
+          ]
+        },
         {
           "type": "text",
           "id": "title",

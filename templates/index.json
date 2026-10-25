@@ -694,28 +694,32 @@
           "type": "promise",
           "settings": {
             "title": "Free shipping",
-            "copy": "On every order within India"
+            "copy": "On every order within India",
+            "icon": "truck"
           }
         },
         "b2": {
           "type": "promise",
           "settings": {
             "title": "7-day exchange",
-            "copy": "For a credit note, valid 90 days"
+            "copy": "For a credit note, valid 90 days",
+            "icon": "arrows-counter-clockwise"
           }
         },
         "b3": {
           "type": "promise",
           "settings": {
             "title": "Made in Kutch",
-            "copy": "By craftswomen across 66 villages"
+            "copy": "By craftswomen across 66 villages",
+            "icon": "map-pin"
           }
         },
         "b4": {
           "type": "promise",
           "settings": {
             "title": "Since 1969",
-            "copy": "Over five decades of craft"
+            "copy": "Over five decades of craft",
+            "icon": "clock-counter-clockwise"
           }
         }
       },

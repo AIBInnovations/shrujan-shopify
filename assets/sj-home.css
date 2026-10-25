@@ -5412,20 +5412,69 @@ section[aria-label="What our customers say"],
   letter-spacing: -0.01em;
 }
 
+/* the promises' icons show on phones only (below) */
+.promise__icon {
+  display: none;
+}
+
 @media (max-width: 720px) {
-  /* Marcellus runs wide: the names and small titles step down on a phone so
-     they fit their cards without being cut short */
-  .piece__name {
-    font-size: var(--fs-md);
+  /* the edit on a phone (the user: less to read, bigger cards, the names
+     to stand out): one card and a glimpse of the next, each name a step
+     larger and in the ink, not the soft grey */
+  .curated__grid:not(.shop-grid) > .piece {
+    flex-basis: 74vw;
+  }
+
+  .curated__grid .piece__name {
+    font-size: var(--fs-xl);
+    line-height: 1.22;
+    color: var(--ink);
+  }
+
+  .curated__grid .piece__price {
+    margin-top: 5px;
+    font-size: var(--fs-base);
+  }
+
+  /* the four promises: an icon and a heading each, the four in one row */
+  .curated__promises {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0;
+    border-top: 1px solid var(--hairline, rgba(64, 64, 65, 0.14));
+  }
+
+  .curated__promises .promise,
+  .curated__promises .promise:nth-child(n) {
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    gap: 8px;
+    padding: 16px 2px 0;
+    border: 0;
+    text-align: center;
+  }
+
+  .promise__icon {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--ivory-2, #eae3d2);
+    color: var(--indigo, #924241);
+  }
+
+  .promise__icon i {
+    font-size: 21px;
+  }
+
+  .curated__promises .promise__title {
+    font-size: var(--fs-sm);
     line-height: 1.25;
   }
 
-  .promise__title {
-    font-size: var(--fs-lg);
-  }
-
-  .promise__copy {
-    font-size: var(--fs-sm);
+  .curated__promises .promise__copy {
+    display: none;
   }
 
   .faq__q {
