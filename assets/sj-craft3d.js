@@ -9,6 +9,10 @@
    halter dress (tie-dye is made outside Shrujan, so it is not shown) and the
    khadi dress, each coming up from below over the one before as its
    craft arrives, the one beneath settling back a little as it is covered.
+   The picture and the craft's words change at the same moment (the user:
+   the picture lagged behind the words): the scroll only decides which craft
+   is current, and the new picture's rise and the words' fade then run
+   together, in time, not drawn out along the scroll.
    (Still loaded as the module sj-craft3d.js.) */
 const root = document.querySelector('.craft3d');
 if (root) {
@@ -24,11 +28,8 @@ if (root) {
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // states: Kutch (the words alone, the first piece already there), then
-  // the four crafts; each picture after the first comes up over the SWEEP
-  // before its craft's edge
+  // the four crafts, each current from its edge on
   const EDGES = [0, 0.12, 0.4, 0.6, 0.8, 1.0001];
-  const SWEEP = 0.1;
-  const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
   let active = -2;
   function setActive(i) {
@@ -38,42 +39,26 @@ if (root) {
     ghosts.forEach((g, k) => g.classList.toggle('is-active', k === i));
     items.forEach((it, k) => it.classList.toggle('is-active', k === Math.max(0, i - 1)));
     if (intro) intro.classList.toggle('is-gone', i > 0);
+    // the picture of the current craft is up (the first is always there);
+    // the one under the top picture settles back
+    const top = Math.max(0, i - 1);
+    shots.forEach((sh, k) => {
+      sh.classList.toggle('is-up', k <= top);
+      sh.classList.toggle('is-under', k < top);
+    });
   }
 
-  // how far picture k (from 0) has come up, 0 to 1
-  const up = (k, p) => (k === 0 ? 1 : Math.min(1, Math.max(0, (p - (EDGES[k + 1] - SWEEP)) / SWEEP)));
-
   function draw(p) {
-    shots.forEach((s, k) => {
-      const t = up(k, p), e = ease(t);
-      const over = k + 1 < shots.length ? ease(up(k + 1, p)) : 0;
-      if (reduced) {
-        // no movement: each simply takes the place of the last
-        s.style.transform = 'none';
-        s.style.opacity = k === 0 ? 1 : t;
-        return;
-      }
-      if (k > 0) s.style.transform = `translate3d(0, ${((1 - e) * 101).toFixed(3)}%, 0)`;
-      // the coming picture slides against its frame as it rises; the one
-      // beneath settles back and dims as it is covered
-      imgs[k].style.transform = `translate3d(0, ${(-(1 - e) * 28).toFixed(3)}%, 0) scale(${((1 + 0.08 * (1 - e)) * (1 - 0.05 * over)).toFixed(4)})`;
-      imgs[k].style.filter = over > 0.001 ? `brightness(${(1 - 0.2 * over).toFixed(3)})` : '';
-    });
     let s = 0;
-    while (s < 4 && p >= EDGES[s + 1] - SWEEP / 2) s++;
+    while (s < 4 && p >= EDGES[s + 1]) s++;
     setActive(s);
     if (hint) hint.classList.toggle('is-gone', p > 0.06);
     if (progressBar) progressBar.style.transform = `scaleY(${Math.min(1, Math.max(0, (p - EDGES[1]) / (1 - EDGES[1])))})`;
   }
 
-  // the section's progress, read from the scroll and eased a little
-  let target = 0, prog = 0, running = false;
-  const tick = () => {
-    prog += (target - prog) * (reduced ? 1 : 0.14);
-    if (Math.abs(target - prog) < 0.0002) prog = target;
-    draw(prog);
-    if (prog !== target) requestAnimationFrame(tick); else running = false;
-  };
+  // the section's progress, read from the scroll, drawn once a frame
+  let target = 0, running = false;
+  const tick = () => { running = false; draw(target); };
   const kick = () => { if (!running) { running = true; requestAnimationFrame(tick); } };
   const read = () => {
     const r = root.getBoundingClientRect();
@@ -82,9 +67,17 @@ if (root) {
   };
   if (window.ScrollTrigger) {
     window.ScrollTrigger.create({ trigger: root, start: 'top top', end: 'bottom bottom', onUpdate: (st) => { target = st.progress; kick(); } });
-    // the pieces rise into place as the section comes up under the hero
+    // the pieces rise into place as the section comes up under the hero; on
+    // a phone the picture, its words and the big name rise together (the
+    // user: the picture ran over the words as the section arrived), through
+    // --c3-rise, which the phone styles give to all of them
     if (window.gsap && rise && !reduced) {
-      window.gsap.fromTo(rise, { yPercent: 55 }, { yPercent: 0, ease: 'none', scrollTrigger: { trigger: root, start: 'top bottom', end: 'top top', scrub: 0.8 } });
+      const arrive = { trigger: root, start: 'top bottom', end: 'top top', scrub: 0.8 };
+      if (window.matchMedia('(max-width: 720px)').matches) {
+        window.gsap.fromTo(root, { '--c3-rise': () => `${Math.round(window.innerHeight * 0.55)}px` }, { '--c3-rise': '0px', ease: 'none', scrollTrigger: arrive });
+      } else {
+        window.gsap.fromTo(rise, { yPercent: 55 }, { yPercent: 0, ease: 'none', scrollTrigger: arrive });
+      }
     }
   } else {
     window.addEventListener('scroll', read, { passive: true });
@@ -99,9 +92,9 @@ if (root) {
     }, { rootMargin: '150% 0px' }).observe(root);
   }
 
-  window.__sjCraft = { go(p) { target = prog = p; draw(p); } };
+  window.__sjCraft = { go(p) { target = p; draw(p); } };
   read();
-  draw(prog);
+  draw(target);
   root.classList.add('is-ready');
   // the page's loader waits for this section
   window.__sjCraftReady = true;

@@ -323,9 +323,16 @@ html.sj-pre .offer-bar {
   will-change: transform;
 }
 
-/* each after the first waits below the frame; craft3d.js brings it up */
+/* each after the first waits below the frame; when its craft becomes
+   current (craft3d.js) it rises over the last as the words change, the
+   picture inside settling as it comes and the one beneath sinking back */
 .craft3d__shot + .craft3d__shot {
   transform: translateY(101%);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.craft3d__shot.is-up {
+  transform: none;
 }
 
 .craft3d__shot img {
@@ -333,7 +340,38 @@ html.sj-pre .offer-bar {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transform: translateY(-22%) scale(1.08);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), filter 0.6s ease;
   will-change: transform;
+}
+
+.craft3d__shot.is-up img {
+  transform: none;
+}
+
+.craft3d__shot.is-under img {
+  transform: scale(0.95);
+  filter: brightness(0.8);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .craft3d__shot + .craft3d__shot,
+  .craft3d__shot img {
+    transform: none;
+    transition: opacity 0.4s ease;
+  }
+
+  .craft3d__shot + .craft3d__shot {
+    opacity: 0;
+  }
+
+  .craft3d__shot.is-up {
+    opacity: 1;
+  }
+
+  .craft3d__shot.is-under img {
+    filter: none;
+  }
 }
 
 /* the craft's name, enormous and faint, behind the form */
@@ -665,8 +703,12 @@ html.sj-pre .offer-bar {
     transition: opacity 0.5s ease;
   }
 
-  .craft3d__panel.is-active {
-    transition-delay: 0.12s;
+  /* the picture, its words and the big name arrive as one (craft3d.js) */
+  .craft3d__rise,
+  .craft3d__intro,
+  .craft3d__panels,
+  .craft3d__ghosts {
+    translate: 0 var(--c3-rise, 0px);
   }
 
   .craft3d__copy {
