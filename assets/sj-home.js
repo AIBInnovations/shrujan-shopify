@@ -745,13 +745,16 @@
         });
       }
       // the banner's photograph drifts inside its frame as the page scrolls,
-      // slower than the page (desktops: on phones it sits under the words)
+      // slower than the page; on a phone (the user: parallax there too) the
+      // words over its wall drift the other way, a little faster
       var bg = root.querySelector('.ft__bg');
-      if (bg && window.matchMedia('(min-width: 721px)').matches) {
-        gsap.fromTo(bg, { yPercent: -8 }, {
-          yPercent: 8, ease: 'none',
-          scrollTrigger: { trigger: root.querySelector('.ft__banner'), start: 'top bottom', end: 'bottom top', scrub: true },
-        });
+      if (bg) {
+        var span = { trigger: root.querySelector('.ft__banner'), start: 'top bottom', end: 'bottom top', scrub: true };
+        gsap.fromTo(bg, { yPercent: -7 }, { yPercent: 7, ease: 'none', scrollTrigger: span });
+        var over = root.querySelector('.ft__over');
+        if (over && window.matchMedia('(max-width: 720px)').matches) {
+          gsap.fromTo(over, { y: 70 }, { y: -50, ease: 'none', scrollTrigger: span });
+        }
       }
       [].forEach.call(root.querySelectorAll('.ft__media img'), function (img) {
         gsap.fromTo(img, { scale: 1.12 }, {

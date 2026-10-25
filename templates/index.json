@@ -1037,6 +1037,10 @@
       "type": "home-legacy",
       "settings": {}
     },
+    "home-stores": {
+      "type": "home-stores",
+      "settings": {}
+    },
     "feature-lldc": {
       "type": "home-feature",
       "settings": {
@@ -1048,6 +1052,7 @@
         "title_2": "Design Centre (LLDC)",
         "lede": "A museum and cultural institution dedicated to the crafts of Kutch, with galleries, research programmes and archives that explore the region’s living traditions.",
         "image_asset": "sj-lldc-banner.webp",
+        "image_m_asset": "sj-lldc-mobile.webp",
         "image_alt": "Figures in the ceremonial dress of Kutchi communities in an LLDC gallery, seen past a carved stone pillar",
         "btn_label": "Visit the LLDC Website",
         "btn_link": "https://shrujanlldc.org"
@@ -1181,10 +1186,6 @@
         "c1",
         "c2"
       ]
-    },
-    "home-stores": {
-      "type": "home-stores",
-      "settings": {}
     }
   },
   "order": [

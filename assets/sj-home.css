@@ -603,47 +603,83 @@ html.sj-pre .offer-bar {
 
 @media (max-width: 720px) {
   .craft3d__intro {
-    left: 16px;
-    right: 16px;
-    top: auto;
-    bottom: 6vh;
-    width: auto;
-    translate: none;
     justify-items: center;
     text-align: center;
   }
 
 
-  .craft3d__panels {
+  /* a phone (the user: no box at the foot, no empty space under the
+     words or above them, the words centred): under the big word, the
+     photograph (upright, 4:5, as these full-length pieces want) and the
+     craft's words under it, the two kept together and centred in the
+     space; each craft's words take the place of the last without sliding,
+     and the opening lines sit in the same place before the first */
+  .craft3d {
+    --c3-word: calc(6svh + 13vw);
+    /* the longest craft's words */
+    --c3-text: 205px;
+    /* what is left for the photograph once the word and the words are in */
+    --c3-room: calc(100svh - var(--c3-word) - var(--c3-text) - 46px);
+    --c3-fw: min(calc(100vw - 32px), var(--c3-room));
+    /* as tall as the room allows, from square up to 2:3 */
+    --c3-fh: min(calc(var(--c3-fw) * 1.5), var(--c3-room));
+    --c3-top: calc(var(--c3-word) + 10px);
+  }
+
+  .craft3d__shots {
+    left: 50%;
+    top: var(--c3-top);
+    width: var(--c3-fw);
+    height: var(--c3-fh);
+    aspect-ratio: auto;
+    translate: -50% 0;
+  }
+
+  .craft3d__panels,
+  .craft3d__intro {
     left: 16px;
     right: 16px;
-    top: auto;
-    bottom: 4vh;
+    top: calc(var(--c3-top) + var(--c3-fh) + 18px);
+    bottom: auto;
     width: auto;
-    height: 236px;
+    height: var(--c3-text);
     translate: none;
   }
 
-  .craft3d__panel {
-    align-content: end;
-    gap: 9px;
-    padding: 18px 16px 16px;
-    border-radius: var(--radius);
-    background: rgba(246, 244, 230, 0.92);
-    box-shadow: 0 0 0 1px rgba(40, 40, 41, 0.08);
-    backdrop-filter: blur(6px);
+  .craft3d__intro {
+    align-content: start;
   }
 
-  .craft3d__name {
-    font-size: var(--fs-4xl);
+  .craft3d__panel {
+    align-content: start;
+    justify-items: center;
+    gap: 8px;
+    padding: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    text-align: center;
+    transform: none;
+    transition: opacity 0.5s ease;
+  }
+
+  .craft3d__panel.is-active {
+    transition-delay: 0.12s;
   }
 
   .craft3d__copy {
-    font-size: var(--fs-sm);
+    max-width: 34ch;
   }
 
-  /* above the head, clear of the form, in front of it; sized so the
-     longest word, EMBROIDERY, still fits the screen */
+  .craft3d__name {
+    font-size: var(--fs-3xl);
+    line-height: 1.1;
+  }
+
+  /* above the photograph, sized so the longest word, EMBROIDERY, still
+     fits the screen */
   .craft3d__ghosts {
     z-index: 2;
   }
@@ -653,15 +689,15 @@ html.sj-pre .offer-bar {
     font-size: 12.8vw;
   }
 
-  /* between the big word at the top and the card at the foot */
-  .craft3d__shots {
-    left: 50%;
-    top: calc(6vh + 13vw + (100svh - 6vh - 13vw - 4vh - 236px) / 2);
-    width: min(calc(100vw - 32px), calc(100svh - 6vh - 13vw - 4vh - 236px - 24px));
+  .craft3d__panel .craft3d__link {
+    justify-self: center;
+    align-self: center;
   }
 
   .craft3d__hint {
-    display: none;
+    bottom: max(14px, 2.4svh);
+    width: max-content;
+    white-space: nowrap;
   }
 }
 
@@ -2810,6 +2846,10 @@ html.sj-pre .dh__strip {
   overflow: hidden;
 }
 
+.ft__pic {
+  display: contents;
+}
+
 .ft__bg {
   /* taller than its frame, so it can drift as the page scrolls (feature.js) */
   position: absolute;
@@ -2904,33 +2944,81 @@ html.sj-pre .dh__strip {
     order: 0;
   }
 
-  /* the banner: the words first, the gallery under them */
+  /* the banner on a phone (the user): the whole screen, the upright
+     photograph of the gallery behind, the words over its plain wall at the
+     top; the two drift apart a little as the page scrolls (feature.js) */
   .ft__banner {
-    display: flex;
-    flex-direction: column;
+    height: 100vh;
+    height: 100svh;
     aspect-ratio: auto;
     max-height: none;
-    background: transparent;
+  }
+
+  /* set a little low, so more of the plain wall shows above the figures */
+  .ft__bg {
+    top: -3%;
+    height: 116%;
+    object-position: 50% 62%;
+  }
+
+  /* a soft veil of the page's cream behind the words, gone by halfway */
+  .ft--banner .ft__banner::after {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 58%;
+    background: linear-gradient(180deg, rgba(246, 244, 230, 0.72) 0%, rgba(246, 244, 230, 0.45) 55%, rgba(246, 244, 230, 0) 100%);
+    pointer-events: none;
   }
 
   .ft__over {
-    position: static;
-    order: -1;
+    left: var(--gutter, 16px);
+    right: var(--gutter, 16px);
+    top: max(56px, 7svh);
     width: auto;
     translate: none;
-    padding: 0 var(--gutter, 16px) 26px;
+    align-items: center;
+    text-align: center;
   }
 
-  .ft__bg {
-    position: static;
-    aspect-ratio: 4 / 3;
-    height: auto;
-    top: auto;
-    object-position: 78% 50%;
+  .ft__over .ft__lede {
+    max-width: 32ch;
+  }
+
+  .ft__over .ft__eyebrow {
+    color: var(--ink, #404041);
   }
 
   .ft__rule {
-    margin: 22px 0 18px;
+    margin: 20px 0 16px;
+  }
+}
+
+/* a short phone: the words tighter and the picture a little lower, so the
+   link stays clear of the figures */
+@media (max-width: 720px) and (max-height: 760px) {
+  .ft__bg {
+    top: 0;
+  }
+
+  .ft__over {
+    top: 48px;
+  }
+
+  .ft__over .ft__eyebrow {
+    margin-bottom: 10px;
+  }
+
+  .ft__over .ft__lede {
+    margin-top: 12px;
+  }
+
+  .ft__over .ft__rule {
+    display: none;
+  }
+
+  .ft__over .ft__link {
+    margin-top: 16px;
   }
 }
 
@@ -5972,4 +6060,77 @@ section[aria-label="What our customers say"],
   -webkit-mask-image: linear-gradient(transparent, #000 85%);
   mask-image: linear-gradient(transparent, #000 85%);
 }
+
+/* ============================================================
+   One type scale and one rhythm for every section of the home page
+   ------------------------------------------------------------
+   (the user: in some sections the headings and words were big, in others
+   small; follow one pattern on desktop and on phones.) Measured before:
+   section titles ran from 52 to 105px on a desktop and 30 to 40px on a
+   phone, the small headings above them from 10 to 14px, the lines under
+   them from 14 to 22px, and the space round a section from 23 to 72px.
+   Now, every section (the hero apart):
+     small heading  var(--fs-xs)    10.5 to 11px, spaced capitals
+     title          var(--fs-4xl)   30px on a phone to 52px
+     line under it  var(--fs-md)    14.5 to 15.5px
+     words in cards var(--fs-base)  13.5 to 14px
+     space above and below  var(--sec-pad)
+   This block is last in the home page's styles and says so with its
+   selectors' weight, so it holds over each section's own rules.
+   ============================================================ */
+html body .hst__title,
+html body .idx__title,
+html body .craft3d__intro-title,
+html body .hx__title,
+html body .ft__title,
+html body .ft__over .ft__title,
+html body .ft--studio .ft__title,
+html body .ft__collage .ft__title,
+html body .pv__title,
+html body .st__title,
+html body .shopcta__title,
+html body main .section-title {
+  font-size: var(--fs-4xl);
+  line-height: 1.08;
+}
+
+html body .ft__eyebrow,
+html body .ft__over .ft__eyebrow,
+html body .ft__collage .ft__eyebrow,
+html body .craft3d__eyebrow,
+html body .st__eyebrow,
+html body .shopcta__eyebrow,
+html body .cw__eyebrow {
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+html body .hst__lede,
+html body .hx__lede,
+html body .ft__lede,
+html body .ft__over .ft__lede,
+html body .ft__collage .ft__lede,
+html body .st__lede,
+html body .shopcta__copy {
+  font-size: var(--fs-md);
+  line-height: 1.65;
+}
+
+html body .craft3d__copy,
+html body .pv__copy,
+html body .faq__a {
+  font-size: var(--fs-base);
+  line-height: 1.65;
+}
+
+/* the same space above and below every section */
+html body .ft--studio,
+html body .ft--collage,
+html body [id$="__home-reels"] > section {
+  padding-top: var(--sec-pad);
+  padding-bottom: var(--sec-pad);
+}
+
 

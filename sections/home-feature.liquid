@@ -78,8 +78,14 @@
         assign pic = s.image_asset | asset_url
         assign pic_alt = s.image_alt
       endif
+      assign pic_m = ''
+      if s.image_m != blank
+        assign pic_m = s.image_m | image_url: width: 1100
+      elsif s.image_m_asset != blank
+        assign pic_m = s.image_m_asset | asset_url
+      endif
     -%}
-    <div class="ft__banner"><img class="ft__bg" src="{{ pic }}" alt="{{ pic_alt | escape }}" loading="lazy"><div class="ft__over">{{ head }}<i class="ft__rule" aria-hidden="true"></i>{%- if s.btn_label != blank -%}<a class="ft__link" href="{{ s.btn_link | escape }}"{% if s.btn_link contains 'http' %} target="_blank" rel="noopener"{% endif %}>{{ s.btn_label | escape }} {{ arrow }}</a>{%- endif -%}</div></div>
+    <div class="ft__banner"><picture class="ft__pic">{%- if pic_m != blank -%}<source media="(max-width: 720px)" srcset="{{ pic_m }}">{%- endif -%}<img class="ft__bg" src="{{ pic }}" alt="{{ pic_alt | escape }}" loading="lazy"></picture><div class="ft__over">{{ head }}<i class="ft__rule" aria-hidden="true"></i>{%- if s.btn_label != blank -%}<a class="ft__link" href="{{ s.btn_link | escape }}"{% if s.btn_link contains 'http' %} target="_blank" rel="noopener"{% endif %}>{{ s.btn_label | escape }} {{ arrow }}</a>{%- endif -%}</div></div>
   {%- elsif s.layout == 'split' -%}
     {%- liquid
       if s.image != blank
@@ -194,6 +200,16 @@
       "type": "text",
       "id": "image_alt",
       "label": "Picture description"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_m",
+      "label": "Phones: an upright picture (banner layout)"
+    },
+    {
+      "type": "text",
+      "id": "image_m_asset",
+      "label": "Or theme image file for phones"
     },
     {
       "type": "text",
