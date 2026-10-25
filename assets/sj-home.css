@@ -3005,13 +3005,15 @@ html.sj-pre .dh__strip {
     object-position: 50% 62%;
   }
 
-  /* a soft veil of the page's cream behind the words, gone by halfway */
+  /* the page's cream behind the words, close to solid where they are and
+     melting away above the figures (the user: the words could not be read
+     on the grey wall) */
   .ft--banner .ft__banner::after {
     content: '';
     position: absolute;
     inset: 0 0 auto;
-    height: 58%;
-    background: linear-gradient(180deg, rgba(246, 244, 230, 0.72) 0%, rgba(246, 244, 230, 0.45) 55%, rgba(246, 244, 230, 0) 100%);
+    height: 74%;
+    background: linear-gradient(180deg, rgba(246, 244, 230, 0.94) 0%, rgba(246, 244, 230, 0.9) 50%, rgba(246, 244, 230, 0.6) 72%, rgba(246, 244, 230, 0) 100%);
     pointer-events: none;
   }
 
@@ -3029,7 +3031,8 @@ html.sj-pre .dh__strip {
     max-width: 32ch;
   }
 
-  .ft__over .ft__eyebrow {
+  .ft__over .ft__eyebrow,
+  .ft__over .ft__lede {
     color: var(--ink, #404041);
   }
 
