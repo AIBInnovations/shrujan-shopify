@@ -1,0 +1,9 @@
+{%- comment -%}
+  The data a card's "Add to bag" label carries, so the bag drawer
+  (assets/sj-cart.js) can add the piece without opening it: the first variant
+  that can be bought, the handle, and data-multi when the piece has sizes or
+  colours to choose from (the drawer asks for them first). A piece that cannot
+  be bought gets nothing, and its label simply opens the product.
+  Accepts: product.
+{%- endcomment -%}
+{%- if product.available %} data-variant="{{ product.selected_or_first_available_variant.id }}" data-handle="{{ product.handle }}"{% unless product.has_only_default_variant %} data-multi{% endunless %}{% endif -%}

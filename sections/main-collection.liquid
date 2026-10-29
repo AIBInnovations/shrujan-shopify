@@ -273,7 +273,7 @@
               {%- if cfg.card_wish -%}
               {%- endif -%}
               {%- if cfg.card_quick and product.available -%}
-                <span class="piece__quick" data-variant="{{ product.selected_or_first_available_variant.id }}">{{ cfg.quick_label }}</span>
+                <span class="piece__quick"{% render 'sj-quick-attrs', product: product %}>{{ cfg.quick_label }}</span>
               {%- endif -%}
             </div>
 
@@ -356,7 +356,7 @@
     var target = e.target.closest ? e.target : e.target.parentNode;
     if (!target || !target.closest) return;
 
-    /* Both controls sit inside the product link, so their click must not
+    /* The heart sits inside the product link, so its click must not
        navigate to the product page. */
     var wish = target.closest('.piece__wish');
     if (wish) {
@@ -365,19 +365,7 @@
       return;
     }
 
-    var quick = target.closest('.piece__quick');
-    var variant = quick && quick.getAttribute('data-variant');
-    if (!variant) return;
-    e.preventDefault();
-    var add = document.createElement('form');
-    add.method = 'post';
-    add.action = '{{ routes.cart_add_url }}';
-    add.hidden = true;
-    add.innerHTML =
-      '<input type="hidden" name="id" value="' + variant + '">' +
-      '<input type="hidden" name="quantity" value="1">';
-    document.body.appendChild(add);
-    add.submit();
+    // the "Add to bag" label is the bag drawer's (assets/sj-cart.js)
   });
 })();
 </script>

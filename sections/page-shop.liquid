@@ -299,7 +299,7 @@
           assign card_swatches = product.metafields.shrujan.swatches.value
         -%}
         <a class="piece shop-piece" href="{{ product.url }}" data-c="{% for pc in product.collections %}{{ pc.handle }} {% endfor %}" data-price="{{ product.price }}">
-          <div class="piece__media" style="--tint: {% cycle 'piece': 'var(--ivory-2)', 'var(--gerua-100)', 'var(--mehendi-200)', 'var(--sand)' %}">{% if card_img %}<img src="{{ card_img | image_url: width: 900 }}" alt="{{ card_img.alt | default: product.title | escape }}" loading="lazy">{% else %}{{ 'product-1' | placeholder_svg_tag: 'piece__ph' }}{% endif %}{% render 'piece-badge', product: product, show: cfg.card_badge, sale: cfg.card_sale_badge %}{% if cfg.card_wish %}{% endif %}{% if cfg.card_quick %}<span class="piece__quick">Add to bag</span>{% endif %}</div>
+          <div class="piece__media" style="--tint: {% cycle 'piece': 'var(--ivory-2)', 'var(--gerua-100)', 'var(--mehendi-200)', 'var(--sand)' %}">{% if card_img %}<img src="{{ card_img | image_url: width: 900 }}" alt="{{ card_img.alt | default: product.title | escape }}" loading="lazy">{% else %}{{ 'product-1' | placeholder_svg_tag: 'piece__ph' }}{% endif %}{% render 'piece-badge', product: product, show: cfg.card_badge, sale: cfg.card_sale_badge %}{% if cfg.card_wish %}{% endif %}{% if cfg.card_quick %}<span class="piece__quick"{% render 'sj-quick-attrs', product: product %}>Add to bag</span>{% endif %}</div>
 
           <div class="piece__info">
             <p class="piece__name">{{ product.title | escape }}</p>

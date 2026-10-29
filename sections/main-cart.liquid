@@ -1,18 +1,20 @@
 {%- render 'section-design', section: section -%}
 {%- comment -%}
-  The bag, rendered from the real `cart` object and posted to Shopify's own
-  endpoints — there is no JavaScript on this page at all.
+  The cart page is not shown any more (the user, 2026-10-29: the bag is the
+  drawer on the right, snippets/sj-cart-drawer). With scripts on, this page
+  sends the shopper straight back to where they came from with the drawer open
+  (#cart, read by assets/sj-cart.js); Shopify's own "back to cart" links from
+  checkout land here and go home with the drawer open.
 
-  How the mutations work:
+  Without scripts the bag below is still the whole cart, rendered from the
+  real `cart` object and posted to Shopify's own endpoints:
 
    * One `<form action="/cart" method="post">` wraps both the line items and the
      summary. Every quantity field is `updates[<line item key>]`, so whichever
      submit button is pressed, Shopify reads the whole set and writes it to the
      cart first.
-   * `name="update"` therefore saves the quantities and returns to /cart, and
-     `name="checkout"` saves them and continues to checkout. A shopper who
-     retypes a quantity and goes straight to Checkout still gets the quantity
-     they typed — no "update your bag first" trap.
+   * `name="update"` saves the quantities and returns to /cart, and
+     `name="checkout"` saves them and continues to checkout.
    * A quantity of 0 removes the line. The Remove link is the same operation
      without the round trip through the form: /cart/change?line=N&quantity=0,
      where N is the line's 1-based position, which is what `forloop.index` is.
@@ -21,6 +23,19 @@
   assign cfg = section.settings
   assign shop_url = cfg.continue_link | default: '/pages/shop-shrujan'
 -%}
+<script>
+  (function () {
+    var back = {{ routes.root_url | json }};
+    try {
+      var r = document.referrer && new URL(document.referrer);
+      var path = r && r.pathname.replace(/^\/[a-z]{2}(-[a-z]{2})?(?=\/)/i, '');
+      if (r && r.origin === location.origin && !/^\/(cart|checkouts?)(\/|$)/.test(path)) back = r.pathname + r.search;
+    } catch (e) {}
+    location.replace(back + '#cart');
+  })();
+</script>
+<p class="sjc-redirect" style="padding:18vh 16px;text-align:center;opacity:.6">Opening your bag</p>
+<noscript><style>.sjc-redirect{display:none}</style>
 <div class="page">
   <section class="container store-head" data-reveal>
     <span class="store-head__mark" aria-hidden="true"><i class="sj-i sj-i--sparkle ms" style="font-size:14px" aria-hidden="true"></i><i></i></span>
@@ -167,6 +182,7 @@
   </form>
 {%- endif %}
 </div>
+</noscript>
 
 {% schema %}
 {

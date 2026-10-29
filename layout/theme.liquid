@@ -203,6 +203,8 @@
     <link rel="stylesheet" href="{{ 'sj-site.css' | asset_url }}">
     {%- comment -%} the search overlay, the helpdesk and the Enquire tab, on every page (awwwards-preview/src/ui.css, ui.js) {%- endcomment %}
     <link rel="stylesheet" href="{{ 'sj-ui.css' | asset_url }}">
+    {%- comment -%} the bag drawer, on every page (snippets/sj-cart-drawer, hand-written) {%- endcomment %}
+    <link rel="stylesheet" href="{{ 'sj-cart.css' | asset_url }}">
     {%- if template.name == 'index' %}
     <link rel="stylesheet" href="{{ 'sj-home.css' | asset_url }}">
     {%- endif %}
@@ -214,9 +216,11 @@
       <main>{{ content_for_layout }}</main>
       {% sections 'footer-group' %}
     </div>
+    {% render 'sj-cart-drawer' %}
     {%- comment -%} enquiries also go to Slide (Theme settings → Slide) {%- endcomment -%}
     <script>window.SJ_UI = Object.assign(window.SJ_UI || {}, { slideWebhook: {{ settings.slide_webhook | default: '' | json }} });</script>
     <script src="{{ 'sj-ui.js' | asset_url }}" defer></script>
+    <script src="{{ 'sj-cart.js' | asset_url }}" defer></script>
     {%- if template.name == 'index' %}
     <script src="{{ 'sj-home.js' | asset_url }}"></script>
     <script type="module" src="{{ 'sj-craft3d.js' | asset_url }}"></script>

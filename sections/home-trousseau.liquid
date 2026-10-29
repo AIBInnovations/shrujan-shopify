@@ -167,7 +167,7 @@
         {%- if cfg.tr_show_wish %}
         {%- endif %}
         {%- if cfg.tr_show_quick %}
-        <span class="piece__quick">Add to bag</span>
+        <span class="piece__quick"{% render 'sj-quick-attrs', product: product %}>Add to bag</span>
         {%- endif %}
       </div>
 

@@ -171,7 +171,7 @@
               {%- if cfg.card_wish %}
               {%- endif %}
               {%- if cfg.card_quick %}
-              <span class="piece__quick">{{ cfg.quick_label }}</span>
+              <span class="piece__quick"{% render 'sj-quick-attrs', product: item %}>{{ cfg.quick_label }}</span>
               {%- endif %}
             </div>
             <div class="piece__info">

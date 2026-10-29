@@ -1,0 +1,122 @@
+{%- comment -%}
+  The bag: a drawer on the right, on every page (the user, 2026-10-29: no
+  full cart page, only the side bag). Rendered once by layout/theme.liquid;
+  assets/sj-cart.js fills and drives it through Shopify's cart API, and
+  assets/sj-cart.css draws it.
+
+   * Every "Add to bag" label on a card (snippets/sj-quick-attrs) and every
+     form posting to /cart/add (the product page) adds in the background and
+     opens this drawer; a piece with sizes or colours asks for them here first.
+   * Any link to the cart opens it too, and the cart page itself sends the
+     shopper back to where they were with the drawer open.
+   * The tier bar reads its rewards from Theme settings, Bag drawer. It shows
+     progress only; the discounts themselves are Shopify automatic discounts,
+     and the totals shown are always the cart's own.
+   * Recommendations are Shopify's own for the newest piece in the bag, then
+     the collection set in Theme settings (or the newest pieces).
+{%- endcomment -%}
+{%- liquid
+  assign shop_url = '/pages/shop-shrujan'
+  assign rec_col = settings.cart_recs_collection
+  if rec_col != blank and rec_col.products_count > 0
+    assign rec_pool = rec_col.products
+  else
+    assign rec_pool = collections.all.products
+  endif
+-%}
+<div class="sjc" id="sj-cart" hidden>
+  <div class="sjc__scrim" data-sjc-close></div>
+  <aside class="sjc__panel" role="dialog" aria-modal="true" aria-labelledby="sjc-title" data-lenis-prevent>
+    <header class="sjc__head">
+      <h2 class="sjc__title" id="sjc-title">Your bag <span class="sjc__count" data-sjc-count></span></h2>
+      <button type="button" class="sjc__close" data-sjc-close aria-label="Close the bag"><i class="sj-i sj-i--x ms" aria-hidden="true"></i></button>
+    </header>
+
+    <div class="sjc__tiers" data-sjc-tiers hidden>
+      <p class="sjc__tier-msg" data-sjc-tier-msg></p>
+      <div class="sjc__track" data-sjc-track><span class="sjc__fill" data-sjc-fill></span></div>
+    </div>
+
+    <div class="sjc__stage">
+      <p class="sjc__notice" data-sjc-notice role="status" aria-live="polite" hidden></p>
+      <div class="sjc__body" data-sjc-body data-lenis-prevent>
+        <ul class="sjc__lines" data-sjc-lines aria-label="Pieces in your bag"></ul>
+
+        <div class="sjc__empty" data-sjc-empty hidden>
+          <span class="sjc__empty-mark" aria-hidden="true"><i class="sj-i sj-i--handbag ms"></i></span>
+          <p class="sjc__empty-title">Your bag is empty</p>
+          <p class="sjc__empty-copy">Every piece is made by hand by the craftswomen of Kutch.</p>
+          <a class="sjc__btn sjc__btn--ghost" href="{{ shop_url }}">Shop the collection <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>
+        </div>
+
+        <section class="sjc__recs" data-sjc-recs hidden aria-labelledby="sjc-recs-title">
+          <div class="sjc__recs-head">
+            <h3 class="sjc__recs-title" id="sjc-recs-title">{{ settings.cart_recs_title | default: 'You may also like' | escape }}</h3>
+            <span class="sjc__arrows">
+              <button type="button" class="sjc__arrow" data-sjc-rail="-1" aria-label="Previous pieces"><i class="sj-i sj-i--caret-left ms" aria-hidden="true"></i></button>
+              <button type="button" class="sjc__arrow" data-sjc-rail="1" aria-label="More pieces"><i class="sj-i sj-i--caret-right ms" aria-hidden="true"></i></button>
+            </span>
+          </div>
+          <ul class="sjc__rail" data-sjc-rail-list></ul>
+        </section>
+
+        {%- if settings.cart_note_on %}
+        <details class="sjc__note" data-sjc-note-box>
+          <summary><i class="sj-i sj-i--gift ms" aria-hidden="true"></i> Add a gift note <i class="sj-i sj-i--plus ms sjc__note-sign" aria-hidden="true"></i></summary>
+          <label class="sjc__note-label" for="sjc-note">A message for the card, or anything we should know</label>
+          <textarea id="sjc-note" class="sjc__note-field" rows="3" maxlength="500" data-sjc-note>{{ cart.note | escape }}</textarea>
+        </details>
+        {%- endif %}
+      </div>
+
+      <footer class="sjc__foot" data-sjc-foot hidden>
+        <dl class="sjc__sums" data-sjc-sums></dl>
+        <p class="sjc__fine">{% if settings.cart_ship_note != blank %}{{ settings.cart_ship_note | escape }}. {% endif %}{% if cart.taxes_included %}Taxes included.{% else %}Taxes calculated at checkout.{% endif %}</p>
+        <form action="{{ routes.cart_url }}" method="post" class="sjc__checkout-form">
+          <button type="submit" name="checkout" class="sjc__btn sjc__btn--solid sjc__checkout" data-sjc-checkout>
+            <span>Checkout</span><span class="sjc__checkout-sum" data-sjc-checkout-sum></span>
+          </button>
+        </form>
+        <button type="button" class="sjc__continue" data-sjc-close>Continue shopping</button>
+      </footer>
+
+      <div class="sjc__picker" data-sjc-picker hidden data-lenis-prevent></div>
+    </div>
+  </aside>
+</div>
+<script type="application/json" id="sj-cart-data">
+{
+  "routes": {
+    "root": {{ routes.root_url | json }},
+    "cart": {{ routes.cart_url | json }},
+    "add": {{ routes.cart_add_url | json }},
+    "change": {{ routes.cart_change_url | json }},
+    "update": {{ routes.cart_update_url | json }},
+    "recs": {{ routes.product_recommendations_url | json }},
+    "shop": {{ shop_url | json }}
+  },
+  "money": {{ shop.money_format | json }},
+  "tiersOn": {{ settings.cart_tiers_on | json }},
+  "tiers": [
+    {%- assign tier_sep = '' -%}
+    {%- for n in (1..3) -%}
+      {%- capture amt_key %}cart_tier_{{ n }}_amount{% endcapture -%}
+      {%- capture lab_key %}cart_tier_{{ n }}_label{% endcapture -%}
+      {%- assign t_amt = settings[amt_key] -%}
+      {%- assign t_lab = settings[lab_key] -%}
+      {%- if t_amt != blank and t_amt > 0 and t_lab != blank -%}
+        {{ tier_sep }}{ "at": {{ t_amt | times: 100 }}, "label": {{ t_lab | json }} }
+        {%- assign tier_sep = ',' -%}
+      {%- endif -%}
+    {%- endfor -%}
+  ],
+  "recsOn": {{ settings.cart_recs_on | json }},
+  "fallback": [
+    {%- for p in rec_pool limit: 12 -%}
+      {%- assign pv = p.selected_or_first_available_variant -%}
+      {"id": {{ p.id }}, "handle": {{ p.handle | json }}, "title": {{ p.title | json }}, "url": {{ p.url | json }}, "price": {{ p.price }}, "compare": {{ p.compare_at_price | default: 0 }}, "available": {{ p.available | json }}, "variant": {{ pv.id | default: 0 }}, "multi": {% if p.has_only_default_variant %}false{% else %}true{% endif %}, "img": {% if p.featured_image %}{{ p.featured_image | image_url: width: 480 | json }}{% else %}null{% endif %}}{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ],
+  "cart": {{ cart | json }}
+}
+</script>

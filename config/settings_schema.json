@@ -339,5 +339,109 @@
         "default": "https://slide.synquic.com/api/webhooks/ifLD7AgKoKrahVBKUp4kxBy6"
       }
     ]
+  },
+  {
+    "name": "Bag drawer",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "The bag opens as a drawer on the right on every page; the cart page opens it too. The tier bar shows how far the bag is from each reward. It only shows progress: give each tier a matching automatic discount in Shopify (Discounts, Amount off order, minimum purchase amount) so the reward is really applied."
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_tiers_on",
+        "label": "Show the tier bar",
+        "default": true
+      },
+      {
+        "type": "header",
+        "content": "Tier 1"
+      },
+      {
+        "type": "number",
+        "id": "cart_tier_1_amount",
+        "label": "Spend (₹)",
+        "info": "Leave empty to drop this tier.",
+        "default": 5000
+      },
+      {
+        "type": "text",
+        "id": "cart_tier_1_label",
+        "label": "Reward",
+        "default": "5% off"
+      },
+      {
+        "type": "header",
+        "content": "Tier 2"
+      },
+      {
+        "type": "number",
+        "id": "cart_tier_2_amount",
+        "label": "Spend (₹)",
+        "info": "Leave empty to drop this tier.",
+        "default": 10000
+      },
+      {
+        "type": "text",
+        "id": "cart_tier_2_label",
+        "label": "Reward",
+        "default": "10% off"
+      },
+      {
+        "type": "header",
+        "content": "Tier 3"
+      },
+      {
+        "type": "number",
+        "id": "cart_tier_3_amount",
+        "label": "Spend (₹)",
+        "info": "Leave empty to drop this tier.",
+        "default": 15000
+      },
+      {
+        "type": "text",
+        "id": "cart_tier_3_label",
+        "label": "Reward",
+        "default": "15% off"
+      },
+      {
+        "type": "header",
+        "content": "Recommendations"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_recs_on",
+        "label": "Recommend other pieces",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "cart_recs_title",
+        "label": "Heading",
+        "default": "You may also like"
+      },
+      {
+        "type": "collection",
+        "id": "cart_recs_collection",
+        "label": "Pieces to show when Shopify has none",
+        "info": "Shopify's own recommendations come first. With none set, the newest pieces show."
+      },
+      {
+        "type": "header",
+        "content": "Bottom of the drawer"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_note_on",
+        "label": "Let shoppers add a gift note",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "cart_ship_note",
+        "label": "Shipping line",
+        "default": "Free shipping across India"
+      }
+    ]
   }
 ]

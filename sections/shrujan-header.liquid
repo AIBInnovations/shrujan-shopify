@@ -423,7 +423,7 @@
       <a class="utility-link" href="{{ routes.account_url }}" aria-label="Account"><span>Account</span> <i class="sj-i sj-i--user ms" style="font-size:18px" aria-hidden="true"></i></a>
       {%- endif %}
       {%- if hs.show_bag %}
-      <a class="utility-link" href="{{ hs.bag_url | default: routes.cart_url }}" aria-label="Shopping bag, {{ cart.item_count }} items"><span>Bag&nbsp;({{ cart.item_count }})</span>{% if cart.item_count > 0 %}<b class="utility-count" aria-hidden="true">{{ cart.item_count }}</b>{% endif %} <i class="sj-i sj-i--handbag ms" style="font-size:18px" aria-hidden="true"></i></a>
+      <a class="utility-link" href="{{ hs.bag_url | default: routes.cart_url }}" aria-label="Shopping bag, {{ cart.item_count }} items" data-sj-bag><span data-sj-bag-text>Bag&nbsp;({{ cart.item_count }})</span>{% if cart.item_count > 0 %}<b class="utility-count" aria-hidden="true">{{ cart.item_count }}</b>{% endif %} <i class="sj-i sj-i--handbag ms" style="font-size:18px" aria-hidden="true"></i></a>
       {%- endif %}
     </div>
   </div>

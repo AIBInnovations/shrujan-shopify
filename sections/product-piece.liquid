@@ -16,10 +16,12 @@
   care/shipping accordions, the ordering options, and the review panel (reviews
   are blocks, so they stay editable).
 
-  Add to bag is a real POST to the cart, so the built cart page receives it. The
-  size row switches the posted variant when the product has real options; when it
-  has only Shopify's default variant the row is presentational and the default
-  variant is what gets added.
+  Add to bag is a real POST to the cart, which assets/sj-cart.js sends in the
+  background and answers by opening the bag drawer (without scripts it still
+  posts, and the cart page shows the bag). The size row switches the posted
+  variant when the product has real options; when it has only Shopify's
+  default variant the row is presentational and the default variant is what
+  gets added.
 {%- endcomment -%}
 {%- comment -%}
   Gallery layout. The ≤720px stylesheet already lays the thumbnail rail out
@@ -902,8 +904,8 @@
     });
   });
 
-  // The rail cards' own two controls sit inside the product link, so neither
-  // may navigate: the heart is a wish, the label adds that piece to the bag.
+  // The rail cards' heart sits inside the product link, so it must not
+  // navigate; the label adds that piece to the bag (assets/sj-cart.js).
   root.addEventListener('click', function (e) {
     var node = e.target.closest ? e.target : e.target.parentNode;
     if (!node || !node.closest) return;
@@ -914,19 +916,7 @@
       return;
     }
 
-    var quick = node.closest('.piece__quick');
-    var id = quick && quick.getAttribute('data-variant');
-    if (!id) return;
-    e.preventDefault();
-    var add = document.createElement('form');
-    add.method = 'post';
-    add.action = page.getAttribute('data-cart-add') || '/cart/add';
-    add.hidden = true;
-    add.innerHTML =
-      '<input type="hidden" name="id" value="' + id + '">' +
-      '<input type="hidden" name="quantity" value="1">';
-    document.body.appendChild(add);
-    add.submit();
+    // the "Add to bag" label is the bag drawer's (assets/sj-cart.js)
   });
 
   // Scroll drives the gallery. The section is divided into as many bands as
