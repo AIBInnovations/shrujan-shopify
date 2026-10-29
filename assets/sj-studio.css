@@ -191,7 +191,7 @@
 
 .sp-hero__text {
   position: relative;
-  max-width: 560px;
+  max-width: 640px;
 }
 
 .sp-hero .sp-eyebrow {
@@ -200,9 +200,10 @@
 
 .sp-hero__title {
   margin: 0;
-  font: 400 clamp(44px, 5.4vw, 88px) / 1.02 var(--font-display);
+  font: 400 clamp(44px, 4.6vw, 76px) / 1.04 var(--font-display);
   letter-spacing: -0.012em;
   color: var(--sp-cream);
+  text-wrap: balance;
 }
 
 .sp-hero__title em {
