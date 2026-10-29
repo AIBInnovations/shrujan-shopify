@@ -46,7 +46,7 @@
         endif
         assign words = c.words | split: ','
       -%}
-      <article class="ft__scene ft__scene--{{ c.look }}" style="--wall:url({{ c.wall_asset | default: 'sj-studio-wall-red.webp' | asset_url }})" {{ b.shopify_attributes }}><div class="ft__stage">{% if c.back_asset != blank %}<img class="ft__back" src="{{ c.back_asset | asset_url }}" alt="" loading="lazy">{% endif %}<img class="ft__cloth" src="{{ pic }}" alt="{{ pic_alt | escape }}" loading="lazy">{% if c.front_asset != blank %}<span class="ft__front ft__front--{{ c.front_crop }}"><img src="{{ c.front_asset | asset_url }}" alt="" loading="lazy"></span>{% endif %}</div><div class="ft__copy"><p class="ft__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</p><h3 class="ft__name">{{ c.name | escape }}</h3><p class="ft__text">{{ c.text | escape }}</p>{% if c.note != blank %}<p class="ft__note">{{ c.note | escape }}</p>{% endif %}{%- if c.btn_label != blank -%}<a class="ft__btn" href="{{ c.btn_link | escape }}"{% if c.btn_link contains 'http' %} target="_blank" rel="noopener"{% endif %}>{{ c.btn_label | escape }} {{ arrow }}</a>{%- endif -%}</div>{%- if c.detail_asset != blank -%}<aside class="ft__detail"><img src="{{ c.detail_asset | asset_url }}" alt="{{ c.detail_alt | escape }}" loading="lazy"><p class="ft__words">{%- for w in words -%}{%- assign ww = w | strip -%}{%- if ww != blank -%}<span>{{ ww | escape }}</span>{%- endif -%}{%- endfor -%}</p>{{ motif }}</aside>{%- endif -%}</article>
+      <article class="ft__scene ft__scene--{{ c.look }}" style="--wall:url({{ c.wall_asset | default: 'sj-studio-wall-red.webp' | asset_url }})" {{ b.shopify_attributes }}><div class="ft__stage">{% if c.back_asset != blank %}<img class="ft__back" src="{{ c.back_asset | asset_url }}" alt="" loading="lazy">{% endif %}<img class="ft__cloth" src="{{ pic }}" alt="{{ pic_alt | escape }}" loading="lazy">{% if c.front_asset != blank %}<span class="ft__front ft__front--{{ c.front_crop }}"><img src="{{ c.front_asset | asset_url }}" alt="" loading="lazy"></span>{% endif %}</div><div class="ft__copy"><p class="ft__no">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}</p><h3 class="ft__name">{{ c.name | escape }}</h3><p class="ft__text">{{ c.text | escape }}</p>{% if c.note != blank %}<p class="ft__note">{{ c.note | escape }}</p>{% endif %}{%- if c.form != blank and c.form != 'none' -%}<span class="ft__acts"><button type="button" class="ft__btn" data-studio-enquire="{{ c.form | escape }}" data-studio-img="{% if c.detail_asset != blank %}{{ c.detail_asset | asset_url }}{% endif %}">{{ c.btn_label | default: 'Enquire' | escape }} {{ arrow }}</button>{%- if c.btn_link != blank -%}<a class="ft__more" href="{{ c.btn_link | escape }}">{{ c.more_label | default: 'View the collection' | escape }} {{ arrow }}</a>{%- endif -%}</span>{%- else -%}{%- if c.btn_label != blank -%}<a class="ft__btn" href="{{ c.btn_link | escape }}"{% if c.btn_link contains 'http' %} target="_blank" rel="noopener"{% endif %}>{{ c.btn_label | escape }} {{ arrow }}</a>{%- endif -%}{%- endif -%}</div>{%- if c.detail_asset != blank -%}<aside class="ft__detail"><img src="{{ c.detail_asset | asset_url }}" alt="{{ c.detail_alt | escape }}" loading="lazy"><p class="ft__words">{%- for w in words -%}{%- assign ww = w | strip -%}{%- if ww != blank -%}<span>{{ ww | escape }}</span>{%- endif -%}{%- endfor -%}</p>{{ motif }}</aside>{%- endif -%}</article>
     {%- endfor -%}
     </div>
   {%- elsif s.layout == 'collage' -%}
@@ -306,6 +306,33 @@
           "type": "url",
           "id": "btn_link",
           "label": "Button link"
+        },
+        {
+          "type": "select",
+          "id": "form",
+          "label": "The button opens an enquiry form",
+          "default": "none",
+          "info": "With a form, the button opens it (with WhatsApp beside it) and the link above becomes a second link.",
+          "options": [
+            {
+              "value": "none",
+              "label": "No: the button follows its link"
+            },
+            {
+              "value": "heritage",
+              "label": "Heritage enquiry"
+            },
+            {
+              "value": "avinya",
+              "label": "Avinya enquiry"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "more_label",
+          "label": "Second link (with a form)",
+          "default": "View the collection"
         },
         {
           "type": "header",

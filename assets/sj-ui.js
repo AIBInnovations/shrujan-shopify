@@ -833,11 +833,147 @@
     openEnquire(a.getAttribute('data-enquire') || '');
   });
 
+  /* ---------- 4. a Studio Collection enquiry ----------
+     The user: Heritage on the home page opens a form of its own, with a
+     button beside it that goes on to WhatsApp. Any element with
+     data-studio-enquire="heritage" (or "avinya") opens it; the fields are
+     the collection page's own form, and it goes to Slide as that page's
+     does. The WhatsApp button carries whatever has been written so far. */
+  var STUDIO = {
+    heritage: {
+      eyebrow: 'Studio Collection · Heritage', title: 'Interested to explore the Heritage Collection?',
+      copy: 'Tell us what you are looking for and when you are free. Someone from the Bhuj studio will call you back.',
+      interest: 'Craft or piece of interest', hint: 'Suf, Pakko, Mutwa…', submit: 'Request a callback',
+      form: 'Heritage enquiry', type: 'Heritage', img: 'sj-studio-detail-heritage.webp',
+      wa: 'Hello Shrujan, I would like to know more about the Heritage Collection.',
+    },
+    avinya: {
+      eyebrow: 'Studio Collection · Avinya', title: 'Commission an Avinya work',
+      copy: 'Avinya pieces are made in small numbers. Leave your details and we will call when the next works come off the frame.',
+      interest: 'What draws you to Avinya', hint: 'A wall piece, a commission…', submit: 'Request a callback',
+      form: 'Avinya enquiry', type: 'Avinya', img: 'sj-studio-detail-avinya.webp',
+      wa: 'Hello Shrujan, I would like to know more about the Avinya Collection.',
+    },
+  };
+  var SLOTS = ['10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM'];
+  var studio = null, studioKind = null, studioFrom = null;
+
+  function buildStudio() {
+    studio = make(
+      '<div class="sjx" role="dialog" aria-modal="true" aria-labelledby="sjx-title" hidden>' +
+        '<div class="sjx__scrim" data-sjx-close></div>' +
+        '<div class="sjx__panel">' +
+          '<button type="button" class="sjx__close" data-sjx-close aria-label="Close">' + ic('x') + '</button>' +
+          '<div class="sjx__art"><img alt="" loading="lazy"></div>' +
+          '<div class="sjx__main">' +
+            '<p class="sjx__eyebrow"></p><h2 class="sjx__title" id="sjx-title"></h2><p class="sjx__copy"></p>' +
+            '<form class="sjx__form" novalidate>' +
+              '<label class="sjx__f"><span>Name *</span><input name="name" type="text" required autocomplete="name"></label>' +
+              '<label class="sjx__f"><span>Contact number *</span><input name="phone" type="tel" required autocomplete="tel"></label>' +
+              '<label class="sjx__f"><span>City</span><input name="city" type="text" autocomplete="address-level2"></label>' +
+              '<label class="sjx__f"><span>Email</span><input name="email" type="email" autocomplete="email"></label>' +
+              '<label class="sjx__f sjx__f--wide"><span class="sjx__interest"></span><input name="extra" type="text"></label>' +
+              '<label class="sjx__f sjx__f--wide"><span>What are you looking for?</span><textarea name="looking" rows="2"></textarea></label>' +
+              '<label class="sjx__f sjx__f--wide"><span>Preferred time for a call</span><select name="slot"><option value="">Any time</option>' +
+                SLOTS.map(function (t) { return '<option>' + t + '</option>'; }).join('') + '</select></label>' +
+              '<p class="sjx__err" role="alert" hidden></p>' +
+              '<div class="sjx__acts">' +
+                '<button type="submit" class="sjx__btn sjx__btn--solid"><span class="sjx__submit"></span> ' + ic('arrow-right') + '</button>' +
+                '<a class="sjx__btn sjx__btn--wa" target="_blank" rel="noopener">' + ic('whatsapp-logo') + ' Chat on WhatsApp</a>' +
+              '</div>' +
+              '<p class="sjx__note">* Required. We only use these details to call you back.</p>' +
+            '</form>' +
+            '<div class="sjx__done" role="status" hidden><p class="sjx__done-title">Thank you, we have your request.</p>' +
+              '<p>Someone from the Bhuj studio will call you back in your chosen time. If it is urgent, reach us on <a href="tel:' + CFG.phone.replace(/\s/g, '') + '">' + CFG.phone + '</a>.</p>' +
+              '<a class="sjx__btn sjx__btn--wa" target="_blank" rel="noopener">' + ic('whatsapp-logo') + ' Chat on WhatsApp</a></div>' +
+          '</div>' +
+        '</div>' +
+      '</div>');
+    doc.body.appendChild(studio);
+    var form = studio.querySelector('.sjx__form'), err = studio.querySelector('.sjx__err');
+    [].forEach.call(studio.querySelectorAll('[data-sjx-close]'), function (b) { b.addEventListener('click', closeStudio); });
+    // WhatsApp: the opening line and what has been written
+    [].forEach.call(studio.querySelectorAll('.sjx__btn--wa'), function (a) {
+      a.addEventListener('click', function () {
+        var c = STUDIO[studioKind], lines = [c.wa];
+        [['name', 'Name'], ['city', 'City'], ['extra', c.interest], ['looking', 'Looking for'], ['slot', 'Preferred time']].forEach(function (f) {
+          var el = form.querySelector('[name="' + f[0] + '"]');
+          if (el && el.value.trim()) lines.push(f[1] + ': ' + el.value.trim());
+        });
+        a.href = wa(lines.join('\n'));
+      });
+    });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      err.hidden = true;
+      var bad = [].filter.call(form.querySelectorAll('[required]'), function (el) { return !el.value.trim(); });
+      if (bad.length) {
+        err.textContent = 'Please give your name and a number we can call.';
+        err.hidden = false;
+        bad[0].focus();
+        return;
+      }
+      var c = STUDIO[studioKind], btn = form.querySelector('[type="submit"]');
+      var shown = function () { form.hidden = true; studio.querySelector('.sjx__done').hidden = false; };
+      if (!window.SJSlide) { shown(); return; }
+      btn.disabled = true;
+      window.SJSlide.sendForm(form, { form: c.form, type: c.type, tags: ['enquiry', 'studio', 'home'] }).then(function (ok) {
+        btn.disabled = false;
+        if (ok) { shown(); return; }
+        err.innerHTML = 'It could not be sent just now. Please try again, or <a href="' + wa(c.wa) + '" target="_blank" rel="noopener">write to us on WhatsApp</a>.';
+        err.hidden = false;
+      });
+    });
+  }
+
+  function openStudio(kind, from) {
+    var c = STUDIO[kind];
+    if (!c) return false;
+    if (!studio) buildStudio();
+    studioKind = kind;
+    studioFrom = from || doc.activeElement;
+    studio.className = 'sjx sjx--' + kind;
+    studio.querySelector('.sjx__eyebrow').textContent = c.eyebrow;
+    studio.querySelector('.sjx__title').textContent = c.title;
+    studio.querySelector('.sjx__copy').textContent = c.copy;
+    studio.querySelector('.sjx__interest').textContent = c.interest;
+    studio.querySelector('[name="extra"]').placeholder = c.hint;
+    studio.querySelector('.sjx__submit').textContent = c.submit;
+    var img = studio.querySelector('.sjx__art img');
+    var src = (from && from.getAttribute && from.getAttribute('data-studio-img')) || (window.SHRUJAN_ASSET_BASE ? window.SHRUJAN_ASSET_BASE + c.img : '');
+    if (src) img.src = src;
+    studio.querySelector('.sjx__art').hidden = !src;
+    var form = studio.querySelector('.sjx__form');
+    form.hidden = false;
+    studio.querySelector('.sjx__done').hidden = true;
+    studio.querySelector('.sjx__err').hidden = true;
+    studio.hidden = false;
+    hold(true);
+    requestAnimationFrame(function () { studio.classList.add('is-open'); });
+    setTimeout(function () { var f = form.querySelector('input'); if (f) f.focus({ preventScroll: true }); }, 260);
+    return true;
+  }
+
+  function closeStudio() {
+    if (!studio || studio.hidden) return;
+    studio.classList.remove('is-open');
+    hold(false);
+    setTimeout(function () { studio.hidden = true; }, reduced ? 0 : 320);
+    if (studioFrom && studioFrom.focus) studioFrom.focus({ preventScroll: true });
+  }
+
+  doc.addEventListener('click', function (e) {
+    var t = e.target.closest && e.target.closest('[data-studio-enquire]');
+    if (!t) return;
+    if (openStudio(t.getAttribute('data-studio-enquire'), t)) e.preventDefault();
+  });
+
   /* ---------- the keyboard ---------- */
   doc.addEventListener('keydown', function (e) {
     var typing = /input|textarea|select/i.test((e.target && e.target.tagName) || '') || (e.target && e.target.isContentEditable);
     if (e.key === 'Escape') {
-      if (!search.hidden) closeSearch();
+      if (studio && !studio.hidden) closeStudio();
+      else if (!search.hidden) closeSearch();
       else if (drawer && !drawer.hidden) closeEnquire();
       else if (!hPanel.hidden) closeHelp();
     } else if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) || (e.key === '/' && !typing)) {
@@ -882,6 +1018,6 @@
     }
   }
 
-  window.SJUI = { openSearch: openSearch, openHelp: openHelp, openEnquire: openEnquire };
+  window.SJUI = { openSearch: openSearch, openHelp: openHelp, openEnquire: openEnquire, openStudio: openStudio };
 })();
 

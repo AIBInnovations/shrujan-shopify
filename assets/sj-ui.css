@@ -1986,3 +1986,330 @@ html.sj-pre .sje__tab {
   }
 }
 
+/* ---------- a Studio Collection enquiry (sj-ui.js, section 4) ----------
+   The user: Heritage on the home page opens its own form, with WhatsApp
+   beside it. Desktop: a panel, the collection's cloth close up on the left,
+   the form on the right. Phones: a sheet from the foot of the screen. */
+.sjx {
+  --sjx-deep: #2b0f0d;
+  --sjx-gold: #c9a45c;
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.sjx--avinya {
+  --sjx-deep: #0f1626;
+  --sjx-gold: #d9a14a;
+}
+
+.sjx[hidden] {
+  display: none;
+}
+
+.sjx__scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 14, 10, 0.55);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sjx__panel {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  width: min(920px, 100%);
+  max-height: calc(100svh - 48px);
+  overflow: hidden;
+  border-radius: var(--radius, 7px);
+  background: #fbf9f1;
+  box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  transform: translateY(18px) scale(0.98);
+  transition: opacity 0.32s ease, transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sjx.is-open .sjx__scrim {
+  opacity: 1;
+}
+
+.sjx.is-open .sjx__panel {
+  opacity: 1;
+  transform: none;
+}
+
+.sjx__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(251, 249, 241, 0.92);
+  color: var(--ink, #404041);
+  cursor: pointer;
+}
+
+.sjx__close i {
+  font-size: 20px;
+}
+
+.sjx__art {
+  position: relative;
+  background: var(--sjx-deep);
+}
+
+.sjx__art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.92;
+}
+
+.sjx__art::after {
+  content: '';
+  position: absolute;
+  inset: 14px;
+  border: 1px solid var(--sjx-gold);
+  border-radius: calc(var(--radius, 7px) - 2px);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.sjx__main {
+  overflow-y: auto;
+  padding: clamp(26px, 3.4vw, 44px);
+}
+
+.sjx__eyebrow {
+  margin: 0 0 12px;
+  font: 500 var(--fs-xs, 11px) / 1.3 var(--font-sans);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: #924241;
+}
+
+.sjx--avinya .sjx__eyebrow {
+  color: #b5651f;
+}
+
+.sjx__title {
+  margin: 0;
+  padding-right: 32px;
+  font: 400 var(--fs-3xl, 32px) / 1.12 var(--font-display);
+  color: var(--ink, #404041);
+}
+
+.sjx__copy {
+  margin: 12px 0 0;
+  font: 400 var(--fs-base, 14px) / 1.65 var(--font-sans);
+  color: var(--ink-soft, #706e68);
+}
+
+.sjx__form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 20px;
+  margin: 22px 0 0;
+}
+
+.sjx__form[hidden] {
+  display: none;
+}
+
+.sjx__f {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.sjx__f--wide,
+.sjx__err,
+.sjx__acts,
+.sjx__note {
+  grid-column: 1 / -1;
+}
+
+.sjx__f span {
+  font: 500 var(--fs-2xs, 10px) / 1.3 var(--font-sans);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft, #706e68);
+}
+
+.sjx__f input,
+.sjx__f select,
+.sjx__f textarea {
+  width: 100%;
+  padding: 8px 0 10px;
+  border: 0;
+  border-bottom: 1px solid rgba(64, 64, 65, 0.25);
+  border-radius: 0;
+  background: transparent;
+  font: 400 var(--fs-md, 15px) / 1.4 var(--font-sans);
+  color: var(--ink, #404041);
+  outline: none;
+}
+
+.sjx__f textarea {
+  resize: vertical;
+}
+
+.sjx__f input:focus,
+.sjx__f select:focus,
+.sjx__f textarea:focus {
+  border-bottom-color: #924241;
+}
+
+.sjx__err {
+  margin: 0;
+  font: 400 var(--fs-sm, 12.5px) / 1.5 var(--font-sans);
+  color: #a3352c;
+}
+
+.sjx__err a {
+  color: inherit;
+}
+
+.sjx__acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.sjx__btn {
+  display: inline-flex;
+  flex: 1 1 200px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 50px;
+  padding: 0 22px;
+  border: 1px solid transparent;
+  border-radius: var(--radius, 7px);
+  font: 500 var(--fs-xs, 11px) / 1 var(--font-sans);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.sjx__btn i {
+  font-size: 17px;
+  letter-spacing: 0;
+}
+
+.sjx__btn--solid {
+  background: var(--sjx-deep);
+  color: #f3ece0;
+}
+
+.sjx__btn--solid:disabled {
+  opacity: 0.6;
+}
+
+.sjx__btn--wa {
+  border-color: rgba(64, 64, 65, 0.22);
+  color: var(--ink, #404041);
+}
+
+.sjx__btn--wa i {
+  color: #1f9d55;
+  font-size: 19px;
+}
+
+.sjx__btn--wa:hover {
+  border-color: #1f9d55;
+}
+
+.sjx__note {
+  margin: 0;
+  font: 400 var(--fs-sm, 12.5px) / 1.5 var(--font-sans);
+  color: var(--ink-soft, #706e68);
+}
+
+.sjx__done {
+  display: grid;
+  gap: 12px;
+  margin-top: 22px;
+  font: 400 var(--fs-md, 15px) / 1.65 var(--font-sans);
+  color: var(--ink-soft, #706e68);
+}
+
+.sjx__done[hidden] {
+  display: none;
+}
+
+.sjx__done-title {
+  margin: 0;
+  font: 400 var(--fs-2xl, 26px) / 1.2 var(--font-display);
+  color: var(--ink, #404041);
+}
+
+.sjx__done p {
+  margin: 0;
+}
+
+/* phones: a sheet from the foot, the picture a band across its top */
+@media (max-width: 720px) {
+  .sjx {
+    place-items: end stretch;
+    padding: 0;
+  }
+
+  .sjx__panel {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    width: 100%;
+    max-height: 92svh;
+    border-radius: 14px 14px 0 0;
+    transform: translateY(40px);
+  }
+
+  .sjx__art {
+    height: 110px;
+  }
+
+  .sjx__art::after {
+    inset: 10px;
+  }
+
+  .sjx__main {
+    padding: 22px var(--gutter, 16px) calc(22px + env(safe-area-inset-bottom));
+  }
+
+  .sjx__title {
+    font-size: var(--fs-2xl, 24px);
+  }
+
+  .sjx__form {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .sjx__btn {
+    flex-basis: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sjx__scrim,
+  .sjx__panel {
+    transition: none;
+  }
+}
+

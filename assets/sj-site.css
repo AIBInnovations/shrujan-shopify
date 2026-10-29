@@ -1131,6 +1131,386 @@ html.sj-hdr-away .site-header {
   }
 }
 
+/* ---- the home stores section: on to the Stores page ---- */
+.st__all {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: clamp(16px, 1.8vw, 24px);
+  padding-bottom: 6px;
+  border-bottom: 1px solid currentColor;
+  font: 500 var(--fs-xs) / 1 var(--font-sans);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--indigo, #924241);
+  text-decoration: none;
+}
+
+/* ---- the Stores page (sections/page-stores.liquid, stores_section.py):
+   the user (2026-10-29): a page of its own for the stores in each city,
+   with their pictures, where they are and the maps. Each store is a row:
+   its photograph (or its map, where there is no photograph yet), its
+   details, and a map; on a phone the three stack. ---- */
+.stx {
+  margin-inline: var(--gutter, 5.2vw);
+  padding: clamp(40px, 5vw, 72px) 0 var(--sec-pad, 56px);
+}
+
+.stx__head {
+  display: grid;
+  justify-items: center;
+  max-width: 760px;
+  margin: 0 auto clamp(32px, 4vw, 56px);
+  text-align: center;
+}
+
+.stx__eyebrow {
+  margin: 0 0 14px;
+  font: 500 var(--fs-xs) / 1.3 var(--font-sans);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ink-soft, #706e68);
+}
+
+.stx__title {
+  margin: 0;
+  font: 400 var(--fs-5xl) / 1 var(--font-display);
+  color: var(--ink);
+}
+
+.stx__title em {
+  font-style: normal;
+  color: var(--indigo, #924241);
+}
+
+.stx__lede {
+  max-width: 52ch;
+  margin: clamp(14px, 1.6vw, 22px) 0 0;
+  font: 400 var(--fs-md) / 1.65 var(--font-sans);
+  color: var(--ink-soft, #706e68);
+}
+
+.stx__filter {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: clamp(22px, 2.6vw, 34px);
+}
+
+.stx__filter button {
+  min-height: 40px;
+  padding: 0 18px;
+  border: 1px solid var(--hairline-strong, rgba(64, 64, 65, 0.28));
+  border-radius: var(--radius);
+  background: transparent;
+  font: 500 var(--fs-xs) / 1 var(--font-sans);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.stx__filter button.is-on {
+  border-color: var(--indigo, #924241);
+  background: var(--indigo, #924241);
+  color: var(--ivory, #f6f4e6);
+}
+
+.stx__list {
+  display: grid;
+  gap: clamp(16px, 2vw, 26px);
+}
+
+.stx__store {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 0.95fr);
+  min-height: clamp(300px, 26vw, 380px);
+  overflow: hidden;
+  border: 1px solid var(--hairline, rgba(64, 64, 65, 0.14));
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.4);
+  transition: box-shadow 0.4s ease, border-color 0.3s ease;
+}
+
+.stx__store[hidden] {
+  display: none;
+}
+
+.stx__store:hover {
+  border-color: rgba(146, 66, 65, 0.3);
+  box-shadow: 0 30px 60px -44px rgba(60, 40, 24, 0.55);
+}
+
+/* a store with no photograph: its map takes the photograph's place, and
+   its details the rest of the row */
+.stx__store:not(:has(.stx__mapbox)) {
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.95fr);
+}
+
+.stx__media {
+  position: relative;
+  min-height: 240px;
+  background: var(--page-bg-2, #ede9d8);
+}
+
+.stx__media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.stx__map {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  border: 0;
+  filter: grayscale(0.25) sepia(0.12);
+}
+
+.stx__media .stx__map {
+  position: absolute;
+  inset: 0;
+}
+
+.stx__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: clamp(24px, 2.6vw, 40px);
+}
+
+.stx__region {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font: 500 var(--fs-xs) / 1 var(--font-sans);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--indigo, #924241);
+}
+
+.stx__region i {
+  font-size: 17px;
+  letter-spacing: 0;
+}
+
+.stx__name {
+  margin: 4px 0 0;
+  font: 400 var(--fs-3xl) / 1.1 var(--font-display);
+  color: var(--ink);
+}
+
+.stx__addr {
+  max-width: 40ch;
+  margin: 0;
+  font: 400 var(--fs-base) / 1.65 var(--font-sans);
+  color: var(--ink-soft, #706e68);
+}
+
+.stx__hours {
+  margin: 0;
+  font: 400 var(--fs-sm) / 1.5 var(--font-sans);
+  color: var(--ink);
+}
+
+.stx__tel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 2px 0 0;
+}
+
+.stx__tel a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 400 var(--fs-md) / 1.3 var(--font-display);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.stx__tel i {
+  font-size: 16px;
+  color: var(--indigo, #924241);
+}
+
+.stx__go {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 0 20px;
+  min-height: 46px;
+  border-radius: var(--radius);
+  background: var(--ink, #404041);
+  font: 500 var(--fs-xs) / 1 var(--font-sans);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ivory, #f6f4e6);
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+.stx__go:hover {
+  background: var(--indigo, #924241);
+}
+
+.stx__mapbox {
+  position: relative;
+  border-left: 1px solid var(--hairline, rgba(64, 64, 65, 0.14));
+}
+
+.stx__mapbox .stx__map {
+  position: absolute;
+  inset: 0;
+}
+
+.stx__cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px 40px;
+  margin-top: clamp(28px, 3.4vw, 48px);
+  padding: clamp(26px, 3vw, 44px);
+  border-radius: var(--radius);
+  background: var(--ink, #404041);
+  color: var(--ivory, #f6f4e6);
+}
+
+.stx__cta-title {
+  margin: 0;
+  font: 400 var(--fs-3xl) / 1.1 var(--font-display);
+  color: var(--ivory, #f6f4e6);
+}
+
+.stx__cta p {
+  margin: 8px 0 0;
+  font: 400 var(--fs-md) / 1.6 var(--font-sans);
+  color: rgba(246, 244, 230, 0.78);
+}
+
+.stx__cta-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.stx__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 22px;
+  border: 1px solid rgba(246, 244, 230, 0.4);
+  border-radius: var(--radius);
+  font: 500 var(--fs-xs) / 1 var(--font-sans);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ivory, #f6f4e6);
+  text-decoration: none;
+}
+
+.stx__btn--solid {
+  border-color: var(--ivory, #f6f4e6);
+  background: var(--ivory, #f6f4e6);
+  color: var(--ink, #404041);
+}
+
+.stx__btn i {
+  font-size: 18px;
+  letter-spacing: 0;
+}
+
+@media (max-width: 1024px) {
+  .stx__store,
+  .stx__store:not(:has(.stx__mapbox)) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .stx__mapbox {
+    grid-column: 1 / -1;
+    height: 240px;
+    border-left: 0;
+    border-top: 1px solid var(--hairline, rgba(64, 64, 65, 0.14));
+  }
+}
+
+@media (max-width: 720px) {
+  .stx {
+    padding-top: 28px;
+  }
+
+  .stx__title {
+    font-size: var(--fs-4xl);
+  }
+
+  .stx__filter {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    justify-self: stretch;
+    width: auto;
+    max-width: none;
+    margin-inline: calc(-1 * var(--gutter, 16px));
+    padding: 0 var(--gutter, 16px);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .stx__filter::-webkit-scrollbar {
+    display: none;
+  }
+
+  .stx__filter button {
+    flex: 0 0 auto;
+  }
+
+  .stx__store,
+  .stx__store:not(:has(.stx__mapbox)) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stx__media {
+    aspect-ratio: 4 / 3;
+    min-height: 0;
+  }
+
+  .stx__info {
+    padding: 22px 18px 24px;
+  }
+
+  .stx__name {
+    font-size: var(--fs-2xl);
+  }
+
+  .stx__go {
+    align-self: stretch;
+    justify-content: center;
+  }
+
+  .stx__mapbox {
+    height: 220px;
+  }
+
+  .stx__cta {
+    text-align: left;
+  }
+
+  .stx__cta-acts,
+  .stx__btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 /* icons:start (written by convert_icons.py from icons.py) */
 /* ---- the interface icons (Material Symbols, Font Awesome brands; icons.py) ---- */
 @font-face {

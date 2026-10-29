@@ -1090,6 +1090,8 @@
             "image_alt": "A deep red heirloom textile, embroidered with mirrors and gold thread, draped over sandstone steps",
             "btn_label": "Enquire",
             "btn_link": "/pages/studio-heritage",
+            "form": "heritage",
+            "more_label": "View the collection",
             "look": "dark",
             "wall_asset": "sj-studio-wall-red.webp",
             "back_asset": "sj-studio-stone.webp",

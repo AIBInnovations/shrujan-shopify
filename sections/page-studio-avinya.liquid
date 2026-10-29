@@ -56,198 +56,184 @@
 {%- assign meta_blocks = section.blocks | where: 'type', 'meta' -%}
 {%- assign step_blocks = section.blocks | where: 'type', 'step' -%}
 {%- assign shot_blocks = section.blocks | where: 'type', 'shot' -%}
-<div class="page">
-  <header class="page-hero page-hero--ghost" data-reveal>
-    <span class="page-hero__ghost" aria-hidden="true">{{ section.settings.hero_ghost }}</span>
-
-    <div class="container page-hero__grid">
-      <div class="page-hero__text">
-        <p class="eyebrow">{{ section.settings.hero_eyebrow | escape }}</p>
-        <h1 class="page-hero__title">{{ section.settings.hero_title }}</h1>
-        <p class="page-hero__lede">{{ section.settings.hero_lede }}</p>
-{%- if section.settings.show_meta %}
-        <ul class="page-meta">
-{%- for block in meta_blocks %}
-          <li {{ block.shopify_attributes }}><span class="page-meta__value">{{ block.settings.value }}</span><span class="page-meta__label">{{ block.settings.label }}</span></li>
-{%- endfor %}
-        </ul>
-{%- endif %}
+{%- liquid
+  assign s = section.settings
+  assign sp_wall = s.art_wall | default: 'sj-studio-wall-indigo.webp' | asset_url
+  assign sp_cloth = s.art_cloth | default: 'sj-studio-cloth-avinya.webp' | asset_url
+  assign sp_front = s.art_front | default: 'sj-studio-pots.webp' | asset_url
+  assign sp_detail = s.art_detail | default: 'sj-studio-detail-avinya.webp' | asset_url
+  assign sp_wa = s.whatsapp | default: '919099974319' | remove: '+' | remove: ' ' | remove: '-'
+  assign sp_wa_text = s.whatsapp_text | default: 'Hello Shrujan, I would like to know more about the Avinya Collection.'
+-%}
+{%- comment -%}
+  The premium page (the user, 2026-10-29: Heritage and Avinya are premium
+  collections; make them look it, in the home page's language). Styles in
+  assets/sj-studio.css; the hero's depth and the WhatsApp message in
+  assets/sj-studio.js. The words are this section's settings and blocks.
+{%- endcomment -%}
+{{ 'sj-studio.css' | asset_url | stylesheet_tag }}
+<div class="sp sp--avinya" style="--sp-wall:url({{ sp_wall }}); --sp-detail:url({{ sp_detail }})">
+  <header class="sp-hero">
+    <span class="sp-hero__ghost" aria-hidden="true">{{ s.hero_ghost | default: 'Avinya' | escape }}</span>
+    <div class="sp-hero__text" data-reveal>
+      <p class="sp-eyebrow">{{ s.hero_eyebrow | escape }}</p>
+      <h1 class="sp-hero__title">{{ s.hero_title }}</h1>
+      {%- if s.hero_lede != blank %}<p class="sp-hero__lede">{{ s.hero_lede }}</p>{% endif %}
+      <div class="sp-hero__cta">
+        {%- if s.show_enquiry %}<a class="sp-btn sp-btn--solid" href="#avinya-enquiry">{{ s.hero_cta | default: 'Commission a work' | escape }} <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>{% endif %}
+        <a class="sp-btn sp-btn--line" href="https://api.whatsapp.com/send?phone={{ sp_wa }}&text={{ sp_wa_text | url_encode }}" data-sp-wa="{{ sp_wa }}" data-sp-wa-text="{{ sp_wa_text | escape }}" target="_blank" rel="noopener"><i class="sj-i sj-i--whatsapp-logo fab" aria-hidden="true"></i> {{ s.whatsapp_label | default: 'Chat on WhatsApp' | escape }}</a>
       </div>
     </div>
+    <div class="sp-hero__art" aria-hidden="true">
+      <img class="sp-hero__cloth" src="{{ sp_cloth }}" alt="" data-sp-depth="-0.06" fetchpriority="high">
+      <img class="sp-hero__front" src="{{ sp_front }}" alt="" data-sp-depth="0.07" loading="lazy">
+    </div>
+    {%- if s.show_meta and meta_blocks.size > 0 %}
+    <ul class="sp-hero__stats" style="--n: {{ meta_blocks.size }}">
+      {%- for block in meta_blocks %}
+      <li {{ block.shopify_attributes }}><b>{{ block.settings.value }}</b><span>{{ block.settings.label }}</span></li>
+      {%- endfor %}
+    </ul>
+    {%- endif %}
   </header>
-{%- if section.settings.show_strands %}
-
-  <nav class="strands" aria-label="Studio Collection">
-    <div class="container strands__inner">
-      <ol class="strands__list">
-{%- for block in strand_blocks %}
-        <li {{ block.shopify_attributes }}>
-          <a href="{{ block.settings.link | default: '/pages/studio-avinya' }}" class="strands__link{% if block.settings.current %} is-active{% endif %}"{% if block.settings.current %} aria-current="page"{% endif %}>
-            <span class="strands__no">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
-            <span class="strands__label">{{ block.settings.label | escape }}</span>
-          </a>
-        </li>
-{%- endfor %}
-      </ol>
-    </div>
-  </nav>
+{%- if s.show_strands %}
+  <ul class="sp-tabs" aria-label="Studio Collection">
+    {%- for block in strand_blocks %}
+    <li {{ block.shopify_attributes }}><a href="{{ block.settings.link | default: '#' }}"{% if block.settings.current %} aria-current="page"{% endif %}><span>{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>{{ block.settings.label | escape }}</a></li>
+    {%- endfor %}
+  </ul>
 {%- endif %}
-{%- if section.settings.show_gloss or section.settings.show_origin %}
-
-  <section class="section container">
-{%- if section.settings.show_gloss %}
-    <figure class="gloss" data-reveal>
-      <figcaption class="gloss__head">
-        <span class="gloss__word">{{ section.settings.gloss_word }}</span>
-        <span class="gloss__lang">{{ section.settings.gloss_lang }}</span>
-      </figcaption>
-      <p class="gloss__meaning">{{ section.settings.gloss_meaning }}</p>
-      <p class="gloss__note">{{ section.settings.gloss_note }}</p>
-    </figure>
-{%- endif %}
-{%- if section.settings.show_origin %}
-
-    <div class="origin" data-reveal>
-      <p class="origin__lead">{{ section.settings.lead }}</p>
-      <div class="origin__body">
-        {{ section.settings.body }}
-      </div>
-    </div>
-{%- endif %}
-  </section>
-{%- endif %}
-{%- if section.settings.show_steps or section.settings.show_pull %}
-
-  <section class="section container">
-{%- if section.settings.show_steps %}
-    <div class="section-intro" data-reveal>
-      <p class="eyebrow">{{ section.settings.steps_eyebrow | escape }}</p>
-      <h2 class="section-title">{{ section.settings.steps_title }}</h2>
-    </div>
-
-    <ol class="steps" data-reveal-child>
-{%- for block in step_blocks %}
-      <li class="step" {{ block.shopify_attributes }}>
-        <span class="step__no">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
-        <div class="step__body">
-          <h3 class="step__title">{{ block.settings.title }}</h3>
-          <p class="step__copy">{{ block.settings.copy }}</p>
-        </div>
-      </li>
-{%- endfor %}
-    </ol>
-{%- endif %}
-{%- if section.settings.show_pull %}
-
-    <blockquote class="origin__pull" data-reveal>{{ section.settings.pull }}</blockquote>
-{%- endif %}
-  </section>
-{%- endif %}
-{%- if section.settings.show_gallery %}
-
-  <section class="section container">
-    <div class="section-intro" data-reveal>
-      <p class="eyebrow">{{ section.settings.studio_eyebrow | escape }}</p>
-      <h2 class="section-title">{{ section.settings.studio_title }}</h2>
-    </div>
-
-    <div class="origin__gallery" data-reveal-child>
-{%- for block in shot_blocks %}
-      <figure class="origin__shot" {{ block.shopify_attributes }}>
-        <img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1200 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
+{%- if s.show_origin or s.show_gloss %}
+  <section class="sp-intro">
+    <div data-reveal>
+      {%- if s.show_origin %}
+      <p class="sp-intro__lead">{{ s.lead }}</p>
+      <div class="sp-intro__body">{{ s.body }}</div>
+      {%- endif %}
+      {%- if s.show_gloss %}
+      <figure class="sp-gloss">
+        <figcaption><span class="sp-gloss__word">{{ s.gloss_word }}</span><span class="sp-gloss__lang">{{ s.gloss_lang }}</span></figcaption>
+        <p class="sp-gloss__meaning">{{ s.gloss_meaning }}</p>
+        <p class="sp-gloss__note">{{ s.gloss_note }}</p>
       </figure>
-{%- endfor %}
+      {%- endif %}
+    </div>
+    <figure class="sp-intro__figure" data-reveal>
+      <img src="{{ sp_detail }}" alt="{{ s.art_detail_alt | default: 'Skeins of indigo and saffron yarn' | escape }}" loading="lazy">
+    </figure>
+  </section>
+{%- endif %}
+{%- if s.show_steps and step_blocks.size > 0 %}
+  <section class="sp-band">
+    <div class="sp-band__head" data-reveal>
+      <div>
+        {%- if s.steps_eyebrow != blank %}<p class="sp-eyebrow">{{ s.steps_eyebrow | escape }}</p>{% endif %}
+        <h2 class="sp-title">{{ s.steps_title }}</h2>
+      </div>
+    </div>
+    <ol class="sp-points" style="--n: {{ step_blocks.size }}" data-reveal-child>
+      {%- for block in step_blocks %}
+      <li {{ block.shopify_attributes }}><span class="sp-points__no">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span><h3>{{ block.settings.title }}</h3><p>{{ block.settings.copy }}</p></li>
+      {%- endfor %}
+    </ol>
+  </section>
+{%- endif %}
+{%- if s.show_gallery and shot_blocks.size > 0 %}
+  <section class="sp-gallery">
+    <div class="sp-gallery__head" data-reveal>
+      {%- if s.studio_eyebrow != blank %}<p class="sp-eyebrow">{{ s.studio_eyebrow | escape }}</p>{% endif %}
+      <h2 class="sp-title">{{ s.studio_title }}</h2>
+    </div>
+    <div class="sp-gallery__grid" data-reveal-child>
+      {%- for block in shot_blocks %}
+      <figure {{ block.shopify_attributes }}>
+        <img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1400 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
+        {%- if block.settings.alt != blank %}<figcaption>{{ block.settings.alt | escape }}</figcaption>{% endif %}
+      </figure>
+      {%- endfor %}
     </div>
   </section>
 {%- endif %}
-{%- if section.settings.show_enquiry %}
-
-  <section class="section container enquiry" id="avinya-enquiry" data-done-title="{{ section.settings.done_title | escape }}" data-done-body="{{ section.settings.done_body | escape }}" data-done-again="{{ section.settings.done_again | escape }}">
-    <div class="enquiry__intro" data-reveal>
-      <p class="eyebrow">{{ section.settings.enq_eyebrow | escape }}</p>
-      <h2 class="section-title">{{ section.settings.enq_title }}</h2>
-      <p class="enquiry__copy">{{ section.settings.enq_copy }}</p>
-
-      <dl class="enquiry__reach">
-        <div>
-          <dt>{{ section.settings.call_label }}</dt>
-          <dd>
-            <a href="tel:{{ section.settings.phone | remove: ' ' }}">{{ section.settings.phone }}</a>
-          </dd>
-        </div>
-        <div>
-          <dt>{{ section.settings.write_label }}</dt>
-          <dd>
-            <a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a>
-          </dd>
-        </div>
-        <div>
-          <dt>{{ section.settings.hours_label }}</dt>
-          <dd>{{ section.settings.hours }}</dd>
-        </div>
+{%- if s.show_pull and s.pull != blank %}
+  <blockquote class="sp-quote" data-reveal><p>{{ s.pull }}</p><i class="sp-quote__rule" aria-hidden="true"></i></blockquote>
+{%- endif %}
+{%- if s.show_enquiry %}
+  <section class="sp-enquiry" id="avinya-enquiry" data-done-title="{{ s.done_title | escape }}" data-done-body="{{ s.done_body | escape }}" data-done-again="{{ s.done_again | escape }}">
+    <div class="sp-enquiry__side" data-reveal>
+      <p class="sp-eyebrow">{{ s.enq_eyebrow | escape }}</p>
+      <h2 class="sp-title">{{ s.enq_title }}</h2>
+      <p class="sp-enquiry__copy">{{ s.enq_copy }}</p>
+      <dl class="sp-enquiry__reach">
+        <div><dt>{{ s.call_label }}</dt><dd><a href="tel:{{ s.phone | remove: ' ' }}">{{ s.phone }}</a></dd></div>
+        <div><dt>{{ s.write_label }}</dt><dd><a href="mailto:{{ s.email }}">{{ s.email }}</a></dd></div>
+        <div><dt>{{ s.hours_label }}</dt><dd>{{ s.hours }}</dd></div>
       </dl>
-    </div>
-
-    <form class="enquiry__form" data-reveal>
-      <p class="field">
-        <label for="avinya-enquiry-name">Name <span aria-hidden="true">*</span></label>
-        <input id="avinya-enquiry-name" name="name" type="text" required autocomplete="name">
-      </p>
-
-      <p class="field">
-        <label for="avinya-enquiry-phone">Contact number <span aria-hidden="true">*</span></label>
-        <input id="avinya-enquiry-phone" name="phone" type="tel" required autocomplete="tel">
-      </p>
-
-      <p class="field">
-        <label for="avinya-enquiry-city">City</label>
-        <input id="avinya-enquiry-city" name="city" type="text" autocomplete="address-level2">
-      </p>
-
-      <p class="field">
-        <label for="avinya-enquiry-email">Email</label>
-        <input id="avinya-enquiry-email" name="email" type="email" autocomplete="email">
-      </p>
-
-      <p class="field field--wide">
-        <label for="avinya-enquiry-looking">What are you looking for?</label>
-        <textarea id="avinya-enquiry-looking" name="looking" rows="3"></textarea>
-      </p>
-
-      <p class="field">
-        <label for="avinya-enquiry-slot">Preferred time slot</label>
-        <select id="avinya-enquiry-slot" name="slot">
-          <option value="" disabled selected>Choose a time</option>
-          <option value="9:00 AM">9:00 AM</option>
-          <option value="9:30 AM">9:30 AM</option>
-          <option value="10:00 AM">10:00 AM</option>
-          <option value="10:30 AM">10:30 AM</option>
-          <option value="11:00 AM">11:00 AM</option>
-          <option value="11:30 AM">11:30 AM</option>
-          <option value="12:00 PM">12:00 PM</option>
-          <option value="12:30 PM">12:30 PM</option>
-          <option value="1:00 PM">1:00 PM</option>
-          <option value="1:30 PM">1:30 PM</option>
-          <option value="2:00 PM">2:00 PM</option>
-          <option value="2:30 PM">2:30 PM</option>
-          <option value="3:00 PM">3:00 PM</option>
-          <option value="3:30 PM">3:30 PM</option>
-          <option value="4:00 PM">4:00 PM</option>
-          <option value="4:30 PM">4:30 PM</option>
-          <option value="5:00 PM">5:00 PM</option>
-          <option value="5:30 PM">5:30 PM</option>
-        </select>
-      </p>
-
-      <div class="enquiry__submit">
-        <button class="btn" type="submit">{{ section.settings.submit_label }} <i class="sj-i sj-i--arrow-right ms" style="font-size:16px" aria-hidden="true"></i></button>
-        <span class="enquiry__note"><span aria-hidden="true">*</span> {{ section.settings.note }}</span>
+      <div class="sp-enquiry__wa">
+        <a class="sp-btn sp-btn--line" href="https://api.whatsapp.com/send?phone={{ sp_wa }}&text={{ sp_wa_text | url_encode }}" data-sp-wa="{{ sp_wa }}" data-sp-wa-text="{{ sp_wa_text | escape }}" target="_blank" rel="noopener"><i class="sj-i sj-i--whatsapp-logo fab" aria-hidden="true"></i> {{ s.whatsapp_label | default: 'Chat on WhatsApp' | escape }}</a>
       </div>
-    </form>
+    </div>
+    <div class="sp-enquiry__main">
+      <form class="enquiry__form" data-reveal>
+        <p class="field">
+          <label for="avinya-enquiry-name">Name <span aria-hidden="true">*</span></label>
+          <input id="avinya-enquiry-name" name="name" type="text" required autocomplete="name">
+        </p>
+
+        <p class="field">
+          <label for="avinya-enquiry-phone">Contact number <span aria-hidden="true">*</span></label>
+          <input id="avinya-enquiry-phone" name="phone" type="tel" required autocomplete="tel">
+        </p>
+
+        <p class="field">
+          <label for="avinya-enquiry-city">City</label>
+          <input id="avinya-enquiry-city" name="city" type="text" autocomplete="address-level2">
+        </p>
+
+        <p class="field">
+          <label for="avinya-enquiry-email">Email</label>
+          <input id="avinya-enquiry-email" name="email" type="email" autocomplete="email">
+        </p>
+
+        <p class="field field--wide">
+          <label for="avinya-enquiry-looking">What are you looking for?</label>
+          <textarea id="avinya-enquiry-looking" name="looking" rows="3"></textarea>
+        </p>
+
+        <p class="field">
+          <label for="avinya-enquiry-slot">Preferred time slot</label>
+          <select id="avinya-enquiry-slot" name="slot">
+            <option value="" disabled selected>Choose a time</option>
+            <option value="9:00 AM">9:00 AM</option>
+            <option value="9:30 AM">9:30 AM</option>
+            <option value="10:00 AM">10:00 AM</option>
+            <option value="10:30 AM">10:30 AM</option>
+            <option value="11:00 AM">11:00 AM</option>
+            <option value="11:30 AM">11:30 AM</option>
+            <option value="12:00 PM">12:00 PM</option>
+            <option value="12:30 PM">12:30 PM</option>
+            <option value="1:00 PM">1:00 PM</option>
+            <option value="1:30 PM">1:30 PM</option>
+            <option value="2:00 PM">2:00 PM</option>
+            <option value="2:30 PM">2:30 PM</option>
+            <option value="3:00 PM">3:00 PM</option>
+            <option value="3:30 PM">3:30 PM</option>
+            <option value="4:00 PM">4:00 PM</option>
+            <option value="4:30 PM">4:30 PM</option>
+            <option value="5:00 PM">5:00 PM</option>
+            <option value="5:30 PM">5:30 PM</option>
+          </select>
+        </p>
+
+        <div class="enquiry__submit">
+          <button class="btn" type="submit">{{ section.settings.submit_label }} <i class="sj-i sj-i--arrow-right ms" style="font-size:16px" aria-hidden="true"></i></button>
+          <span class="enquiry__note"><span aria-hidden="true">*</span> {{ section.settings.note }}</span>
+        </div>
+      </form>
+    </div>
   </section>
 {%- endif %}
 </div>
-
+<script src="{{ 'sj-studio.js' | asset_url }}" defer></script>
 <script>
 (function () {
   var root = document.getElementById('avinya-enquiry');
@@ -768,6 +754,60 @@
       "id": "sec_custom_css_m",
       "label": "Custom CSS (mobile only)",
       "info": "Wrapped in a max-width: 767px media query for this section."
+    },
+    {
+      "type": "text",
+      "id": "hero_cta",
+      "label": "Hero button (goes to the enquiry)",
+      "default": "Commission a work"
+    },
+    {
+      "type": "text",
+      "id": "whatsapp",
+      "label": "WhatsApp number (country code, no +)",
+      "default": "919099974319"
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_label",
+      "label": "WhatsApp button",
+      "default": "Chat on WhatsApp"
+    },
+    {
+      "type": "textarea",
+      "id": "whatsapp_text",
+      "label": "WhatsApp opening message",
+      "default": "Hello Shrujan, I would like to know more about the Avinya Collection."
+    },
+    {
+      "type": "text",
+      "id": "art_wall",
+      "label": "Hero wall (theme image file)",
+      "default": "sj-studio-wall-indigo.webp"
+    },
+    {
+      "type": "text",
+      "id": "art_cloth",
+      "label": "Hero cloth on stone (theme image file)",
+      "default": "sj-studio-cloth-avinya.webp"
+    },
+    {
+      "type": "text",
+      "id": "art_front",
+      "label": "Hero pots (theme image file)",
+      "default": "sj-studio-pots.webp"
+    },
+    {
+      "type": "text",
+      "id": "art_detail",
+      "label": "Close-up picture (theme image file)",
+      "default": "sj-studio-detail-avinya.webp"
+    },
+    {
+      "type": "text",
+      "id": "art_detail_alt",
+      "label": "Close-up picture description",
+      "default": "Skeins of indigo and saffron yarn"
     }
   ],
   "blocks": [

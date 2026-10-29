@@ -3402,6 +3402,50 @@ html.sj-pre .dh__strip {
   border-color: currentColor;
 }
 
+/* a card whose button opens its enquiry form (sj-ui.js): the button, a
+   true button, looks as the link did; the collection's page one link along */
+.ft__acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 26px;
+  margin-top: 3cqi;
+}
+
+.ft__acts .ft__btn {
+  margin-top: 0;
+}
+
+button.ft__btn {
+  padding: 0 0 6px;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  background: none;
+  cursor: pointer;
+}
+
+.ft__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 500 max(10px, 1.4cqi) / 1 var(--font-sans);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: inherit;
+  text-decoration: none;
+  opacity: 0.72;
+  transition: opacity 0.3s ease;
+}
+
+.ft__more:hover {
+  opacity: 1;
+}
+
+.ft__more svg {
+  width: 1.1em;
+  height: auto;
+}
+
 /* the small paper card with the close-up */
 .ft__detail {
   position: absolute;
@@ -3524,6 +3568,14 @@ html.sj-pre .dh__strip {
 
   .ft__scene .ft__btn {
     margin-top: 18px;
+    font-size: var(--fs-2xs);
+  }
+
+  .ft__acts {
+    margin-top: 18px;
+  }
+
+  .ft__more {
     font-size: var(--fs-2xs);
   }
 
