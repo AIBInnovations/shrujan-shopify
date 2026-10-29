@@ -432,6 +432,45 @@
   color: var(--c-soft);
 }
 
+/* a piece with sizes or colours: one dropdown per option */
+.sjc-line__pick {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  font-size: var(--fs-sm);
+  color: var(--c-soft);
+}
+
+.sjc-line__pick select {
+  -webkit-appearance: none;
+  appearance: none;
+  min-width: 72px;
+  max-width: 100%;
+  height: 34px;
+  padding: 0 30px 0 12px;
+  border: 1px solid var(--c-line-2);
+  border-radius: 4px;
+  background: var(--c-white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23404041' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 10px center / 10px 6px;
+  color: var(--c-ink);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sjc-line__pick select:focus-visible {
+  outline: 2px solid var(--c-red);
+  outline-offset: 2px;
+}
+
+/* 16px keeps phones from zooming in when the list opens */
+@media (hover: none) {
+  .sjc-line__pick select {
+    font-size: 16px;
+  }
+}
+
 .sjc-line__disc {
   margin-top: 4px !important;
   font-size: var(--fs-xs);
@@ -889,194 +928,6 @@
   color: var(--c-soft);
 }
 
-/* ---- the size and colour picker -------------------------------------- */
-.sjc__picker {
-  position: absolute;
-  inset: 0;
-  z-index: 4;
-  display: flex;
-  flex-direction: column;
-  background: var(--c-paper);
-  transform: translateX(100%);
-  transition: transform 0.42s var(--c-ease);
-}
-
-.sjc__picker.is-open {
-  transform: none;
-}
-
-.sjc-pick__scroll {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-  padding: 14px var(--c-pad) 24px;
-}
-
-.sjc-pick__back {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 0 !important;
-  margin-bottom: 16px !important;
-  font-size: var(--fs-xs) !important;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--c-soft) !important;
-}
-
-.sjc-pick__back .sj-i {
-  font-size: 16px;
-}
-
-.sjc-pick__loading {
-  padding: 40px 0;
-  text-align: center;
-  color: var(--c-soft);
-}
-
-.sjc-pick__piece {
-  display: grid;
-  grid-template-columns: 104px minmax(0, 1fr);
-  gap: 16px;
-  align-items: start;
-  padding: 14px;
-  border-radius: var(--c-r);
-  background: var(--c-card);
-}
-
-.sjc-pick__piece img {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-  border-radius: 4px;
-  background: var(--c-white);
-}
-
-.sjc-pick__name {
-  font-family: var(--font-serif);
-  font-size: var(--fs-lg);
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-.sjc-pick__price {
-  margin-top: 6px !important;
-  font-weight: 700;
-}
-
-.sjc-pick__price s {
-  margin-right: 8px;
-  font-weight: 400;
-  color: var(--c-soft);
-}
-
-.sjc-pick__more {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 10px;
-  font-size: var(--fs-xs);
-  color: var(--c-soft);
-  text-decoration: underline !important;
-  text-decoration-color: var(--c-line-2) !important;
-  text-underline-offset: 4px;
-}
-
-.sjc-pick__more .sj-i {
-  font-size: 14px;
-}
-
-.sjc-pick__opt {
-  margin: 20px 0 0;
-  padding: 0;
-  border: 0;
-  min-width: 0;
-}
-
-.sjc-pick__opt legend {
-  padding: 0;
-  font-size: var(--fs-xs);
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.sjc-pick__opt legend span {
-  margin-left: 10px;
-  font-weight: 400;
-  letter-spacing: 0.04em;
-  text-transform: none;
-  color: var(--c-soft);
-}
-
-.sjc-pick__vals {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.sjc-pick__val {
-  min-width: 52px;
-  height: 44px;
-  padding: 0 16px !important;
-  border: 1px solid var(--c-line-2) !important;
-  border-radius: 4px;
-  background: var(--c-white) !important;
-  font-size: var(--fs-sm) !important;
-  font-weight: 700;
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-}
-
-.sjc-pick__val.is-on {
-  background: var(--c-deep) !important;
-  border-color: var(--c-deep) !important;
-  color: var(--c-paper);
-}
-
-.sjc-pick__val.is-out {
-  font-weight: 400;
-  color: var(--c-soft);
-  text-decoration: line-through;
-  text-decoration-color: rgba(64, 64, 65, 0.4);
-}
-
-.sjc-pick__val.is-out.is-on {
-  color: var(--c-paper);
-  opacity: 0.7;
-}
-
-.sjc-pick__err {
-  margin-top: 14px !important;
-  font-size: var(--fs-sm);
-  color: var(--c-red);
-}
-
-.sjc-pick__bar {
-  flex: none;
-  padding: 14px var(--c-pad) calc(14px + env(safe-area-inset-bottom, 0px));
-  border-top: 1px solid var(--c-line);
-  background: var(--c-paper);
-}
-
-.sjc-pick__add {
-  justify-content: space-between;
-  width: 100%;
-  min-height: 58px;
-}
-
-.sjc-pick__add span {
-  font-family: var(--font-serif);
-  font-size: var(--fs-lg);
-  letter-spacing: 0;
-  text-transform: none;
-}
-
 /* ---- phones ----------------------------------------------------------- */
 @media (max-width: 520px) {
   .sjc {
@@ -1142,11 +993,6 @@
     padding: 9px 0 !important;
   }
 
-  .sjc-pick__piece {
-    grid-template-columns: 84px minmax(0, 1fr);
-    gap: 14px;
-    padding: 12px;
-  }
 
   .sjc__rail {
     grid-auto-columns: calc((100% - 12px) / 1.45);
@@ -1302,7 +1148,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .sjc__panel,
-  .sjc__picker,
   .sjc__fill,
   .sjc__scrim {
     transition: none;
@@ -1312,8 +1157,7 @@
 /* hover states only where there is a pointer to hover with */
 @media (hover: hover) {
   .sjc__close:hover,
-  .sjc-line__name:hover,
-  .sjc-pick__back:hover {
+  .sjc-line__name:hover {
     color: var(--c-red) !important;
   }
 
@@ -1344,13 +1188,5 @@
     background: var(--c-deep) !important;
     border-color: var(--c-deep) !important;
     color: var(--c-paper);
-  }
-
-  .sjc-pick__val:hover {
-    border-color: var(--c-ink) !important;
-  }
-
-  .sjc-pick__more:hover {
-    color: var(--c-ink);
   }
 }

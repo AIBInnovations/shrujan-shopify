@@ -6,7 +6,8 @@
 
    * Every "Add to bag" label on a card (snippets/sj-quick-attrs) and every
      form posting to /cart/add (the product page) adds in the background and
-     opens this drawer; a piece with sizes or colours asks for them here first.
+     opens this drawer in one click; a piece with sizes or colours can change
+     them on its line here.
    * Any link to the cart opens it too, and the cart page itself sends the
      shopper back to where they were with the drawer open.
    * The tier bar reads its rewards from Theme settings, Bag drawer. A tier
@@ -82,8 +83,6 @@
         </form>
         <p class="sjc__fine">{% if cart.taxes_included %}Taxes included.{% else %}Taxes calculated at checkout.{% endif %} Secure checkout by Shopify.</p>
       </footer>
-
-      <div class="sjc__picker" data-sjc-picker hidden data-lenis-prevent></div>
     </div>
   </aside>
 </div>

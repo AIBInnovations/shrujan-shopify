@@ -9,7 +9,8 @@
 
    What opens it:
      - a card's "Add to bag" label (.piece__quick with data-variant): adds the
-       piece, or with data-multi asks for its size or colour first;
+       piece at once, in its first size that can be bought; a piece with
+       sizes or colours gets a dropdown on its line in the bag to change it;
      - any form posting to /cart/add (the product page): sent in the
        background instead of leaving the page;
      - any link to the cart, and #cart in the address (the cart page sends
@@ -48,7 +49,6 @@
   const fill = q('[data-sjc-fill]');
   const recsEl = q('[data-sjc-recs]');
   const rail = q('[data-sjc-rail-list]');
-  const picker = q('[data-sjc-picker]');
   const noteEl = q('[data-sjc-note]');
 
   let cart = D.cart && D.cart.items ? D.cart : null;
@@ -173,7 +173,7 @@
     isOpen = false;
     root.classList.remove('is-open');
     hold(false);
-    hideTimer = setTimeout(() => { root.hidden = true; closePicker(true); notice(''); }, reduced ? 0 : 560);
+    hideTimer = setTimeout(() => { root.hidden = true; notice(''); }, reduced ? 0 : 560);
     if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
   }
 
@@ -183,8 +183,7 @@
     if (!isOpen) return;
     if (e.key === 'Escape') {
       e.preventDefault();
-      if (!picker.hidden) closePicker();
-      else close();
+      close();
       return;
     }
     if (e.key !== 'Tab') return;
@@ -201,14 +200,14 @@
   let sx = 0, sy = 0, swiping = false;
   panel.addEventListener('touchstart', (e) => {
     const t = e.touches[0];
-    swiping = !e.target.closest('.sjc__rail, .sjc-pick__vals, textarea');
+    swiping = !e.target.closest('.sjc__rail, select, textarea');
     sx = t.clientX; sy = t.clientY;
   }, { passive: true });
   panel.addEventListener('touchend', (e) => {
     if (!swiping) return;
     const t = e.changedTouches[0];
     const dx = t.clientX - sx, dy = t.clientY - sy;
-    if (dx > 90 && Math.abs(dy) < dx * 0.5) { if (!picker.hidden) closePicker(); else close(); }
+    if (dx > 90 && Math.abs(dy) < dx * 0.5) close();
   }, { passive: true });
 
   /* ---- messages --------------------------------------------------------- */
@@ -355,7 +354,7 @@
   /* ---- the lines -------------------------------------------------------- */
   function lineHTML(it) {
     const img = it.image ? `<img src="${esc(pic(it.image, 300))}" alt="${esc(it.featured_image && it.featured_image.alt || it.product_title)}" loading="lazy" width="150" height="188">` : '';
-    const opts = (it.options_with_values || [])
+    const opts = picksHTML(it) || (it.options_with_values || [])
       .filter((o) => o && o.value && !/^default title$/i.test(o.value) && !/^title$/i.test(o.name))
       .map((o) => `<p class="sjc-line__opt">${esc(o.name)}: ${esc(o.value)}</p>`).join('')
       || (it.variant_title && !/^default title$/i.test(it.variant_title) ? `<p class="sjc-line__opt">${esc(it.variant_title)}</p>` : '');
@@ -418,6 +417,8 @@
     const fKey = fLine && fLine.getAttribute('data-key');
     const fAct = af && af.getAttribute && af.getAttribute('data-act');
     linesEl.innerHTML = c.items.map(lineHTML).join('');
+    const want = c.items.filter((i) => i.product_has_only_default_variant === false && !(i.handle in products)).map((i) => i.handle);
+    if (want.length) Promise.all(want.map(productOf)).then(() => { if (cart === c) render(); });
     if (fKey && fAct) {
       const back = [].find.call(linesEl.querySelectorAll('.sjc-line'), (l) => l.getAttribute('data-key') === fKey);
       const btn = back && back.querySelector('[data-act="' + fAct + '"]');
@@ -611,100 +612,60 @@
     if (b) quick(b);
   });
 
-  /* ---- the size and colour picker --------------------------------------- */
-  let pick = null;
-  function closePicker(silent) {
-    pick = null;
-    picker.classList.remove('is-open');
-    const hide = () => { if (!pick) { picker.hidden = true; picker.innerHTML = ''; } };
-    if (silent || reduced) hide();
-    else setTimeout(hide, 380);
-  }
-  function openPicker(handle) {
-    pick = { handle, product: null, sel: [] };
-    picker.hidden = false;
-    picker.innerHTML = `<div class="sjc-pick__scroll"><button type="button" class="sjc-pick__back" data-pick-close>${icon('arrow-left')} Back to your bag</button><p class="sjc-pick__loading">Loading the piece</p></div>`;
-    requestAnimationFrame(() => requestAnimationFrame(() => picker.classList.add('is-open')));
-    const mine = pick;
-    fetch(slash(R.root) + 'products/' + encodeURIComponent(handle) + '.js', { headers: { Accept: 'application/json' } })
-      .then((r) => { if (!r.ok) throw new Error('missing'); return r.json(); })
-      .then((p) => {
-        if (pick !== mine) return;
-        const v = p.variants.find((x) => x.available) || p.variants[0];
-        mine.product = p;
-        mine.sel = (v.options || [v.option1, v.option2, v.option3].filter((x) => x != null)).slice();
-        drawPicker();
-      })
-      .catch(() => { if (pick === mine) { closePicker(true); location.href = slash(R.root) + 'products/' + handle; } });
-  }
+  /* ---- sizes and colours, changed in the bag --------------------------- *
+     Add to bag never stops to ask (the user, 2026-10-29: one click, the
+     bag opens). A piece with sizes or colours gets a dropdown per option on
+     its line; a change swaps the line for that size, same quantity. A value
+     with nothing left to buy is marked sold out and cannot be picked. */
   const optName = (o, i) => (typeof o === 'string' ? o : (o && o.name) || 'Option ' + (i + 1));
   const vOpts = (v) => v.options || [v.option1, v.option2, v.option3].filter((x) => x != null);
   const match = (p, sel) => p.variants.find((v) => vOpts(v).every((x, i) => x === sel[i]));
-  function drawPicker() {
-    const p = pick.product;
-    const v = match(p, pick.sel);
-    const can = !!(v && v.available);
-    const img = (v && v.featured_image && v.featured_image.src) || p.featured_image;
-    const groups = p.options.map((o, i) => {
+  const products = {}; // handle -> product (false when it could not be read)
+  function productOf(handle) {
+    return fetch(slash(R.root) + 'products/' + encodeURIComponent(handle) + '.js', { headers: { Accept: 'application/json' } })
+      .then((r) => (r.ok ? r.json() : false))
+      .catch(() => false)
+      .then((p) => { products[handle] = p; return p; });
+  }
+  function picksHTML(it) {
+    const p = products[it.handle];
+    if (!p || !p.variants || p.variants.length < 2) return '';
+    const v = p.variants.find((x) => x.id === (it.variant_id || it.id));
+    if (!v) return '';
+    const cur = vOpts(v);
+    return p.options.map((o, i) => {
       const values = [];
       p.variants.forEach((x) => { const val = vOpts(x)[i]; if (values.indexOf(val) < 0) values.push(val); });
-      const btns = values.map((val) => {
-        const test = pick.sel.slice(); test[i] = val;
-        const tv = match(p, test);
-        const out = !tv || !tv.available;
-        const on = pick.sel[i] === val;
-        return `<button type="button" class="sjc-pick__val${on ? ' is-on' : ''}${out ? ' is-out' : ''}" data-opt="${i}" data-val="${esc(val)}" aria-pressed="${on}">${esc(val)}</button>`;
+      if (values.length < 2) return `<p class="sjc-line__opt">${esc(optName(o, i))}: ${esc(cur[i])}</p>`;
+      const options = values.map((val) => {
+        const left = p.variants.some((x) => x.available && vOpts(x)[i] === val);
+        const on = cur[i] === val;
+        return `<option value="${esc(val)}"${on ? ' selected' : ''}${!left && !on ? ' disabled' : ''}>${esc(val)}${left ? '' : ' (sold out)'}</option>`;
       }).join('');
-      return `<fieldset class="sjc-pick__opt"><legend>${esc(optName(o, i))}<span>${esc(pick.sel[i])}</span></legend><div class="sjc-pick__vals">${btns}</div></fieldset>`;
+      return `<label class="sjc-line__pick"><span>${esc(optName(o, i))}</span><select data-opt="${i}" aria-label="${esc(optName(o, i))} of ${esc(it.product_title)}">${options}</select></label>`;
     }).join('');
-    picker.innerHTML = `<div class="sjc-pick__scroll" data-lenis-prevent>
-        <button type="button" class="sjc-pick__back" data-pick-close>${icon('arrow-left')} Back to your bag</button>
-        <div class="sjc-pick__piece">
-          ${img ? `<img src="${esc(pic(img, 360))}" alt="" width="120" height="150">` : ''}
-          <div><p class="sjc-pick__name">${esc(p.title)}</p><p class="sjc-pick__price">${v && v.compare_at_price > v.price ? `<s>${esc(money(v.compare_at_price))}</s>` : ''}${esc(money(v ? v.price : p.price))}</p>
-          <a class="sjc-pick__more" href="${esc(p.url || slash(R.root) + 'products/' + p.handle)}">See the piece ${icon('arrow-right')}</a></div>
-        </div>
-        ${groups}
-        <p class="sjc-pick__err" data-pick-err hidden></p>
-      </div>
-      <div class="sjc-pick__bar">
-        <button type="button" class="sjc__btn sjc__btn--solid sjc-pick__add" data-pick-add${can ? '' : ' disabled'}>${can ? 'Add to bag' : 'Sold out'}<span>${can ? esc(money(v.price)) : ''}</span></button>
-      </div>`;
   }
-  picker.addEventListener('click', (e) => {
-    if (e.target.closest('[data-pick-close]')) { closePicker(); return; }
-    const val = e.target.closest('[data-opt]');
-    if (val && pick && pick.product) {
-      const i = Number(val.getAttribute('data-opt'));
-      pick.sel[i] = val.getAttribute('data-val');
-      // a choice with nothing left in the other options moves them to what is
-      const v = match(pick.product, pick.sel);
-      if (!v || !v.available) {
-        const alt = pick.product.variants.find((x) => x.available && vOpts(x)[i] === pick.sel[i]);
-        if (alt) pick.sel = vOpts(alt).slice();
-      }
-      const scroll = picker.querySelector('.sjc-pick__scroll');
-      const top = scroll ? scroll.scrollTop : 0;
-      drawPicker();
-      const again = picker.querySelector('.sjc-pick__scroll');
-      if (again) again.scrollTop = top;
-      return;
-    }
-    const go = e.target.closest('[data-pick-add]');
-    if (go && pick && pick.product) {
-      const v = match(pick.product, pick.sel);
-      if (!v || !v.available) return;
-      go.disabled = true;
-      go.classList.add('is-busy');
-      add([{ id: v.id, quantity: 1 }])
-        .then((keys) => { closePicker(); added(); flash(keys); })
-        .catch((err) => {
-          go.disabled = false;
-          go.classList.remove('is-busy');
-          const box = picker.querySelector('[data-pick-err]');
-          if (box) { box.textContent = err.message; box.hidden = false; }
-        });
-    }
+  linesEl.addEventListener('change', (e) => {
+    const sel = e.target.closest && e.target.closest('select[data-opt]');
+    if (!sel) return;
+    const l = sel.closest('.sjc-line');
+    const key = l.getAttribute('data-key');
+    const it = cart && cart.items.find((x) => x.key === key);
+    const p = it && products[it.handle];
+    if (!p) return;
+    const i = Number(sel.getAttribute('data-opt'));
+    const cur = vOpts(p.variants.find((x) => x.id === (it.variant_id || it.id)) || p.variants[0]);
+    const want = cur.map((val, k) => { const s2 = l.querySelector('select[data-opt="' + k + '"]'); return s2 ? s2.value : val; });
+    let v = match(p, want);
+    // that mix is gone: keep the new choice, move the others to what is left
+    if (!v || !v.available) v = p.variants.find((x) => x.available && vOpts(x)[i] === sel.value);
+    if (!v || v.id === (it.variant_id || it.id)) { render(); return; }
+    l.classList.add('is-busy');
+    // the new size first, so a failure leaves the bag as it was
+    queue(() => post(R.add + '.js', { items: [{ id: v.id, quantity: it.quantity }] })
+      .then(() => post(R.change + '.js', { id: key, quantity: 0 })))
+      .then((c) => took(c))
+      .catch((err) => { refresh().then(() => notice(err.message, 'error')).catch(() => {}); });
   });
 
   /* ---- adding from anywhere --------------------------------------------- */
@@ -720,12 +681,6 @@
 
   function quick(el) {
     const id = parseInt(el.getAttribute('data-variant'), 10);
-    const handle = el.getAttribute('data-handle');
-    if (el.hasAttribute('data-multi') && handle) {
-      open();
-      openPicker(handle);
-      return;
-    }
     if (!id || el.classList.contains('is-busy')) return;
     const label = el.classList.contains('piece__quick') ? el.textContent : null;
     if (label) el.textContent = 'Adding';
