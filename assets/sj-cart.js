@@ -14,6 +14,8 @@
        background instead of leaving the page;
      - any link to the cart, and #cart in the address (the cart page sends
        the shopper back with it).
+   Once a piece is in the bag its "Add to bag" reads "Checkout" and goes
+   straight to checkout, carrying the tier's discount code when one is set.
    window.SJCart = { open, close, add, refresh } for anything else.
    ========================================================================== */
 (() => {
@@ -37,7 +39,6 @@
   const emptyEl = q('[data-sjc-empty]');
   const foot = q('[data-sjc-foot]');
   const sumsEl = q('[data-sjc-sums]');
-  const checkoutSum = q('[data-sjc-checkout-sum]');
   const countEl = q('[data-sjc-count]');
   const noticeEl = q('[data-sjc-notice]');
   const tiersEl = q('[data-sjc-tiers]');
@@ -113,21 +114,30 @@
 
   const emit = () => doc.dispatchEvent(new CustomEvent('sj:cart', { detail: cart }));
 
+  // every new cart from Shopify goes through here
+  function took(c) {
+    cart = c;
+    render();
+    loadRecs();
+    emit();
+    syncCode(c);
+  }
+
   function refresh() {
-    return queue(getCart).then((c) => { cart = c; render(); loadRecs(); emit(); return c; });
+    return queue(getCart).then((c) => { took(c); return c; });
   }
 
   // adds lines, then reads the whole cart back; resolves to the added keys
   function add(items) {
     return queue(() => post(R.add + '.js', { items })
       .then((res) => getCart().then((c) => { cart = c; return (res.items || [res]).map((i) => i.key); })))
-      .then((keys) => { render(); loadRecs(); emit(); return keys; });
+      .then((keys) => { took(cart); return keys; });
   }
 
   function addForm(fd) {
     return queue(() => call(R.add + '.js', { method: 'POST', body: fd, headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' } })
       .then((res) => getCart().then((c) => { cart = c; return (res.items || [res]).map((i) => i.key); })))
-      .then((keys) => { render(); loadRecs(); emit(); return keys; });
+      .then((keys) => { took(cart); return keys; });
   }
 
   /* ---- open and close --------------------------------------------------- */
@@ -240,9 +250,11 @@
     });
   }
 
-  /* ---- the tier bar ----------------------------------------------------- */
+  /* ---- the tier bar ----------------------------------------------------- *
+     Each tier sits in the middle of an equal step of the bar, its amount and
+     reward under it; the fill runs between them by how far the bag has got. */
   const tierList = () => (D.tiers || [])
-    .map((t) => ({ at: Math.round(t.at * rate()), label: t.label }))
+    .map((t) => ({ at: Math.round(t.at * rate()), label: t.label, code: String(t.code || '').trim() }))
     .filter((t) => t.at > 0)
     .sort((a, b) => a.at - b.at);
 
@@ -254,13 +266,15 @@
     [].forEach.call(track.querySelectorAll('.sjc__mark'), (m) => m.remove());
     marks = tiers.map((t, i) => {
       const m = doc.createElement('span');
-      m.className = 'sjc__mark' + (i === tiers.length - 1 ? ' sjc__mark--end' : '');
-      m.style.left = ((i + 1) / tiers.length) * 100 + '%';
-      m.innerHTML = `<i class="sjc__dot">${icon('check')}</i><span class="sjc__mark-txt"><b>${esc(t.label)}</b><small>${esc(money(t.at))}</small></span>`;
+      m.className = 'sjc__mark';
+      m.style.left = ((i + 0.5) / tiers.length) * 100 + '%';
+      m.innerHTML = `<i class="sjc__dia" aria-hidden="true"></i><span class="sjc__mark-txt"><b>${esc(money(t.at))}</b><small>${esc(t.label)}</small></span>`;
       track.appendChild(m);
       return m;
     });
   }
+
+  const reachedOf = (tiers, v) => { let r = -1; tiers.forEach((t, i) => { if (v >= t.at) r = i; }); return r; };
 
   function renderTiers(c) {
     unlocked = ''; // set again below only when this very change reaches a tier
@@ -271,27 +285,27 @@
     // the minimum purchase Shopify checks is the bag before order discounts
     const v = c.items_subtotal_price;
     const n = tiers.length;
-    let pct = 0;
-    for (let i = 0; i < n; i++) {
-      const from = i ? tiers[i - 1].at : 0;
-      const part = Math.min(1, Math.max(0, (v - from) / (tiers[i].at - from)));
-      pct += part / n;
-      if (part < 1) break;
+    const pos = (i) => (i + 0.5) / n;
+    const reached = reachedOf(tiers, v);
+    let f = 1;
+    if (reached < n - 1) {
+      const from = reached < 0 ? 0 : tiers[reached].at;
+      const to = tiers[reached + 1].at;
+      const p0 = reached < 0 ? 0 : pos(reached);
+      f = p0 + (pos(reached + 1) - p0) * Math.max(0, Math.min(1, (v - from) / (to - from)));
     }
-    fill.style.width = (pct * 100).toFixed(2) + '%';
-    let reached = -1;
-    tiers.forEach((t, i) => { if (v >= t.at) reached = i; });
+    fill.style.width = (f * 100).toFixed(2) + '%';
     marks.forEach((m, i) => {
       m.classList.toggle('is-on', i <= reached);
       m.classList.toggle('is-next', i === reached + 1);
     });
     const next = tiers[reached + 1];
-    if (!next) {
-      tierMsg.innerHTML = `${icon('sparkle')} You have unlocked <b>${esc(tiers[n - 1].label)}</b>, our best offer.`;
-    } else if (reached >= 0) {
-      tierMsg.innerHTML = `${icon('check-circle')} <b>${esc(tiers[reached].label)}</b> unlocked. Add <b>${esc(money(next.at - v))}</b> more for <b>${esc(next.label)}</b>.`;
+    const withCode = (t) => (t.code ? ` with code <b>${esc(t.code)}</b>` : '');
+    if (next) {
+      tierMsg.innerHTML = `Add <b>${esc(money(next.at - v))}</b> more to unlock <b>${esc(next.label)}</b>${withCode(next)}`;
     } else {
-      tierMsg.innerHTML = `${icon('tag')} Add <b>${esc(money(next.at - v))}</b> more for <b>${esc(next.label)}</b>.`;
+      const top = tiers[n - 1];
+      tierMsg.innerHTML = `${icon('check-circle')} You have unlocked <b>${esc(top.label)}</b>${top.code ? `, code <b>${esc(top.code)}</b> applied` : ''}`;
     }
     if (reachedBefore !== null && reached > reachedBefore && marks[reached]) {
       const m = marks[reached];
@@ -302,13 +316,51 @@
     reachedBefore = reached;
   }
 
+  /* ---- discount codes on tiers ----------------------------------------- *
+     The code of the highest tier reached is put on the cart (Shopify shows
+     its discount in the totals) and on the way to checkout. Only a code the
+     bag put on is ever taken off again; each change is tried once. */
+  let ourCode = '';
+  try { ourCode = sessionStorage.getItem('sjc-code') || ''; } catch (e) {}
+  let codeTried = null;
+  const wantedCode = (c) => {
+    const tiers = tierList();
+    if (!D.tiersOn || !c || !c.item_count) return '';
+    let code = '';
+    tiers.forEach((t) => { if (c.items_subtotal_price >= t.at && t.code) code = t.code; });
+    return code;
+  };
+  function syncCode(c) {
+    const want = wantedCode(c);
+    const have = (c.discount_codes || []).map((d) => d.code).filter(Boolean);
+    const lc = (x) => String(x).toLowerCase();
+    const mine = ourCode && have.some((x) => lc(x) === lc(ourCode)) && lc(ourCode) !== lc(want);
+    const missing = want && !have.some((x) => lc(x) === lc(want));
+    if (!mine && !missing) { ourCode = want; return; }
+    const next = have.filter((x) => !ourCode || lc(x) !== lc(ourCode)).concat(want ? [want] : []).join(',');
+    if (codeTried === next) return;
+    codeTried = next;
+    ourCode = want;
+    try { sessionStorage.setItem('sjc-code', ourCode); } catch (e) {}
+    queue(() => post(R.update + '.js', { discount: next }))
+      .then((nc) => { if (nc && nc.items) { cart = nc; render(); emit(); } })
+      .catch(() => {});
+  }
+  const checkoutUrl = () => {
+    const code = wantedCode(cart);
+    return slash(R.root) + 'checkout' + (code ? '?discount=' + encodeURIComponent(code) : '');
+  };
+
   /* ---- the lines -------------------------------------------------------- */
   function lineHTML(it) {
-    const img = it.image ? `<img src="${esc(pic(it.image, 240))}" alt="${esc(it.featured_image && it.featured_image.alt || it.product_title)}" loading="lazy" width="120" height="150">` : '';
-    const variant = it.variant_title && !/^default title$/i.test(it.variant_title) ? `<p class="sjc-line__variant">${esc(it.variant_title)}</p>` : '';
+    const img = it.image ? `<img src="${esc(pic(it.image, 300))}" alt="${esc(it.featured_image && it.featured_image.alt || it.product_title)}" loading="lazy" width="150" height="188">` : '';
+    const opts = (it.options_with_values || [])
+      .filter((o) => o && o.value && !/^default title$/i.test(o.value) && !/^title$/i.test(o.name))
+      .map((o) => `<p class="sjc-line__opt">${esc(o.name)}: ${esc(o.value)}</p>`).join('')
+      || (it.variant_title && !/^default title$/i.test(it.variant_title) ? `<p class="sjc-line__opt">${esc(it.variant_title)}</p>` : '');
     const props = it.properties ? Object.keys(it.properties)
       .filter((k) => k.charAt(0) !== '_' && it.properties[k] !== '' && it.properties[k] != null)
-      .map((k) => `<p class="sjc-line__variant">${esc(k)}: ${esc(it.properties[k])}</p>`).join('') : '';
+      .map((k) => `<p class="sjc-line__opt">${esc(k)}: ${esc(it.properties[k])}</p>`).join('') : '';
     const discs = (it.line_level_discount_allocations || [])
       .filter((d) => d.amount > 0)
       .map((d) => `<p class="sjc-line__disc">${icon('tag')} ${esc(d.discount_application && d.discount_application.title || 'Discount')} (−${esc(money(d.amount))})</p>`).join('');
@@ -317,21 +369,17 @@
     return `<li class="sjc-line" data-key="${esc(it.key)}">
       <a class="sjc-line__media" href="${esc(it.url)}" tabindex="-1" aria-hidden="true">${img}</a>
       <div class="sjc-line__info">
-        <div class="sjc-line__top">
-          <a class="sjc-line__name" href="${esc(it.url)}">${esc(it.product_title)}</a>
-          <p class="sjc-line__price">${was}<span>${esc(money(it.final_line_price))}</span>${each}</p>
-        </div>
-        ${variant}${props}${discs}
-        <div class="sjc-line__row">
-          <div class="sjc-qty" role="group" aria-label="Quantity of ${esc(it.product_title)}">
-            <button type="button" class="sjc-qty__btn" data-act="dec" aria-label="${it.quantity > 1 ? 'One fewer' : 'Remove'}">${icon('minus')}</button>
-            <span class="sjc-qty__n" aria-live="polite">${it.quantity}</span>
-            <button type="button" class="sjc-qty__btn" data-act="inc" aria-label="One more">${icon('plus')}</button>
-          </div>
-          <button type="button" class="sjc-line__remove" data-act="remove">Remove</button>
-        </div>
+        <a class="sjc-line__name" href="${esc(it.url)}">${esc(it.product_title)}</a>
+        <p class="sjc-line__price">${was}<span>${esc(money(it.final_line_price))}</span>${each}</p>
+        ${opts}${props}${discs}
         <p class="sjc-line__err" data-err hidden></p>
       </div>
+      <div class="sjc-qty" role="group" aria-label="Quantity of ${esc(it.product_title)}">
+        <button type="button" class="sjc-qty__btn" data-act="dec" aria-label="${it.quantity > 1 ? 'One fewer' : 'Remove'}">${icon('minus')}</button>
+        <span class="sjc-qty__n" aria-live="polite">${it.quantity}</span>
+        <button type="button" class="sjc-qty__btn" data-act="inc" aria-label="One more">${icon('plus')}</button>
+      </div>
+      <button type="button" class="sjc-line__remove" data-act="remove">Remove item</button>
     </li>`;
   }
 
@@ -342,15 +390,15 @@
     orderDiscs.forEach((d) => {
       rows.push(`<div class="sjc__sum sjc__sum--disc"><dt>${icon('tag')} ${esc(d.title || 'Discount')}</dt><dd>−${esc(money(d.total_allocated_amount))}</dd></div>`);
     });
-    const saved = c.original_total_price - c.total_price;
-    const orderOff = orderDiscs.reduce((t, d) => t + d.total_allocated_amount, 0);
-    if (orderDiscs.length || saved > 0) {
+    // a tier whose reward is free shipping, once reached, says so here
+    const tiers = tierList();
+    const r = reachedOf(tiers, c.items_subtotal_price);
+    const freeShip = D.tiersOn && tiers.some((t, i) => i <= r && /free\s*shipping/i.test(t.label));
+    rows.push(`<div class="sjc__sum sjc__sum--ship"><dt>Shipping</dt><dd>${esc(freeShip ? 'Free' : (D.shipValue || 'Calculated at checkout'))}</dd></div>`);
+    if (orderDiscs.length || c.original_total_price > c.total_price) {
       rows.push(`<div class="sjc__sum sjc__sum--total"><dt>Total</dt><dd>${esc(money(c.total_price))}</dd></div>`);
     }
-    // only when pieces carry their own discounts too; otherwise it repeats the line above
-    if (saved > orderOff) rows.push(`<div class="sjc__sum sjc__sum--save"><dt>You save</dt><dd>${esc(money(saved))}</dd></div>`);
     sumsEl.innerHTML = rows.join('');
-    checkoutSum.textContent = money(c.total_price);
   }
 
   function render() {
@@ -378,6 +426,46 @@
     renderTiers(c);
     if (!empty) renderSums(c);
     if (noteEl && doc.activeElement !== noteEl && typeof c.note === 'string') noteEl.value = c.note;
+    syncButtons();
+  }
+
+  /* ---- "Add to bag" becomes "Checkout" ---------------------------------- *
+     A card whose piece is in the bag, and the product page while the chosen
+     size is in it, read "Checkout" and go straight there. */
+  function syncButtons() {
+    const items = cart ? cart.items : [];
+    doc.querySelectorAll('.piece__quick[data-variant]').forEach((el) => {
+      if (el.classList.contains('is-busy')) return;
+      if (!el.dataset.sjcLabel) el.dataset.sjcLabel = el.textContent;
+      const on = items.some((i) => i.handle === el.getAttribute('data-handle') || String(i.variant_id || i.id) === el.getAttribute('data-variant'));
+      el.classList.toggle('is-in', on);
+      el.textContent = on ? 'Checkout' : el.dataset.sjcLabel;
+      el.setAttribute('aria-label', on ? 'Go to checkout' : el.dataset.sjcLabel);
+    });
+    doc.querySelectorAll('form').forEach((f) => {
+      if (root.contains(f) || !/\/cart\/add(\.js)?$/.test(f.getAttribute('action') || '')) return;
+      const id = f.querySelector('[name="id"]');
+      const btn = f.querySelector('[type="submit"]');
+      if (!id || !btn || btn.classList.contains('is-busy')) return;
+      // whatever the page itself last wrote on the button is its own label
+      if (btn.textContent !== 'Checkout') btn.dataset.sjcLabel = btn.textContent;
+      const on = items.some((i) => String(i.variant_id || i.id) === String(id.value));
+      if (on) {
+        if (!btn.classList.contains('is-in')) btn.dataset.sjcWasOff = btn.disabled ? '1' : '';
+        btn.classList.add('is-in');
+        btn.disabled = false;
+        btn.textContent = 'Checkout';
+      } else if (btn.classList.contains('is-in')) {
+        btn.classList.remove('is-in');
+        btn.textContent = btn.dataset.sjcLabel || 'Add to bag';
+        btn.disabled = btn.dataset.sjcWasOff === '1';
+      }
+    });
+  }
+
+  function goCheckout(btn) {
+    if (btn) btn.classList.add('is-busy');
+    flush().then(() => { location.href = checkoutUrl(); });
   }
 
   function flash(keys) {
@@ -388,7 +476,10 @@
       setTimeout(() => l.classList.remove('is-new'), 1800);
     });
     const first = keys && keys.length && lineEl(keys[0]);
-    body.scrollTo({ top: first ? Math.max(0, first.offsetTop - 12) : 0, behavior: reduced ? 'auto' : 'smooth' });
+    // on tall screens the lines scroll on their own, elsewhere the whole body
+    const sc = linesEl.scrollHeight > linesEl.clientHeight + 1 ? linesEl : body;
+    const top = first ? sc.scrollTop + first.getBoundingClientRect().top - sc.getBoundingClientRect().top - 12 : 0;
+    sc.scrollTo({ top: Math.max(0, top), behavior: reduced ? 'auto' : 'smooth' });
   }
 
   /* ---- quantities ------------------------------------------------------- */
@@ -414,11 +505,8 @@
       delete timers[key];
       return queue(() => post(R.change + '.js', { id: key, quantity: n }))
         .then((c) => {
-          cart = c;
           const now = c.items.find((i) => i.key === key);
-          render();
-          loadRecs();
-          emit();
+          took(c);
           if (now && now.quantity < n) lineError(key, 'Only ' + now.quantity + ' of this piece can be ordered.');
         })
         .catch((err) => {
@@ -466,19 +554,13 @@
 
   const checkoutForm = q('.sjc__checkout-form');
   if (checkoutForm) checkoutForm.addEventListener('submit', (e) => {
-    const btn = q('[data-sjc-checkout]');
-    if (btn.classList.contains('is-busy')) { e.preventDefault(); return; }
-    if (!Object.keys(timers).length && !noteRun) { btn.classList.add('is-busy'); return; }
     e.preventDefault();
-    btn.classList.add('is-busy');
-    flush().then(() => {
-      const go = doc.createElement('input');
-      go.type = 'hidden'; go.name = 'checkout'; go.value = '1';
-      checkoutForm.appendChild(go);
-      checkoutForm.submit();
-    });
+    const btn = q('[data-sjc-checkout]');
+    if (btn.classList.contains('is-busy')) return;
+    goCheckout(btn);
   });
-  window.addEventListener('pageshow', () => { const b = q('[data-sjc-checkout]'); if (b) b.classList.remove('is-busy'); });
+  // back from checkout: nothing should still look busy
+  window.addEventListener('pageshow', () => { doc.querySelectorAll('.is-in.is-busy, [data-sjc-checkout].is-busy').forEach((b) => b.classList.remove('is-busy')); });
 
   /* ---- recommendations -------------------------------------------------- */
   const norm = (p) => {
@@ -524,12 +606,17 @@
       if (!pool.length) { recsEl.hidden = true; rail.innerHTML = ''; return; }
       const sameSeed = seed === recSeed && rail.children.length;
       recSeed = seed;
-      rail.innerHTML = pool.map((p) => `<li class="sjc-rec">
-        <a class="sjc-rec__media" href="${esc(p.url)}" tabindex="-1" aria-hidden="true">${p.img ? `<img src="${esc(pic(p.img, 360))}" alt="" loading="lazy" width="180" height="225">` : ''}</a>
-        <a class="sjc-rec__name" href="${esc(p.url)}">${esc(p.title)}</a>
-        <p class="sjc-rec__price">${p.compare > p.price ? `<s>${esc(money(p.compare))}</s>` : ''}${esc(money(p.price))}</p>
-        <button type="button" class="sjc-rec__add" data-variant="${p.variant}" data-handle="${esc(p.handle)}"${p.multi ? ' data-multi' : ''} aria-label="Add ${esc(p.title)} to your bag">${icon('plus')}<span>${p.multi ? 'Choose' : 'Add'}</span></button>
-      </li>`).join('');
+      rail.innerHTML = pool.map((p) => {
+        const off = p.compare > p.price ? Math.round((1 - p.price / p.compare) * 100) : 0;
+        return `<li class="sjc-rec">
+        <a class="sjc-rec__media" href="${esc(p.url)}" tabindex="-1" aria-hidden="true">${p.img ? `<img src="${esc(pic(p.img, 200))}" alt="" loading="lazy" width="64" height="80">` : ''}</a>
+        <div class="sjc-rec__info">
+          <a class="sjc-rec__name" href="${esc(p.url)}">${esc(p.title)}</a>
+          <p class="sjc-rec__price">${off ? `<s>${esc(money(p.compare))}</s> ` : ''}<b>${esc(money(p.price))}</b>${off ? ` <em>${off}% off</em>` : ''}</p>
+        </div>
+        <button type="button" class="sjc-rec__add" data-variant="${p.variant}" data-handle="${esc(p.handle)}"${p.multi ? ' data-multi' : ''} aria-label="${p.multi ? 'Choose a size of' : 'Add'} ${esc(p.title)}">${icon('plus')}</button>
+      </li>`;
+      }).join('');
       recsEl.hidden = false;
       if (!sameSeed) rail.scrollLeft = 0;
       railArrows();
@@ -679,15 +766,18 @@
     busy(el, true);
     add([{ id, quantity: 1 }])
       .then((keys) => {
+        busy(el, false);
+        syncButtons();
         open(true);
         added();
         flash(keys);
-        if (label) el.textContent = 'Added';
-        el.classList.add('is-done');
-        setTimeout(() => { el.classList.remove('is-done'); if (label) el.textContent = label; }, 1600);
       })
-      .catch((err) => { if (label) el.textContent = label; open(true); notice(err.message, 'error'); })
-      .then(() => busy(el, false));
+      .catch((err) => {
+        busy(el, false);
+        if (label) el.textContent = label;
+        open(true);
+        notice(err.message, 'error');
+      });
   }
 
   const isCartLink = (a) => {
@@ -706,9 +796,11 @@
     const label = t.closest('.piece__quick[data-variant]');
     if (label) {
       e.preventDefault();
-      quick(label);
+      if (label.classList.contains('is-in')) goCheckout(label);
+      else quick(label);
       return;
     }
+
     const a = t.closest('a[href]');
     if (a && !root.contains(a) && isCartLink(a)) {
       e.preventDefault();
@@ -724,11 +816,12 @@
     if (!/\/cart\/add(\.js)?$/.test(path)) return;
     e.preventDefault();
     const btn = e.submitter || f.querySelector('[type="submit"]');
+    if (btn && btn.classList.contains('is-in')) { goCheckout(btn); return; }
     const fd = new FormData(f);
     fd.delete('return_to');
     busy(btn, true);
     addForm(fd)
-      .then((keys) => { open(true); added(); flash(keys); })
+      .then((keys) => { busy(btn, false); syncButtons(); open(true); added(); flash(keys); })
       .catch((err) => {
         if (err.status) { open(true); notice(err.message, 'error'); }
         else f.submit(); // the network, not the cart: let the form go the old way
@@ -753,4 +846,13 @@
   } else if (cart) {
     badges(cart.item_count);
   }
+  if (cart) syncButtons();
+  // the page's own copy of the bag can be older than the bag itself (another
+  // tab, the back button), so it is read once more when the page is idle
+  const wake = () => { if (!isOpen) refresh().catch(() => {}); };
+  if ('requestIdleCallback' in window) requestIdleCallback(wake, { timeout: 2500 });
+  else setTimeout(wake, 1200);
+  // a size picked on the product page: is that one in the bag?
+  doc.addEventListener('click', (e) => { if (e.target.closest && e.target.closest('.pdp__size, .pdp__sizes button')) setTimeout(syncButtons, 0); });
+  doc.addEventListener('change', (e) => { if (e.target.closest && e.target.closest('form')) setTimeout(syncButtons, 0); });
 })();

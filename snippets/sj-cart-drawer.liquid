@@ -9,9 +9,12 @@
      opens this drawer; a piece with sizes or colours asks for them here first.
    * Any link to the cart opens it too, and the cart page itself sends the
      shopper back to where they were with the drawer open.
-   * The tier bar reads its rewards from Theme settings, Bag drawer. It shows
-     progress only; the discounts themselves are Shopify automatic discounts,
-     and the totals shown are always the cart's own.
+   * The tier bar reads its rewards from Theme settings, Bag drawer. A tier
+     with a discount code is applied to the bag when it is reached and sent on
+     to checkout; one without needs a Shopify automatic discount. The totals
+     shown are always the cart's own.
+   * Once a piece is in the bag, its "Add to bag" (cards and product page)
+     reads "Checkout" and goes straight there.
    * Recommendations are Shopify's own for the newest piece in the bag, then
      the collection set in Theme settings (or the newest pieces).
 {%- endcomment -%}
@@ -29,8 +32,11 @@
   <aside class="sjc__panel" role="dialog" aria-modal="true" aria-labelledby="sjc-title" data-lenis-prevent>
     <header class="sjc__head">
       <h2 class="sjc__title" id="sjc-title">Your bag <span class="sjc__count" data-sjc-count></span></h2>
-      <button type="button" class="sjc__close" data-sjc-close aria-label="Close the bag"><i class="sj-i sj-i--x ms" aria-hidden="true"></i></button>
+      <button type="button" class="sjc__close" data-sjc-close aria-label="Close the bag">Close <i class="sj-i sj-i--x ms" aria-hidden="true"></i></button>
     </header>
+    {%- if settings.cart_ship_note != blank %}
+    <p class="sjc__ship"><i class="sj-i sj-i--truck ms" aria-hidden="true"></i> {{ settings.cart_ship_note | escape }}</p>
+    {%- endif %}
 
     <div class="sjc__tiers" data-sjc-tiers hidden>
       <p class="sjc__tier-msg" data-sjc-tier-msg></p>
@@ -71,13 +77,10 @@
 
       <footer class="sjc__foot" data-sjc-foot hidden>
         <dl class="sjc__sums" data-sjc-sums></dl>
-        <p class="sjc__fine">{% if settings.cart_ship_note != blank %}{{ settings.cart_ship_note | escape }}. {% endif %}{% if cart.taxes_included %}Taxes included.{% else %}Taxes calculated at checkout.{% endif %}</p>
         <form action="{{ routes.cart_url }}" method="post" class="sjc__checkout-form">
-          <button type="submit" name="checkout" class="sjc__btn sjc__btn--solid sjc__checkout" data-sjc-checkout>
-            <span>Checkout</span><span class="sjc__checkout-sum" data-sjc-checkout-sum></span>
-          </button>
+          <button type="submit" name="checkout" class="sjc__btn sjc__btn--solid sjc__checkout" data-sjc-checkout>Checkout</button>
         </form>
-        <button type="button" class="sjc__continue" data-sjc-close>Continue shopping</button>
+        <p class="sjc__fine">{% if cart.taxes_included %}Taxes included.{% else %}Taxes calculated at checkout.{% endif %} Secure checkout by Shopify.</p>
       </footer>
 
       <div class="sjc__picker" data-sjc-picker hidden data-lenis-prevent></div>
@@ -105,12 +108,14 @@
       {%- assign t_amt = settings[amt_key] -%}
       {%- assign t_lab = settings[lab_key] -%}
       {%- if t_amt != blank and t_amt > 0 and t_lab != blank -%}
-        {{ tier_sep }}{ "at": {{ t_amt | times: 100 }}, "label": {{ t_lab | json }} }
+        {%- capture code_key %}cart_tier_{{ n }}_code{% endcapture -%}
+        {{ tier_sep }}{ "at": {{ t_amt | times: 100 }}, "label": {{ t_lab | json }}, "code": {{ settings[code_key] | default: '' | strip | json }} }
         {%- assign tier_sep = ',' -%}
       {%- endif -%}
     {%- endfor -%}
   ],
   "recsOn": {{ settings.cart_recs_on | json }},
+  "shipValue": {{ settings.cart_ship_value | default: 'Calculated at checkout' | json }},
   "fallback": [
     {%- for p in rec_pool limit: 12 -%}
       {%- assign pv = p.selected_or_first_available_variant -%}

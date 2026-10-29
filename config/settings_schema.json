@@ -345,7 +345,7 @@
     "settings": [
       {
         "type": "paragraph",
-        "content": "The bag opens as a drawer on the right on every page; the cart page opens it too. The tier bar shows how far the bag is from each reward. It only shows progress: give each tier a matching automatic discount in Shopify (Discounts, Amount off order, minimum purchase amount) so the reward is really applied."
+        "content": "The bag opens as a drawer on the right on every page; the cart page opens it too. The tier bar shows how far the bag is from each reward. A tier with a discount code is applied by the bag when it is reached and carried to checkout (create the code in Shopify, Discounts, with that minimum purchase). A tier without a code needs a matching automatic discount in Shopify to be really applied."
       },
       {
         "type": "checkbox",
@@ -371,6 +371,12 @@
         "default": "5% off"
       },
       {
+        "type": "text",
+        "id": "cart_tier_1_code",
+        "label": "Discount code (optional)",
+        "info": "Shown in the bar, applied when the tier is reached."
+      },
+      {
         "type": "header",
         "content": "Tier 2"
       },
@@ -388,6 +394,12 @@
         "default": "10% off"
       },
       {
+        "type": "text",
+        "id": "cart_tier_2_code",
+        "label": "Discount code (optional)",
+        "info": "Shown in the bar, applied when the tier is reached."
+      },
+      {
         "type": "header",
         "content": "Tier 3"
       },
@@ -403,6 +415,12 @@
         "id": "cart_tier_3_label",
         "label": "Reward",
         "default": "15% off"
+      },
+      {
+        "type": "text",
+        "id": "cart_tier_3_code",
+        "label": "Discount code (optional)",
+        "info": "Shown in the bar, applied when the tier is reached."
       },
       {
         "type": "header",
@@ -439,8 +457,14 @@
       {
         "type": "text",
         "id": "cart_ship_note",
-        "label": "Shipping line",
+        "label": "Line under the heading",
         "default": "Free shipping across India"
+      },
+      {
+        "type": "text",
+        "id": "cart_ship_value",
+        "label": "Shipping row",
+        "default": "Calculated at checkout"
       }
     ]
   }
