@@ -145,7 +145,7 @@
       {%- if s.studio_eyebrow != blank %}<p class="sp-eyebrow">{{ s.studio_eyebrow | escape }}</p>{% endif %}
       <h2 class="sp-title">{{ s.studio_title }}</h2>
     </div>
-    <div class="sp-gallery__grid" data-reveal-child>
+    <div class="sp-gallery__grid" data-n="{{ shot_blocks.size }}" data-reveal-child>
       {%- for block in shot_blocks %}
       <figure {{ block.shopify_attributes }}>
         <img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1400 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">

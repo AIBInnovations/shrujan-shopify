@@ -20,7 +20,7 @@
   --sp-gold-soft: rgba(201, 164, 92, 0.42);
   --sp-cream: #f3ece0;
   --sp-cream-soft: rgba(243, 236, 224, 0.74);
-  --sp-gap: clamp(64px, 8vw, 128px);
+  --sp-gap: clamp(56px, 6.4vw, 100px);
   --sp-side: max(var(--gutter, 16px), calc((100vw - 1180px) / 2));
   color: var(--ink, #404041);
   overflow-x: clip;
@@ -738,29 +738,51 @@
   justify-content: center;
 }
 
+/* the grid takes its shape from how many photographs there are (the user:
+   no gaps, no loose space): three are one large and two stacked beside it;
+   six are two even rows of three; any other number, even rows of three */
 .sp-gallery__grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  grid-auto-rows: clamp(150px, 15vw, 230px);
-  grid-auto-flow: dense;
-  gap: clamp(8px, 1vw, 14px);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(10px, 1.2vw, 18px);
 }
 
 .sp-gallery__grid figure {
   position: relative;
   margin: 0;
   overflow: hidden;
+  aspect-ratio: 4 / 5;
   border-radius: var(--radius, 7px);
   background: var(--sp-deep);
 }
 
-.sp-gallery__grid figure:nth-child(6n + 1) {
-  grid-column: span 2;
-  grid-row: span 2;
+.sp-gallery__grid[data-n='3'] {
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  grid-template-rows: repeat(2, clamp(200px, 19vw, 300px));
 }
 
-.sp-gallery__grid figure:nth-child(6n + 4) {
-  grid-row: span 2;
+.sp-gallery__grid[data-n='3'] figure {
+  aspect-ratio: auto;
+}
+
+.sp-gallery__grid[data-n='3'] figure:first-child {
+  grid-row: 1 / span 2;
+}
+
+.sp-gallery__grid[data-n='2'] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sp-gallery__grid[data-n='2'] figure {
+  aspect-ratio: 4 / 3;
+}
+
+.sp-gallery__grid[data-n='1'] {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.sp-gallery__grid[data-n='1'] figure {
+  aspect-ratio: 16 / 9;
 }
 
 .sp-gallery__grid img {
@@ -1259,16 +1281,27 @@
 
   .sp-gallery__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-auto-rows: 42vw;
+    gap: 8px;
   }
 
-  .sp-gallery__grid figure:nth-child(6n + 1) {
-    grid-column: span 2;
-    grid-row: span 2;
+  .sp-gallery__grid[data-n='3'] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
   }
 
-  .sp-gallery__grid figure:nth-child(6n + 4) {
-    grid-row: span 1;
+  .sp-gallery__grid[data-n='3'] figure {
+    aspect-ratio: 1;
+  }
+
+  .sp-gallery__grid[data-n='3'] figure:first-child {
+    grid-row: auto;
+    grid-column: 1 / -1;
+    aspect-ratio: 4 / 3;
+  }
+
+  .sp-gallery__grid[data-n='1'],
+  .sp-gallery__grid[data-n='2'] {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .sp-gallery__grid figcaption {

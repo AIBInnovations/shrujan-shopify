@@ -163,7 +163,7 @@
       {%- if s.arch_eyebrow != blank %}<p class="sp-eyebrow">{{ s.arch_eyebrow | escape }}</p>{% endif %}
       <h2 class="sp-title">{{ s.arch_title }}</h2>
     </div>
-    <div class="sp-gallery__grid" data-reveal-child>
+    <div class="sp-gallery__grid" data-n="{{ shot_blocks.size }}" data-reveal-child>
       {%- for block in shot_blocks %}
       <figure {{ block.shopify_attributes }}>
         <img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1400 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
@@ -779,7 +779,8 @@
       "type": "text",
       "id": "art_photo",
       "label": "Or theme image file",
-      "default": "sj-red-hand-ahir-embroidered-kanchli-1.webp"
+      "default": "",
+      "info": "Leave empty for the scene (the cloth on sandstone, the pots)."
     },
     {
       "type": "text",
@@ -790,8 +791,7 @@
     {
       "type": "text",
       "id": "art_photo_caption",
-      "label": "Hero photograph caption",
-      "default": "Red hand-embroidered Ahir kanchli"
+      "label": "Hero photograph caption"
     },
     {
       "type": "text",
@@ -1076,22 +1076,29 @@
         {
           "type": "shot",
           "settings": {
+            "asset": "sj-red-hand-ahir-embroidered-kanchli-1.webp",
+            "alt": "The red hand-embroidered Ahir kanchli, worn with an ivory sari"
+          }
+        },
+        {
+          "type": "shot",
+          "settings": {
+            "asset": "sj-shawl-copy-2-1.webp",
+            "alt": "A hand-embroidered Soof shawl in maroon, worn"
+          }
+        },
+        {
+          "type": "shot",
+          "settings": {
+            "asset": "sj-dupatta-copy-1-1.webp",
+            "alt": "A red and black hand-embroidered dupatta, worn"
+          }
+        },
+        {
+          "type": "shot",
+          "settings": {
             "asset": "sj-red-hand-ahir-embroidered-kanchli-2.webp",
             "alt": "The red hand-embroidered Ahir kanchli, from the back"
-          }
-        },
-        {
-          "type": "shot",
-          "settings": {
-            "asset": "sj-shawl-copy-2-2.webp",
-            "alt": "A hand-embroidered Soof shawl in maroon, laid flat"
-          }
-        },
-        {
-          "type": "shot",
-          "settings": {
-            "asset": "sj-dupatta-copy-1-3.webp",
-            "alt": "Embroidery on a red and black hand-embroidered dupatta, close up"
           }
         },
         {
@@ -1104,15 +1111,8 @@
         {
           "type": "shot",
           "settings": {
-            "asset": "sj-jat-garasiya-hand-embroidered-cushion-cover-1.webp",
-            "alt": "A Jat Garasiya hand-embroidered cushion cover"
-          }
-        },
-        {
-          "type": "shot",
-          "settings": {
-            "asset": "sj-dupatta-copy-1-2.webp",
-            "alt": "A red and black hand-embroidered dupatta, laid flat"
+            "asset": "sj-dupatta-copy-3-1.webp",
+            "alt": "A red hand-embroidered dupatta, worn"
           }
         }
       ]
