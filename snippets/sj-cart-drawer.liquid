@@ -13,8 +13,8 @@
      with a discount code is applied to the bag when it is reached and sent on
      to checkout; one without needs a Shopify automatic discount. The totals
      shown are always the cart's own.
-   * Once a piece is in the bag, its "Add to bag" (cards and product page)
-     reads "Checkout" and goes straight there.
+   * "You may also like" is held at the foot of the drawer, above the totals,
+     with only the pieces scrolling (the user's reference).
    * Recommendations are Shopify's own for the newest piece in the bag, then
      the collection set in Theme settings (or the newest pieces).
 {%- endcomment -%}
@@ -55,17 +55,6 @@
           <a class="sjc__btn sjc__btn--ghost" href="{{ shop_url }}">Shop the collection <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>
         </div>
 
-        <section class="sjc__recs" data-sjc-recs hidden aria-labelledby="sjc-recs-title">
-          <div class="sjc__recs-head">
-            <h3 class="sjc__recs-title" id="sjc-recs-title">{{ settings.cart_recs_title | default: 'You may also like' | escape }}</h3>
-            <span class="sjc__arrows">
-              <button type="button" class="sjc__arrow" data-sjc-rail="-1" aria-label="Previous pieces"><i class="sj-i sj-i--caret-left ms" aria-hidden="true"></i></button>
-              <button type="button" class="sjc__arrow" data-sjc-rail="1" aria-label="More pieces"><i class="sj-i sj-i--caret-right ms" aria-hidden="true"></i></button>
-            </span>
-          </div>
-          <ul class="sjc__rail" data-sjc-rail-list></ul>
-        </section>
-
         {%- if settings.cart_note_on %}
         <details class="sjc__note" data-sjc-note-box>
           <summary><i class="sj-i sj-i--gift ms" aria-hidden="true"></i> Add a gift note <i class="sj-i sj-i--plus ms sjc__note-sign" aria-hidden="true"></i></summary>
@@ -74,6 +63,17 @@
         </details>
         {%- endif %}
       </div>
+
+      <section class="sjc__recs" data-sjc-recs hidden aria-labelledby="sjc-recs-title">
+        <div class="sjc__recs-head">
+          <h3 class="sjc__recs-title" id="sjc-recs-title">{{ settings.cart_recs_title | default: 'You may also like' | escape }}</h3>
+          <span class="sjc__arrows">
+            <button type="button" class="sjc__arrow" data-sjc-rail="-1" aria-label="Previous pieces"><i class="sj-i sj-i--caret-left ms" aria-hidden="true"></i></button>
+            <button type="button" class="sjc__arrow" data-sjc-rail="1" aria-label="More pieces"><i class="sj-i sj-i--caret-right ms" aria-hidden="true"></i></button>
+          </span>
+        </div>
+        <ul class="sjc__rail" data-sjc-rail-list></ul>
+      </section>
 
       <footer class="sjc__foot" data-sjc-foot hidden>
         <dl class="sjc__sums" data-sjc-sums></dl>

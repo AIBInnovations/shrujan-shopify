@@ -14,8 +14,9 @@
        background instead of leaving the page;
      - any link to the cart, and #cart in the address (the cart page sends
        the shopper back with it).
-   Once a piece is in the bag its "Add to bag" reads "Checkout" and goes
-   straight to checkout, carrying the tier's discount code when one is set.
+   "Add to bag" always stays "Add to bag" (the user, 2026-10-29): it adds and
+   opens the drawer, and Checkout lives in the drawer only, carrying the
+   tier's discount code when one is set.
    window.SJCart = { open, close, add, refresh } for anything else.
    ========================================================================== */
 (() => {
@@ -426,41 +427,6 @@
     renderTiers(c);
     if (!empty) renderSums(c);
     if (noteEl && doc.activeElement !== noteEl && typeof c.note === 'string') noteEl.value = c.note;
-    syncButtons();
-  }
-
-  /* ---- "Add to bag" becomes "Checkout" ---------------------------------- *
-     A card whose piece is in the bag, and the product page while the chosen
-     size is in it, read "Checkout" and go straight there. */
-  function syncButtons() {
-    const items = cart ? cart.items : [];
-    doc.querySelectorAll('.piece__quick[data-variant]').forEach((el) => {
-      if (el.classList.contains('is-busy')) return;
-      if (!el.dataset.sjcLabel) el.dataset.sjcLabel = el.textContent;
-      const on = items.some((i) => i.handle === el.getAttribute('data-handle') || String(i.variant_id || i.id) === el.getAttribute('data-variant'));
-      el.classList.toggle('is-in', on);
-      el.textContent = on ? 'Checkout' : el.dataset.sjcLabel;
-      el.setAttribute('aria-label', on ? 'Go to checkout' : el.dataset.sjcLabel);
-    });
-    doc.querySelectorAll('form').forEach((f) => {
-      if (root.contains(f) || !/\/cart\/add(\.js)?$/.test(f.getAttribute('action') || '')) return;
-      const id = f.querySelector('[name="id"]');
-      const btn = f.querySelector('[type="submit"]');
-      if (!id || !btn || btn.classList.contains('is-busy')) return;
-      // whatever the page itself last wrote on the button is its own label
-      if (btn.textContent !== 'Checkout') btn.dataset.sjcLabel = btn.textContent;
-      const on = items.some((i) => String(i.variant_id || i.id) === String(id.value));
-      if (on) {
-        if (!btn.classList.contains('is-in')) btn.dataset.sjcWasOff = btn.disabled ? '1' : '';
-        btn.classList.add('is-in');
-        btn.disabled = false;
-        btn.textContent = 'Checkout';
-      } else if (btn.classList.contains('is-in')) {
-        btn.classList.remove('is-in');
-        btn.textContent = btn.dataset.sjcLabel || 'Add to bag';
-        btn.disabled = btn.dataset.sjcWasOff === '1';
-      }
-    });
   }
 
   function goCheckout(btn) {
@@ -560,7 +526,7 @@
     goCheckout(btn);
   });
   // back from checkout: nothing should still look busy
-  window.addEventListener('pageshow', () => { doc.querySelectorAll('.is-in.is-busy, [data-sjc-checkout].is-busy').forEach((b) => b.classList.remove('is-busy')); });
+  window.addEventListener('pageshow', () => { const b = q('[data-sjc-checkout]'); if (b) b.classList.remove('is-busy'); });
 
   /* ---- recommendations -------------------------------------------------- */
   const norm = (p) => {
@@ -767,7 +733,7 @@
     add([{ id, quantity: 1 }])
       .then((keys) => {
         busy(el, false);
-        syncButtons();
+        if (label) el.textContent = label;
         open(true);
         added();
         flash(keys);
@@ -796,8 +762,7 @@
     const label = t.closest('.piece__quick[data-variant]');
     if (label) {
       e.preventDefault();
-      if (label.classList.contains('is-in')) goCheckout(label);
-      else quick(label);
+      quick(label);
       return;
     }
 
@@ -816,12 +781,11 @@
     if (!/\/cart\/add(\.js)?$/.test(path)) return;
     e.preventDefault();
     const btn = e.submitter || f.querySelector('[type="submit"]');
-    if (btn && btn.classList.contains('is-in')) { goCheckout(btn); return; }
     const fd = new FormData(f);
     fd.delete('return_to');
     busy(btn, true);
     addForm(fd)
-      .then((keys) => { busy(btn, false); syncButtons(); open(true); added(); flash(keys); })
+      .then((keys) => { busy(btn, false); open(true); added(); flash(keys); })
       .catch((err) => {
         if (err.status) { open(true); notice(err.message, 'error'); }
         else f.submit(); // the network, not the cart: let the form go the old way
@@ -846,13 +810,9 @@
   } else if (cart) {
     badges(cart.item_count);
   }
-  if (cart) syncButtons();
   // the page's own copy of the bag can be older than the bag itself (another
   // tab, the back button), so it is read once more when the page is idle
   const wake = () => { if (!isOpen) refresh().catch(() => {}); };
   if ('requestIdleCallback' in window) requestIdleCallback(wake, { timeout: 2500 });
   else setTimeout(wake, 1200);
-  // a size picked on the product page: is that one in the bag?
-  doc.addEventListener('click', (e) => { if (e.target.closest && e.target.closest('.pdp__size, .pdp__sizes button')) setTimeout(syncButtons, 0); });
-  doc.addEventListener('change', (e) => { if (e.target.closest && e.target.closest('form')) setTimeout(syncButtons, 0); });
 })();
