@@ -10,10 +10,7 @@
      them on its line here.
    * Any link to the cart opens it too, and the cart page itself sends the
      shopper back to where they were with the drawer open.
-   * The tier bar reads its rewards from Theme settings, Bag drawer. A tier
-     with a discount code is applied to the bag when it is reached and sent on
-     to checkout; one without needs a Shopify automatic discount. The totals
-     shown are always the cart's own.
+   * The totals shown are always the cart's own, discounts included.
    * "You may also like" is held at the foot of the drawer, above the totals,
      with only the pieces scrolling (the user's reference).
    * Recommendations are Shopify's own for the newest piece in the bag, then
@@ -38,11 +35,6 @@
     {%- if settings.cart_ship_note != blank %}
     <p class="sjc__ship"><i class="sj-i sj-i--truck ms" aria-hidden="true"></i> {{ settings.cart_ship_note | escape }}</p>
     {%- endif %}
-
-    <div class="sjc__tiers" data-sjc-tiers hidden>
-      <p class="sjc__tier-msg" data-sjc-tier-msg></p>
-      <div class="sjc__track" data-sjc-track><span class="sjc__fill" data-sjc-fill></span></div>
-    </div>
 
     <div class="sjc__stage">
       <p class="sjc__notice" data-sjc-notice role="status" aria-live="polite" hidden></p>
@@ -98,21 +90,6 @@
     "shop": {{ shop_url | json }}
   },
   "money": {{ shop.money_format | json }},
-  "tiersOn": {{ settings.cart_tiers_on | json }},
-  "tiers": [
-    {%- assign tier_sep = '' -%}
-    {%- for n in (1..3) -%}
-      {%- capture amt_key %}cart_tier_{{ n }}_amount{% endcapture -%}
-      {%- capture lab_key %}cart_tier_{{ n }}_label{% endcapture -%}
-      {%- assign t_amt = settings[amt_key] -%}
-      {%- assign t_lab = settings[lab_key] -%}
-      {%- if t_amt != blank and t_amt > 0 and t_lab != blank -%}
-        {%- capture code_key %}cart_tier_{{ n }}_code{% endcapture -%}
-        {{ tier_sep }}{ "at": {{ t_amt | times: 100 }}, "label": {{ t_lab | json }}, "code": {{ settings[code_key] | default: '' | strip | json }} }
-        {%- assign tier_sep = ',' -%}
-      {%- endif -%}
-    {%- endfor -%}
-  ],
   "recsOn": {{ settings.cart_recs_on | json }},
   "shipValue": {{ settings.cart_ship_value | default: 'Calculated at checkout' | json }},
   "fallback": [
