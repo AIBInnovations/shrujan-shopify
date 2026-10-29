@@ -1,0 +1,85 @@
+{%- comment -%}
+  The pieces of a Studio Collection, on its page (the user, 2026-10-29: show
+  the Heritage and Avinya products where there are any; a click opens the
+  product, with an enquiry and WhatsApp straight from the card).
+  Rendered by sections/page-studio-heritage.liquid and page-studio-avinya:
+    s     the section's settings
+    kind  'heritage' or 'avinya' (the enquiry form it opens, sj-ui.js)
+    wa    the WhatsApp number
+  The products are, in order of preference: the collection picked in the
+  section, the collection whose handle is set (default the kind's own), or
+  the shop's products tagged with the kind. With none, nothing shows.
+  Styles in assets/sj-studio.css (.sp-shop).
+{%- endcomment -%}
+{%- liquid
+  assign limit = s.products_limit | default: 8
+  assign col = s.products_collection
+  if col == blank
+    assign handle = s.products_handle | default: kind
+    assign col = collections[handle]
+  endif
+  assign found = 0
+  if col != blank and col.products_count > 0
+    assign found = col.products_count
+  endif
+  assign tag = s.products_tag | default: kind
+  assign tag_cap = tag | capitalize
+  assign tagged = 0
+  if found == 0
+    for product in collections.all.products limit: 50
+      if product.tags contains tag or product.tags contains tag_cap
+        assign tagged = tagged | plus: 1
+      endif
+    endfor
+  endif
+  assign any = false
+  if found > 0 or tagged > 0
+    assign any = true
+  endif
+  if s.show_products == false
+    assign any = false
+  endif
+-%}
+{%- if any -%}
+<section class="sp-shop" id="{{ kind }}-pieces">
+  <div class="sp-shop__head" data-reveal>
+    <div>
+      {%- if s.products_eyebrow != blank %}<p class="sp-eyebrow">{{ s.products_eyebrow | escape }}</p>{% endif %}
+      <h2 class="sp-title">{{ s.products_title | default: 'The pieces' }}</h2>
+    </div>
+    {%- if found > 0 %}<a class="sp-shop__all" href="{{ col.url }}">{{ s.products_all | default: 'View all' | escape }} <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>{% endif %}
+  </div>
+  <ul class="sp-shop__grid" data-reveal-child>
+    {%- liquid
+      assign shown = 0
+      if found > 0
+        assign pool = col.products
+      else
+        assign pool = collections.all.products
+      endif
+    -%}
+    {%- for product in pool -%}
+      {%- if shown >= limit %}{% break %}{% endif -%}
+      {%- if found == 0 -%}
+        {%- unless product.tags contains tag or product.tags contains tag_cap %}{% continue %}{% endunless -%}
+      {%- endif -%}
+      {%- assign shown = shown | plus: 1 -%}
+      {%- capture msg -%}Hello Shrujan, I am interested in {{ product.title }}: {{ shop.url }}{{ product.url }}{%- endcapture -%}
+    <li class="sp-card">
+      <a class="sp-card__media" href="{{ product.url }}">
+        {%- if product.featured_image %}<img src="{{ product.featured_image | image_url: width: 800 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy">{% else %}{{ 'product-1' | placeholder_svg_tag: 'sp-card__ph' }}{% endif %}
+        {%- if product.images.size > 1 %}<img class="sp-card__alt" src="{{ product.images[1] | image_url: width: 800 }}" alt="" loading="lazy" aria-hidden="true">{% endif %}
+      </a>
+      <div class="sp-card__body">
+        <a class="sp-card__name" href="{{ product.url }}">{{ product.title | escape }}</a>
+        <p class="sp-card__price">{% if product.price > 0 %}{{ product.price | money }}{% else %}{{ s.products_on_request | default: 'Price on request' | escape }}{% endif %}</p>
+        <div class="sp-card__acts">
+          <button type="button" class="sp-card__btn" data-studio-enquire="{{ kind }}" data-studio-piece="{{ product.title | escape }}" data-studio-img="{% if product.featured_image %}{{ product.featured_image | image_url: width: 900 }}{% endif %}">{{ s.products_enquire | default: 'Enquire' | escape }}</button>
+          <a class="sp-card__btn sp-card__btn--wa" href="https://api.whatsapp.com/send?phone={{ wa }}&text={{ msg | url_encode }}" target="_blank" rel="noopener" aria-label="WhatsApp about {{ product.title | escape }}"><i class="sj-i sj-i--whatsapp-logo fab" aria-hidden="true"></i> WhatsApp</a>
+        </div>
+      </div>
+    </li>
+    {%- endfor -%}
+  </ul>
+</section>
+{%- endif -%}

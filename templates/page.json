@@ -1208,7 +1208,7 @@
           "type": "mark",
           "settings": {
             "title": "The community canon",
-            "copy": "Every motif belongs to a community, and is stitched in the vocabulary that community has kept — not a house style drawn over the top of it."
+            "copy": "Every motif belongs to a community, and is stitched in the vocabulary that community has kept, not a house style drawn over the top of it."
           }
         },
         "b9": {
@@ -1228,43 +1228,43 @@
         "b11": {
           "type": "shot",
           "settings": {
-            "asset": "frame-r3t26.webp",
-            "alt": "Heritage embroidery worked in fine counted thread"
+            "asset": "sj-red-hand-ahir-embroidered-kanchli-2.webp",
+            "alt": "The red hand-embroidered Ahir kanchli, from the back"
           }
         },
         "b12": {
           "type": "shot",
           "settings": {
-            "asset": "frame-r1t20.webp",
-            "alt": "Mirror-work set into a hand-embroidered panel"
+            "asset": "sj-shawl-copy-2-2.webp",
+            "alt": "A hand-embroidered Soof shawl in maroon, laid flat"
           }
         },
         "b13": {
           "type": "shot",
           "settings": {
-            "asset": "frame-r5t25.webp",
-            "alt": "Detail of a heritage textile in indigo and madder"
+            "asset": "sj-dupatta-copy-1-3.webp",
+            "alt": "Embroidery on a red and black hand-embroidered dupatta, close up"
           }
         },
         "b14": {
           "type": "shot",
           "settings": {
-            "asset": "frame-r2t5.webp",
-            "alt": "Border of a hand-embroidered heritage cloth"
+            "asset": "sj-shawl-copy-3-1.webp",
+            "alt": "A hand-embroidered Soof shawl in pink, worn"
           }
         },
         "b15": {
           "type": "shot",
           "settings": {
-            "asset": "frame-r1t12.webp",
-            "alt": "Hand-embroidered panel in madder and indigo"
+            "asset": "sj-jat-garasiya-hand-embroidered-cushion-cover-1.webp",
+            "alt": "A Jat Garasiya hand-embroidered cushion cover"
           }
         },
         "b16": {
           "type": "shot",
           "settings": {
-            "asset": "frame-r3t6.webp",
-            "alt": "Kutchi mirror-work across a silk ground"
+            "asset": "sj-dupatta-copy-1-2.webp",
+            "alt": "A red and black hand-embroidered dupatta, laid flat"
           }
         }
       },
@@ -1342,7 +1342,7 @@
           "type": "step",
           "settings": {
             "title": "Pairing",
-            "copy": "Artisans are placed in teams of two or three, often alongside someone from a craft other than their own — an embroiderer with a weaver, a dyer with a printer."
+            "copy": "Artisans are placed in teams of two or three, often alongside someone from a craft other than their own: an embroiderer with a weaver, a dyer with a printer."
           }
         },
         "b8": {

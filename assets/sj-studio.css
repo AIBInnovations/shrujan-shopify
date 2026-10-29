@@ -253,6 +253,54 @@
   will-change: transform;
 }
 
+/* a real piece, photographed, in an arch like the wall's, a gold line set
+   inside its edge (Heritage: the user asked for real Heritage pictures) */
+.sp-hero__photo {
+  position: relative;
+  align-self: center;
+  justify-self: end;
+  width: min(100%, 440px);
+  margin: 0 clamp(0px, 4vw, 60px) 0 0;
+  will-change: transform;
+}
+
+.sp-hero__photo img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: 50% 20%;
+  border-radius: 999px 999px var(--radius, 7px) var(--radius, 7px);
+  box-shadow: 0 50px 80px -40px rgba(0, 0, 0, 0.65);
+}
+
+.sp-hero__photo::after {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  bottom: 12px;
+  border: 1px solid var(--sp-gold);
+  border-radius: 999px 999px calc(var(--radius, 7px) - 2px) calc(var(--radius, 7px) - 2px);
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.sp-hero__photo figcaption {
+  position: absolute;
+  left: 50%;
+  bottom: -14px;
+  translate: -50% 0;
+  padding: 8px 16px;
+  border-radius: var(--radius, 7px);
+  background: var(--sp-deep);
+  font: 500 var(--fs-2xs) / 1.3 var(--font-sans);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--sp-gold);
+  box-shadow: 0 0 0 1px var(--sp-gold-soft);
+}
+
 /* the numbers along the foot, between fine gold rules */
 .sp-hero__stats {
   position: absolute;
@@ -443,6 +491,155 @@
   margin: 4px 0 0;
   font: 400 var(--fs-sm) / 1.6 var(--font-sans);
   color: var(--ink-soft, #706e68);
+}
+
+/* ---------- the pieces: the collection's products, each with an enquiry
+   and WhatsApp straight from its card (snippets/sj-studio-products) ---------- */
+.sp-shop {
+  padding: 0 var(--sp-side) var(--sp-gap);
+}
+
+.sp-shop__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px 40px;
+  margin-bottom: clamp(26px, 3vw, 42px);
+  padding-top: clamp(28px, 3vw, 44px);
+  border-top: 1px solid var(--hairline, rgba(64, 64, 65, 0.14));
+}
+
+.sp-shop__all {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid currentColor;
+  font: 500 var(--fs-xs) / 1 var(--font-sans);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sp-accent);
+  text-decoration: none;
+}
+
+.sp-shop__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(14px, 1.6vw, 24px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sp-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.sp-card__media {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: var(--radius, 7px);
+  background: var(--page-bg-2, #ede9d8);
+}
+
+.sp-card__media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
+}
+
+.sp-card__alt {
+  opacity: 0;
+}
+
+.sp-card:hover .sp-card__media img {
+  transform: scale(1.04);
+}
+
+.sp-card:hover .sp-card__alt {
+  opacity: 1;
+}
+
+.sp-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 14px;
+}
+
+.sp-card__name {
+  font: 400 var(--fs-lg) / 1.3 var(--font-display);
+  color: var(--ink, #404041);
+  text-decoration: none;
+}
+
+.sp-card__name:hover {
+  color: var(--sp-accent);
+}
+
+.sp-card__price {
+  margin: 0;
+  font: 400 var(--fs-sm) / 1.4 var(--font-sans);
+  letter-spacing: 0.02em;
+  color: var(--ink-soft, #706e68);
+}
+
+.sp-card__acts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+.sp-card__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 0 10px;
+  border: 1px solid var(--sp-deep);
+  border-radius: var(--radius, 7px);
+  background: var(--sp-deep);
+  font: 500 var(--fs-2xs) / 1 var(--font-sans);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--sp-cream);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.sp-card__btn:hover {
+  background: var(--sp-deep-2);
+}
+
+.sp-card__btn--wa {
+  border-color: rgba(64, 64, 65, 0.22);
+  background: transparent;
+  color: var(--ink, #404041);
+}
+
+.sp-card__btn--wa i {
+  font-size: 16px;
+  letter-spacing: 0;
+  color: #1f9d55;
+}
+
+.sp-card__btn--wa:hover {
+  border-color: #1f9d55;
+  background: transparent;
 }
 
 /* ---------- 3. the dark band: what makes the pieces what they are ---------- */
@@ -838,6 +1035,12 @@
     width: min(100%, 560px);
   }
 
+  .sp-hero__photo {
+    justify-self: center;
+    width: min(100%, 360px);
+    margin: 8px 0 24px;
+  }
+
   .sp-intro {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -862,6 +1065,10 @@
 
   .sp-enquiry {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sp-shop__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -926,6 +1133,11 @@
   .sp-hero__front {
     width: 30%;
     right: 0;
+  }
+
+  .sp-hero__photo {
+    width: min(74vw, 300px);
+    margin: 14px auto 30px;
   }
 
   .sp-hero__stats {
@@ -1012,6 +1224,32 @@
     grid-row: 1 / span 2;
     margin: 0;
     font-size: 36px;
+  }
+
+  /* the pieces swipe, a card and a glimpse of the next */
+  .sp-shop {
+    padding-left: var(--gutter, 16px);
+    padding-right: var(--gutter, 16px);
+  }
+
+  .sp-shop__grid {
+    display: flex;
+    gap: 12px;
+    margin: 0 calc(-1 * var(--gutter, 16px));
+    padding: 0 var(--gutter, 16px) 4px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter, 16px);
+    scrollbar-width: none;
+  }
+
+  .sp-shop__grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sp-card {
+    flex: 0 0 72vw;
+    scroll-snap-align: start;
   }
 
   .sp-gallery {

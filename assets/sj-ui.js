@@ -844,7 +844,7 @@
       eyebrow: 'Studio Collection · Heritage', title: 'Interested to explore the Heritage Collection?',
       copy: 'Tell us what you are looking for and when you are free. Someone from the Bhuj studio will call you back.',
       interest: 'Craft or piece of interest', hint: 'Suf, Pakko, Mutwa…', submit: 'Request a callback',
-      form: 'Heritage enquiry', type: 'Heritage', img: 'sj-studio-detail-heritage.webp',
+      form: 'Heritage enquiry', type: 'Heritage', img: 'sj-heritage-detail.webp',
       wa: 'Hello Shrujan, I would like to know more about the Heritage Collection.',
     },
     avinya: {
@@ -917,7 +917,8 @@
       var shown = function () { form.hidden = true; studio.querySelector('.sjx__done').hidden = false; };
       if (!window.SJSlide) { shown(); return; }
       btn.disabled = true;
-      window.SJSlide.sendForm(form, { form: c.form, type: c.type, tags: ['enquiry', 'studio', 'home'] }).then(function (ok) {
+      var where = /\/pages\/studio-/.test(location.pathname) ? 'studio-page' : 'home';
+      window.SJSlide.sendForm(form, { form: c.form, type: c.type, tags: ['enquiry', 'studio', where] }).then(function (ok) {
         btn.disabled = false;
         if (ok) { shown(); return; }
         err.innerHTML = 'It could not be sent just now. Please try again, or <a href="' + wa(c.wa) + '" target="_blank" rel="noopener">write to us on WhatsApp</a>.';
@@ -944,6 +945,9 @@
     if (src) img.src = src;
     studio.querySelector('.sjx__art').hidden = !src;
     var form = studio.querySelector('.sjx__form');
+    // opened from a product's card: the piece is already named
+    var piece = (from && from.getAttribute && from.getAttribute('data-studio-piece')) || '';
+    if (piece) form.querySelector('[name="extra"]').value = piece;
     form.hidden = false;
     studio.querySelector('.sjx__done').hidden = true;
     studio.querySelector('.sjx__err').hidden = true;

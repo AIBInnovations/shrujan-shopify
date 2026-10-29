@@ -74,7 +74,13 @@
   assign sp_wall = s.art_wall | default: 'sj-studio-wall-red.webp' | asset_url
   assign sp_cloth = s.art_cloth | default: 'sj-studio-cloth-heritage.webp' | asset_url
   assign sp_front = s.art_front | default: 'sj-studio-pots.webp' | asset_url
-  assign sp_detail = s.art_detail | default: 'sj-studio-detail-heritage.webp' | asset_url
+  assign sp_detail = s.art_detail | default: 'sj-red-hand-ahir-embroidered-kanchli-3.webp' | asset_url
+  assign sp_photo = ''
+  if s.art_photo_img != blank
+    assign sp_photo = s.art_photo_img | image_url: width: 1400
+  elsif s.art_photo != blank
+    assign sp_photo = s.art_photo | asset_url
+  endif
   assign sp_wa = s.whatsapp | default: '919099974319' | remove: '+' | remove: ' ' | remove: '-'
   assign sp_wa_text = s.whatsapp_text | default: 'Hello Shrujan, I would like to know more about the Heritage Collection.'
 -%}
@@ -97,10 +103,17 @@
         <a class="sp-btn sp-btn--line" href="https://api.whatsapp.com/send?phone={{ sp_wa }}&text={{ sp_wa_text | url_encode }}" data-sp-wa="{{ sp_wa }}" data-sp-wa-text="{{ sp_wa_text | escape }}" target="_blank" rel="noopener"><i class="sj-i sj-i--whatsapp-logo fab" aria-hidden="true"></i> {{ s.whatsapp_label | default: 'Chat on WhatsApp' | escape }}</a>
       </div>
     </div>
+    {%- if sp_photo != blank %}
+    <figure class="sp-hero__photo" data-sp-depth="-0.05">
+      <img src="{{ sp_photo }}" alt="{{ s.art_photo_alt | escape }}" fetchpriority="high">
+      {%- if s.art_photo_caption != blank %}<figcaption>{{ s.art_photo_caption | escape }}</figcaption>{% endif %}
+    </figure>
+    {%- else %}
     <div class="sp-hero__art" aria-hidden="true">
       <img class="sp-hero__cloth" src="{{ sp_cloth }}" alt="" data-sp-depth="-0.06" fetchpriority="high">
       <img class="sp-hero__front" src="{{ sp_front }}" alt="" data-sp-depth="0.07" loading="lazy">
     </div>
+    {%- endif %}
     {%- if s.show_stats and stat_blocks.size > 0 %}
     <ul class="sp-hero__stats" style="--n: {{ stat_blocks.size }}">
       {%- for block in stat_blocks %}
@@ -123,10 +136,11 @@
       <div class="sp-intro__story">{{ s.body }}</div>
     </div>
     <figure class="sp-intro__figure" data-reveal>
-      <img src="{{ sp_detail }}" alt="{{ s.art_detail_alt | default: 'Mirror work and gold thread on red cloth, close up' | escape }}" loading="lazy">
+      <img src="{{ sp_detail }}" alt="{{ s.art_detail_alt | default: 'The red hand-embroidered Ahir kanchli on a dress form, its embroidery close up' | escape }}" loading="lazy">
     </figure>
   </section>
 {%- endif %}
+{%- render 'sj-studio-products', s: s, kind: 'heritage', wa: sp_wa -%}
 {%- if s.show_marks and mark_blocks.size > 0 %}
   <section class="sp-band">
     <div class="sp-band__head" data-reveal>
@@ -260,7 +274,7 @@
   done.setAttribute('role', 'status');
   done.setAttribute('data-reveal', '');
   done.innerHTML =
-    '<p class="enquiry__done-title">' + (root.getAttribute('data-done-title') || 'Thank you — we have your request.') + '</p>' +
+    '<p class="enquiry__done-title">' + (root.getAttribute('data-done-title') || 'Thank you, we have your request.') + '</p>' +
     '<p>' + (root.getAttribute('data-done-body') || 'Someone from the Bhuj studio will call you in your chosen slot. If it is urgent, reach us on <a href="tel:+919099974319">+91 9099 974319</a>.') + '</p>' +
     '<button class="arrow-link" type="button">' + (root.getAttribute('data-done-again') || 'Send another enquiry') + ' ' + arrow + '</button>';
 
@@ -335,7 +349,7 @@
       "type": "richtext",
       "id": "body",
       "label": "Intro body",
-      "default": "<p>A heritage piece is not a season’s product. It is the fullest expression of a craft a community has kept for generations, made at the pace that craft asks for.</p><p>The embroideries of Kutch are not one tradition but a dozen — Ahir, Mutwa, Jat, Rabari, Suf, Pakko, Kharek — each with its own grammar of stitch, motif and colour, passed from mother to daughter rather than written down. A heritage commission asks an artisan to work at the top of that vocabulary, without abridging it for time.</p><p>That is why these pieces take months rather than weeks. Suf is counted from the reverse of the cloth with no pattern ever drawn. Pakko is worked so tightly the ground disappears. Mirror-work is cut, set and secured one disc at a time. None of it can be hurried without becoming something else.</p>"
+      "default": "<p>A heritage piece is not a season’s product. It is the fullest expression of a craft a community has kept for generations, made at the pace that craft asks for.</p><p>The embroideries of Kutch are not one tradition but a dozen (Ahir, Mutwa, Jat, Rabari, Suf, Pakko, Kharek), each with its own grammar of stitch, motif and colour, passed from mother to daughter rather than written down. A heritage commission asks an artisan to work at the top of that vocabulary, without abridging it for time.</p><p>That is why these pieces take months rather than weeks. Suf is counted from the reverse of the cloth with no pattern ever drawn. Pakko is worked so tightly the ground disappears. Mirror-work is cut, set and secured one disc at a time. None of it can be hurried without becoming something else.</p>"
     },
     {
       "type": "text",
@@ -425,7 +439,7 @@
       "type": "text",
       "id": "done_title",
       "label": "Success title",
-      "default": "Thank you — we have your request."
+      "default": "Thank you, we have your request."
     },
     {
       "type": "inline_richtext",
@@ -669,7 +683,7 @@
     },
     {
       "type": "header",
-      "content": "Design — mobile"
+      "content": "Design: mobile"
     },
     {
       "type": "select",
@@ -757,6 +771,29 @@
       "default": "Hello Shrujan, I would like to know more about the Heritage Collection."
     },
     {
+      "type": "image_picker",
+      "id": "art_photo_img",
+      "label": "Hero photograph (a real Heritage piece)"
+    },
+    {
+      "type": "text",
+      "id": "art_photo",
+      "label": "Or theme image file",
+      "default": "sj-red-hand-ahir-embroidered-kanchli-1.webp"
+    },
+    {
+      "type": "text",
+      "id": "art_photo_alt",
+      "label": "Hero photograph description",
+      "default": "Shrujan’s red hand-embroidered Ahir kanchli, worn with an ivory sari"
+    },
+    {
+      "type": "text",
+      "id": "art_photo_caption",
+      "label": "Hero photograph caption",
+      "default": "Red hand-embroidered Ahir kanchli"
+    },
+    {
       "type": "text",
       "id": "art_wall",
       "label": "Hero wall (theme image file)",
@@ -778,13 +815,13 @@
       "type": "text",
       "id": "art_detail",
       "label": "Close-up picture (theme image file)",
-      "default": "sj-studio-detail-heritage.webp"
+      "default": "sj-red-hand-ahir-embroidered-kanchli-3.webp"
     },
     {
       "type": "text",
       "id": "art_detail_alt",
       "label": "Close-up picture description",
-      "default": "Mirror work and gold thread on red cloth, close up"
+      "default": "The red hand-embroidered Ahir kanchli on a dress form, its embroidery close up"
     },
     {
       "type": "text",
@@ -808,6 +845,69 @@
       "type": "textarea",
       "id": "marks_note",
       "label": "Dark band: line beside the title"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_products",
+      "label": "Show the pieces",
+      "default": true
+    },
+    {
+      "type": "collection",
+      "id": "products_collection",
+      "label": "Collection of pieces"
+    },
+    {
+      "type": "text",
+      "id": "products_handle",
+      "label": "Or a collection handle",
+      "default": "heritage",
+      "info": "With neither, the shop's products tagged below show; with none, nothing shows."
+    },
+    {
+      "type": "text",
+      "id": "products_tag",
+      "label": "Or products with this tag",
+      "default": "heritage"
+    },
+    {
+      "type": "range",
+      "id": "products_limit",
+      "label": "How many",
+      "min": 3,
+      "max": 12,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "text",
+      "id": "products_eyebrow",
+      "label": "Small heading",
+      "default": "Available by enquiry"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "products_title",
+      "label": "Title",
+      "default": "Heritage <em>pieces</em>"
+    },
+    {
+      "type": "text",
+      "id": "products_all",
+      "label": "Link to the collection",
+      "default": "View all"
+    },
+    {
+      "type": "text",
+      "id": "products_enquire",
+      "label": "Card button",
+      "default": "Enquire"
+    },
+    {
+      "type": "text",
+      "id": "products_on_request",
+      "label": "When a piece has no price",
+      "default": "Price on request"
     }
   ],
   "blocks": [
@@ -956,7 +1056,7 @@
           "type": "mark",
           "settings": {
             "title": "The community canon",
-            "copy": "Every motif belongs to a community, and is stitched in the vocabulary that community has kept — not a house style drawn over the top of it."
+            "copy": "Every motif belongs to a community, and is stitched in the vocabulary that community has kept, not a house style drawn over the top of it."
           }
         },
         {
@@ -976,43 +1076,43 @@
         {
           "type": "shot",
           "settings": {
-            "asset": "frame-r3t26.webp",
-            "alt": "Heritage embroidery worked in fine counted thread"
+            "asset": "sj-red-hand-ahir-embroidered-kanchli-2.webp",
+            "alt": "The red hand-embroidered Ahir kanchli, from the back"
           }
         },
         {
           "type": "shot",
           "settings": {
-            "asset": "frame-r1t20.webp",
-            "alt": "Mirror-work set into a hand-embroidered panel"
+            "asset": "sj-shawl-copy-2-2.webp",
+            "alt": "A hand-embroidered Soof shawl in maroon, laid flat"
           }
         },
         {
           "type": "shot",
           "settings": {
-            "asset": "frame-r5t25.webp",
-            "alt": "Detail of a heritage textile in indigo and madder"
+            "asset": "sj-dupatta-copy-1-3.webp",
+            "alt": "Embroidery on a red and black hand-embroidered dupatta, close up"
           }
         },
         {
           "type": "shot",
           "settings": {
-            "asset": "frame-r2t5.webp",
-            "alt": "Border of a hand-embroidered heritage cloth"
+            "asset": "sj-shawl-copy-3-1.webp",
+            "alt": "A hand-embroidered Soof shawl in pink, worn"
           }
         },
         {
           "type": "shot",
           "settings": {
-            "asset": "frame-r1t12.webp",
-            "alt": "Hand-embroidered panel in madder and indigo"
+            "asset": "sj-jat-garasiya-hand-embroidered-cushion-cover-1.webp",
+            "alt": "A Jat Garasiya hand-embroidered cushion cover"
           }
         },
         {
           "type": "shot",
           "settings": {
-            "asset": "frame-r3t6.webp",
-            "alt": "Kutchi mirror-work across a silk ground"
+            "asset": "sj-dupatta-copy-1-2.webp",
+            "alt": "A red and black hand-embroidered dupatta, laid flat"
           }
         }
       ]

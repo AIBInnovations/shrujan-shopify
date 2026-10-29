@@ -123,6 +123,7 @@
     </figure>
   </section>
 {%- endif %}
+{%- render 'sj-studio-products', s: s, kind: 'avinya', wa: sp_wa -%}
 {%- if s.show_steps and step_blocks.size > 0 %}
   <section class="sp-band">
     <div class="sp-band__head" data-reveal>
@@ -250,7 +251,7 @@
   done.setAttribute('role', 'status');
   done.setAttribute('data-reveal', '');
   done.innerHTML =
-    '<p class="enquiry__done-title">' + (root.getAttribute('data-done-title') || 'Thank you — we have your request.') + '</p>' +
+    '<p class="enquiry__done-title">' + (root.getAttribute('data-done-title') || 'Thank you, we have your request.') + '</p>' +
     '<p>' + (root.getAttribute('data-done-body') || 'Someone from the Bhuj studio will call you in your chosen slot. If it is urgent, reach us on <a href="tel:+919099974319">+91 9099 974319</a>.') + '</p>' +
     '<button class="arrow-link" type="button">' + (root.getAttribute('data-done-again') || 'Send another enquiry') + ' ' + arrow + '</button>';
 
@@ -314,7 +315,7 @@
       "type": "inline_richtext",
       "id": "hero_title",
       "label": "Hero title",
-      "default": "Avinya — change, and <em>new beginnings</em>"
+      "default": "Avinya: change, and <em>new beginnings</em>"
     },
     {
       "type": "textarea",
@@ -350,7 +351,7 @@
       "type": "textarea",
       "id": "lead",
       "label": "Intro lead",
-      "default": "Avinya puts artisans into teams of two and three and asks them to make something together — not to execute a design handed down to them."
+      "default": "Avinya puts artisans into teams of two and three and asks them to make something together, not to execute a design handed down to them."
     },
     {
       "type": "richtext",
@@ -458,7 +459,7 @@
       "type": "text",
       "id": "done_title",
       "label": "Success title",
-      "default": "Thank you — we have your request."
+      "default": "Thank you, we have your request."
     },
     {
       "type": "inline_richtext",
@@ -698,7 +699,7 @@
     },
     {
       "type": "header",
-      "content": "Design — mobile"
+      "content": "Design: mobile"
     },
     {
       "type": "select",
@@ -808,6 +809,69 @@
       "id": "art_detail_alt",
       "label": "Close-up picture description",
       "default": "Skeins of indigo and saffron yarn"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_products",
+      "label": "Show the pieces",
+      "default": true
+    },
+    {
+      "type": "collection",
+      "id": "products_collection",
+      "label": "Collection of pieces"
+    },
+    {
+      "type": "text",
+      "id": "products_handle",
+      "label": "Or a collection handle",
+      "default": "avinya",
+      "info": "With neither, the shop's products tagged below show; with none, nothing shows."
+    },
+    {
+      "type": "text",
+      "id": "products_tag",
+      "label": "Or products with this tag",
+      "default": "avinya"
+    },
+    {
+      "type": "range",
+      "id": "products_limit",
+      "label": "How many",
+      "min": 3,
+      "max": 12,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "text",
+      "id": "products_eyebrow",
+      "label": "Small heading",
+      "default": "Available by enquiry"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "products_title",
+      "label": "Title",
+      "default": "Avinya <em>works</em>"
+    },
+    {
+      "type": "text",
+      "id": "products_all",
+      "label": "Link to the collection",
+      "default": "View all"
+    },
+    {
+      "type": "text",
+      "id": "products_enquire",
+      "label": "Card button",
+      "default": "Enquire"
+    },
+    {
+      "type": "text",
+      "id": "products_on_request",
+      "label": "When a piece has no price",
+      "default": "Price on request"
     }
   ],
   "blocks": [
@@ -867,7 +931,7 @@
           "type": "textarea",
           "id": "copy",
           "label": "Copy",
-          "default": "Artisans are placed in teams of two or three, often alongside someone from a craft other than their own — an embroiderer with a weaver, a dyer with a printer."
+          "default": "Artisans are placed in teams of two or three, often alongside someone from a craft other than their own: an embroiderer with a weaver, a dyer with a printer."
         }
       ]
     },
@@ -949,7 +1013,7 @@
           "type": "step",
           "settings": {
             "title": "Pairing",
-            "copy": "Artisans are placed in teams of two or three, often alongside someone from a craft other than their own — an embroiderer with a weaver, a dyer with a printer."
+            "copy": "Artisans are placed in teams of two or three, often alongside someone from a craft other than their own: an embroiderer with a weaver, a dyer with a printer."
           }
         },
         {
