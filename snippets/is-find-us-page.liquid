@@ -1,0 +1,8 @@
+{%- comment -%}Recognise existing page handles and explicitly assigned Find Us templates.{%- endcomment -%}
+{%- liquid
+  assign compact_handle = page.handle | remove: '-'
+  assign compact_title = page.title | handleize | remove: '-'
+  if template.suffix == 'find-us' or compact_handle == 'findus' or compact_handle == 'finduss' or compact_title == 'findus' or compact_title == 'finduss'
+    echo 'true'
+  endif
+-%}

@@ -1,4 +1,7 @@
-{% if section.settings.only_handle == blank or page.handle == section.settings.only_handle %}
+{%- capture is_find_us_page -%}{%- render 'is-find-us-page' -%}{%- endcapture -%}
+{%- assign show_find_us = false -%}
+{%- if section.settings.only_handle == 'find-us' and is_find_us_page == 'true' -%}{%- assign show_find_us = true -%}{%- endif -%}
+{% if section.settings.only_handle == blank or page.handle == section.settings.only_handle or show_find_us %}
 {%- render 'section-design', section: section -%}
 {%- comment -%}
   The Stores page (the user, 2026-10-29): every Shrujan store with its

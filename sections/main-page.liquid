@@ -14,7 +14,13 @@
     The designed pages share this template and draw themselves by handle, so
     this section steps aside for them.
   endcomment
+  capture is_find_us_page
+    render 'is-find-us-page'
+  endcapture
   assign page_is_designed = false
+  if is_find_us_page == 'true'
+    assign page_is_designed = true
+  endif
   assign designed_list = section.settings.designed_handles | split: ','
   for designed_handle in designed_list
     assign designed_key = designed_handle | strip

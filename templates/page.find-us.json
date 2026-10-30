@@ -3,7 +3,7 @@
     "stores": {
       "type": "page-stores",
       "settings": {
-        "only_handle": "find-us",
+        "only_handle": "",
         "eyebrow": "Visit & connect",
         "title_1": "Find",
         "title_2": "us",

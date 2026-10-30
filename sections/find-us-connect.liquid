@@ -1,4 +1,5 @@
-{% if page.handle == 'find-us' %}
+{%- capture is_find_us_page -%}{%- render 'is-find-us-page' -%}{%- endcapture -%}
+{% if is_find_us_page == 'true' %}
 <section class="stx fux" aria-labelledby="find-us-connect-{{ section.id }}">
   <header class="stx__head">
     <p class="stx__eyebrow">Stay in touch</p>
