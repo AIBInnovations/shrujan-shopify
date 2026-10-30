@@ -1,0 +1,80 @@
+{
+  "sections": {
+    "stores": {
+      "type": "page-stores",
+      "settings": {
+        "only_handle": "find-us",
+        "eyebrow": "Visit & connect",
+        "title_1": "Find",
+        "title_2": "us",
+        "lede": "Visit Shrujan in Bhujodi, at the LLDC Museum, or at our stores in Ahmedabad, Mumbai, Delhi and Bhuj Airport. Find addresses, maps and a number to call before you visit."
+      }
+    },
+    "connect": {
+      "type": "find-us-connect",
+      "blocks": {
+        "link0": {
+          "type": "link",
+          "settings": {
+            "title": "Instagram",
+            "detail": "@shrujanindia",
+            "url": "https://www.instagram.com/shrujanindia/"
+          }
+        },
+        "link1": {
+          "type": "link",
+          "settings": {
+            "title": "Facebook",
+            "detail": "Shrujan India",
+            "url": "https://www.facebook.com/shrujanindia"
+          }
+        },
+        "link2": {
+          "type": "link",
+          "settings": {
+            "title": "Pinterest",
+            "detail": "Shrujan Creations",
+            "url": "https://www.pinterest.com/shrujancreations/"
+          }
+        },
+        "link3": {
+          "type": "link",
+          "settings": {
+            "title": "WhatsApp",
+            "detail": "+91 9099 974319",
+            "url": "https://api.whatsapp.com/send?phone=919099974319"
+          }
+        },
+        "link4": {
+          "type": "link",
+          "settings": {
+            "title": "Email",
+            "detail": "marketing@shrujan.com",
+            "url": "mailto:marketing@shrujan.com"
+          }
+        },
+        "link5": {
+          "type": "link",
+          "settings": {
+            "title": "Call the studio",
+            "detail": "+91 90818 99882",
+            "url": "tel:+919081899882"
+          }
+        }
+      },
+      "block_order": [
+        "link0",
+        "link1",
+        "link2",
+        "link3",
+        "link4",
+        "link5"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "stores",
+    "connect"
+  ]
+}

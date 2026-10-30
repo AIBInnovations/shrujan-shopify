@@ -78,6 +78,7 @@ After installing:
    | The Shrujan Story | `the-shrujan-story` |
    | Living & Learning Design Centre | `lldc` |
    | Visit & Experience | `visit-experience` |
+   | Find Us | `find-us` |
 
    (The React routes `/pages/studio-collection/heritage|avinya|gifting` became
    flat handles — Shopify page URLs cannot nest.)

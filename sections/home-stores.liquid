@@ -14,7 +14,7 @@
     {%- if s.eyebrow != blank %}<p class="st__eyebrow">{{ s.eyebrow | escape }}</p>{% endif -%}
     <h2 class="st__title" id="st-title-{{ section.id }}"><span>{{ s.title_1 | escape }}</span>{% if s.title_2 != blank %}<em>{{ s.title_2 | escape }}</em>{% endif %}</h2>
     {%- if s.lede != blank %}<p class="st__lede">{{ s.lede | escape }}</p>{% endif -%}
-    {%- if s.all_label != blank %}<a class="st__all" href="{{ s.all_link | default: '/pages/stores' }}">{{ s.all_label | escape }} <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>{% endif -%}
+    {%- if s.all_label != blank %}<a class="st__all" href="{{ s.all_link | default: '/pages/find-us' }}">{{ s.all_label | escape }} <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>{% endif -%}
   </div>
   <ul class="st__grid">
     {%- if section.blocks.size > 0 -%}
@@ -81,7 +81,7 @@
       "type": "url",
       "id": "all_link",
       "label": "Stores page link",
-      "default": "/pages/stores"
+      "default": "/pages/find-us"
     },
     {
       "type": "paragraph",
