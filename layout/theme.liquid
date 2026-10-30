@@ -213,7 +213,15 @@
     {%- if template.name == 'index' %}{% render 'sj-loader' %}{% endif %}
     <div id="root">
       {% sections 'header-group' %}
-      <main>{{ content_for_layout }}</main>
+      {%- capture is_find_us_page -%}{%- render 'is-find-us-page' -%}{%- endcapture -%}
+      <main>
+        {%- if is_find_us_page == 'true' -%}
+          {% section 'page-find-us' %}
+          {% section 'find-us-connect' %}
+        {%- else -%}
+          {{ content_for_layout }}
+        {%- endif -%}
+      </main>
       {% sections 'footer-group' %}
     </div>
     {% render 'sj-cart-drawer' %}

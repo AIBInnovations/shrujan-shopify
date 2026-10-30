@@ -13,6 +13,16 @@
       <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i>
     </a>
   {% endfor %}
+  {% if section.blocks.size == 0 %}
+    {% assign contacts = 'Instagram|@shrujanindia|https://www.instagram.com/shrujanindia/~Facebook|Shrujan India|https://www.facebook.com/shrujanindia~Pinterest|Shrujan Creations|https://www.pinterest.com/shrujancreations/~WhatsApp|+91 9099 974319|https://api.whatsapp.com/send?phone=919099974319~Email|marketing@shrujan.com|mailto:marketing@shrujan.com~Call the studio|+91 90818 99882|tel:+919081899882' | split: '~' %}
+    {% for contact in contacts %}
+      {% assign fields = contact | split: '|' %}
+      <a class="fux__link" href="{{ fields[2] | escape }}"{% unless fields[2] contains 'mailto:' or fields[2] contains 'tel:' %} target="_blank" rel="noopener noreferrer"{% endunless %}>
+        <span><strong>{{ fields[0] | escape }}</strong><span>{{ fields[1] | escape }}</span></span>
+        <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i>
+      </a>
+    {% endfor %}
+  {% endif %}
   </div>
   <p class="fux__note">Studio hours: 10 AM to 7 PM. Please call your chosen store before travelling to confirm opening hours.</p>
 </section>
