@@ -1,0 +1,300 @@
+{{ 'sj-live-find-us.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign s = section.settings
+  assign stores = 'Bhujodi store|Kutch|Behind G.E.B Sub Station, Bhujodi, Bhuj, Kutch 370020|+91 2832 240272|+91 90999 74395|sj-find-us-bhujodi-store.jpg|The Shrujan store at Bhujodi|Shrujan, Behind G.E.B Sub Station, Bhujodi, Bhuj, Gujarat 370020|https://maps.app.goo.gl/hBrRKE56jMa6fRxy8?g_st=aw|~LLDC store|Kutch|705, Bhuj–Bhachau Highway, Bhuj, Gujarat 370105|+91 2832 229090|+91 90818 99886|sj-find-us-lldc-store.jpg|The Shrujan shop at the Living and Learning Design Centre|LLDC Living and Learning Design Centre, 705 Bhuj–Bhachau Highway, Ajrakhpur, Bhuj, Gujarat 370105||https://www.shrujanlldc.org/~The Villa|Kutch|Mundra Road, Sedata, Bhuj, Gujarat 370427|||||23.1496202,69.6263782|https://maps.app.goo.gl/hacMmfUVBaD2YRhQ6|~Bhuj Airport|Kutch|Bhuj Airport, IAF Campus, Bhuj, Gujarat 370001||+91 99784 18952|sj-find-us-airport-store.jpg|The Shrujan store at Bhuj Airport|Bhuj Airport, IAF Campus, Bhuj, Gujarat 370001|https://maps.app.goo.gl/a3iKA7gy8mJK6poZA?g_st=aw|' | split: '~'
+  assign regions = ''
+  if section.blocks.size > 0
+    for b in section.blocks
+      assign regions = regions | append: b.settings.region | append: ','
+    endfor
+  else
+    for d in stores
+      assign f = d | split: '|'
+      assign regions = regions | append: f[1] | append: ','
+    endfor
+  endif
+  assign regions = regions | split: ',' | uniq
+-%}
+<section class="sj-live-find-us stx" id="stores" aria-labelledby="stx-title-{{ section.id }}">
+  <header class="stx__head">
+    {%- if s.eyebrow != blank %}<p class="stx__eyebrow">{{ s.eyebrow | escape }}</p>{% endif -%}
+    <h1 class="stx__title" id="stx-title-{{ section.id }}"><span>{{ s.title_1 | escape }}</span>{% if s.title_2 != blank %} <em>{{ s.title_2 | escape }}</em>{% endif %}</h1>
+    {%- if s.lede != blank %}<p class="stx__lede">{{ s.lede | escape }}</p>{% endif -%}
+    {%- if s.show_filter and regions.size > 1 %}
+    <div class="stx__filter" role="group" aria-label="Stores by city">
+      <button type="button" class="is-on" data-stx-region="" aria-pressed="true">{{ s.all_label | default: 'All' | escape }}</button>
+      {%- for r in regions -%}{%- if r != blank -%}<button type="button" data-stx-region="{{ r | handleize }}" aria-pressed="false">{{ r | escape }}</button>{%- endif -%}{%- endfor -%}
+    </div>
+    {%- endif %}
+  </header>
+  <div class="stx__list">
+    {%- if section.blocks.size > 0 -%}
+      {%- for b in section.blocks -%}
+        {%- liquid
+          assign s_n = b.settings.name
+          assign s_r = b.settings.region
+          assign s_a = b.settings.address
+          assign s_t = b.settings.tel
+          assign s_m = b.settings.mobile
+          assign s_h = b.settings.hours
+          assign s_q = b.settings.map_query
+          assign s_d = b.settings.directions_url
+          assign s_w = b.settings.website
+          assign s_alt = b.settings.image_alt
+          assign s_img = ''
+          if b.settings.image != blank
+            assign s_img = b.settings.image | image_url: width: 1400
+            assign s_alt = b.settings.image_alt | default: b.settings.image.alt
+          elsif b.settings.image_asset != blank
+            assign s_img = b.settings.image_asset | asset_url
+          endif
+        -%}
+        {%- liquid
+          assign q = s_q | default: s_a | url_encode
+          assign directions_url = 'https://www.google.com/maps/search/?api=1&query=' | append: q
+          assign directions_url = s_d | default: directions_url
+          assign slug = s_r | handleize
+        -%}
+        <article class="stx__store" data-region="{{ slug }}" {{ b.shopify_attributes }}>
+          <div class="stx__media">
+            {%- if s_img != blank -%}<img src="{{ s_img }}" alt="{{ s_alt | escape }}" loading="lazy">
+            {%- else -%}<iframe class="stx__map stx__map--big" src="https://maps.google.com/maps?q={{ q }}&z=15&output=embed" title="Map: Shrujan {{ s_n | escape }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>{%- endif -%}
+          </div>
+          <div class="stx__info">
+            {%- if s_r != blank %}<p class="stx__region"><i class="sj-i sj-i--map-pin ms" aria-hidden="true"></i> {{ s_r | escape }}</p>{% endif %}
+            <h2 class="stx__name">{{ s_n | escape }}</h2>
+            <p class="stx__addr">{{ s_a | escape }}</p>
+            {%- if s_w != blank %}<a class="stx__website" href="{{ s_w | escape }}" target="_blank" rel="noopener noreferrer">{{ s_w | remove: 'https://' | remove: 'http://' | split: '/' | first | escape }}</a>{% endif %}
+            {%- if s_h != blank %}<p class="stx__hours">{{ s_h | escape }}</p>{% endif %}
+            {%- if s_t != blank or s_m != blank %}<div class="stx__tel">{% if s_t != blank %}<a href="tel:{{ s_t | remove: ' ' }}"><i class="sj-i sj-i--phone ms" aria-hidden="true"></i>{{ s_t }}</a>{% endif %}{% if s_m != blank %}<a href="tel:{{ s_m | remove: ' ' }}"><i class="sj-i sj-i--phone ms" aria-hidden="true"></i>{{ s_m }}</a>{% endif %}</div>{% endif %}
+            <a class="stx__go" href="{{ directions_url | escape }}" target="_blank" rel="noopener">Get directions <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>
+          </div>
+          {%- if s_img != blank -%}
+          <div class="stx__mapbox"><iframe class="stx__map" src="https://maps.google.com/maps?q={{ q }}&z=15&output=embed" title="Map: Shrujan {{ s_n | escape }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+          {%- endif -%}
+        </article>
+      {%- endfor -%}
+    {%- else -%}
+      {%- for d in stores -%}
+        {%- assign f = d | split: '|' -%}
+        {%- liquid
+          assign s_n = f[0]
+          assign s_r = f[1]
+          assign s_a = f[2]
+          assign s_t = f[3]
+          assign s_m = f[4]
+          assign s_h = ''
+          assign s_q = f[7]
+          assign s_d = f[8]
+          assign s_w = f[9]
+          assign s_alt = f[6]
+          assign s_img = ''
+          if f[5] != blank
+            assign s_img = f[5] | asset_url
+          endif
+        -%}
+        {%- liquid
+          assign q = s_q | default: s_a | url_encode
+          assign directions_url = 'https://www.google.com/maps/search/?api=1&query=' | append: q
+          assign directions_url = s_d | default: directions_url
+          assign slug = s_r | handleize
+        -%}
+        <article class="stx__store" data-region="{{ slug }}">
+          <div class="stx__media">
+            {%- if s_img != blank -%}<img src="{{ s_img }}" alt="{{ s_alt | escape }}" loading="lazy">
+            {%- else -%}<iframe class="stx__map stx__map--big" src="https://maps.google.com/maps?q={{ q }}&z=15&output=embed" title="Map: Shrujan {{ s_n | escape }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>{%- endif -%}
+          </div>
+          <div class="stx__info">
+            {%- if s_r != blank %}<p class="stx__region"><i class="sj-i sj-i--map-pin ms" aria-hidden="true"></i> {{ s_r | escape }}</p>{% endif %}
+            <h2 class="stx__name">{{ s_n | escape }}</h2>
+            <p class="stx__addr">{{ s_a | escape }}</p>
+            {%- if s_w != blank %}<a class="stx__website" href="{{ s_w | escape }}" target="_blank" rel="noopener noreferrer">{{ s_w | remove: 'https://' | remove: 'http://' | split: '/' | first | escape }}</a>{% endif %}
+            {%- if s_h != blank %}<p class="stx__hours">{{ s_h | escape }}</p>{% endif %}
+            {%- if s_t != blank or s_m != blank %}<div class="stx__tel">{% if s_t != blank %}<a href="tel:{{ s_t | remove: ' ' }}"><i class="sj-i sj-i--phone ms" aria-hidden="true"></i>{{ s_t }}</a>{% endif %}{% if s_m != blank %}<a href="tel:{{ s_m | remove: ' ' }}"><i class="sj-i sj-i--phone ms" aria-hidden="true"></i>{{ s_m }}</a>{% endif %}</div>{% endif %}
+            <a class="stx__go" href="{{ directions_url | escape }}" target="_blank" rel="noopener">Get directions <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>
+          </div>
+          {%- if s_img != blank -%}
+          <div class="stx__mapbox"><iframe class="stx__map" src="https://maps.google.com/maps?q={{ q }}&z=15&output=embed" title="Map: Shrujan {{ s_n | escape }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+          {%- endif -%}
+        </article>
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+  {%- if s.cta_title != blank %}
+  <aside class="stx__cta">
+    <div><h2 class="stx__cta-title">{{ s.cta_title | escape }}</h2>{% if s.cta_copy != blank %}<p>{{ s.cta_copy | escape }}</p>{% endif %}</div>
+    <div class="stx__cta-acts">
+      {%- if s.cta_label != blank %}<a class="stx__btn stx__btn--solid" href="{{ s.cta_link | default: '/collections/all' }}">{{ s.cta_label | escape }} <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>{% endif %}
+      <a class="stx__btn" href="https://api.whatsapp.com/send?phone=919099974319" target="_blank" rel="noopener"><i class="sj-i sj-i--whatsapp-logo fab" aria-hidden="true"></i> WhatsApp</a>
+    </div>
+  </aside>
+  {%- endif %}
+</section>
+<script>
+(function () {
+  var root = document.getElementById('stx-title-{{ section.id }}');
+  root = root && root.closest('.stx');
+  if (!root || root.__stx) return;
+  root.__stx = true;
+  var btns = [].slice.call(root.querySelectorAll('[data-stx-region]'));
+  var stores = [].slice.call(root.querySelectorAll('.stx__store'));
+  btns.forEach(function (b) {
+    b.addEventListener('click', function () {
+      var r = b.getAttribute('data-stx-region');
+      btns.forEach(function (o) { var on = o === b; o.classList.toggle('is-on', on); o.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+      stores.forEach(function (st) { st.hidden = !!r && st.getAttribute('data-region') !== r; });
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Find Us — Stores",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Small heading",
+      "default": "Visit us"
+    },
+    {
+      "type": "text",
+      "id": "title_1",
+      "label": "Title, first line",
+      "default": "Find"
+    },
+    {
+      "type": "text",
+      "id": "title_2",
+      "label": "Title, second line (in red)",
+      "default": "us"
+    },
+    {
+      "type": "textarea",
+      "id": "lede",
+      "label": "Line under the title",
+      "default": "Visit our stores at Bhujodi, LLDC, The Villa and Bhuj Airport. Find addresses, maps and a number to call before you visit."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_filter",
+      "label": "Show the city filter",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "all_label",
+      "label": "Filter: the 'all stores' tab",
+      "default": "All"
+    },
+    {
+      "type": "header",
+      "content": "Closing band"
+    },
+    {
+      "type": "text",
+      "id": "cta_title",
+      "label": "Title",
+      "default": "Can’t come in?"
+    },
+    {
+      "type": "textarea",
+      "id": "cta_copy",
+      "label": "Line",
+      "default": "Every piece in the stores is also online, and the studio answers on WhatsApp."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button",
+      "default": "Shop online"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link",
+      "default": "/collections/all"
+    },
+    {
+      "type": "paragraph",
+      "content": "Add store blocks to edit the list; with none, Bhujodi, LLDC, The Villa and Bhuj Airport show."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "store",
+      "name": "Store",
+      "settings": [
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name"
+        },
+        {
+          "type": "text",
+          "id": "region",
+          "label": "City or area (the filter)"
+        },
+        {
+          "type": "textarea",
+          "id": "address",
+          "label": "Address"
+        },
+        {
+          "type": "text",
+          "id": "tel",
+          "label": "Landline"
+        },
+        {
+          "type": "text",
+          "id": "mobile",
+          "label": "Mobile"
+        },
+        {
+          "type": "text",
+          "id": "hours",
+          "label": "Opening hours (optional)"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Photograph of the store"
+        },
+        {
+          "type": "text",
+          "id": "image_asset",
+          "label": "Or theme image file"
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "label": "Photograph description"
+        },
+        {
+          "type": "text",
+          "id": "map_query",
+          "label": "Map search (if the address finds the wrong place)"
+        },
+        {
+          "type": "url",
+          "id": "directions_url",
+          "label": "Directions link (optional)"
+        },
+        {
+          "type": "url",
+          "id": "website",
+          "label": "Store website (optional)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Find Us — Stores"
+    }
+  ],
+  "class": "sj-live-find-us-page"
+}
+{% endschema %}

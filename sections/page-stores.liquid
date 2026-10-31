@@ -1,18 +1,7 @@
-{%- capture is_find_us_page -%}{%- render 'is-find-us-page' -%}{%- endcapture -%}
-{%- assign show_find_us = false -%}
-{%- if section.settings.only_handle == 'find-us' and is_find_us_page == 'true' -%}{%- assign show_find_us = true -%}{%- endif -%}
-{% if section.settings.only_handle == blank or page.handle == section.settings.only_handle or show_find_us %}
-{%- render 'section-design', section: section -%}
-{%- comment -%}
-  The Stores page (the user, 2026-10-29): every Shrujan store with its
-  photograph (or its map, where there is no photograph yet), address,
-  numbers, directions and a map; a filter by city. Written by
-  awwwards-preview/stores_section.py from the same list as the home page's
-  stores. Styles in sj-site.css (src/site.css, .stx).
-{%- endcomment -%}
+{{ 'sj-live-find-us.css' | asset_url | stylesheet_tag }}
 {%- liquid
   assign s = section.settings
-  assign stores = 'Bhujodi|Kutch|Behind G.E.B Sub Station, Bhujodi, Bhuj, Kutch 370020|+91 2832 240272|+91 90999 74395|visit-campus.webp|The Shrujan campus at Bhujodi: the studio and the store, racks of embroidered pieces~LLDC Museum|Kutch|Living and Learning Design Centre, 705, Bhuj–Bhachau Road, Ajrakhpur, Bhuj, Kutch 370105|+91 2832 229090|+91 90818 99886|lldc-hero.webp|A gallery at the Living and Learning Design Centre, figures in the dress of Kutchi communities~Ahmedabad|Ahmedabad|Shop No. 1, Gala Business Centre 1, opp. Wagh Bakri Tea Lounge, near St. Xavier’s College Road, Navrangpura, Ahmedabad 380009||+91 72279 82099||~Mumbai|Mumbai|C.T.C 217/A Wing, 1st Floor, Flexcel Park, S.V. Road, near 24 Karat Multiplex, Jogeshwari (W), Mumbai 400102|+91 22 6215 7598|+91 98337 66584||~Bhuj Airport|Kutch|Bhuj Airport, Civil Enclave, Bhuj, Kutch 370001||+91 99784 18952||~Delhi|Delhi|C.C.I.C. International Craft Complex, Plot No. 8, Nelson Mandela Marg, Vasant Kunj, New Delhi 110070||+91 88665 83477||' | split: '~'
+  assign stores = 'Bhujodi store|Kutch|Behind G.E.B Sub Station, Bhujodi, Bhuj, Kutch 370020|+91 2832 240272|+91 90999 74395|sj-find-us-bhujodi-store.jpg|The Shrujan store at Bhujodi|Shrujan, Behind G.E.B Sub Station, Bhujodi, Bhuj, Gujarat 370020|https://maps.app.goo.gl/hBrRKE56jMa6fRxy8?g_st=aw|~LLDC store|Kutch|705, Bhuj–Bhachau Highway, Bhuj, Gujarat 370105|+91 2832 229090|+91 90818 99886|sj-find-us-lldc-store.jpg|The Shrujan shop at the Living and Learning Design Centre|LLDC Living and Learning Design Centre, 705 Bhuj–Bhachau Highway, Ajrakhpur, Bhuj, Gujarat 370105||https://www.shrujanlldc.org/~The Villa|Kutch|Mundra Road, Sedata, Bhuj, Gujarat 370427|||||23.1496202,69.6263782|https://maps.app.goo.gl/hacMmfUVBaD2YRhQ6|~Bhuj Airport|Kutch|Bhuj Airport, IAF Campus, Bhuj, Gujarat 370001||+91 99784 18952|sj-find-us-airport-store.jpg|The Shrujan store at Bhuj Airport|Bhuj Airport, IAF Campus, Bhuj, Gujarat 370001|https://maps.app.goo.gl/a3iKA7gy8mJK6poZA?g_st=aw|' | split: '~'
   assign regions = ''
   if section.blocks.size > 0
     for b in section.blocks
@@ -26,7 +15,7 @@
   endif
   assign regions = regions | split: ',' | uniq
 -%}
-<section class="stx" id="stores" aria-labelledby="stx-title-{{ section.id }}">
+<section class="sj-live-find-us stx" id="stores" aria-labelledby="stx-title-{{ section.id }}">
   <header class="stx__head">
     {%- if s.eyebrow != blank %}<p class="stx__eyebrow">{{ s.eyebrow | escape }}</p>{% endif -%}
     <h1 class="stx__title" id="stx-title-{{ section.id }}"><span>{{ s.title_1 | escape }}</span>{% if s.title_2 != blank %} <em>{{ s.title_2 | escape }}</em>{% endif %}</h1>
@@ -49,6 +38,8 @@
           assign s_m = b.settings.mobile
           assign s_h = b.settings.hours
           assign s_q = b.settings.map_query
+          assign s_d = b.settings.directions_url
+          assign s_w = b.settings.website
           assign s_alt = b.settings.image_alt
           assign s_img = ''
           if b.settings.image != blank
@@ -59,8 +50,9 @@
           endif
         -%}
         {%- liquid
-          assign q = s_q | default: s_a
-          assign q = 'Shrujan, ' | append: q | url_encode
+          assign q = s_q | default: s_a | url_encode
+          assign directions_url = 'https://www.google.com/maps/search/?api=1&query=' | append: q
+          assign directions_url = s_d | default: directions_url
           assign slug = s_r | handleize
         -%}
         <article class="stx__store" data-region="{{ slug }}" {{ b.shopify_attributes }}>
@@ -72,9 +64,10 @@
             {%- if s_r != blank %}<p class="stx__region"><i class="sj-i sj-i--map-pin ms" aria-hidden="true"></i> {{ s_r | escape }}</p>{% endif %}
             <h2 class="stx__name">{{ s_n | escape }}</h2>
             <p class="stx__addr">{{ s_a | escape }}</p>
+            {%- if s_w != blank %}<a class="stx__website" href="{{ s_w | escape }}" target="_blank" rel="noopener noreferrer">{{ s_w | remove: 'https://' | remove: 'http://' | split: '/' | first | escape }}</a>{% endif %}
             {%- if s_h != blank %}<p class="stx__hours">{{ s_h | escape }}</p>{% endif %}
-            <p class="stx__tel">{% if s_t != blank %}<a href="tel:{{ s_t | remove: ' ' }}"><i class="sj-i sj-i--phone ms" aria-hidden="true"></i>{{ s_t }}</a>{% endif %}{% if s_m != blank %}<a href="tel:{{ s_m | remove: ' ' }}"><i class="sj-i sj-i--phone ms" aria-hidden="true"></i>{{ s_m }}</a>{% endif %}</p>
-            <a class="stx__go" href="https://www.google.com/maps/search/?api=1&query={{ q }}" target="_blank" rel="noopener">Get directions <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>
+            {%- if s_t != blank or s_m != blank %}<div class="stx__tel">{% if s_t != blank %}<a href="tel:{{ s_t | remove: ' ' }}"><i class="sj-i sj-i--phone ms" aria-hidden="true"></i>{{ s_t }}</a>{% endif %}{% if s_m != blank %}<a href="tel:{{ s_m | remove: ' ' }}"><i class="sj-i sj-i--phone ms" aria-hidden="true"></i>{{ s_m }}</a>{% endif %}</div>{% endif %}
+            <a class="stx__go" href="{{ directions_url | escape }}" target="_blank" rel="noopener">Get directions <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>
           </div>
           {%- if s_img != blank -%}
           <div class="stx__mapbox"><iframe class="stx__map" src="https://maps.google.com/maps?q={{ q }}&z=15&output=embed" title="Map: Shrujan {{ s_n | escape }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
@@ -91,7 +84,9 @@
           assign s_t = f[3]
           assign s_m = f[4]
           assign s_h = ''
-          assign s_q = ''
+          assign s_q = f[7]
+          assign s_d = f[8]
+          assign s_w = f[9]
           assign s_alt = f[6]
           assign s_img = ''
           if f[5] != blank
@@ -99,8 +94,9 @@
           endif
         -%}
         {%- liquid
-          assign q = s_q | default: s_a
-          assign q = 'Shrujan, ' | append: q | url_encode
+          assign q = s_q | default: s_a | url_encode
+          assign directions_url = 'https://www.google.com/maps/search/?api=1&query=' | append: q
+          assign directions_url = s_d | default: directions_url
           assign slug = s_r | handleize
         -%}
         <article class="stx__store" data-region="{{ slug }}">
@@ -112,9 +108,10 @@
             {%- if s_r != blank %}<p class="stx__region"><i class="sj-i sj-i--map-pin ms" aria-hidden="true"></i> {{ s_r | escape }}</p>{% endif %}
             <h2 class="stx__name">{{ s_n | escape }}</h2>
             <p class="stx__addr">{{ s_a | escape }}</p>
+            {%- if s_w != blank %}<a class="stx__website" href="{{ s_w | escape }}" target="_blank" rel="noopener noreferrer">{{ s_w | remove: 'https://' | remove: 'http://' | split: '/' | first | escape }}</a>{% endif %}
             {%- if s_h != blank %}<p class="stx__hours">{{ s_h | escape }}</p>{% endif %}
-            <p class="stx__tel">{% if s_t != blank %}<a href="tel:{{ s_t | remove: ' ' }}"><i class="sj-i sj-i--phone ms" aria-hidden="true"></i>{{ s_t }}</a>{% endif %}{% if s_m != blank %}<a href="tel:{{ s_m | remove: ' ' }}"><i class="sj-i sj-i--phone ms" aria-hidden="true"></i>{{ s_m }}</a>{% endif %}</p>
-            <a class="stx__go" href="https://www.google.com/maps/search/?api=1&query={{ q }}" target="_blank" rel="noopener">Get directions <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>
+            {%- if s_t != blank or s_m != blank %}<div class="stx__tel">{% if s_t != blank %}<a href="tel:{{ s_t | remove: ' ' }}"><i class="sj-i sj-i--phone ms" aria-hidden="true"></i>{{ s_t }}</a>{% endif %}{% if s_m != blank %}<a href="tel:{{ s_m | remove: ' ' }}"><i class="sj-i sj-i--phone ms" aria-hidden="true"></i>{{ s_m }}</a>{% endif %}</div>{% endif %}
+            <a class="stx__go" href="{{ directions_url | escape }}" target="_blank" rel="noopener">Get directions <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>
           </div>
           {%- if s_img != blank -%}
           <div class="stx__mapbox"><iframe class="stx__map" src="https://maps.google.com/maps?q={{ q }}&z=15&output=embed" title="Map: Shrujan {{ s_n | escape }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
@@ -127,7 +124,7 @@
   <aside class="stx__cta">
     <div><h2 class="stx__cta-title">{{ s.cta_title | escape }}</h2>{% if s.cta_copy != blank %}<p>{{ s.cta_copy | escape }}</p>{% endif %}</div>
     <div class="stx__cta-acts">
-      {%- if s.cta_label != blank %}<a class="stx__btn stx__btn--solid" href="{{ s.cta_link | default: '/pages/shop-shrujan' }}">{{ s.cta_label | escape }} <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>{% endif %}
+      {%- if s.cta_label != blank %}<a class="stx__btn stx__btn--solid" href="{{ s.cta_link | default: '/collections/all' }}">{{ s.cta_label | escape }} <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>{% endif %}
       <a class="stx__btn" href="https://api.whatsapp.com/send?phone=919099974319" target="_blank" rel="noopener"><i class="sj-i sj-i--whatsapp-logo fab" aria-hidden="true"></i> WhatsApp</a>
     </div>
   </aside>
@@ -151,18 +148,11 @@
 })();
 </script>
 
-{% endif %}
-
 {% schema %}
 {
-  "name": "Stores page",
+  "name": "Find Us — Stores",
   "tag": "div",
   "settings": [
-    {
-      "type": "text",
-      "id": "only_handle",
-      "label": "Only show on page handle"
-    },
     {
       "type": "text",
       "id": "eyebrow",
@@ -173,19 +163,19 @@
       "type": "text",
       "id": "title_1",
       "label": "Title, first line",
-      "default": "Shrujan"
+      "default": "Find"
     },
     {
       "type": "text",
       "id": "title_2",
       "label": "Title, second line (in red)",
-      "default": "stores"
+      "default": "us"
     },
     {
       "type": "textarea",
       "id": "lede",
       "label": "Line under the title",
-      "default": "See the pieces in person: at the campus in Bhujodi, at the LLDC, or at a Shrujan store in Ahmedabad, Mumbai, Delhi or Bhuj Airport."
+      "default": "Visit our stores at Bhujodi, LLDC, The Villa and Bhuj Airport. Find addresses, maps and a number to call before you visit."
     },
     {
       "type": "checkbox",
@@ -207,7 +197,7 @@
       "type": "text",
       "id": "cta_title",
       "label": "Title",
-      "default": "Can\u2019t come in?"
+      "default": "Can’t come in?"
     },
     {
       "type": "textarea",
@@ -224,11 +214,12 @@
     {
       "type": "url",
       "id": "cta_link",
-      "label": "Button link"
+      "label": "Button link",
+      "default": "/collections/all"
     },
     {
       "type": "paragraph",
-      "content": "Add store blocks to list the stores yourself; with none, the six Shrujan stores show."
+      "content": "Add store blocks to edit the list; with none, Bhujodi, LLDC, The Villa and Bhuj Airport show."
     }
   ],
   "blocks": [
@@ -285,14 +276,25 @@
           "type": "text",
           "id": "map_query",
           "label": "Map search (if the address finds the wrong place)"
+        },
+        {
+          "type": "url",
+          "id": "directions_url",
+          "label": "Directions link (optional)"
+        },
+        {
+          "type": "url",
+          "id": "website",
+          "label": "Store website (optional)"
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Stores page"
+      "name": "Find Us — Stores"
     }
-  ]
+  ],
+  "class": "sj-live-find-us-page"
 }
 {% endschema %}

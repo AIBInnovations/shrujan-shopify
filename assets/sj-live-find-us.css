@@ -1,0 +1,425 @@
+/* The Find Us page only. Fonts use private family names; every selector is scoped. */
+@font-face { font-family:"SJ Find Us Display"; font-style:normal; font-weight:400; font-display:swap; src:url("sj-find-us-display.ttf") format("truetype"); }
+@font-face { font-family:"SJ Find Us Text"; font-style:normal; font-weight:400; font-display:swap; src:url("sj-find-us-text.ttf") format("truetype"); }
+@font-face { font-family:"SJ Find Us Symbols"; font-style:normal; font-weight:400; font-display:block; src:url("sj-find-us-symbols.ttf") format("truetype"); }
+@font-face { font-family:"SJ Find Us Brands"; font-style:normal; font-weight:400; font-display:block; src:url("sj-find-us-brands.woff2") format("woff2"); }
+.sj-live-find-us-page { background:#f6f4e6; display:flow-root; }
+.sj-live-find-us {
+  --page-bg:#f6f4e6; --page-bg-2:#ede9d8; --ivory:#f6f4e6; --ivory-2:#ede9d8;
+  --ink:#404041; --ink-soft:#706e68; --indigo:#924241;
+  --hairline:rgba(64,64,65,.14); --hairline-strong:rgba(64,64,65,.38);
+  --gutter:clamp(22px,4vw,60px); --radius:7px;
+  --font-display:"SJ Find Us Display","Baskerville",Georgia,serif;
+  --font-sans:"SJ Find Us Text","Baskerville",Georgia,serif;
+  --fs-xs:clamp(10.5px,10.31px + .048vw,11px);
+  --fs-sm:clamp(12px,11.81px + .048vw,12.5px);
+  --fs-base:clamp(13.5px,13.31px + .048vw,14px);
+  --fs-md:clamp(14.5px,14.13px + .095vw,15.5px);
+  --fs-xl:clamp(19px,17.89px + .286vw,22px);
+  --fs-2xl:clamp(23px,21.14px + .476vw,28px);
+  --fs-3xl:clamp(26px,22.29px + .952vw,36px);
+  --fs-4xl:clamp(30px,21.83px + 2.095vw,52px);
+  --fs-5xl:clamp(36px,25.60px + 2.667vw,64px);
+  color:var(--ink); font:400 var(--fs-md)/1.6 var(--font-sans);
+  text-align:left; text-transform:none; letter-spacing:normal;
+}
+.sj-live-find-us, .sj-live-find-us *, .sj-live-find-us *::before, .sj-live-find-us *::after { box-sizing:border-box; font-variant-numeric:lining-nums; }
+.sj-live-find-us :where(h1,h2,p) { margin:0; padding:0; }
+.sj-live-find-us :where(a,button) { font:inherit; letter-spacing:inherit; text-transform:inherit; }
+.sj-live-find-us :where(a) { text-decoration:none; }
+.sj-live-find-us :where(a,button):focus-visible { outline:2px solid var(--indigo); outline-offset:4px; }
+@media(max-width:720px) { .sj-live-find-us { --gutter:16px; } }
+
+.sj-live-find-us.stx {
+  margin-inline: var(--gutter, 5.2vw);
+  padding: clamp(40px, 5vw, 72px) 0 var(--sec-pad, 56px);
+}
+
+.sj-live-find-us .stx__head {
+  display: grid;
+  justify-items: center;
+  max-width: 760px;
+  margin: 0 auto clamp(32px, 4vw, 56px);
+  text-align: center;
+}
+
+.sj-live-find-us .stx__eyebrow {
+  margin: 0 0 14px;
+  font: 500 var(--fs-xs) / 1.3 var(--font-sans);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ink-soft, #706e68);
+}
+
+.sj-live-find-us .stx__title {
+  margin: 0;
+  font: 400 var(--fs-5xl) / 1 var(--font-display);
+  color: var(--ink);
+}
+
+.sj-live-find-us .stx__title em {
+  font-style: normal;
+  color: var(--indigo, #924241);
+}
+
+.sj-live-find-us .stx__lede {
+  max-width: 52ch;
+  margin: clamp(14px, 1.6vw, 22px) 0 0;
+  font: 400 var(--fs-md) / 1.65 var(--font-sans);
+  color: var(--ink-soft, #706e68);
+}
+
+.sj-live-find-us .stx__filter {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: clamp(22px, 2.6vw, 34px);
+}
+
+.sj-live-find-us .stx__filter button {
+  min-height: 40px;
+  padding: 0 18px;
+  border: 1px solid var(--hairline-strong, rgba(64, 64, 65, 0.28));
+  border-radius: var(--radius);
+  background: transparent;
+  font: 500 var(--fs-xs) / 1 var(--font-sans);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.sj-live-find-us .stx__filter button.is-on {
+  border-color: var(--indigo, #924241);
+  background: var(--indigo, #924241);
+  color: var(--ivory, #f6f4e6);
+}
+
+.sj-live-find-us .stx__list {
+  display: grid;
+  gap: clamp(16px, 2vw, 26px);
+}
+
+.sj-live-find-us .stx__store {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 0.95fr);
+  min-height: clamp(300px, 26vw, 380px);
+  overflow: hidden;
+  border: 1px solid var(--hairline, rgba(64, 64, 65, 0.14));
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.4);
+  transition: box-shadow 0.4s ease, border-color 0.3s ease;
+}
+
+.sj-live-find-us .stx__store[hidden] {
+  display: none;
+}
+
+.sj-live-find-us .stx__store:hover {
+  border-color: rgba(146, 66, 65, 0.3);
+  box-shadow: 0 30px 60px -44px rgba(60, 40, 24, 0.55);
+}
+
+/* a store with no photograph: its map takes the photograph's place, and
+   its details the rest of the row */
+.sj-live-find-us .stx__store:not(:has(.stx__mapbox)) {
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.95fr);
+}
+
+.sj-live-find-us .stx__media {
+  position: relative;
+  min-height: 240px;
+  background: var(--page-bg-2, #ede9d8);
+}
+
+.sj-live-find-us .stx__media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sj-live-find-us .stx__map {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  border: 0;
+  filter: grayscale(0.25) sepia(0.12);
+}
+
+.sj-live-find-us .stx__media .stx__map {
+  position: absolute;
+  inset: 0;
+}
+
+.sj-live-find-us .stx__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: clamp(24px, 2.6vw, 40px);
+}
+
+.sj-live-find-us .stx__region {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font: 500 var(--fs-xs) / 1 var(--font-sans);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--indigo, #924241);
+}
+
+.sj-live-find-us .stx__region i {
+  font-size: 17px;
+  letter-spacing: 0;
+}
+
+.sj-live-find-us .stx__name {
+  margin: 4px 0 0;
+  font: 400 var(--fs-3xl) / 1.1 var(--font-display);
+  color: var(--ink);
+}
+
+.sj-live-find-us .stx__addr {
+  max-width: 40ch;
+  margin: 0;
+  font: 400 var(--fs-base) / 1.65 var(--font-sans);
+  color: var(--ink-soft, #706e68);
+}
+
+.sj-live-find-us .stx__website {
+  align-self: flex-start;
+  color: var(--indigo, #924241);
+  font: 400 var(--fs-sm) / 1.6 var(--font-sans);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+
+.sj-live-find-us .stx__hours {
+  margin: 0;
+  font: 400 var(--fs-sm) / 1.5 var(--font-sans);
+  color: var(--ink);
+}
+
+.sj-live-find-us .stx__tel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 2px 0 0;
+}
+
+.sj-live-find-us .stx__tel a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 400 var(--fs-md) / 1.3 var(--font-display);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.sj-live-find-us .stx__tel i {
+  font-size: 16px;
+  color: var(--indigo, #924241);
+}
+
+.sj-live-find-us .stx__go {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 0 20px;
+  min-height: 46px;
+  border-radius: var(--radius);
+  background: var(--ink, #404041);
+  font: 500 var(--fs-xs) / 1 var(--font-sans);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ivory, #f6f4e6);
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+.sj-live-find-us .stx__go:hover {
+  background: var(--indigo, #924241);
+}
+
+.sj-live-find-us .stx__mapbox {
+  position: relative;
+  border-left: 1px solid var(--hairline, rgba(64, 64, 65, 0.14));
+}
+
+.sj-live-find-us .stx__mapbox .stx__map {
+  position: absolute;
+  inset: 0;
+}
+
+.sj-live-find-us .stx__cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px 40px;
+  margin-top: clamp(28px, 3.4vw, 48px);
+  padding: clamp(26px, 3vw, 44px);
+  border-radius: var(--radius);
+  background: var(--ink, #404041);
+  color: var(--ivory, #f6f4e6);
+}
+
+.sj-live-find-us .stx__cta-title {
+  margin: 0;
+  font: 400 var(--fs-3xl) / 1.1 var(--font-display);
+  color: var(--ivory, #f6f4e6);
+}
+
+.sj-live-find-us .stx__cta p {
+  margin: 8px 0 0;
+  font: 400 var(--fs-md) / 1.6 var(--font-sans);
+  color: rgba(246, 244, 230, 0.78);
+}
+
+.sj-live-find-us .stx__cta-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.sj-live-find-us .stx__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 22px;
+  border: 1px solid rgba(246, 244, 230, 0.4);
+  border-radius: var(--radius);
+  font: 500 var(--fs-xs) / 1 var(--font-sans);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ivory, #f6f4e6);
+  text-decoration: none;
+}
+
+.sj-live-find-us .stx__btn--solid {
+  border-color: var(--ivory, #f6f4e6);
+  background: var(--ivory, #f6f4e6);
+  color: var(--ink, #404041);
+}
+
+.sj-live-find-us .stx__btn i {
+  font-size: 18px;
+  letter-spacing: 0;
+}
+
+@media (max-width: 1024px) {
+  .sj-live-find-us .stx__store,
+  .sj-live-find-us .stx__store:not(:has(.stx__mapbox)) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .sj-live-find-us .stx__mapbox {
+    grid-column: 1 / -1;
+    height: 240px;
+    border-left: 0;
+    border-top: 1px solid var(--hairline, rgba(64, 64, 65, 0.14));
+  }
+}
+
+@media (max-width: 720px) {
+  .sj-live-find-us.stx {
+    padding-top: 28px;
+  }
+
+  .sj-live-find-us .stx__title {
+    font-size: var(--fs-4xl);
+  }
+
+  .sj-live-find-us .stx__filter {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    justify-self: stretch;
+    width: auto;
+    max-width: none;
+    margin-inline: calc(-1 * var(--gutter, 16px));
+    padding: 0 var(--gutter, 16px);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .sj-live-find-us .stx__filter::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sj-live-find-us .stx__filter button {
+    flex: 0 0 auto;
+  }
+
+  .sj-live-find-us .stx__store,
+  .sj-live-find-us .stx__store:not(:has(.stx__mapbox)) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sj-live-find-us .stx__media {
+    aspect-ratio: 4 / 3;
+    min-height: 0;
+  }
+
+  .sj-live-find-us .stx__info {
+    padding: 22px 18px 24px;
+  }
+
+  .sj-live-find-us .stx__name {
+    font-size: var(--fs-2xl);
+  }
+
+  .sj-live-find-us .stx__go {
+    align-self: stretch;
+    justify-content: center;
+  }
+
+  .sj-live-find-us .stx__mapbox {
+    height: 220px;
+  }
+
+  .sj-live-find-us .stx__cta {
+    text-align: left;
+  }
+
+  .sj-live-find-us .stx__cta-acts,
+  .sj-live-find-us .stx__btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+
+.sj-live-find-us.fux { padding-top: 0; }
+.sj-live-find-us .fux__links { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); border-top:1px solid var(--hairline); border-left:1px solid var(--hairline); }
+.sj-live-find-us .fux__link { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:clamp(22px,3vw,38px); color:var(--ink); text-decoration:none; border-right:1px solid var(--hairline); border-bottom:1px solid var(--hairline); transition:background .2s; }
+.sj-live-find-us .fux__link:hover { background:var(--ivory-2); }
+.sj-live-find-us .fux__link:focus-visible { outline:2px solid var(--indigo); outline-offset:-4px; }
+.sj-live-find-us .fux__link strong { display:block; font:400 var(--fs-xl)/1.3 var(--font-display); }
+.sj-live-find-us .fux__link span span,
+.sj-live-find-us .fux__link .fux__detail { display:block; margin-top:8px; font:400 var(--fs-sm)/1.6 var(--font-sans); color:var(--ink-soft); overflow-wrap:anywhere; }
+.sj-live-find-us .fux__note { margin-top:24px; font:400 var(--fs-sm)/1.7 var(--font-sans); color:var(--ink-soft); }
+@media(max-width:900px) { .sj-live-find-us .fux__links { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:540px) { .sj-live-find-us .fux__links { grid-template-columns:1fr; } }
+
+/* The three Material Symbols and the source page's WhatsApp glyph. */
+.sj-live-find-us i.sj-i { display:inline-block; flex:none; width:1em; height:1em; overflow:hidden; font-style:normal; line-height:1; vertical-align:-.16em; transition:transform .3s ease; }
+.sj-live-find-us i.sj-i::before { display:block; width:1em; font-size:1em; line-height:1; text-align:center; }
+.sj-live-find-us i.ms::before { font-family:"SJ Find Us Symbols"; font-weight:400; letter-spacing:normal; text-transform:none; white-space:nowrap; direction:ltr; font-feature-settings:"liga"; -webkit-font-smoothing:antialiased; font-variation-settings:"opsz" 24,"wght" 400; }
+.sj-live-find-us i.fab::before { font-family:"SJ Find Us Brands"; font-weight:400; -webkit-font-smoothing:antialiased; transform:scale(.84); }
+.sj-live-find-us .sj-i--arrow-right::before { content:"arrow_forward"; }
+.sj-live-find-us .sj-i--phone::before { content:"call"; }
+.sj-live-find-us .sj-i--map-pin::before { content:"location_on"; }
+.sj-live-find-us .sj-i--whatsapp-logo::before { content:"\f232"; }
+.sj-live-find-us a:hover > i.sj-i--arrow-right { transform:translateX(3px); }
+@media(prefers-reduced-motion:reduce) { .sj-live-find-us *, .sj-live-find-us *::before { transition:none!important; } }
