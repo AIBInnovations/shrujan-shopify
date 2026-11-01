@@ -235,6 +235,8 @@
     <script src="{{ 'sj-home.js' | asset_url }}"></script>
     <script type="module" src="{{ 'sj-craft3d.js' | asset_url }}"></script>
     {%- endif %}
+    {%- comment -%} dresses Slide's chat in the site's look; must stay above the widget's script (hand-written) {%- endcomment %}
+    <script src="{{ 'sj-slide.js' | asset_url }}" defer></script>
   <!-- slide-storefront:start (storefront features of the Slide custom app, added by Slide, safe to remove) -->
 <script src="https://cdn.synquic.com/widget/widget.min.js?orgId=682504d9-14ac-4b95-9087-b0eab048cd9b" defer></script>
 <!-- slide-storefront:end -->

@@ -204,7 +204,8 @@ make an unstocked variant purchasable.
   `layout/theme.liquid` does nothing until Slide → Contacts → Widget is on, and
   the AI agent answers once its Channels tab turns on Website chat.
   `assets/sj-slide.css` hands the helpdesk's corner to the chat and hides the
-  chat behind the bag, search, enquiry and phone-menu layers.
+  chat behind the bag, search, enquiry and phone-menu layers; `assets/sj-slide.js`
+  gives the chat the site's colours and fonts.
 - Newsletter + enquiry forms reproduce the React behavior (client-side success
   message, nothing submitted). Swap in `{% form %}` tags when you want them
   live.
