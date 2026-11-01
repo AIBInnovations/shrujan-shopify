@@ -200,6 +200,11 @@ make an unstocked variant purchasable.
 - Cart/search/account/collection templates are minimal stubs (the React build
   had no such flows); the required template set exists so the theme uploads
   cleanly.
+- Slide's website chat is switched on in Slide, not here: the widget script in
+  `layout/theme.liquid` does nothing until Slide → Contacts → Widget is on, and
+  the AI agent answers once its Channels tab turns on Website chat.
+  `assets/sj-slide.css` hands the helpdesk's corner to the chat and hides the
+  chat behind the bag, search, enquiry and phone-menu layers.
 - Newsletter + enquiry forms reproduce the React behavior (client-side success
   message, nothing submitted). Swap in `{% form %}` tags when you want them
   live.

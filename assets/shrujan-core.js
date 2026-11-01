@@ -136,6 +136,10 @@
       smoothWheel: true,
       // leave touch devices on native scrolling — it already feels right there
       syncTouch: false,
+      // Slide's chat lives in a closed shadow root, so the data-lenis-prevent
+      // the theme's own panels carry cannot reach it; without this the wheel
+      // moves the page behind the chat instead of its messages
+      prevent: function (node) { return node.id === 'synquic-widget-host'; },
     });
 
     lenisInstance = lenis;
