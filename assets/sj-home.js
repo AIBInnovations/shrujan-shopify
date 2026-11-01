@@ -1221,6 +1221,23 @@
   else document.addEventListener('sj:revealed', motion, { once: true });
 })();
 
+/* the stores: the thread sews itself across the cloth as it comes into view,
+   once. Armed from here, so without this script everything simply shows. */
+(function () {
+  var cloth = document.querySelector('.st');
+  if (!cloth || !('IntersectionObserver' in window)) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  cloth.classList.add('is-armed');
+  var stops = cloth.querySelectorAll('.st__stop').length;
+  var io = new IntersectionObserver(function (seen) {
+    if (!seen[0].isIntersecting) return;
+    io.disconnect();
+    cloth.classList.add('is-sewn');
+    setTimeout(function () { cloth.classList.add('is-done'); }, stops * 340 + 700);
+  }, { threshold: 0.4 });
+  io.observe(cloth);
+})();
+
 /* The reviews, one at a time, and the journal's grid. */
 (function () {
   var gsap = window.gsap;

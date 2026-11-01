@@ -63,7 +63,7 @@
           assign q = 'Shrujan, ' | append: q | url_encode
           assign slug = s_r | handleize
         -%}
-        <article class="stx__store" data-region="{{ slug }}" {{ b.shopify_attributes }}>
+        <article class="stx__store" id="{{ s_n | handleize }}" data-region="{{ slug }}" {{ b.shopify_attributes }}>
           <div class="stx__media">
             {%- if s_img != blank -%}<img src="{{ s_img }}" alt="{{ s_alt | escape }}" loading="lazy">
             {%- else -%}<iframe class="stx__map stx__map--big" src="https://maps.google.com/maps?q={{ q }}&z=15&output=embed" title="Map: Shrujan {{ s_n | escape }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>{%- endif -%}
@@ -103,7 +103,7 @@
           assign q = 'Shrujan, ' | append: q | url_encode
           assign slug = s_r | handleize
         -%}
-        <article class="stx__store" data-region="{{ slug }}">
+        <article class="stx__store" id="{{ s_n | handleize }}" data-region="{{ slug }}">
           <div class="stx__media">
             {%- if s_img != blank -%}<img src="{{ s_img }}" alt="{{ s_alt | escape }}" loading="lazy">
             {%- else -%}<iframe class="stx__map stx__map--big" src="https://maps.google.com/maps?q={{ q }}&z=15&output=embed" title="Map: Shrujan {{ s_n | escape }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>{%- endif -%}

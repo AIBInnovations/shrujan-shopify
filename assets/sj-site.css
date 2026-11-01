@@ -447,32 +447,63 @@ html.sj-hdr-away .site-header {
   }
 }
 
-/* ---- Shrujan stores on the home page (stores_section.py): the head
-   centred, the six stores as cards, three to a row; on phones a row that
-   scrolls sideways, so the section stays short ---- */
+/* ---- Shrujan stores on the home page (stores_section.py). The addresses and
+   maps live on Find Us now, so this is the way there (the user, 2026-11-01): a
+   length of red cloth hemmed with a running stitch, one thread sewn across it
+   through the stores, each a cross-stitch. No photograph, on purpose: the
+   sections either side are full of them. On phones the thread runs down the
+   side and the stops become a list. The stitch is the same 10 on, 7 off
+   everywhere. rest.js sews it in (.is-armed, then .is-sewn); without that
+   everything simply shows. ---- */
 .st {
-  margin-inline: var(--gutter, 5.2vw);
-  padding: var(--sec-pad, clamp(48px, 6vw, 96px)) 0;
+  --st-cream: var(--page-bg, #f6f4e6);
+  --st-soft: rgba(246, 244, 230, 0.8);
+  --st-hem: rgba(246, 244, 230, 0.5);
+  --st-pad: clamp(36px, 4.4vw, 68px);
+  --st-rise: 24px; /* how far a knot sits off the middle of its stop */
+  position: relative;
+  margin: var(--sec-pad, clamp(48px, 6vw, 96px)) var(--gutter, 5.2vw);
+  padding: var(--st-pad) var(--st-pad) calc(var(--st-pad) * 0.5);
+  overflow: hidden;
+  border-radius: var(--radius, 7px);
+  background: var(--grain-a, none) 0 0 / 240px 240px, var(--gerua, #924241);
+  color: var(--st-cream);
+}
+
+/* the hem */
+.st::before {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  pointer-events: none;
+  --st-h: repeating-linear-gradient(90deg, var(--st-hem) 0 10px, transparent 10px 17px);
+  --st-v: repeating-linear-gradient(180deg, var(--st-hem) 0 10px, transparent 10px 17px);
+  background:
+    var(--st-h) top / 100% 1.5px no-repeat,
+    var(--st-h) bottom / 100% 1.5px no-repeat,
+    var(--st-v) left / 1.5px 100% no-repeat,
+    var(--st-v) right / 1.5px 100% no-repeat;
 }
 
 .st__head {
+  position: relative;
   display: grid;
-  justify-items: center;
-  text-align: center;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: clamp(24px, 4vw, 64px);
 }
 
 .st__eyebrow {
-  margin: 0 0 14px;
-  font:500 var(--fs-2xs)/1.3 var(--font-sans);
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--ink-soft, #706e68);
+  margin: 0 0 clamp(12px, 1.2vw, 18px);
+  font-family: var(--font-sans);
+  color: var(--st-soft);
 }
 
 .st__title {
   margin: 0;
-  font:400 var(--fs-5xl)/0.96 var(--font-display);
-  color: var(--ink);
+  font-family: var(--font-serif);
+  font-weight: 400;
+  color: var(--st-cream);
 }
 
 .st__title span,
@@ -482,127 +513,303 @@ html.sj-hdr-away .site-header {
 
 .st__title em {
   font-style: normal;
-  color: var(--indigo, #924241);
+  color: var(--sand, #e4dcc6);
 }
 
 .st__lede {
-  max-width: 46ch;
-  margin: clamp(12px, 1.4vw, 20px) 0 0;
-  font:400 var(--fs-md)/1.55 var(--font-sans);
-  color: var(--ink-soft, #706e68);
+  max-width: 50ch;
+  margin: clamp(12px, 1.2vw, 18px) 0 0;
+  color: var(--st-soft);
 }
 
-.st__grid {
+.st__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: clamp(16px, 1.05vw, 20px) clamp(28px, 2.2vw, 40px);
+  border-radius: var(--radius, 7px);
+  background: var(--st-cream);
+  color: var(--ink, #404041);
+  font: 500 var(--fs-sm) / 1 var(--font-sans);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.st__cta i {
+  font-size: 18px;
+  transition: transform 0.25s ease;
+}
+
+/* the thread, edge to edge of the cloth: one stop's width of wave in each */
+.st__route {
+  position: relative;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(12px, 1.4vw, 20px);
-  margin: clamp(28px, 3vw, 46px) 0 0;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  margin: clamp(10px, 1.4vw, 22px) calc(-1 * var(--st-pad)) 0;
   padding: 0;
   list-style: none;
 }
 
-.st__card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: clamp(20px, 2vw, 28px);
-  border: 1px solid var(--hairline, rgba(64, 64, 65, 0.14));
-  border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.38);
-  transition: border-color 0.3s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+.st__stop {
+  position: relative;
+  height: clamp(170px, 14.4vw, 208px);
 }
 
-.st__card:hover {
-  border-color: rgba(146, 66, 65, 0.35);
-  box-shadow: 0 22px 40px -32px rgba(60, 40, 24, 0.5);
-  transform: translateY(-3px);
+.st__thread {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 64px;
+  margin-top: -32px;
+  overflow: visible;
+  pointer-events: none;
 }
 
-.st__pin {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
+.st__stop:nth-child(even) .st__thread {
+  transform: scaleY(-1);
+}
+
+.st__thread path {
+  fill: none;
+  stroke: var(--st-cream);
+  stroke-width: 1.75;
+  stroke-dasharray: 10 7;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.st__link {
+  position: absolute;
+  inset: 0;
+  display: block;
+  color: var(--st-cream);
+  text-decoration: none;
+}
+
+/* the knot: a cross-stitch, on a dab of the cloth so the thread stops at it */
+.st__x {
+  position: absolute;
+  top: calc(50% + var(--st-rise));
+  left: 50%;
+  width: 22px;
+  height: 22px;
+  margin: -11px 0 0 -11px;
   border-radius: 50%;
-  background: var(--page-bg-2, #ede9d8);
-  font-size: 19px;
-  color: var(--indigo, #924241);
+  background: var(--gerua, #924241);
+  transition: transform 0.3s ease;
+}
+
+.st__stop:nth-child(even) .st__x {
+  top: calc(50% - var(--st-rise));
+}
+
+.st__x::before,
+.st__x::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 2px;
+  margin: -1px 0 0 -8px;
+  border-radius: 2px;
+  background: var(--st-cream);
+  transform: rotate(45deg);
+}
+
+.st__x::after {
+  transform: rotate(-45deg);
+}
+
+.st__label {
+  position: absolute;
+  top: calc(50% + var(--st-rise) + 18px);
+  right: 8px;
+  left: 8px;
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.st__stop:nth-child(even) .st__label {
+  top: auto;
+  bottom: calc(50% + var(--st-rise) + 18px);
 }
 
 .st__name {
-  margin: 6px 0 0;
-  font:400 var(--fs-xl)/1.2 var(--font-display);
-  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: var(--fs-xl);
+  line-height: 1.15;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 5px;
+  transition: text-decoration-color 0.25s ease;
 }
 
-.st__addr {
-  margin: 0;
-  font:400 var(--fs-sm)/1.55 var(--font-sans);
-  color: var(--ink-soft, #706e68);
-}
-
-.st__tel {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 14px;
-  margin: 2px 0 0;
-  font:400 var(--fs-sm)/1.4 var(--font-sans);
-}
-
-.st__tel a {
-  color: var(--ink);
-  text-decoration: none;
-}
-
-.st__tel a:hover {
-  color: var(--indigo, #924241);
-}
-
-.st__go {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: auto;
-  padding-top: 10px;
-  font:500 var(--fs-2xs)/1 var(--font-sans);
-  letter-spacing: 0.2em;
+.st__place {
+  font-family: var(--font-sans);
+  font-size: var(--fs-2xs);
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  text-decoration: none;
-  color: var(--indigo, #924241);
+  color: var(--st-soft);
 }
 
-.st__go i {
-  font-size: 15px;
-}
+@media (hover: hover) {
+  .st__cta:hover {
+    background: var(--ink-deep, #2b2b2c);
+    color: var(--st-cream);
+  }
 
-@media (max-width: 1024px) {
-  .st__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .st__cta:hover i {
+    transform: translateX(4px);
+  }
+
+  .st__link:hover .st__x {
+    transform: rotate(90deg) scale(1.2);
+  }
+
+  .st__link:hover .st__name {
+    text-decoration-color: currentColor;
   }
 }
 
-@media (max-width: 640px) {
-  .st__title {
-    font-size: var(--fs-4xl);
-  }
+.st__cta:focus-visible,
+.st__link:focus-visible {
+  outline: 2px solid var(--st-cream);
+  outline-offset: 3px;
+}
 
-  .st__grid {
+/* the sewing: stop by stop along the thread, each knot pulled tight as the
+   thread reaches it */
+.st.is-armed .st__thread {
+  clip-path: inset(-12px 100% -12px 0);
+}
+
+.st.is-armed .st__x,
+.st.is-armed .st__label {
+  opacity: 0;
+}
+
+.st.is-armed .st__x {
+  transform: scale(0.3);
+}
+
+.st.is-armed .st__label {
+  transform: translateY(8px);
+}
+
+.st.is-sewn .st__thread {
+  clip-path: inset(-12px -2px -12px 0);
+  transition: clip-path 0.34s linear calc(var(--i) * 0.34s);
+}
+
+.st.is-sewn .st__x,
+.st.is-sewn .st__label {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.4s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--i) * 0.34s + 0.17s);
+}
+
+/* once sewn, the knot answers the pointer at once */
+.st.is-done .st__x {
+  transition: transform 0.3s ease;
+  transition-delay: 0s;
+}
+
+/* phones and small tablets: the thread down the side, the stops a list, the
+   button last so it is what the list leads to */
+@media (max-width: 900px) {
+  .st {
+    --st-pad: 28px;
     display: flex;
-    gap: 10px;
-    margin-inline: calc(-1 * var(--gutter, 18px));
-    padding: 4px var(--gutter, 18px) 10px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
+    flex-direction: column;
+    padding-bottom: 28px;
   }
 
-  .st__grid::-webkit-scrollbar {
+  .st__head {
+    display: contents;
+  }
+
+  .st__words,
+  .st__route,
+  .st__cta {
+    position: relative;
+  }
+
+  .st__route {
+    display: block;
+    order: 1;
+    margin: 20px 0 0;
+  }
+
+  .st__route::before {
+    content: '';
+    position: absolute;
+    top: 22px;
+    bottom: 22px;
+    left: 10px;
+    width: 1.75px;
+    background: repeating-linear-gradient(180deg, var(--st-cream) 0 10px, transparent 10px 17px);
+  }
+
+  .st__stop {
+    height: auto;
+  }
+
+  .st__thread {
     display: none;
   }
 
-  .st__card {
-    flex: 0 0 82%;
-    scroll-snap-align: center;
+  .st__link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    padding-left: 36px;
+  }
+
+  .st__x,
+  .st__stop:nth-child(even) .st__x {
+    top: 50%;
+    left: 0;
+    margin: -11px 0 0;
+  }
+
+  .st__label,
+  .st__stop:nth-child(even) .st__label {
+    position: static;
+    display: flex;
+    flex: 1 1 auto;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    text-align: left;
+  }
+
+  .st__place {
+    text-align: right;
+  }
+
+  .st__cta {
+    order: 2;
+    margin-top: 22px;
+  }
+
+  .st.is-armed .st__route::before {
+    clip-path: inset(0 -4px 100% -4px);
+  }
+
+  .st.is-sewn .st__route::before {
+    clip-path: inset(0 -4px 0 -4px);
+    transition: clip-path 2s linear;
   }
 }
 
@@ -1129,21 +1336,6 @@ html.sj-hdr-away .site-header {
   .shop-banner__side {
     padding-top: 24px;
   }
-}
-
-/* ---- the home stores section: on to the Stores page ---- */
-.st__all {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: clamp(16px, 1.8vw, 24px);
-  padding-bottom: 6px;
-  border-bottom: 1px solid currentColor;
-  font: 500 var(--fs-xs) / 1 var(--font-sans);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--indigo, #924241);
-  text-decoration: none;
 }
 
 /* ---- the Stores page (sections/page-stores.liquid, stores_section.py):
