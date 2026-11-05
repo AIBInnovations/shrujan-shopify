@@ -11,7 +11,47 @@
   "sections": {
     "home-hero": {
       "type": "home-hero",
-      "settings": {}
+      "settings": {},
+      "blocks": {
+        "hero_soof": {
+          "type": "story",
+          "settings": {
+            "film": "sj-embroidery-detail-hero.mp4",
+            "start": 0,
+            "poster_asset": "sj-embroidery-detail-hero.webp",
+            "title": "Consciously crafted\nsince 1969.",
+            "btn_label": "Shop the collection",
+            "btn_link": "/pages/shop-shrujan"
+          }
+        },
+        "hero_ajrakh": {
+          "type": "story",
+          "settings": {
+            "film": "craft-ajrakh.mp4",
+            "start": 8,
+            "poster_asset": "craft-ajrakh-poster.webp",
+            "title": "A sustainable story\nof the crafts of Kutch.",
+            "btn_label": "Craft Traditions",
+            "btn_link": "/pages/video"
+          }
+        },
+        "hero_weaving": {
+          "type": "story",
+          "settings": {
+            "film": "craft-weaving.mp4",
+            "start": 8,
+            "poster_asset": "craft-weaving-poster.webp",
+            "title": "Threads\nof life.",
+            "btn_label": "The Shrujan Story",
+            "btn_link": "/pages/the-shrujan-story"
+          }
+        }
+      },
+      "block_order": [
+        "hero_soof",
+        "hero_ajrakh",
+        "hero_weaving"
+      ]
     },
     "home-craft3d": {
       "type": "home-craft3d",
@@ -96,8 +136,8 @@
             "img_asset": "sj-black-pakko-hand-embroidered-kanchli-1.webp",
             "alt": "Model wearing the black pakko hand embroidered kanchli",
             "name": "Black Pakko Hand Embroidered Kanchli",
-            "craft": "Pakko · Kutch",
-            "price": "₹ 25,000",
+            "craft": "Pakko \u00b7 Kutch",
+            "price": "\u20b9 25,000",
             "sold": 412,
             "note": "Reordered by 6 in 10 buyers",
             "swatches": "#241f1f, #c7a56a, #f2ede0",
@@ -110,9 +150,9 @@
             "img_asset": "sj-green-hand-woven-top-1.webp",
             "alt": "Green Hand woven Top, made in Kutch",
             "name": "Green Hand woven Top",
-            "craft": "Handloom · Bhujodi",
-            "price": "₹ 7,040",
-            "was_price": "₹ 8,800",
+            "craft": "Handloom \u00b7 Bhujodi",
+            "price": "\u20b9 7,040",
+            "was_price": "\u20b9 8,800",
             "sold": 368,
             "note": "Handwoven, then cut in the atelier",
             "swatches": "#2f6b52, #c7a56a, #f2ede0",
@@ -126,7 +166,7 @@
             "alt": "Tote Bag, hand-embroidered in Kutch",
             "name": "Tote Bag",
             "craft": "Kutchi hand-embroidery",
-            "price": "₹ 6,800",
+            "price": "\u20b9 6,800",
             "sold": 344,
             "note": "Our most gifted piece",
             "swatches": "#8d2f26, #c7a56a, #f2ede0",
@@ -140,8 +180,8 @@
             "alt": "Ijari Mashroo Pant, made in Kutch",
             "name": "Ijari Mashroo Pant",
             "craft": "Kutchi hand-embroidery",
-            "price": "₹ 8,800",
-            "was_price": "₹ 11,000",
+            "price": "\u20b9 8,800",
+            "was_price": "\u20b9 11,000",
             "sold": 291,
             "note": "Mashroo silk, woven in Bhuj",
             "swatches": "#8d2f26, #c7a56a, #f2ede0",
@@ -155,7 +195,7 @@
             "alt": "Shawl, hand-embroidered in Kutch",
             "name": "Shawl",
             "craft": "Kutchi hand-embroidery",
-            "price": "₹ 22,000",
+            "price": "\u20b9 22,000",
             "sold": 268,
             "note": "Warm enough for a desert winter",
             "swatches": "#8d2f26, #c7a56a, #f2ede0",
@@ -168,9 +208,9 @@
             "img_asset": "sj-khadi-hand-woven-dress-1.webp",
             "alt": "Khadi Hand woven Dress, made in Kutch",
             "name": "Khadi Hand woven Dress",
-            "craft": "Khadi handloom · Kutch",
-            "price": "₹ 5,950",
-            "was_price": "₹ 8,500",
+            "craft": "Khadi handloom \u00b7 Kutch",
+            "price": "\u20b9 5,950",
+            "was_price": "\u20b9 8,500",
             "sold": 233,
             "note": "Khadi, and it softens with every wash",
             "swatches": "#c9b79c, #c7a56a, #f2ede0",
@@ -184,7 +224,7 @@
             "alt": "Crossbody Bag, hand-embroidered in Kutch",
             "name": "Crossbody Bag",
             "craft": "Kutchi hand-embroidery",
-            "price": "₹ 6,000",
+            "price": "\u20b9 6,000",
             "sold": 214,
             "note": "Jat Garasiya work, counted thread",
             "swatches": "#8d2f26, #c7a56a, #f2ede0",
@@ -198,7 +238,7 @@
             "alt": "Model wearing the purple hand embroidered kanchli",
             "name": "Purple Hand Embroidered Kanchli",
             "craft": "Kutchi hand-embroidery",
-            "price": "₹ 28,000",
+            "price": "\u20b9 28,000",
             "sold": 196,
             "note": "Three weeks of hand embroidery",
             "swatches": "#5b3f6b, #c7a56a, #f2ede0",
@@ -212,7 +252,7 @@
             "alt": "Cushion Cover, hand-embroidered in Kutch",
             "name": "Cushion Cover",
             "craft": "Kutchi hand-embroidery",
-            "price": "₹ 3,600",
+            "price": "\u20b9 3,600",
             "sold": 181,
             "note": "The easiest way to start",
             "swatches": "#8d2f26, #c7a56a, #f2ede0",
@@ -226,7 +266,7 @@
             "alt": "Potli Bag, hand-embroidered in Kutch",
             "name": "Potli Bag",
             "craft": "Kutchi hand-embroidery",
-            "price": "₹ 3,500",
+            "price": "\u20b9 3,500",
             "sold": 167,
             "note": "Ahir stitch, sells out every festive season",
             "swatches": "#8d2f26, #c7a56a, #f2ede0",
@@ -240,7 +280,7 @@
             "alt": "Hand Bag, hand-embroidered in Kutch",
             "name": "Hand Bag",
             "craft": "Kutchi hand-embroidery",
-            "price": "₹ 3,500",
+            "price": "\u20b9 3,500",
             "sold": 152,
             "note": "Carried daily by half the studio",
             "swatches": "#8d2f26, #c7a56a, #f2ede0",
@@ -254,7 +294,7 @@
             "alt": "Mobile Pouch, hand-embroidered in Kutch",
             "name": "Mobile Pouch",
             "craft": "Kutchi hand-embroidery",
-            "price": "₹ 1,200",
+            "price": "\u20b9 1,200",
             "sold": 138,
             "note": "The one people buy in threes",
             "swatches": "#8d2f26, #c7a56a, #f2ede0",
@@ -625,7 +665,7 @@
           "settings": {
             "fallback": "story-chanda.webp",
             "alt": "Chanda Shroff, the founder of Shrujan",
-            "caption": "Chanda “Kaki” Shroff"
+            "caption": "Chanda \u201cKaki\u201d Shroff"
           }
         },
         "tile-3": {
@@ -773,7 +813,7 @@
             "name": "Ananya Iyer",
             "place": "Bengaluru",
             "label": "Potli Bag",
-            "quote": "I wore mine to my sister’s mehendi and three people asked where it was from before dinner. It photographs even better than it looks.",
+            "quote": "I wore mine to my sister\u2019s mehendi and three people asked where it was from before dinner. It photographs even better than it looks.",
             "buy1_name": "Potli Bag",
             "photo_context": "From the Shrujan collection",
             "pick_product": "ahir-batwa-1",
@@ -918,12 +958,12 @@
             "place": "Bengaluru",
             "label": "The people behind Shrujan",
             "quote": "The customer care team sent me photographs from the workshop while it was being stitched. That is not something you forget.",
-            "buy1_name": "From the craftswoman’s hands",
+            "buy1_name": "From the craftswoman\u2019s hands",
             "photo_context": "The people behind Shrujan",
             "pick_product": "",
             "photo_url": "",
             "photo_asset": "sj-nov5-hands-embroidery.webp",
-            "story_caption": "From the craftswoman’s hands",
+            "story_caption": "From the craftswoman\u2019s hands",
             "story_url": "/pages/the-shrujan-story#people"
           }
         },
@@ -1077,7 +1117,7 @@
         "b3"
       ],
       "settings": {
-        "image_alt": "Shrujan’s rani pink handwoven merino wool shawl with Soof embroidery",
+        "image_alt": "Shrujan\u2019s rani pink handwoven merino wool shawl with Soof embroidery",
         "copy": "Stoles, shawls, potlis and more, hand-embroidered by the craftswomen of Kutch."
       }
     },
@@ -1103,7 +1143,7 @@
         "eyebrow": "A sustainable story of the crafts of Kutch",
         "title_1": "Living & Learning",
         "title_2": "Design Centre (LLDC)",
-        "lede": "A museum and cultural institution dedicated to the crafts of Kutch, with galleries, research programmes and archives that explore the region’s living traditions.",
+        "lede": "A museum and cultural institution dedicated to the crafts of Kutch, with galleries, research programmes and archives that explore the region\u2019s living traditions.",
         "image_asset": "sj-lldc-banner.webp",
         "image_alt": "Figures in the ceremonial dress of Kutchi communities in an LLDC gallery, seen past a carved stone pillar",
         "image_m_asset": "sj-lldc-mobile.webp",
@@ -1118,7 +1158,7 @@
           "type": "card",
           "settings": {
             "name": "Heritage",
-            "text": "Heirloom textiles that carry the depth and detail of Kutch’s craft traditions. Each piece is made with exceptional skill and intended to be collected, preserved and passed on.",
+            "text": "Heirloom textiles that carry the depth and detail of Kutch\u2019s craft traditions. Each piece is made with exceptional skill and intended to be collected, preserved and passed on.",
             "note": "Available by enquiry.",
             "image_asset": "sj-studio-cloth-heritage.webp",
             "image_alt": "A deep red heirloom textile, embroidered with mirrors and gold thread, draped over sandstone steps",
@@ -1132,7 +1172,7 @@
             "front_asset": "sj-studio-pots.webp",
             "front_crop": "left",
             "detail_asset": "sj-heritage-detail.webp",
-            "detail_alt": "Embroidery on Shrujan’s red hand-embroidered Ahir kanchli, close up",
+            "detail_alt": "Embroidery on Shrujan\u2019s red hand-embroidered Ahir kanchli, close up",
             "words": "Timeless, Craft, Living, Traditions"
           }
         },
@@ -1165,7 +1205,7 @@
         "layout": "studio",
         "flip": false,
         "anchor": "studio",
-        "eyebrow": "Heritage · Avinya",
+        "eyebrow": "Heritage \u00b7 Avinya",
         "title_1": "Studio",
         "title_2": "Collection",
         "lede": "Limited-edition works created through tradition and experimentation.",
@@ -1183,7 +1223,7 @@
         "layout": "split",
         "flip": true,
         "anchor": "gifting",
-        "eyebrow": "Corporate · Weddings · Custom",
+        "eyebrow": "Corporate \u00b7 Weddings \u00b7 Custom",
         "title_1": "Gifting &",
         "title_2": "Collaborations",
         "lede": "We work with organisations and individuals on refined handcrafted gifting projects rooted in craft and thoughtful design.",
@@ -1229,7 +1269,7 @@
         "layout": "collage",
         "flip": false,
         "anchor": "visit",
-        "eyebrow": "The campus · Kutch",
+        "eyebrow": "The campus \u00b7 Kutch",
         "title_1": "Visit &",
         "title_2": "Experience",
         "lede": "Ways to connect more closely with Shrujan and the region of Kutch.",
