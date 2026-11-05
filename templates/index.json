@@ -1,7 +1,17 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "home-hero": {
-      "type": "home-hero"
+      "type": "home-hero",
+      "settings": {}
     },
     "home-craft3d": {
       "type": "home-craft3d",
@@ -9,7 +19,6 @@
     },
     "home-marquee": {
       "type": "home-marquee",
-      "disabled": true,
       "blocks": {
         "b1": {
           "type": "craft",
@@ -69,11 +78,14 @@
         "b6",
         "b7",
         "b8"
-      ]
+      ],
+      "disabled": true,
+      "settings": {}
     },
     "home-spotlight": {
       "type": "home-spotlight",
-      "disabled": true
+      "disabled": true,
+      "settings": {}
     },
     "home-bestsellers": {
       "type": "home-bestsellers",
@@ -264,7 +276,8 @@
         "b11",
         "b12"
       ],
-      "disabled": true
+      "disabled": true,
+      "settings": {}
     },
     "home-categories": {
       "type": "home-categories",
@@ -327,7 +340,8 @@
         "b4",
         "b5"
       ],
-      "disabled": true
+      "disabled": true,
+      "settings": {}
     },
     "home-showcase": {
       "type": "home-showcase",
@@ -367,7 +381,8 @@
         "b1",
         "b2",
         "b3"
-      ]
+      ],
+      "settings": {}
     },
     "home-reels": {
       "type": "home-reels",
@@ -414,7 +429,8 @@
         "b3",
         "b4",
         "b5"
-      ]
+      ],
+      "settings": {}
     },
     "home-house": {
       "type": "home-house",
@@ -562,7 +578,8 @@
         "b10",
         "b11",
         "b12"
-      ]
+      ],
+      "settings": {}
     },
     "home-craft-story": {
       "type": "home-craft-story",
@@ -673,10 +690,51 @@
         "b4",
         "b5",
         "b6"
-      ]
+      ],
+      "settings": {}
     },
     "home-trousseau": {
       "type": "home-trousseau",
+      "blocks": {
+        "b1": {
+          "type": "promise",
+          "settings": {
+            "icon": "truck",
+            "title": "Free shipping",
+            "copy": "On every order within India"
+          }
+        },
+        "b2": {
+          "type": "promise",
+          "settings": {
+            "icon": "arrows-counter-clockwise",
+            "title": "7-day exchange",
+            "copy": "For a credit note, valid 90 days"
+          }
+        },
+        "b3": {
+          "type": "promise",
+          "settings": {
+            "icon": "map-pin",
+            "title": "Made in Kutch",
+            "copy": "By craftswomen across 66 villages"
+          }
+        },
+        "b4": {
+          "type": "promise",
+          "settings": {
+            "icon": "clock-counter-clockwise",
+            "title": "Since 1969",
+            "copy": "Over five decades of craft"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4"
+      ],
       "settings": {
         "tr_collection": "kanchli",
         "tab_1": "Kanchli",
@@ -688,47 +746,7 @@
         "tab_4_collection": "home-decor",
         "tab_5": "Accessories",
         "tab_5_collection": "accessories"
-      },
-      "blocks": {
-        "b1": {
-          "type": "promise",
-          "settings": {
-            "title": "Free shipping",
-            "copy": "On every order within India",
-            "icon": "truck"
-          }
-        },
-        "b2": {
-          "type": "promise",
-          "settings": {
-            "title": "7-day exchange",
-            "copy": "For a credit note, valid 90 days",
-            "icon": "arrows-counter-clockwise"
-          }
-        },
-        "b3": {
-          "type": "promise",
-          "settings": {
-            "title": "Made in Kutch",
-            "copy": "By craftswomen across 66 villages",
-            "icon": "map-pin"
-          }
-        },
-        "b4": {
-          "type": "promise",
-          "settings": {
-            "title": "Since 1969",
-            "copy": "Over five decades of craft",
-            "icon": "clock-counter-clockwise"
-          }
-        }
-      },
-      "block_order": [
-        "b1",
-        "b2",
-        "b3",
-        "b4"
-      ]
+      }
     },
     "home-testimonials": {
       "type": "home-testimonials",
@@ -915,7 +933,8 @@
         "b10",
         "b11",
         "b12"
-      ]
+      ],
+      "settings": {}
     },
     "home-journal": {
       "type": "home-journal",
@@ -924,8 +943,8 @@
           "type": "card",
           "settings": {
             "url": "/pages/the-shrujan-story#journal",
-            "image_asset": "hero-bottom-2.webp",
-            "image_alt": "Block-printing tools resting on embroidered plum cloth",
+            "image_asset": "sj-shop-shawl-detail.webp",
+            "image_alt": "Detail of the blue handwoven merino wool shawl with Soof embroidery",
             "pill": "Care Guide",
             "title": "How to care for handwoven cloth"
           }
@@ -934,8 +953,8 @@
           "type": "card",
           "settings": {
             "url": "/pages/the-shrujan-story#journal",
-            "image_asset": "look-b2.webp",
-            "image_alt": "Model in a red bridal lehenga with a net dupatta",
+            "image_asset": "sj-red-hand-ahir-embroidered-kanchli-1.webp",
+            "image_alt": "Shrujan red Ahir hand-embroidered kanchli styled with an ivory sari",
             "pill": "Trousseau",
             "title": "A wedding in Kutch, stitched over two years"
           }
@@ -944,8 +963,8 @@
           "type": "card",
           "settings": {
             "url": "/pages/the-shrujan-story#journal",
-            "image_asset": "look-b1.webp",
-            "image_alt": "Model in a maroon silk sari with gold zari embroidery beside brass urns",
+            "image_asset": "sj-shawl-1-1.webp",
+            "image_alt": "Shrujan parrot green merino wool shawl with Soof embroidery",
             "pill": "Lookbook",
             "title": "The Autumn Edit: colours of the salt desert"
           }
@@ -955,7 +974,8 @@
         "b1",
         "b2",
         "b3"
-      ]
+      ],
+      "settings": {}
     },
     "home-faq": {
       "type": "home-faq",
@@ -1002,7 +1022,8 @@
         "b3",
         "b4",
         "b5"
-      ]
+      ],
+      "settings": {}
     },
     "home-shop-cta": {
       "type": "home-shop-cta",
@@ -1030,7 +1051,11 @@
         "b1",
         "b2",
         "b3"
-      ]
+      ],
+      "settings": {
+        "image_alt": "Shrujan’s rani pink handwoven merino wool shawl with Soof embroidery",
+        "copy": "Stoles, shawls, potlis and more, hand-embroidered by the craftswomen of Kutch."
+      }
     },
     "home-poster": {
       "type": "home-poster",
@@ -1056,29 +1081,14 @@
         "title_2": "Design Centre (LLDC)",
         "lede": "A museum and cultural institution dedicated to the crafts of Kutch, with galleries, research programmes and archives that explore the region’s living traditions.",
         "image_asset": "sj-lldc-banner.webp",
-        "image_m_asset": "sj-lldc-mobile.webp",
         "image_alt": "Figures in the ceremonial dress of Kutchi communities in an LLDC gallery, seen past a carved stone pillar",
+        "image_m_asset": "sj-lldc-mobile.webp",
         "btn_label": "Visit the LLDC Website",
         "btn_link": "https://shrujanlldc.org"
       }
     },
     "feature-studio": {
       "type": "home-feature",
-      "settings": {
-        "layout": "studio",
-        "flip": false,
-        "anchor": "studio",
-        "eyebrow": "Heritage · Avinya",
-        "title_1": "Studio",
-        "title_2": "Collection",
-        "lede": "Limited-edition works created through tradition and experimentation.",
-        "image_asset": "",
-        "image_alt": "",
-        "btn_label": "",
-        "btn_link": "",
-        "paper_asset": "sj-studio-paper.webp",
-        "pillar_asset": ""
-      },
       "blocks": {
         "c1": {
           "type": "card",
@@ -1126,7 +1136,22 @@
       "block_order": [
         "c1",
         "c2"
-      ]
+      ],
+      "settings": {
+        "layout": "studio",
+        "flip": false,
+        "anchor": "studio",
+        "eyebrow": "Heritage · Avinya",
+        "title_1": "Studio",
+        "title_2": "Collection",
+        "lede": "Limited-edition works created through tradition and experimentation.",
+        "image_asset": "",
+        "image_alt": "",
+        "btn_label": "",
+        "btn_link": "",
+        "paper_asset": "sj-studio-paper.webp",
+        "pillar_asset": ""
+      }
     },
     "feature-gifting": {
       "type": "home-feature",
@@ -1146,22 +1171,6 @@
     },
     "feature-visit": {
       "type": "home-feature",
-      "settings": {
-        "layout": "collage",
-        "flip": false,
-        "anchor": "visit",
-        "eyebrow": "The campus · Kutch",
-        "title_1": "Visit &",
-        "title_2": "Experience",
-        "lede": "Ways to connect more closely with Shrujan and the region of Kutch.",
-        "image_asset": "",
-        "image_alt": "",
-        "btn_label": "",
-        "btn_link": "",
-        "collage_tags": "People, Craft, Place",
-        "map_label": "Kutch",
-        "map_words": "Landscapes, Traditions, Communities"
-      },
       "blocks": {
         "c1": {
           "type": "card",
@@ -1191,7 +1200,23 @@
       "block_order": [
         "c1",
         "c2"
-      ]
+      ],
+      "settings": {
+        "layout": "collage",
+        "flip": false,
+        "anchor": "visit",
+        "eyebrow": "The campus · Kutch",
+        "title_1": "Visit &",
+        "title_2": "Experience",
+        "lede": "Ways to connect more closely with Shrujan and the region of Kutch.",
+        "image_asset": "",
+        "image_alt": "",
+        "btn_label": "",
+        "btn_link": "",
+        "collage_tags": "People, Craft, Place",
+        "map_label": "Kutch",
+        "map_words": "Landscapes, Traditions, Communities"
+      }
     }
   },
   "order": [
