@@ -347,7 +347,6 @@
           <p class="pdp__price" data-pdp-was-line>{{ variant.price | money | strip_html }}{% if has_was %}<s>{{ variant.compare_at_price | money | strip_html }}</s>{% endif %}</p>
         {%- endif -%}
         {%- if cfg.tax_note != blank %}<p class="pdp__tax">{{ cfg.tax_note | escape }}</p>{% endif -%}
-        <p class="pdp__sku" data-pdp-sku{% if variant.sku == blank %} hidden{% endif %}>SKU: {{ variant.sku | escape }}</p>
         {%- if material != blank -%}<p class="pdp__material">Material: {{ material | escape }}</p>{%- endif -%}
 
         {%- comment -%}
@@ -456,7 +455,7 @@
                     endfor
                   endif
                 -%}
-                <button type="button" class="pdp__size{% if size_label == current_size %} is-active{% endif %}" aria-pressed="{% if size_label == current_size %}true{% else %}false{% endif %}"{% if size_id != '' %} data-variant="{{ size_id }}" data-price="{{ size_price | escape }}" data-was="{{ size_was | escape }}" data-sku="{{ size_sku | escape }}"{% endif %}{% if from_variants and size_ok == false %} disabled{% endif %}>{{ size_label }}</button>
+                <button type="button" class="pdp__size{% if size_label == current_size %} is-active{% endif %}" aria-pressed="{% if size_label == current_size %}true{% else %}false{% endif %}"{% if size_id != '' %} data-variant="{{ size_id }}" data-price="{{ size_price | escape }}" data-was="{{ size_was | escape }}"{% endif %}{% if from_variants and size_ok == false %} disabled{% endif %}>{{ size_label }}</button>
               {%- endfor -%}
             </div>
           </div>
@@ -853,8 +852,6 @@
 
       var id = btn.getAttribute('data-variant');
       if (id && variantInput) variantInput.value = id;
-      var skuLine = root.querySelector('[data-pdp-sku]');
-      if (skuLine) { var sku = btn.getAttribute('data-sku') || ''; skuLine.textContent = 'SKU: ' + sku; skuLine.hidden = !sku; }
 
       var price = btn.getAttribute('data-price');
       if (!price) return;

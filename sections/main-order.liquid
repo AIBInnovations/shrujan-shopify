@@ -62,9 +62,6 @@
                   {%- if line_item.variant.title != blank and line_item.variant.title != 'Default Title' %}
                   <span class="store-table__sub">{{ line_item.variant.title }}</span>
                   {%- endif %}
-                  {%- if line_item.sku != blank %}
-                  <span class="store-table__sub">{{ line_item.sku }}</span>
-                  {%- endif %}
                   {%- if cfg.show_tracking and line_item.fulfillment %}
                   <span class="store-table__sub">
                     {{ cfg.tracking_label }}
