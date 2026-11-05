@@ -33,7 +33,7 @@
 
   /* ---- care guide ---- */
   const openCare = (e) => {
-    const care = document.querySelector('[data-pdp-care]');
+    const care = document.querySelector('[data-pdp-care]') || document.querySelector('[data-pdp-care-description]');
     if (!care) return;
     e.preventDefault();
     if (!care.classList.contains('is-open')) {
