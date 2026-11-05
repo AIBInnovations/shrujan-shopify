@@ -1458,68 +1458,173 @@
         "b7": {
           "type": "offer",
           "settings": {
-            "asset": "sj-jat-garasiya-mobile-pouch-31-1.webp",
-            "alt": "Hand-embroidered mobile pouches in Jat Garasiya work",
-            "name": "Corporate & Institutional Gifting",
-            "copy": "Shrujan collaborates with organisations seeking meaningful, high-quality gifts rooted in craft. These projects often mark important milestones, partnerships or occasions where the intention is to offer something lasting and thoughtfully made.\nOur focus is on craftsmanship, cultural integrity and thoughtful selection, ensuring each gift carries depth and value.",
+            "asset": "sj-col-pouches.webp",
+            "alt": "A hand-embroidered Jat Garasiya mobile pouch",
+            "name": "For organisations & institutions",
+            "copy": "Mark a partnership, welcome a colleague or celebrate a milestone with work rooted in the crafts of Kutch. Share your quantity, budget and occasion with our studio; we will help you put together a selection that suits the people receiving it.",
             "fact_1": "",
             "fact_2": "",
             "fact_3": "",
-            "link_label": ""
+            "link_label": "Discuss corporate gifts",
+            "enquiry_type": "Corporate & institutional"
           }
         },
         "b8": {
           "type": "offer",
           "settings": {
-            "asset": "sj-jat-garasiya-party-bag-copy-1-1.webp",
-            "alt": "Hand-embroidered party bags arranged together",
-            "name": "Wedding & Occasion Gifting",
-            "copy": "For weddings and special occasions, we offer handcrafted gifts that bring warmth and individuality to celebrations. These pieces are chosen not only for their beauty but for the stories and skills they carry, making them gifts that are remembered and valued.",
+            "asset": "sj-col-potlis.webp",
+            "alt": "An embroidered Shrujan potli on a warm peach plinth",
+            "name": "For weddings & celebrations",
+            "copy": "A potli for a wedding guest, an embroidered stole for someone close, a textile for a new home. We can help you choose gifts for the different people and moments within your celebration.",
             "fact_1": "",
             "fact_2": "",
             "fact_3": "",
-            "link_label": ""
+            "link_label": "Plan wedding gifts",
+            "enquiry_type": "Wedding & celebration"
           }
         },
         "b9": {
           "type": "offer",
           "settings": {
-            "asset": "sj-handloom-weaving-cushion-cover-5-1.webp",
-            "alt": "Handloom cushion covers in natural dyed cotton",
-            "name": "Custom Collaborations",
-            "copy": "Some projects call for something more specific. We work on custom commissions that may involve particular colours, materials or craft techniques, developed through dialogue and aligned with Shrujan\u2019s craft values.\nAll collaborations are undertaken with care, respecting both timelines and the handmade nature of the work.",
+            "asset": "sj-col-accessories.webp",
+            "alt": "Shrujan handcrafted textiles and accessories",
+            "name": "For festivals & personal occasions",
+            "copy": "For a festive visit, a birthday or a simple thank-you, choose something that will be used and kept. Explore bags, accessories and textiles in the shop, or ask the studio for help choosing.",
             "fact_1": "",
             "fact_2": "",
             "fact_3": "",
-            "link_label": ""
+            "link_label": "Find a personal gift",
+            "enquiry_type": "Festive & personal"
           }
         },
         "b10": {
           "type": "step",
           "settings": {
-            "title": "The brief",
-            "copy": "Numbers, budget, occasion and how long you have. We will tell you honestly what is possible in the time."
+            "title": "Tell us about the occasion",
+            "copy": "Start with the number of gifts, your budget, the date you need them and where they are going. Add any product or colour preferences."
           }
         },
         "b11": {
           "type": "step",
           "settings": {
-            "title": "Selection",
-            "copy": "We put a shortlist together from the crafts that suit the brief, with samples where the order justifies them."
+            "title": "Choose the pieces",
+            "copy": "Our studio will discuss a suitable selection. For custom work, we agree the materials, craft and scope of the project with you."
           }
         },
         "b12": {
           "type": "step",
           "settings": {
-            "title": "The making",
-            "copy": "The order goes to the villages best suited to it. Artisans are paid per piece, on time, for every unit made."
+            "title": "Allow time for the making",
+            "copy": "We confirm availability and the time required before the order moves ahead. Handmade work needs a timetable that respects the people making it."
           }
         },
         "b13": {
           "type": "step",
           "settings": {
-            "title": "Delivery",
-            "copy": "Packed with care and delivered to you."
+            "title": "Plan the final details",
+            "copy": "We agree the order details, packing requirements and delivery arrangements with you, so you know what to expect."
+          }
+        },
+        "gift_1": {
+          "type": "gift",
+          "settings": {
+            "product": "jat-garasiya-mobile-pouch-36",
+            "label": "Embroidered mobile pouch",
+            "craft": "Jat Garasiya \u00b7 counted cross-stitch",
+            "caption": "A small, everyday gift",
+            "image_number": 2
+          }
+        },
+        "gift_2": {
+          "type": "gift",
+          "settings": {
+            "product": "ahir-batwa-1",
+            "label": "Mutwa Mix potli",
+            "craft": "Fine Mutwa Mix embroidery",
+            "caption": "For a celebration",
+            "image_number": 1
+          }
+        },
+        "gift_3": {
+          "type": "gift",
+          "settings": {
+            "product": "neran-hand-embroidered-stole-1",
+            "label": "Neran cotton stole",
+            "craft": "Handloom cotton \u00b7 Neran embroidery",
+            "caption": "For someone close",
+            "image_number": 1
+          }
+        },
+        "gift_4": {
+          "type": "gift",
+          "settings": {
+            "product": "pouch-copy-12",
+            "label": "Embroidered zip pouch",
+            "craft": "Jat Garasiya \u00b7 counted thread work",
+            "caption": "For daily essentials",
+            "image_number": 3
+          }
+        },
+        "gift_5": {
+          "type": "gift",
+          "settings": {
+            "product": "handloom-weaving-cushion-cover-5",
+            "label": "Handwoven cushion cover",
+            "craft": "Handloom weave \u00b7 16 \u00d7 16 in",
+            "caption": "For a new home",
+            "image_number": 1
+          }
+        },
+        "gift_6": {
+          "type": "gift",
+          "settings": {
+            "product": "shawl-copy-4",
+            "label": "Soof Merino wool shawl",
+            "craft": "Handwoven Merino wool \u00b7 Soof embroidery",
+            "caption": "Something special",
+            "image_number": 1
+          }
+        },
+        "faq_1": {
+          "type": "faq",
+          "settings": {
+            "question": "Can I buy just one gift?",
+            "answer": "Yes. Choose individual pieces from the current shop. For a larger order or a coordinated selection, contact the studio with the quantity you have in mind. Availability and any order requirements will be confirmed for your selection."
+          }
+        },
+        "faq_2": {
+          "type": "faq",
+          "settings": {
+            "question": "Can you help me choose within a budget?",
+            "answer": "Share your approximate budget per gift along with the quantity and occasion. This helps our studio suggest appropriate pieces and discuss what is possible."
+          }
+        },
+        "faq_3": {
+          "type": "faq",
+          "settings": {
+            "question": "Can colours or designs be customised?",
+            "answer": "Custom commissions may involve particular colours, materials or craft techniques. Each request is considered with the studio, and depends on the brief, quantities and time available."
+          }
+        },
+        "faq_4": {
+          "type": "faq",
+          "settings": {
+            "question": "How much time should I allow?",
+            "answer": "The time required depends on the pieces, their availability and the size of the order. Share your required date at the start. We will confirm a realistic timetable before you place the order."
+          }
+        },
+        "faq_5": {
+          "type": "faq",
+          "settings": {
+            "question": "Will every gift be exactly the same?",
+            "answer": "Small variations in embroidery, weave and colour are natural in handmade pieces. If you need a coordinated selection, include that in your brief so our studio can discuss suitable options."
+          }
+        },
+        "faq_6": {
+          "type": "faq",
+          "settings": {
+            "question": "Can you arrange gift packaging and delivery?",
+            "answer": "Tell us about any packing requirements and where your gifts need to go. Our studio will confirm the available options, arrangements and any associated costs for your order."
           }
         }
       },
@@ -1533,14 +1638,37 @@
         "b10",
         "b11",
         "b12",
-        "b13"
+        "b13",
+        "gift_1",
+        "gift_2",
+        "gift_3",
+        "gift_4",
+        "gift_5",
+        "gift_6",
+        "faq_1",
+        "faq_2",
+        "faq_3",
+        "faq_4",
+        "faq_5",
+        "faq_6"
       ],
       "settings": {
         "only_handle": "studio-gifting",
         "hero_title": "Gifting with Shrujan",
-        "hero_lede": "Hand-embroidered gifts from Kutch, thoughtfully chosen for the people and occasions that matter.",
+        "hero_lede": "Hand-embroidered gifts from Kutch. For the people you hold close, the occasions you share, and the moments worth marking.",
         "hero_alt": "Handcrafted Shrujan bags, textiles and embroidered pieces",
-        "done_body": "Thank you for writing to us. Our studio will be in touch about your gifting enquiry."
+        "done_body": "Our studio will be in touch to discuss the occasion, the pieces and the details of your gifting order.",
+        "ways_eyebrow": "Gifting, for every kind of occasion",
+        "ways_title": "Choose the occasion. Make it personal.",
+        "steps_eyebrow": "From a conversation to a considered gift",
+        "steps_title": "A little planning. A lot of care.",
+        "enq_eyebrow": "Gifting & collaborations",
+        "enq_title": "Tell us about your gifts",
+        "enq_copy": "Share what you have in mind. A quantity, an approximate budget and a date help our studio make useful suggestions.",
+        "submit_label": "Send gifting enquiry",
+        "done_title": "Thank you for your enquiry.",
+        "craft_film": "sj-gifting-craft-montage.mp4",
+        "craft_poster": "sj-gifting-craft-montage.webp"
       }
     },
     "main": {
