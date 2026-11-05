@@ -5,6 +5,7 @@
 {%- endcomment -%}
 {%- if section.settings.only_handle == blank or page.handle == section.settings.only_handle -%}
 {%- render 'section-design', section: section -%}
+{{ 'sj-studio.css' | asset_url | stylesheet_tag }}
 {%- comment -%}
   Region + grid controls. Every default reproduces the built page. The steps grid
   is two across and stacks below 900px, so the column override is confined to the
@@ -73,8 +74,8 @@
 {%- assign step_blocks = section.blocks | where: 'type', 'step' -%}
 {%- capture nl %}
 {% endcapture -%}
-<div class="page">
-  <header class="page-hero page-hero--plain" data-reveal>
+<div class="page sj-studio-gifting">
+  <header class="page-hero page-hero--plain sj-gifting-hero" data-reveal>
     <div class="container page-hero__grid">
       <div class="page-hero__text">
         <p class="eyebrow">{{ section.settings.hero_eyebrow | escape }}</p>
@@ -90,7 +91,7 @@
       </div>
     </div>
 
-    <figure class="container page-hero__media" data-parallax>
+    <figure class="container page-hero__media">
       <img src="{% if section.settings.hero_img %}{{ section.settings.hero_img | image_url: width: 1600 }}{% else %}{{ 'shop-hero.webp' | asset_url }}{% endif %}" alt="{{ section.settings.hero_alt | escape }}" fetchpriority="high">
     </figure>
   </header>

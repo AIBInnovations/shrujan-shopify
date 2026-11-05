@@ -216,9 +216,11 @@
   {%- endif %}
 
   {%- if section.settings.show_cta %}
-  <section class="section container page-cta" data-reveal>
-    <p>{{ section.settings.cta_text }}</p>
-    <a class="btn" href="{{ section.settings.cta_url | default: 'https://shrujanlldc.org' }}" target="_blank" rel="noreferrer noopener">{{ section.settings.cta_label }} <i class="sj-i sj-i--arrow-right ms" style="font-size:16px" aria-hidden="true"></i></a>
+  <section class="container sj-cta-card-wrap" aria-label="Explore LLDC">
+    <div class="sj-cta-card">
+      <figure class="sj-cta-card__media"><img src="{{ 'sj-story-lldc-campus.webp' | asset_url }}" alt="The Living and Learning Design Centre campus in Ajrakhpur, Kutch" loading="lazy" width="1200" height="750"></figure>
+      <div class="sj-cta-card__body"><p class="eyebrow">Living &amp; Learning Design Centre</p><h2 class="sj-cta-card__title">There is more to discover at LLDC.</h2><p class="sj-cta-card__copy">{{ section.settings.cta_text }}</p><a class="btn" href="{{ section.settings.cta_url | default: 'https://shrujanlldc.org' }}" target="_blank" rel="noreferrer noopener">{{ section.settings.cta_label }} <span aria-hidden="true">↗</span></a></div>
+    </div>
   </section>
   {%- endif %}
 </div>
