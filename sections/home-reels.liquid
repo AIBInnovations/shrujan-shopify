@@ -134,7 +134,6 @@
         <div class="reel__media">
           <video src="{{ 'reel-' | append: forloop.index | append: '.mp4' | asset_url }}" poster="{{ 'reel-' | append: forloop.index | append: '-poster.jpg' | asset_url }}" muted {% if r.loop %}loop {% endif %}playsinline preload="none" aria-label="{{ block.settings.title | escape }}"></video>
           <span class="reel__scrim" aria-hidden="true"></span>
-          <span class="reel__no" aria-hidden="true">{% if forloop.index < 10 %}0{% endif %}{{ forloop.index }}<span> / {{ reel_total }}</span></span>
           <p class="reel__title">{{ block.settings.title | escape }}</p>
           <span class="reel__go" aria-hidden="true">Watch on Instagram <span>↗</span></span>
         </div>

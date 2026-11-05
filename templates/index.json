@@ -754,169 +754,193 @@
         "b1": {
           "type": "testimonial",
           "settings": {
-            "image_asset": "cat-c1.webp",
             "name": "Meera Shah",
             "place": "Mumbai",
-            "label": "Kora Silk Sari",
+            "label": "Skyblue Handwoven Merino Wool Shawl with Soof Embroidery",
             "quote": "What stood out most was the attention to detail: the fall, the finish, the way the border sits. Five years on it has not lost a single stitch.",
-            "buy1_asset": "cat-c1.webp",
-            "buy1_name": "Kora Silk Sari",
-            "buy2_asset": "frame-r1t4.webp",
-            "buy2_name": "Ivory Zari Blouse"
+            "buy1_name": "Skyblue Handwoven Merino Wool Shawl with Soof Embroidery",
+            "photo_context": "From the Shrujan collection",
+            "pick_product": "shawl-copy-4",
+            "photo_url": "https://cdn.shopify.com/s/files/1/0791/7554/9226/files/20251129_113732.jpg?v=1776341608",
+            "photo_asset": "",
+            "story_caption": "",
+            "story_url": "/pages/the-shrujan-story"
           }
         },
         "b2": {
           "type": "testimonial",
           "settings": {
-            "image_asset": "cat-c5.webp",
             "name": "Ananya Iyer",
             "place": "Bengaluru",
-            "label": "Chikankari Set",
+            "label": "Potli Bag",
             "quote": "I wore mine to my sister’s mehendi and three people asked where it was from before dinner. It photographs even better than it looks.",
-            "buy1_asset": "look-b1.webp",
-            "buy1_name": "Chikankari Kurta Set",
-            "buy2_asset": "frame-r1t12.webp",
-            "buy2_name": "Chanderi Dupatta"
+            "buy1_name": "Potli Bag",
+            "photo_context": "From the Shrujan collection",
+            "pick_product": "ahir-batwa-1",
+            "photo_url": "https://cdn.shopify.com/s/files/1/0791/7554/9226/files/0101686.jpg?v=1742294949",
+            "photo_asset": "",
+            "story_caption": "",
+            "story_url": "/pages/the-shrujan-story"
           }
         },
         "b3": {
           "type": "testimonial",
           "settings": {
-            "image_asset": "frame-r5t25.webp",
             "name": "Radhika Menon",
             "place": "Kochi",
-            "label": "Zardozi Lehenga",
+            "label": "The people behind Shrujan",
             "quote": "Knowing the name of the woman who embroidered it changes how you wear it. You carry it with respect, not just with pride.",
-            "buy1_asset": "cta-sarree.webp",
-            "buy1_name": "Zardozi Lehenga",
-            "buy2_asset": "frame-r5t25.webp",
-            "buy2_name": "Crimson Silk Odhani"
+            "buy1_name": "The hands behind the piece",
+            "photo_context": "The people behind Shrujan",
+            "pick_product": "",
+            "photo_url": "",
+            "photo_asset": "sj-nov5-craftswoman-courtyard.webp",
+            "story_caption": "The hands behind the piece",
+            "story_url": "/pages/the-shrujan-story#people"
           }
         },
         "b4": {
           "type": "testimonial",
           "settings": {
-            "image_asset": "frame-r2t5.webp",
             "name": "Sana Qureshi",
             "place": "Hyderabad",
-            "label": "Phulkari Kurta",
+            "label": "The people behind Shrujan",
             "quote": "It arrived wrapped in mulmul with a handwritten note about the artisan. It felt like receiving heritage, not a parcel.",
-            "buy1_asset": "cat-c2.webp",
-            "buy1_name": "Phulkari Kurta",
-            "buy2_asset": "frame-r2t5.webp",
-            "buy2_name": "Bagh Phulkari Stole"
+            "buy1_name": "Made by the craftswomen of Kutch",
+            "photo_context": "The people behind Shrujan",
+            "pick_product": "",
+            "photo_url": "",
+            "photo_asset": "sj-nov5-craftswomen-together.webp",
+            "story_caption": "Made by the craftswomen of Kutch",
+            "story_url": "/pages/the-shrujan-story#people"
           }
         },
         "b5": {
           "type": "testimonial",
           "settings": {
-            "image_asset": "cat-c2.webp",
             "name": "Kavya Nair",
             "place": "Chennai",
-            "label": "Indigo Mulmul Sari",
+            "label": "Dupatta",
             "quote": "The indigo has softened beautifully with every wash instead of fading. It drapes better in year three than it did on day one.",
-            "buy1_asset": "look-b2.webp",
-            "buy1_name": "Indigo Mulmul Sari",
-            "buy2_asset": "frame-r2t14.webp",
-            "buy2_name": "Ajrakh Print Blouse"
+            "buy1_name": "Dupatta",
+            "photo_context": "From the Shrujan collection",
+            "pick_product": "dupatta-copy",
+            "photo_url": "https://cdn.shopify.com/s/files/1/0791/7554/9226/files/IMG_20260417_155803.jpg?v=1776423670",
+            "photo_asset": "",
+            "story_caption": "",
+            "story_url": "/pages/the-shrujan-story"
           }
         },
         "b6": {
           "type": "testimonial",
           "settings": {
-            "image_asset": "frame-r3t16.webp",
             "name": "Nisha Bhatia",
             "place": "Chandigarh",
-            "label": "Zari Jacket Set",
+            "label": "Black Pakko Hand Embroidered Kanchli",
             "quote": "I ordered for my engagement with three weeks to spare. It came early, altered exactly to measure, and fit like it was drafted on me.",
-            "buy1_asset": "frame-r3t16.webp",
-            "buy1_name": "Zari Jacket Set",
-            "buy2_asset": "cat-c4.webp",
-            "buy2_name": "Tissue Silk Sharara"
+            "buy1_name": "Black Pakko Hand Embroidered Kanchli",
+            "photo_context": "From the Shrujan collection",
+            "pick_product": "kanchli-copy",
+            "photo_url": "https://cdn.shopify.com/s/files/1/0791/7554/9226/files/IMG_20260709_175825.jpg?v=1783941559",
+            "photo_asset": "",
+            "story_caption": "",
+            "story_url": "/pages/the-shrujan-story"
           }
         },
         "b7": {
           "type": "testimonial",
           "settings": {
-            "image_asset": "cat-c4.webp",
             "name": "Divya Reddy",
             "place": "Hyderabad",
-            "label": "Organza Dupatta",
+            "label": "Stole",
             "quote": "Weightless, but the embroidery still has body. I have worn it over three different outfits and it lifts every one of them.",
-            "buy1_asset": "frame-r3t26.webp",
-            "buy1_name": "Organza Suf Dupatta",
-            "buy2_asset": "look-b3.webp",
-            "buy2_name": "Chanderi Anarkali"
+            "buy1_name": "Stole",
+            "photo_context": "From the Shrujan collection",
+            "pick_product": "neran-hand-embroidered-stole-1",
+            "photo_url": "https://cdn.shopify.com/s/files/1/0791/7554/9226/files/0301988.jpg?v=1742884793",
+            "photo_asset": "",
+            "story_caption": "",
+            "story_url": "/pages/the-shrujan-story"
           }
         },
         "b8": {
           "type": "testimonial",
           "settings": {
-            "image_asset": "cta-band.webp",
             "name": "Farah Sheikh",
             "place": "Lucknow",
-            "label": "Bridal Trousseau",
+            "label": "The people behind Shrujan",
             "quote": "Two years in the making and worth every month. My mother cried when she saw the mirror work on the dupatta.",
-            "buy1_asset": "hero-right.webp",
-            "buy1_name": "Mirror-Work Bridal Set",
-            "buy2_asset": "frame-r5t15.webp",
-            "buy2_name": "Gota Patti Dupatta"
+            "buy1_name": "Mirror-work, stitched by hand",
+            "photo_context": "The people behind Shrujan",
+            "pick_product": "",
+            "photo_url": "",
+            "photo_asset": "sj-nov5-one-of-a-kind.webp",
+            "story_caption": "Mirror-work, stitched by hand",
+            "story_url": "/pages/the-shrujan-story#people"
           }
         },
         "b9": {
           "type": "testimonial",
           "settings": {
-            "image_asset": "frame-r1t20.webp",
             "name": "Tara Deshpande",
             "place": "Pune",
-            "label": "Banarasi Silk Sari",
+            "label": "Coffe Brown Hand Embroidered Kanchli",
             "quote": "I have bought silk at four times this price that did not come close. The zari is real and it shows in the light.",
-            "buy1_asset": "frame-r1t20.webp",
-            "buy1_name": "Banarasi Silk Sari",
-            "buy2_asset": "hero-bottom-2.webp",
-            "buy2_name": "Katan Silk Blouse"
+            "buy1_name": "Coffe Brown Hand Embroidered Kanchli",
+            "photo_context": "From the Shrujan collection",
+            "pick_product": "black-pakko-hand-embroidered-kanchli-copy",
+            "photo_url": "https://cdn.shopify.com/s/files/1/0791/7554/9226/files/IMG_20260709_174314_jpg.jpg?v=1783943997",
+            "photo_asset": "",
+            "story_caption": "",
+            "story_url": "/pages/the-shrujan-story"
           }
         },
         "b10": {
           "type": "testimonial",
           "settings": {
-            "image_asset": "cat-c3.webp",
             "name": "Ishita Ghosh",
             "place": "Kolkata",
-            "label": "Kantha Stole",
+            "label": "Stole",
             "quote": "Every running stitch is slightly different, which is exactly the point. Nothing about it looks machine-made.",
-            "buy1_asset": "cat-c3.webp",
-            "buy1_name": "Kantha Silk Stole",
-            "buy2_asset": "frame-r3t6.webp",
-            "buy2_name": "Tussar Kantha Sari"
+            "buy1_name": "Stole",
+            "photo_context": "From the Shrujan collection",
+            "pick_product": "pakko-hand-embroidered-stole-1",
+            "photo_url": "https://cdn.shopify.com/s/files/1/0791/7554/9226/files/0301986.jpg?v=1742884567",
+            "photo_asset": "",
+            "story_caption": "",
+            "story_url": "/pages/the-shrujan-story"
           }
         },
         "b11": {
           "type": "testimonial",
           "settings": {
-            "image_asset": "frame-r3t26.webp",
             "name": "Aditi Rao",
             "place": "Bengaluru",
-            "label": "Suf Embroidered Kurta",
+            "label": "The people behind Shrujan",
             "quote": "The customer care team sent me photographs from the workshop while it was being stitched. That is not something you forget.",
-            "buy1_asset": "frame-r2t24.webp",
-            "buy1_name": "Suf Embroidered Kurta",
-            "buy2_asset": "top-right.webp",
-            "buy2_name": "Kutchi Cotton Palazzo"
+            "buy1_name": "From the craftswoman’s hands",
+            "photo_context": "The people behind Shrujan",
+            "pick_product": "",
+            "photo_url": "",
+            "photo_asset": "sj-nov5-hands-embroidery.webp",
+            "story_caption": "From the craftswoman’s hands",
+            "story_url": "/pages/the-shrujan-story#people"
           }
         },
         "b12": {
           "type": "testimonial",
           "settings": {
-            "image_asset": "frame-r5t5.webp",
             "name": "Rhea Kapoor",
             "place": "Delhi",
-            "label": "Ajrakh Kurta Set",
+            "label": "Ranipink Handwoven Merino Wool Shawl with Soof Embroidery",
             "quote": "It has become my default for every festive lunch. Comfortable enough to sit through a long meal, sharp enough for photographs.",
-            "buy1_asset": "frame-r5t5.webp",
-            "buy1_name": "Ajrakh Kurta Set",
-            "buy2_asset": "cat-c5.webp",
-            "buy2_name": "Indigo Cotton Stole"
+            "buy1_name": "Ranipink Handwoven Merino Wool Shawl with Soof Embroidery",
+            "photo_context": "From the Shrujan collection",
+            "pick_product": "shawl-copy-3",
+            "photo_url": "https://cdn.shopify.com/s/files/1/0791/7554/9226/files/20251129_114214_ac7ae2ec-4fcb-4b4f-a3de-9e5213eae313.jpg?v=1776340807",
+            "photo_asset": "",
+            "story_caption": "",
+            "story_url": "/pages/the-shrujan-story"
           }
         }
       },
