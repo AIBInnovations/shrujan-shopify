@@ -298,7 +298,7 @@
             </button>
           {%- endfor -%}
         </div>
-        <div class="pdp__stage" tabindex="0" aria-label="Product gallery">
+        <div class="pdp__stage" style="--pdp-media-ratio: {{ product.featured_media.preview_image.aspect_ratio | default: 1 }}" tabindex="0" aria-label="Product gallery">
           {%- if shot_count > 0 -%}
             {%- for media in shots limit: shot_count -%}
               <figure class="pdp__shot{% if forloop.first %} is-active{% endif %}" aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}">

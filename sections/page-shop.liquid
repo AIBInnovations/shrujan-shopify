@@ -186,8 +186,8 @@
         </div>
         <p class="shop-banner__signature">Shrujan · Consciously crafted since 1969</p>
       </div>
-      <a class="shop-banner__portrait" href="/products/shawl-copy-4" aria-label="Explore the Skyblue Handwoven Merino Wool Shawl with Soof Embroidery">
-        <img src="{% if section.settings.hero_image %}{{ section.settings.hero_image | image_url: width: 1400 }}{% else %}{{ 'sj-shop-shawl-hero.webp' | asset_url }}{% endif %}" alt="A handwoven blue Shrujan shawl with Soof embroidery, worn over ivory clothing" fetchpriority="high" width="1000" height="1250">
+      <a class="shop-banner__portrait" href="/products/shawl-copy-4" aria-label="Explore hand-embroidered pieces by Shrujan">
+        <img src="{% if section.settings.hero_image %}{{ section.settings.hero_image | image_url: width: 1400 }}{% else %}{{ 'sj-nov5-hands-embroidery.webp' | asset_url }}{% endif %}" alt="A Shrujan craftswoman stitching a textile by hand in Kutch" fetchpriority="high" width="1000" height="1250">
         <span class="shop-banner__caption">Handwoven. Hand-embroidered. <span aria-hidden="true">↗</span></span>
       </a>
     </div>
@@ -210,6 +210,16 @@
             unless med_img
               assign med_img = med.products.first.featured_image
             endunless
+            comment
+              Prefer an original product photograph over a generated campaign image.
+            endcomment
+            for original_image in med.products.first.images
+              assign original_src = original_image.src | downcase
+              if original_src contains '.jpg' or original_src contains '.jpeg'
+                assign med_img = original_image
+                break
+              endif
+            endfor
             assign med_n = med.all_products_count
             assign med_word = 'pieces'
             if med_n == 1
