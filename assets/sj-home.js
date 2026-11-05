@@ -242,7 +242,8 @@
     var toStart = function () { if (start && v.currentTime < start - 0.4) { try { v.currentTime = start; } catch (e) {} } };
     v.addEventListener('loadedmetadata', toStart);
     v.addEventListener('timeupdate', function () {
-      if (v.duration && v.currentTime > v.duration - 5.4) { try { v.currentTime = start; } catch (e) {} }
+      // Keep short clips intact; only the longer craft films have closing cards.
+      if (v.duration && v.duration - start > 7.4 && v.currentTime > v.duration - 5.4) { try { v.currentTime = start; } catch (e) {} }
     });
     v.addEventListener('ended', function () {
       try { v.currentTime = start; } catch (e) {}
