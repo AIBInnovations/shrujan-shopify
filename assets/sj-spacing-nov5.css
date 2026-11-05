@@ -50,3 +50,6 @@
 }
 
 .sj-compact-pages [data-pdp-sku],.sj-compact-pages .pdp__sku{display:none!important}
+.sj-compact-pages .craft-open__photo{margin:22px 0 0;aspect-ratio:2.3;border-radius:var(--radius,7px);overflow:hidden}
+.sj-compact-pages .craft-open__photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 52%}
+@media(max-width:720px){.sj-compact-pages .craft-open__photo{aspect-ratio:2.1;margin-top:18px}}
