@@ -320,7 +320,7 @@
           {%- render 'piece-badge', product: product, class: 'pdp__badge', sold_out_label: cfg.sold_out_label -%}
           {%- if shot_count > 0 -%}
           <div class="pdp__gallery-tools">
-            <button type="button" data-pdp-zoom aria-label="Enlarge product photograph"><i class="sj-i sj-i--magnifying-glass-plus ms" aria-hidden="true"></i><span>View detail</span></button>
+            <button type="button" data-pdp-zoom aria-label="Enlarge product photograph"><i class="sj-i sj-i--magnifying-glass ms" aria-hidden="true"></i><span>View detail</span></button>
             {%- if shot_count > 1 -%}<div class="pdp__gallery-nav"><button type="button" data-pdp-prev aria-label="Previous photograph">←</button><span data-pdp-count aria-live="polite">1 / {{ shot_count }}</span><button type="button" data-pdp-next aria-label="Next photograph">→</button></div>{%- endif -%}
           </div>
           {%- endif -%}
@@ -331,7 +331,7 @@
         {%- if cfg.show_reviews -%}
         <div class="pdp__rating">{{ stars_rating }}<span>{{ cfg.rating }}</span><a href="#reviews">{{ cfg.review_count }} reviews</a></div>
         {%- endif -%}
-        <div class="pdp__heading"><h1 class="pdp__name">{{ product.title | escape }}</h1><button type="button" class="pdp__share" data-pdp-share aria-label="Share {{ product.title | escape }}"><i class="sj-i sj-i--share-network ms" aria-hidden="true"></i></button></div>
+        <div class="pdp__heading"><h1 class="pdp__name">{{ product.title | escape }}</h1><button type="button" class="pdp__share" data-pdp-share aria-label="Share {{ product.title | escape }}"><span>Share</span></button></div>
         <p class="pdp__share-status" data-pdp-share-status role="status"></p>
         {%- if craft != blank -%}
           <p class="pdp__craft">{{ craft }}</p>

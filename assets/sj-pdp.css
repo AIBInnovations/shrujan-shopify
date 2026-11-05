@@ -1335,5 +1335,5 @@
 .pdp__stage.has-video .pdp__gallery-tools{bottom:58px}
 .pdp__sku[hidden]{display:none}
 
-.pdp__share .sj-i::before{content:"ios_share"}
-.pdp__gallery-tools [data-pdp-zoom] .sj-i::before{content:"zoom_in"}
+
+.pdp__share{flex-basis:54px;font-size:11px;letter-spacing:.04em}
