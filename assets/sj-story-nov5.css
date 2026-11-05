@@ -116,3 +116,7 @@
 .sj-story-editorial .honour__name{font-size:26px}
 .sj-story-film{gap:24px}
 }
+/* The theme's closing typography reset normalises em; keep the requested emphasis. */
+.sj-story-editorial #founder .section-title em,
+.sj-story-editorial .sj-kaki-recognition em{font-style:italic!important}
+.sj-story-editorial .sj-kaki-recognition img{height:auto}
