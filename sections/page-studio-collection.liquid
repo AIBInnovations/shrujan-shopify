@@ -5,6 +5,7 @@
 {%- endcomment -%}
 {%- if section.settings.only_handle == blank or page.handle == section.settings.only_handle -%}
 {%- render 'section-design', section: section -%}
+{{ 'sj-studio.css' | asset_url | stylesheet_tag }}
 {%- comment -%}
   Region + grid controls. Every default reproduces the built page: the scoped
   <style> is written only when a column count differs, and it is confined to the
@@ -54,7 +55,7 @@
     {%- endif -%}
   </style>
 {%- endif -%}
-<div class="page">
+<div class="page sj-studio-collection">
   <header class="page-hero page-hero--cover page-hero--frame" data-reveal>
     <div class="page-hero__bg" aria-hidden="true">
       <img src="{% if section.settings.hero_image %}{{ section.settings.hero_image | image_url: width: 2000 }}{% else %}{{ 'look-b2.webp' | asset_url }}{% endif %}" alt="" fetchpriority="high">
@@ -144,9 +145,15 @@
 {%- endif %}
 {%- if section.settings.show_cta %}
 
-  <section class="section container page-cta" data-reveal>
-    <p>{{ section.settings.cta_copy | escape }}</p>
-    <a class="btn" href="{{ section.settings.cta_link | escape }}">{{ section.settings.cta_label | escape }} <i class="sj-i sj-i--arrow-right ms" style="font-size:16px" aria-hidden="true"></i></a>
+  <section class="container sj-cta-card-wrap" aria-label="From the studio">
+    <div class="sj-cta-card">
+      <figure class="sj-cta-card__media"><img src="{{ 'sj-nov5-hands-embroidery.webp' | asset_url }}" alt="A Shrujan craftswoman working a hand-embroidered textile" loading="lazy" width="1200" height="800"></figure>
+      <div class="sj-cta-card__body">
+        <p class="eyebrow">From the studio</p>
+        <h2 class="sj-cta-card__title">{{ section.settings.cta_copy | escape }}</h2>
+        <a class="btn" href="{{ section.settings.cta_link | default: '#letters' | escape }}">{{ section.settings.cta_label | escape }} <i class="sj-i sj-i--arrow-right ms" style="font-size:16px" aria-hidden="true"></i></a>
+      </div>
+    </div>
   </section>
 {%- endif %}
 </div>
