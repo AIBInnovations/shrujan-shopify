@@ -143,8 +143,10 @@
     {%- endif -%}
   </style>
 {%- endif -%}
+{{ 'sj-story-nov5.css' | asset_url | stylesheet_tag }}
+<div class="sj-story-editorial">
 <!-- The Shrujan Story — converted from src/pages/ShrujanStory.jsx (+ components/Lightbox.jsx) -->
-<header class="page-hero page-hero--ghost" data-reveal{% unless section.settings.enable_lightbox %} data-lightbox-enabled="false"{% endunless %}>
+<header class="page-hero page-hero--ghost sj-story-hero" data-reveal{% unless section.settings.enable_lightbox %} data-lightbox-enabled="false"{% endunless %}>
   <span class="page-hero__ghost" aria-hidden="true">{{ section.settings.ghost | escape }}</span>
 
   <div class="container page-hero__grid">
@@ -158,6 +160,10 @@
         <li><span class="page-meta__value">{{ section.settings.meta3_value | escape }}</span><span class="page-meta__label">{{ section.settings.meta3_label | escape }}</span></li>
       </ul>
     </div>
+    <figure class="sj-story-hero__photo">
+      <img src="{{ 'sj-story-class.webp' | asset_url }}" alt="Craftswomen stitching together at Shrujan’s embroidery class in Kutch" width="1500" height="1000" fetchpriority="high">
+      <figcaption>Many hands. A shared future.</figcaption>
+    </figure>
   </div>
 </header>
 
@@ -187,6 +193,19 @@
     <h2 class="section-title">{{ section.settings.origins_title }}</h2>
   </div>
 
+  <div class="sj-origin-editorial">
+  {%- if section.settings.show_origins_gallery %}
+  <div class="origin__gallery" data-reveal-child>
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'origin_shot' %}
+    <figure class="origin__shot" {{ block.shopify_attributes }}>
+      <img src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 1200 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
+    </figure>
+      {%- endif -%}
+    {%- endfor %}
+  </div>
+  {%- endif %}
+
   <div class="origin" data-reveal>
     <p class="origin__lead">{{ section.settings.origin_lead | escape }}</p>
     {%- comment -%} the rest of the story behind READ MORE, as the copy document has it {%- endcomment %}
@@ -202,17 +221,7 @@
     </details>
   </div>
 
-  {%- if section.settings.show_origins_gallery %}
-  <div class="origin__gallery" data-reveal-child>
-    {%- for block in section.blocks -%}
-      {%- if block.type == 'origin_shot' %}
-    <figure class="origin__shot" {{ block.shopify_attributes }}>
-      <img src="{% if block.settings.img %}{{ block.settings.img | image_url: width: 1200 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
-    </figure>
-      {%- endif -%}
-    {%- endfor %}
   </div>
-  {%- endif %}
 
   <blockquote class="origin__pull" data-reveal>{{ section.settings.origin_quote | escape }}</blockquote>
 
@@ -262,7 +271,14 @@
 
     <div class="founder-story__text" data-reveal>
       <p class="founder-story__lead">{{ section.settings.founder_lead | escape }}</p>
-      <div class="founder-story__body">{{ section.settings.founder_body }}</div>
+      <figure class="sj-kaki-recognition">
+        <img src="{{ 'sj-story-rolex-certificate.webp' | asset_url }}" alt="Chanda Shroff holding her Rolex Award for Enterprise certificate" loading="lazy" width="750" height="454">
+        <figcaption><em>{{ section.settings.founder_recognition | escape }}</em></figcaption>
+      </figure>
+      <details class="sj-story-more">
+        <summary>Read Kaki’s story</summary>
+        <div class="founder-story__body">{{ section.settings.founder_body }}</div>
+      </details>
 
       {%- if section.settings.legacy != blank %}
       <div class="legacy">
@@ -320,17 +336,26 @@
         {%- assign tl_year = parts[0] | strip -%}
         {%- assign tl_title = parts[1] | strip -%}
         {%- assign tl_copy = parts[2] | strip -%}
-        {%- assign tl_img = parts[3] | strip %}
+        {%- assign tl_img = parts[3] | strip -%}
+        {%- assign tl_caption = parts[4] | strip %}
     <li class="tl"{% if tl_n > journey_shown %} hidden data-tl-more{% endif %}>
-      <span class="tl__marker" aria-hidden="true"></span>
-      <p class="tl__year">{{ tl_year | escape }}</p>
-      <h3 class="tl__title">{{ tl_title | escape }}</h3>
-      {%- if tl_copy != blank %}
-      <p class="tl__copy">{{ tl_copy | escape }}</p>
-      {%- endif %}
       {%- if tl_img != blank %}
-      <figure class="tl__media"><img src="{{ tl_img | asset_url }}" alt="{{ tl_title | escape }}" loading="lazy"></figure>
+      <figure class="tl__media">
+        <img src="{{ tl_img | asset_url }}" alt="{{ tl_caption | default: tl_title | escape }}" loading="lazy">
+        {%- if tl_caption != blank %}<figcaption>{{ tl_caption | escape }}</figcaption>{%- endif %}
+      </figure>
       {%- endif %}
+      <div class="tl__body">
+        <p class="tl__year">{{ tl_year | escape }}</p>
+        <h3 class="tl__title">{{ tl_title | escape }}</h3>
+        {%- if tl_copy != blank -%}
+          {%- assign tl_sentences = tl_copy | split: '. ' -%}
+        <p class="tl__copy">{{ tl_sentences.first | escape }}{% if tl_sentences.size > 1 %}.{% endif %}</p>
+          {%- if tl_sentences.size > 1 %}
+        <details class="sj-story-more tl__more"><summary>Read this chapter</summary><p>{{ tl_copy | escape }}</p></details>
+          {%- endif -%}
+        {%- endif %}
+      </div>
     </li>
       {%- endif -%}
     {%- endfor %}
@@ -374,6 +399,22 @@
   </div>
 </section>
 {%- endif %}
+
+<section class="section container sj-story-film" aria-labelledby="sj-story-film-title">
+  <div class="sj-story-film__intro">
+    <p class="eyebrow">The work continues</p>
+    <h2 class="section-title" id="sj-story-film-title">A stitch, from her hands</h2>
+    <p>Watch the craftswomen of Kutch at work.</p>
+  </div>
+  <figure>
+    {%- capture story_film_url -%}{%- render 'sj-film-url', src: 'craft-embroidery.mp4' -%}{%- endcapture -%}
+    <video controls playsinline preload="none" poster="{{ 'sj-story-class.webp' | asset_url }}" aria-label="The hand embroidery traditions of Kutch">
+      <source src="{{ story_film_url | strip }}" type="video/mp4">
+      Your browser does not support video. <a href="{{ story_film_url | strip }}">Watch the embroidery film</a>.
+    </video>
+    <figcaption>Shrujan · Embroidery traditions of Kutch</figcaption>
+  </figure>
+</section>
 
 <!-- ---- The People of Shrujan ---- -->
 {%- if section.settings.show_people %}
@@ -465,8 +506,14 @@
         {%- assign h_name = parts[1] | strip -%}
         {%- assign h_by = parts[2] | strip -%}
         {%- assign h_note = parts[3] | strip -%}
-        {%- assign h_key = h_name | downcase %}
+        {%- assign h_key = h_name | downcase -%}
+        {%- assign h_img = parts[4] | strip -%}
+        {%- assign h_caption = parts[5] | strip %}
     <article class="honour{% if honour_feature != blank and h_key == honour_feature %} honour--feature{% endif %}">
+      {%- if h_img != blank %}
+      <figure class="honour__media"><img src="{{ h_img | asset_url }}" alt="{{ h_caption | default: h_name | escape }}" loading="lazy">{% if h_caption != blank %}<figcaption>{{ h_caption | escape }}</figcaption>{% endif %}</figure>
+      {%- endif %}
+      <div class="honour__body">
       <p class="honour__year">{{ h_year | escape }}</p>
       <h3 class="honour__name">{{ h_name | escape }}</h3>
       {%- if h_by != blank %}
@@ -475,6 +522,7 @@
       {%- if h_note != blank %}
       <p class="honour__note">{{ h_note | escape }}</p>
       {%- endif %}
+      </div>
     </article>
       {%- endif -%}
     {%- endfor %}
@@ -870,6 +918,7 @@
   window.addEventListener('hashchange', scrollToHash);
 })();
 </script>
+</div>
 {%- endif -%}
 {% schema %}
 {
@@ -905,13 +954,13 @@
       "type": "inline_richtext",
       "id": "hero_title",
       "label": "Title",
-      "default": "Fifty years of dignity, stitched by hand"
+      "default": "The hands and heart of <em>Shrujan</em>"
     },
     {
       "type": "textarea",
       "id": "hero_lede",
       "label": "Lede",
-      "default": "Shrujan is the first social enterprise in the crafts sector to empower embroidery craftswomen of Kutch to use their skill and artistry to earn a dignified livelihood."
+      "default": "A love for craft and craftspeople. A dignified livelihood for the women of Kutch. Since 1969."
     },
     {
       "type": "text",
@@ -987,9 +1036,14 @@
       "type": "textarea",
       "id": "origin_lead",
       "label": "Lead paragraph",
-      "default": "Shrujan is the first social enterprise in the crafts sector to empower embroidery craftswomen of Kutch to use their skill and artistry to earn a dignified livelihood. Today, more than two thousand craftswomen in sixty-six remote villages are part of the Shrujan family. Their economic and social empowerment comes from Shrujan’s commitment to ensure that the craft has an urban market appeal and is sought after by those who cherish the work of the hand. In this way, for the past fifty years and more, Shrujan has ensured livelihood and, in doing so, also helped safeguard a precious cultural heritage."
+      "default": "In 1969, Chanda Shroff saw a way for the women of drought-stricken Kutch to earn from the embroidery they already knew. Thirty saris became the beginning of Shrujan."
     },
-    { "type": "text", "id": "origin_more_label", "label": "Label that opens the rest of the story", "default": "Read more" },
+    {
+      "type": "text",
+      "id": "origin_more_label",
+      "label": "Label that opens the rest of the story",
+      "default": "Read more"
+    },
     {
       "type": "textarea",
       "id": "origin_quote",
@@ -1065,13 +1119,19 @@
       "type": "textarea",
       "id": "founder_lead",
       "label": "Lead paragraph",
-      "default": "Shrujan founder, Chanda Shroff is the first Indian Laureate to be honoured with the prestigious Rolex Award for Enterprise. This historic event of 2006, that put the crafts of Kutch on the global map, can be traced back to two loves of her childhood. From her mother, whom she lost at age nine, came the love for the handmade. From her freedom-fighter father, she learnt the joy of being of use."
+      "default": "To the world, she was Chanda Shroff. To the craftswomen of Kutch, she was Kaki."
+    },
+    {
+      "type": "textarea",
+      "id": "founder_recognition",
+      "label": "Rolex recognition line",
+      "default": "In 2006, Kaki became the first Indian Laureate of the Rolex Award for Enterprise, bringing the crafts of Kutch to the world."
     },
     {
       "type": "richtext",
       "id": "founder_body",
       "label": "Her story",
-      "default": "<p>Both these loves informed Shrujan, the social enterprise that she founded in 1969, to empower embroidery craftswomen of Kutch to use their skill to earn a home-based, dignified livelihood.</p><p>Chanda Shroff’s care and concern for craftswomen, her passion to safeguard a living heritage led her to initiate large-scale, visionary projects such as the Design Centre on Wheels and Pride and Enterprise. Her most ambitious project however is the Living and Learning Design Centre, a rural-based institution in Kutch dedicated to preserving and promoting all the crafts of Kutch.</p><p>Kaki, as Chanda Shroff was affectionately called, was a risk-taker. She loved challenges and treated them as puzzles to be solved. Her favourite line was, ‘There will always be problems; the fun is in finding a way out.’</p><p>Kaki passed away in 2016 at the age of 83. Her legacy is simple and radical: love your work; be mindful of each person’s dignity and self-respect; stay relevant and forward thinking and, find excellence and joy in life and work.</p>"
+      "default": "<p>Shrujan founder, Chanda Shroff is the first Indian Laureate to be honoured with the prestigious Rolex Award for Enterprise. This historic event of 2006, that put the crafts of Kutch on the global map, can be traced back to two loves of her childhood. From her mother, whom she lost at age nine, came the love for the handmade. From her freedom-fighter father, she learnt the joy of being of use.</p><p>Both these loves informed Shrujan, the social enterprise that she founded in 1969, to empower embroidery craftswomen of Kutch to use their skill to earn a home-based, dignified livelihood.</p><p>Chanda Shroff’s care and concern for craftswomen, her passion to safeguard a living heritage led her to initiate large-scale, visionary projects such as the Design Centre on Wheels and Pride and Enterprise. Her most ambitious project however is the Living and Learning Design Centre, a rural-based institution in Kutch dedicated to preserving and promoting all the crafts of Kutch.</p><p>Kaki, as Chanda Shroff was affectionately called, was a risk-taker. She loved challenges and treated them as puzzles to be solved. Her favourite line was, ‘There will always be problems; the fun is in finding a way out.’</p><p>Kaki passed away in 2016 at the age of 83. Her legacy is simple and radical: love your work; be mindful of each person’s dignity and self-respect; stay relevant and forward thinking and, find excellence and joy in life and work.</p>"
     },
     {
       "type": "text",
@@ -1137,8 +1197,8 @@
       "type": "textarea",
       "id": "journey",
       "label": "Milestones (one per line)",
-      "info": "Year | Title | Text | optional theme asset for a photograph. Separate the parts with a vertical bar.",
-      "default": "1969 | Thirty saris for Dhaneti | Volunteering at the drought-relief kitchen in Dhaneti, Chanda Shroff asks the women to embroider their traditional motifs on 30 saris. They sell at an exhibition in Mumbai, and the money goes straight back to the 30 craftswomen of the Ahir and Meghwaad Gurjar communities: the beginning of India’s first social enterprise to work with embroidery craftswomen. | story-origin-4.webp\n1971 | Into Banni, in wartime | With India at war with Pakistan and parts of Kutch still in drought, Chanda Shroff and Ranjan Shroff set off for Banni, close to the border. The Mutva craftswomen they meet begin to earn from their embroidery, and embroidery becomes an economic lifeline for Banni in the drought years.\n1972–1979 | Soof in the Jura camp | Shrujan Arts and Crafts takes shape. In the refugee camp at Jura, set up after the war, Sonuben teaches Soof, the counted-thread embroidery of the Meghwaad Maaru and Sodha communities. By 1975, 300 women in 14 villages have joined the Shrujan family.\n1980–1983 | Stencils, London and a Trust | Stencils replace hand-drawn designs, letting Shrujan give work to 700 women in 32 villages. The first international exhibition opens in London in 1982, and in 1983 Shrujan Arts and Crafts becomes The Shrujan Trust.\n1984–1988 | Drought, once again | Kutch is ravaged by a severe drought. Shrujan runs a cattle camp, distributes food kits and rebuilds houses for the Kodi and Vaadha communities in Nirona.\n1990–1996 | A campus at Bhujodi | The Shrujan campus is built near Bhujodi village. The family grows to 1,800 women in over 75 hamlets and villages, Chanda Shroff makes Kutch her permanent home, and Shrujan exhibits in Nairobi.\n1997–2000 | The Design Centre on Wheels | 2,200 women in over 85 villages now invest in education and health care for their children, and in cattle. Shrujan launches the Design Centre on Wheels to inspire the craftswomen and the next generation to keep the craft growing.\n2001 | After the earthquake | On 26 January Kutch is devastated by an earthquake. The Bhujodi campus becomes a base for two years of relief, Chanda Shroff keeps embroidery work flowing, and the Shrujan family expands to 4,500 women. Master craftswomen Rajiben Naranbhai Shamaliya and Jassiben Rupabhai Meriya receive UNESCO’s Award of Excellence for Handicrafts.\n2002–2004 | 1,130 panels on the road | The Design Centre on Wheels is completed: 1,130 panels in 16 embroidery styles, made by 550 master craftswomen from 12 communities, travel from village to village by bus. Shrujan’s first shop opens in Mumbai, and it exhibits at San Juan Capistrano and Santa Fe in the USA.\n2005–2006 | Pride and Enterprise | Shrujan begins documenting every embroidery community and style in print, photographs, sound and film. In 2006 Chanda Shroff becomes the first Indian Laureate of the Rolex Award for Enterprise.\n2007–2015 | Building the LLDC | The Design Centre on Wheels makes 83 visits to 163 villages and reaches 22,000 visitors. In 2009 construction begins near Ajrakhpur on the Living and Learning Design Centre, and in 2010 Shrujan Creations is formed to carry the craftswomen’s work to market.\n2016 | The LLDC opens | The Living and Learning Design Centre opens with a five-day festival for 4,500 craftspeople and their families, and its first gallery, The Living Embroideries of Kutch. On 23 August 2016, Chanda Shroff passes away. | lldc-gallery-1.webp\n2017–2018 | Honoured at home and abroad | Shrujan takes part in Lakme Fashion Week, receives the International Crafts Award and, on 8 March 2018, the Nari Shakti Award. 257 craftswomen receive the Kaarigar Award, LLDC holds its first Folk Festival, and Shrujan exhibits in Osaka, Japan.\n2019–2020 | Fifty years | Shrujan turns fifty and helps form the Kutch Craft Collective. When the pandemic shuts everything in 2020, customers’ Count on Me vouchers keep every craftswoman in work, and the craftswomen are amused to see the staff learn to work from home, as they had since 1969."
+      "info": "Year | Title | Text | Theme asset | Image caption. Use documentary images; label contextual archive scenes clearly.",
+      "default": "1969 | Thirty saris for Dhaneti | Volunteering at the drought-relief kitchen in Dhaneti, Chanda Shroff asks the women to embroider their traditional motifs on 30 saris. They sell at an exhibition in Mumbai, and the money goes straight back to the 30 craftswomen of the Ahir and Meghwaad Gurjar communities: the beginning of India’s first social enterprise to work with embroidery craftswomen. | story-origin-4.webp | Craftswomen together · from the Shrujan archive\n1971 | Into Banni, in wartime | With India at war with Pakistan and parts of Kutch still in drought, Chanda Shroff and Ranjan Shroff set off for Banni, close to the border. The Mutva craftswomen they meet begin to earn from their embroidery, and embroidery becomes an economic lifeline for Banni in the drought years. | story-origin-2.webp | Village life in Kutch · from the Shrujan archive\n1972–1979 | Soof in the Jura camp | Shrujan Arts and Crafts takes shape. In the refugee camp at Jura, set up after the war, Sonuben teaches Soof, the counted-thread embroidery of the Meghwaad Maaru and Sodha communities. By 1975, 300 women in 14 villages have joined the Shrujan family. | journal-3.webp | A craftswoman at her embroidery frame · from the archive\n1980–1983 | Stencils, London and a Trust | Stencils replace hand-drawn designs, letting Shrujan give work to 700 women in 32 villages. The first international exhibition opens in London in 1982, and in 1983 Shrujan Arts and Crafts becomes The Shrujan Trust. | journal-7.webp | Gathering around embroidered panels · from the archive\n1984–1988 | Drought, once again | Kutch is ravaged by a severe drought. Shrujan runs a cattle camp, distributes food kits and rebuilds houses for the Kodi and Vaadha communities in Nirona. | story-origin-3.webp | Craftswomen and the Shrujan team · from the archive\n1990–1996 | A campus at Bhujodi | The Shrujan campus is built near Bhujodi village. The family grows to 1,800 women in over 75 hamlets and villages, Chanda Shroff makes Kutch her permanent home, and Shrujan exhibits in Nairobi. | visit-campus.webp | The Shrujan workshop at Bhujodi today\n1997–2000 | The Design Centre on Wheels | 2,200 women in over 85 villages now invest in education and health care for their children, and in cattle. Shrujan launches the Design Centre on Wheels to inspire the craftswomen and the next generation to keep the craft growing. | journal-5.webp | Sharing the work of the hand · from the archive\n2001 | After the earthquake | On 26 January Kutch is devastated by an earthquake. The Bhujodi campus becomes a base for two years of relief, Chanda Shroff keeps embroidery work flowing, and the Shrujan family expands to 4,500 women. Master craftswomen Rajiben Naranbhai Shamaliya and Jassiben Rupabhai Meriya receive UNESCO’s Award of Excellence for Handicrafts. | journal-1.webp | The Shrujan family · from the archive\n2002–2004 | 1,130 panels on the road | The Design Centre on Wheels is completed: 1,130 panels in 16 embroidery styles, made by 550 master craftswomen from 12 communities, travel from village to village by bus. Shrujan’s first shop opens in Mumbai, and it exhibits at San Juan Capistrano and Santa Fe in the USA. | journal-8.webp | Kutchi embroidery panels in the Shrujan collection\n2005–2006 | Pride and Enterprise | Shrujan begins documenting every embroidery community and style in print, photographs, sound and film. In 2006 Chanda Shroff becomes the first Indian Laureate of the Rolex Award for Enterprise. | sj-story-rolex-laureates.webp | Chanda Shroff with the 2006 Rolex Laureates\n2007–2015 | Building the LLDC | The Design Centre on Wheels makes 83 visits to 163 villages and reaches 22,000 visitors. In 2009 construction begins near Ajrakhpur on the Living and Learning Design Centre, and in 2010 Shrujan Creations is formed to carry the craftswomen’s work to market. | sj-story-lldc-campus.webp | The Living and Learning Design Centre campus\n2016 | The LLDC opens | The Living and Learning Design Centre opens with a five-day festival for 4,500 craftspeople and their families, and its first gallery, The Living Embroideries of Kutch. On 23 August 2016, Chanda Shroff passes away. | lldc-gallery-1.webp | Living embroidery traditions on display at LLDC\n2017–2018 | Honoured at home and abroad | Shrujan takes part in Lakme Fashion Week, receives the International Crafts Award and, on 8 March 2018, the Nari Shakti Award. 257 craftswomen receive the Kaarigar Award, LLDC holds its first Folk Festival, and Shrujan exhibits in Osaka, Japan. | journal-10.webp | The craftswomen and their work\n2019–2020 | Fifty years | Shrujan turns fifty and helps form the Kutch Craft Collective. When the pandemic shuts everything in 2020, customers’ Count on Me vouchers keep every craftswoman in work, and the craftswomen are amused to see the staff learn to work from home, as they had since 1969. | sj-story-next-generation.webp | The next generation stitching at Shrujan’s embroidery class"
     },
     {
       "type": "range",
@@ -1278,14 +1338,14 @@
       "type": "textarea",
       "id": "honours_copy",
       "label": "Intro copy",
-      "default": "Such honours shine a spotlight on our work in safeguarding, revitalising and promoting traditional crafts, and send a message of hope to small craft clusters: crafts and craftspeople even from a small corner of the world can attain worldwide recognition."
+      "default": "Recognition for the craft, and for the people who keep it alive."
     },
     {
       "type": "textarea",
       "id": "honours",
       "label": "Honours (one per line)",
-      "info": "Year | Honour | Given by | Note. Separate the parts with a vertical bar.",
-      "default": "2001 | Award of Excellence for Handicrafts | UNESCO | Awarded to two Shrujan master craftswomen, Rajiben Naranbhai Shamaliya and Jassiben Rupabhai Meriya.\n2006 | Rolex Award for Enterprise | Rolex | Shrujan founder Chanda Shroff became the first Indian Laureate to be honoured with this prestigious award.\n2017 | Nari Shakti Puraskar | Presented by the President of India | Recognised Shrujan’s forty-eight years of work in empowering rural women through skill development and sustainable livelihoods in the crafts sector.\n2017 | International Craft Award | Crafts Council of India | Given to organisations and individuals who have made outstanding contributions to the field of crafts.\n2017 | Lakme Fashion Week | Mumbai | Shrujan was invited to take part in the section on Sustainable Fashion.\nCertified | Craftmark | All-India Artisans and Craftworkers Welfare Association | Craftmark certification authenticates genuine handmade crafts and promotes fair trade practices."
+      "info": "Year | Honour | Given by | Note | Theme asset | Image caption.",
+      "default": "2001 | Award of Excellence for Handicrafts | UNESCO | Awarded to two Shrujan master craftswomen, Rajiben Naranbhai Shamaliya and Jassiben Rupabhai Meriya. | journal-11.webp | A Shrujan craftswoman with her embroidered panel\n2006 | Rolex Award for Enterprise | Rolex | Shrujan founder Chanda Shroff became the first Indian Laureate to be honoured with this prestigious award. | sj-story-rolex-2006.webp | Kaki with her Rolex Award for Enterprise, 2006\n2017 | Nari Shakti Puraskar | Presented by the President of India | Recognised Shrujan’s forty-eight years of work in empowering rural women through skill development and sustainable livelihoods in the crafts sector. | sj-story-class.webp | Craftswomen at a Shrujan embroidery class today\n2017 | International Craft Award | Crafts Council of India | Given to organisations and individuals who have made outstanding contributions to the field of crafts. | journal-10.webp | The work of the hand · Shrujan archive\n2017 | Lakme Fashion Week | Mumbai | Shrujan was invited to take part in the section on Sustainable Fashion. | journal-12.webp | A hand-embroidered textile from the Shrujan collection\nCertified | Craftmark | All-India Artisans and Craftworkers Welfare Association | Craftmark certification authenticates genuine handmade crafts and promotes fair trade practices. | sj-story-hands.webp | Hand embroidery in progress at Shrujan"
     },
     {
       "type": "text",
