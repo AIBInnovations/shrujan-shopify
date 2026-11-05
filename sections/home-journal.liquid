@@ -80,7 +80,7 @@
 
   <div class="jr__grid">
     <a class="jr__tile jr__tile--lead" href="{{ jr_lead }}">
-      <span class="jr__media"><img class="jr__img" src="{% if section.settings.feature_img %}{{ section.settings.feature_img | image_url: width: 1600 }}{% else %}{{ 'top-right.webp' | asset_url }}{% endif %}" alt="{{ section.settings.feature_alt | escape }}" loading="lazy"></span>
+      <span class="jr__media"><img class="jr__img" src="{% if section.settings.feature_img %}{{ section.settings.feature_img | image_url: width: 1600 }}{% else %}{{ 'sj-nov5-hands-embroidery.webp' | asset_url }}{% endif %}" alt="{{ section.settings.feature_alt | escape }}" loading="lazy"></span>
       {%- if cfg.jr_show_tags %}
       <span class="jr__tag">{{ section.settings.feature_tag | strip }}</span>
       {%- endif %}
@@ -170,7 +170,7 @@
       "type": "text",
       "id": "feature_alt",
       "label": "Image alt text",
-      "default": "Close crop of mirror-work embroidery in crimson and gold threads"
+      "default": "A Shrujan craftswoman stitching a green embroidered textile by hand"
     },
     {
       "type": "text",
@@ -537,13 +537,13 @@
           "id": "image_asset",
           "label": "Image fallback asset",
           "info": "Theme asset filename used when no image is picked.",
-          "default": "hero-bottom-2.webp"
+          "default": "sj-shop-shawl-detail.webp"
         },
         {
           "type": "text",
           "id": "image_alt",
           "label": "Image alt text",
-          "default": "Block-printing tools resting on embroidered plum cloth"
+          "default": "Detail of the blue handwoven merino wool shawl with Soof embroidery"
         },
         {
           "type": "text",
@@ -568,8 +568,8 @@
           "type": "card",
           "settings": {
             "url": "/pages/the-shrujan-story#journal",
-            "image_asset": "hero-bottom-2.webp",
-            "image_alt": "Block-printing tools resting on embroidered plum cloth",
+            "image_asset": "sj-shop-shawl-detail.webp",
+            "image_alt": "Detail of the blue handwoven merino wool shawl with Soof embroidery",
             "pill": "Care Guide",
             "title": "How to care for handwoven cloth"
           }
@@ -578,8 +578,8 @@
           "type": "card",
           "settings": {
             "url": "/pages/the-shrujan-story#journal",
-            "image_asset": "look-b2.webp",
-            "image_alt": "Model in a red bridal lehenga with a net dupatta",
+            "image_asset": "sj-red-hand-ahir-embroidered-kanchli-1.webp",
+            "image_alt": "Shrujan red Ahir hand-embroidered kanchli styled with an ivory sari",
             "pill": "Trousseau",
             "title": "A wedding in Kutch, stitched over two years"
           }
@@ -588,8 +588,8 @@
           "type": "card",
           "settings": {
             "url": "/pages/the-shrujan-story#journal",
-            "image_asset": "look-b1.webp",
-            "image_alt": "Model in a maroon silk sari with gold zari embroidery beside brass urns",
+            "image_asset": "sj-shawl-1-1.webp",
+            "image_alt": "Shrujan parrot green merino wool shawl with Soof embroidery",
             "pill": "Lookbook",
             "title": "The Autumn Edit: colours of the salt desert"
           }
