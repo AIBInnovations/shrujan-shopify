@@ -141,8 +141,11 @@
   endif
 
   assign craft = product.metafields.shrujan.craft.value
-  if craft == blank
-    assign craft = product.type
+  assign material = product.metafields.shrujan.material.value | default: product.metafields.custom.material.value
+  assign description_lower = product.description | downcase
+  assign care_in_description = false
+  if description_lower contains 'care'
+    assign care_in_description = true
   endif
 
   comment
@@ -164,7 +167,7 @@
   comment
     The gallery is the image media in the order the merchant arranged it.
   endcomment
-  assign shots = product.media | where: 'media_type', 'image'
+  assign shots = product.media
   assign shot_count = shots.size
   if shot_count > cfg.gallery_max
     assign shot_count = cfg.gallery_max
@@ -223,17 +226,39 @@
     collection name the catalogue was built from, so its handle addresses the
     same rail the design showed. Anything unfamiliar falls back to everything.
   endcomment
-  assign type_handle = product.type | handleize
-  assign rec_coll = collections[type_handle]
-  unless rec_coll.products.size > 0
-    assign rec_coll = collections['all']
-  endunless
+  assign product_context = product.title | append: ' ' | append: product.type | downcase
+  assign product_group = 'clothing'
+  if product_context contains 'shawl' or product_context contains 'stole' or product_context contains 'dupatta'
+    assign product_group = 'wraps'
+  elsif product_context contains 'potli' or product_context contains 'batwa' or product_context contains 'bag' or product_context contains 'pouch'
+    assign product_group = 'bags'
+  elsif product_context contains 'cushion' or product_context contains 'takiya' or product_context contains 'home'
+    assign product_group = 'home'
+  endif
+  assign wraps = collections['shawls'].products | concat: collections['stoles'].products | concat: collections['dupattas'].products
+  assign garments = collections['kanchli'].products | concat: collections['top'].products
+  assign potlis = collections['potlis-batwas'].products
+  assign pairing_candidates = wraps | concat: potlis
+  assign related_candidates = collections['all'].products
+  if product_group == 'wraps'
+    assign pairing_candidates = potlis | concat: garments
+    assign related_candidates = wraps
+  elsif product_group == 'home'
+    assign related_candidates = collections['home-decor'].products | concat: collections['cushion-covers'].products
+    assign pairing_candidates = related_candidates
+  elsif product_group == 'bags'
+    assign related_candidates = potlis | concat: collections['hand-bag'].products | concat: collections['cross-body-bags-and-sling-bags'].products
+  endif
+  assign complementary = product.metafields['shopify--discovery--product_recommendation']['complementary_products'].value
+  assign related = product.metafields['shopify--discovery--product_recommendation']['related_products'].value
   comment
-    The lower rail must not repeat what the upper one just showed, so both walk
-    one `shown` list, delimited so `dupatta` cannot match `dupatta-copy`.
+    When no pairing has been selected in Search & Discovery, the first rail
+    offers wearable companions. The second stays with this piece's category.
+    Both omit sold out pieces and repeated photography.
   endcomment
+  assign shown_images = '|' | append: product.featured_image.src | append: '|'
   assign shown = '|' | append: product.handle | append: '|'
-  assign rail_max = 5
+  assign rail_max = 4
 -%}
 {%- capture icon_star -%}<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.6L12 17.6 6.1 20.7l1.2-6.6L2.5 9.5l6.6-.9Z"></path></svg>{%- endcapture -%}
 {%- capture icon_arrow_15 -%}<i class="sj-i sj-i--arrow-right ms" style="font-size:15px" aria-hidden="true"></i>{%- endcapture -%}
@@ -258,6 +283,7 @@
 {%- assign face_files = 'cat-c1.webp,frame-r5t25.webp,cat-c5.webp,frame-r2t5.webp' | split: ',' -%}
 {%- if product != blank -%}
   <div class="page pdp-page" data-cart-add="{{ routes.cart_add_url }}">
+    <nav class="container pdp__breadcrumb" aria-label="Breadcrumb"><a href="{{ shop_url }}">Shop Shrujan</a><span aria-hidden="true">/</span><span>{{ product.title | escape }}</span></nav>
     <div class="container pdp">
       <div class="pdp__media">
         <div class="pdp__rail" aria-label="Product images">
@@ -267,21 +293,32 @@
             </button>
           {%- endfor -%}
         </div>
-        <div class="pdp__stage">
+        <div class="pdp__stage" tabindex="0" aria-label="Product gallery">
           {%- if shot_count > 0 -%}
             {%- for media in shots limit: shot_count -%}
               <figure class="pdp__shot{% if forloop.first %} is-active{% endif %}" aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}">
-                {%- if forloop.first -%}
-                  <img src="{{ media.preview_image | image_url: width: 1400 }}" alt="{{ media.preview_image.alt | default: product.title | escape }}" loading="eager" fetchpriority="high">
-                {%- else -%}
-                  <img src="{{ media.preview_image | image_url: width: 1400 }}" alt="" loading="lazy">
-                {%- endif -%}
+                {%- case media.media_type -%}
+                  {%- when 'image' -%}
+                    <img src="{{ media.preview_image | image_url: width: 1600 }}" data-full="{{ media.preview_image | image_url: width: 2400 }}" alt="{{ media.alt | default: product.title | escape }}" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"{% if forloop.first %} fetchpriority="high"{% endif %} width="{{ media.preview_image.width }}" height="{{ media.preview_image.height }}">
+                  {%- when 'video' -%}
+                    {{ media | video_tag: controls: true, preload: 'none', image_size: '1400x', loop: false }}
+                  {%- when 'external_video' -%}
+                    {{ media | external_video_tag: loading: 'lazy' }}
+                  {%- when 'model' -%}
+                    {{ media | model_viewer_tag: reveal: 'interaction', toggleable: true }}
+                {%- endcase -%}
               </figure>
             {%- endfor -%}
           {%- else -%}
             <figure class="pdp__shot is-active" aria-hidden="false">{{ 'product-1' | placeholder_svg_tag: 'piece__ph' }}</figure>
           {%- endif -%}
           {%- render 'piece-badge', product: product, class: 'pdp__badge', sold_out_label: cfg.sold_out_label -%}
+          {%- if shot_count > 0 -%}
+          <div class="pdp__gallery-tools">
+            <button type="button" data-pdp-zoom aria-label="Enlarge product photograph"><i class="sj-i sj-i--magnifying-glass-plus ms" aria-hidden="true"></i><span>View detail</span></button>
+            {%- if shot_count > 1 -%}<div class="pdp__gallery-nav"><button type="button" data-pdp-prev aria-label="Previous photograph">←</button><span data-pdp-count aria-live="polite">1 / {{ shot_count }}</span><button type="button" data-pdp-next aria-label="Next photograph">→</button></div>{%- endif -%}
+          </div>
+          {%- endif -%}
         </div>
       </div>
 
@@ -289,7 +326,8 @@
         {%- if cfg.show_reviews -%}
         <div class="pdp__rating">{{ stars_rating }}<span>{{ cfg.rating }}</span><a href="#reviews">{{ cfg.review_count }} reviews</a></div>
         {%- endif -%}
-        <h1 class="pdp__name">{{ product.title }}</h1>
+        <div class="pdp__heading"><h1 class="pdp__name">{{ product.title | escape }}</h1><button type="button" class="pdp__share" data-pdp-share aria-label="Share {{ product.title | escape }}"><i class="sj-i sj-i--share-network ms" aria-hidden="true"></i></button></div>
+        <p class="pdp__share-status" data-pdp-share-status role="status"></p>
         {%- if craft != blank -%}
           <p class="pdp__craft">{{ craft }}</p>
         {%- endif -%}
@@ -304,9 +342,8 @@
           <p class="pdp__price" data-pdp-was-line>{{ variant.price | money | strip_html }}{% if has_was %}<s>{{ variant.compare_at_price | money | strip_html }}</s>{% endif %}</p>
         {%- endif -%}
         {%- if cfg.tax_note != blank %}<p class="pdp__tax">{{ cfg.tax_note | escape }}</p>{% endif -%}
-        {%- if cfg.copy != blank -%}
-          <p class="pdp__copy">{{ cfg.copy }}</p>
-        {%- endif -%}
+        <p class="pdp__sku" data-pdp-sku{% if variant.sku == blank %} hidden{% endif %}>SKU: {{ variant.sku | escape }}</p>
+        {%- if material != blank -%}<p class="pdp__material">Material: {{ material | escape }}</p>{%- endif -%}
 
         {%- comment -%}
           Four ways into the piece, as the best craft houses offer them: how it
@@ -338,6 +375,10 @@
               {%- endif -%}
             {%- endfor -%}
           </ul>
+        {%- endif -%}
+
+        {%- if product.description != blank -%}
+          <div class="pdp__description store-article"{% if care_in_description %} id="care" data-pdp-care-description{% endif %}>{{ product.description }}</div>
         {%- endif -%}
 
         {%- if spec_list.size > 0 -%}
@@ -372,6 +413,7 @@
                   assign size_id = ''
                   assign size_price = ''
                   assign size_was = ''
+                  assign size_sku = ''
                   assign size_ok = false
                   comment
                     The variant a size adds is the first one carrying that value,
@@ -399,6 +441,7 @@
                       if take
                         assign size_id = v.id
                         assign size_price = v.price | money | strip_html
+                        assign size_sku = v.sku
                         assign size_was = ''
                         if v.compare_at_price > v.price
                           assign size_was = v.compare_at_price | money | strip_html
@@ -408,7 +451,7 @@
                     endfor
                   endif
                 -%}
-                <button type="button" class="pdp__size{% if size_label == current_size %} is-active{% endif %}" aria-pressed="{% if size_label == current_size %}true{% else %}false{% endif %}"{% if size_id != '' %} data-variant="{{ size_id }}" data-price="{{ size_price | escape }}" data-was="{{ size_was | escape }}"{% endif %}{% if from_variants and size_ok == false %} disabled{% endif %}>{{ size_label }}</button>
+                <button type="button" class="pdp__size{% if size_label == current_size %} is-active{% endif %}" aria-pressed="{% if size_label == current_size %}true{% else %}false{% endif %}"{% if size_id != '' %} data-variant="{{ size_id }}" data-price="{{ size_price | escape }}" data-was="{{ size_was | escape }}" data-sku="{{ size_sku | escape }}"{% endif %}{% if from_variants and size_ok == false %} disabled{% endif %}>{{ size_label }}</button>
               {%- endfor -%}
             </div>
           </div>
@@ -466,10 +509,10 @@
           <div class="pdp__details">
             {%- assign d_rendered = 0 -%}
             {%- assign fit_found = false -%}
-            {%- for d_i in (1..5) -%}
+            {%- for d_i in (2..6) -%}
               {%- liquid
                 assign d_rich = false
-                case forloop.index
+                case d_i
                   when 1
                     assign d_title = cfg.detail1_title
                     assign d_body = product.description
@@ -477,15 +520,21 @@
                   when 2
                     assign d_title = cfg.detail2_title
                     assign d_body = cfg.detail2_body
+                    if care_in_description
+                      assign d_body = blank
+                    endif
                   when 3
                     assign d_title = cfg.detail3_title
                     assign d_body = cfg.detail3_body
                   when 4
                     assign d_title = cfg.detail4_title
                     assign d_body = cfg.detail4_body
-                  else
+                  when 5
                     assign d_title = cfg.detail5_title
-                    assign d_body = cfg.detail5_body
+                    assign d_body = cfg.detail5_body | remove: 'Country of origin: India.'
+                  else
+                    assign d_title = 'Country of origin'
+                    assign d_body = 'India' 
                 endcase
               -%}
               {%- if d_title == blank or d_body == blank -%}
@@ -606,57 +655,80 @@
     {%- endif -%}
 
     {%- if cfg.show_rec -%}
-      <section class="section container pdp-rec" aria-label="Recommended">
-        <div class="section-head" data-reveal>
-          <div class="section-head__titles">
-            <p class="eyebrow">Complete the look</p>
-            <h2 class="section-title">Pieces to <em>wear with it</em></h2>
-          </div>
-        </div>
-        <div class="curated__grid" data-reveal-child>
+      <section class="section container pdp-rec" aria-label="Complete the look">
+        <div class="section-head"><div class="section-head__titles"><p class="eyebrow">Complete the look</p><h2 class="section-title">Pair with <em>this piece</em></h2></div><a class="arrow-link" href="{{ shop_url }}">Explore the collection {{ icon_arrow_16 }}</a></div>
+        <div class="curated__grid">
           {%- assign rec_n = 0 -%}
-          {%- for p in rec_coll.products -%}
-            {%- assign p_key = '|' | append: p.handle | append: '|' -%}
-            {%- if shown contains p_key -%}
-              {%- continue -%}
-            {%- endif -%}
-            {%- render 'piece-card', product: p, show_swatches: cfg.card_swatches, quick_label: cfg.add_label, sold_out_label: cfg.sold_out_label -%}
-            {%- assign shown = shown | append: p.handle | append: '|' -%}
-            {%- assign rec_n = rec_n | plus: 1 -%}
-            {%- if rec_n >= rail_max -%}
-              {%- break -%}
-            {%- endif -%}
+          {%- for pass in (1..2) -%}
+            {%- if pass == 1 -%}{%- assign candidate_products = complementary -%}{%- else -%}{%- assign candidate_products = pairing_candidates -%}{%- endif -%}
+            {%- for p in candidate_products -%}
+              {%- assign p_key = '|' | append: p.handle | append: '|' -%}
+              {%- assign image_key = '|' | append: p.featured_image.src | append: '|' -%}
+              {%- if shown contains p_key or shown_images contains image_key or p.available == false -%}{%- continue -%}{%- endif -%}
+              {%- if pass == 2 -%}
+                {%- assign candidate_context = p.title | append: ' ' | append: p.type | downcase -%}
+                {%- assign pair_ok = false -%}
+                {%- if product_group == 'wraps' -%}
+                  {%- if candidate_context contains 'potli' or candidate_context contains 'batwa' or candidate_context contains 'kanchli' or candidate_context contains 'kurta' -%}{%- assign pair_ok = true -%}{%- endif -%}
+                {%- elsif product_group == 'bags' -%}
+                  {%- if candidate_context contains 'shawl' or candidate_context contains 'stole' or candidate_context contains 'dupatta' -%}{%- assign pair_ok = true -%}{%- endif -%}
+                {%- elsif product_group == 'home' -%}
+                  {%- if candidate_context contains 'cushion' or candidate_context contains 'takiya' or candidate_context contains 'home' -%}{%- assign pair_ok = true -%}{%- endif -%}
+                {%- else -%}
+                  {%- if candidate_context contains 'shawl' or candidate_context contains 'stole' or candidate_context contains 'potli' or candidate_context contains 'batwa' -%}{%- assign pair_ok = true -%}{%- endif -%}
+                {%- endif -%}
+                {%- unless pair_ok -%}{%- continue -%}{%- endunless -%}
+              {%- endif -%}
+              {%- render 'piece-card', product: p, show_swatches: cfg.card_swatches, quick_label: cfg.add_label, sold_out_label: cfg.sold_out_label -%}
+              {%- assign shown = shown | append: p.handle | append: '|' -%}
+              {%- assign shown_images = shown_images | append: p.featured_image.src | append: '|' -%}
+              {%- assign rec_n = rec_n | plus: 1 -%}
+              {%- if rec_n >= rail_max -%}{%- break -%}{%- endif -%}
+            {%- endfor -%}
+            {%- if rec_n >= rail_max -%}{%- break -%}{%- endif -%}
           {%- endfor -%}
         </div>
       </section>
     {%- endif -%}
 
     {%- if cfg.show_other -%}
-      <section class="section container pdp-other" aria-label="Other products">
-        <div class="section-head" data-reveal>
-          <div class="section-head__titles">
-            <p class="eyebrow">Elsewhere in the catalogue</p>
-            <h2 class="section-title">Other <em>pieces</em></h2>
-          </div>
-          <a class="arrow-link" href="{{ shop_url }}">Shop everything {{ icon_arrow_16 }}</a>
-        </div>
-        <div class="curated__grid" data-reveal-child>
+      <section class="section container pdp-other" aria-label="More pieces like this">
+        <div class="section-head"><div class="section-head__titles"><p class="eyebrow">Another colour, another stitch</p><h2 class="section-title">{% if product_group == 'wraps' %}More shawls <em>&amp; stoles</em>{% elsif product_group == 'bags' %}More bags <em>&amp; potlis</em>{% else %}More to <em>choose from</em>{% endif %}</h2></div><a class="arrow-link" href="{{ shop_url }}">Shop everything {{ icon_arrow_16 }}</a></div>
+        <div class="curated__grid">
           {%- assign other_n = 0 -%}
-          {%- for p in collections['all'].products -%}
-            {%- assign p_key = '|' | append: p.handle | append: '|' -%}
-            {%- if shown contains p_key -%}
-              {%- continue -%}
-            {%- endif -%}
-            {%- render 'piece-card', product: p, show_swatches: cfg.card_swatches, quick_label: cfg.add_label, sold_out_label: cfg.sold_out_label -%}
-            {%- assign shown = shown | append: p.handle | append: '|' -%}
-            {%- assign other_n = other_n | plus: 1 -%}
-            {%- if other_n >= rail_max -%}
-              {%- break -%}
-            {%- endif -%}
+          {%- for pass in (1..2) -%}
+            {%- if pass == 1 -%}{%- assign candidate_products = related -%}{%- else -%}{%- assign candidate_products = related_candidates -%}{%- endif -%}
+            {%- for p in candidate_products -%}
+              {%- assign p_key = '|' | append: p.handle | append: '|' -%}
+              {%- assign image_key = '|' | append: p.featured_image.src | append: '|' -%}
+              {%- if shown contains p_key or shown_images contains image_key or p.available == false -%}{%- continue -%}{%- endif -%}
+              {%- if pass == 2 -%}
+                {%- assign candidate_context = p.title | append: ' ' | append: p.type | downcase -%}
+                {%- assign related_ok = false -%}
+                {%- if product_group == 'wraps' -%}
+                  {%- if candidate_context contains 'shawl' or candidate_context contains 'stole' or candidate_context contains 'dupatta' -%}{%- assign related_ok = true -%}{%- endif -%}
+                {%- elsif product_group == 'bags' -%}
+                  {%- if candidate_context contains 'potli' or candidate_context contains 'batwa' or candidate_context contains 'bag' or candidate_context contains 'pouch' -%}{%- assign related_ok = true -%}{%- endif -%}
+                {%- elsif product_group == 'home' -%}
+                  {%- if candidate_context contains 'cushion' or candidate_context contains 'takiya' or candidate_context contains 'home' -%}{%- assign related_ok = true -%}{%- endif -%}
+                {%- else -%}
+                  {%- if p.type == product.type -%}{%- assign related_ok = true -%}{%- endif -%}
+                {%- endif -%}
+                {%- unless related_ok -%}{%- continue -%}{%- endunless -%}
+              {%- endif -%}
+              {%- render 'piece-card', product: p, show_swatches: cfg.card_swatches, quick_label: cfg.add_label, sold_out_label: cfg.sold_out_label -%}
+              {%- assign shown = shown | append: p.handle | append: '|' -%}
+              {%- assign shown_images = shown_images | append: p.featured_image.src | append: '|' -%}
+              {%- assign other_n = other_n | plus: 1 -%}
+              {%- if other_n >= rail_max -%}{%- break -%}{%- endif -%}
+            {%- endfor -%}
+            {%- if other_n >= rail_max -%}{%- break -%}{%- endif -%}
           {%- endfor -%}
         </div>
       </section>
     {%- endif -%}
+
+    <dialog class="pdp-zoom" data-pdp-zoom-dialog data-lenis-prevent aria-label="Enlarged product photograph"><button type="button" data-pdp-zoom-close aria-label="Close enlarged photograph">×</button><img data-pdp-zoom-image alt=""></dialog>
 
     {%- comment -%}
       The size guide, over the product rather than on a page of its own. The
@@ -776,6 +848,8 @@
 
       var id = btn.getAttribute('data-variant');
       if (id && variantInput) variantInput.value = id;
+      var skuLine = root.querySelector('[data-pdp-sku]');
+      if (skuLine) { var sku = btn.getAttribute('data-sku') || ''; skuLine.textContent = 'SKU: ' + sku; skuLine.hidden = !sku; }
 
       var price = btn.getAttribute('data-price');
       if (!price) return;
@@ -919,33 +993,54 @@
     // the "Add to bag" label is the bag drawer's (assets/sj-cart.js)
   });
 
-  // Scroll drives the gallery. The section is divided into as many bands as
-  // there are shots, and progress through it picks the one on screen — so the
-  // image changes only when you move, never on its own.
-  if (shotEls.length >= 2) {
-    var queued = false;
-
-    var read = function () {
-      queued = false;
-      var band = bandNow();
-      if (band < 0) return;
-      if (pinnedBand > -1) {
-        if (band === pinnedBand) return; // a thumbnail's choice stands until the page moves on
-        pinnedBand = -1;
-      }
-      setActive(band);
-    };
-
-    var onScroll = function () {
-      if (queued) return;
-      queued = true;
-      requestAnimationFrame(read);
-    };
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    read();
+  // Photographs stay where the customer selects them. Scrolling the product
+  // description never replaces the image they are inspecting.
+  var galleryCount = root.querySelector('[data-pdp-count]');
+  var zoomButton = root.querySelector('[data-pdp-zoom]');
+  var zoomDialog = root.querySelector('[data-pdp-zoom-dialog]');
+  var zoomImage = root.querySelector('[data-pdp-zoom-image]');
+  function updateGalleryTools() {
+    if (galleryCount) galleryCount.textContent = (active + 1) + ' / ' + shotEls.length;
+    var img = shotEls[active] && shotEls[active].querySelector('img');
+    if (zoomButton) zoomButton.hidden = !img;
+    var mediaStage = root.querySelector('.pdp__stage');
+    if (mediaStage) mediaStage.classList.toggle('has-video', !img);
+    shotEls.forEach(function (shot, i) { if (i !== active) shot.querySelectorAll('video').forEach(function (v) { v.pause(); }); });
   }
+  var baseSetActive = setActive;
+  setActive = function (i) { baseSetActive((i + shotEls.length) % shotEls.length); updateGalleryTools(); };
+  var previous = root.querySelector('[data-pdp-prev]');
+  var next = root.querySelector('[data-pdp-next]');
+  if (previous) previous.addEventListener('click', function () { setActive(active - 1); });
+  if (next) next.addEventListener('click', function () { setActive(active + 1); });
+  var stage = root.querySelector('.pdp__stage');
+  if (stage && shotEls.length) stage.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); setActive(active + (e.key === 'ArrowRight' ? 1 : -1)); } });
+  if (zoomButton && zoomDialog) {
+    zoomButton.addEventListener('click', function () {
+      var img = shotEls[active].querySelector('img');
+      if (!img) return;
+      zoomImage.src = img.dataset.full || img.src;
+      zoomImage.alt = img.alt;
+      zoomDialog.classList.remove('is-magnified');
+      zoomDialog.showModal();
+      if (window.Shrujan && window.Shrujan.stopScroll) window.Shrujan.stopScroll();
+    });
+    zoomImage.addEventListener('click', function () { zoomDialog.classList.toggle('is-magnified'); });
+    var closeZoom = function () { zoomDialog.close(); };
+    zoomDialog.querySelector('[data-pdp-zoom-close]').addEventListener('click', closeZoom);
+    zoomDialog.addEventListener('click', function (e) { if (e.target === zoomDialog) closeZoom(); });
+    zoomDialog.addEventListener('close', function () { if (window.Shrujan && window.Shrujan.startScroll) window.Shrujan.startScroll(); });
+  }
+  var share = root.querySelector('[data-pdp-share]');
+  if (share) share.addEventListener('click', async function () {
+    var status = root.querySelector('[data-pdp-share-status]');
+    try {
+      if (navigator.share) await navigator.share({ title: document.title, url: location.href });
+      else { await navigator.clipboard.writeText(location.href); status.textContent = 'Product link copied'; }
+    } catch (err) { if (err.name !== 'AbortError') { status.textContent = 'Share this page: ' + location.href; } }
+  });
+  updateGalleryTools();
+
 })();
 </script>
 
@@ -1305,7 +1400,7 @@
       "type": "checkbox",
       "id": "gallery_sticky",
       "label": "Pin the gallery while the buying column scrolls",
-      "info": "The scroll-driven image change needs the pinned gallery; turning this off lets the whole page scroll together.",
+      "info": "Keeps the main photograph beside the details on larger screens. Thumbnail selection stays under the customer’s control.",
       "default": true
     },
     {
@@ -1316,7 +1411,7 @@
       "min": 2,
       "max": 8,
       "step": 1,
-      "default": 5
+      "default": 8
     },
     {
       "type": "header",
