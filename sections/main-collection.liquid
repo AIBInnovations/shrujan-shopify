@@ -1,4 +1,5 @@
 {%- render 'section-design', section: section -%}
+{{ 'sj-shop-nov5.css' | asset_url | stylesheet_tag }}
 {%- comment -%}
   Collection page — the designed catalogue, rendered from the real collection.
 
@@ -113,7 +114,7 @@
     {%- endif -%}
   </style>
 {%- endif -%}
-<div class="page">
+<div class="page sj-collection-refresh">
   {%- liquid
     comment
       The hero: one screen, words on the left, the collection's pictures on the

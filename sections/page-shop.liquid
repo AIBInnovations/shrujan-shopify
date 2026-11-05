@@ -5,6 +5,7 @@
 {%- endcomment -%}
 {%- if section.settings.only_handle == blank or page.handle == section.settings.only_handle -%}
 {%- render 'section-design', section: section -%}
+{{ 'sj-shop-nov5.css' | asset_url | stylesheet_tag }}
 {%- comment -%}
   Shop Shrujan — the catalogue, rendered from real Shopify collections.
 
@@ -166,26 +167,29 @@
     {%- endif -%}
   </style>
 {%- endif -%}
-<div class="page">
-  <!-- ---- hero banner ----
-       The user: one screen, cut across the middle: the picture in the top
-       half, the promises large on it, and the collection circles sliding as
-       before in the bottom half. -->
-{%- liquid
-  assign split = false
-  if section.settings.show_cats and has_cols
-    assign split = true
-  endif
--%}
-  <section class="shop-banner{% if split %} shop-banner--split{% endif %}" aria-label="The handcrafted edit">
+<div class="page sj-shop-refresh">
+  {%- liquid
+    assign split = false
+    if section.settings.show_cats and has_cols
+      assign split = true
+    endif
+  -%}
+  <section class="shop-banner{% if split %} shop-banner--split{% endif %}" aria-label="Shop Shrujan">
     <div class="shop-banner__frame">
-      <img src="{{ 'shop-hero.webp' | asset_url }}" alt="Embroidered tote and potli, a handwoven cushion, and models in a bandhani dupatta and an embroidered blouse" fetchpriority="high">
-
       <div class="shop-banner__overlay">
         <p class="shop-banner__eyebrow">{{ section.settings.hero_eyebrow }}</p>
         <h1 class="shop-banner__title">{{ section.settings.hero_title }}</h1>
         <p class="shop-banner__copy">{{ section.settings.hero_copy }}</p>
+        <div class="shop-banner__actions">
+          <a class="btn" href="/pages/shop-shrujan?c=shawls#catalogue">Explore shawls <span aria-hidden="true">→</span></a>
+          <a class="arrow-link" href="/pages/shop-shrujan?c=potlis-batwas#catalogue">Discover potlis <span aria-hidden="true">→</span></a>
+        </div>
+        <p class="shop-banner__signature">Shrujan · Consciously crafted since 1969</p>
       </div>
+      <a class="shop-banner__portrait" href="/products/shawl-copy-4" aria-label="Explore the Skyblue Handwoven Merino Wool Shawl with Soof Embroidery">
+        <img src="{% if section.settings.hero_image %}{{ section.settings.hero_image | image_url: width: 1400 }}{% else %}{{ 'sj-shop-shawl-hero.webp' | asset_url }}{% endif %}" alt="A handwoven blue Shrujan shawl with Soof embroidery, worn over ivory clothing" fetchpriority="high" width="1000" height="1250">
+        <span class="shop-banner__caption">Handwoven. Hand-embroidered. <span aria-hidden="true">↗</span></span>
+      </a>
     </div>
 {%- if split %}
 
@@ -325,27 +329,15 @@
 {%- if section.settings.show_spotlight %}
 
   <!-- ---- one collection, given a full spread ---- -->
-  <section class="section container spotlight-col" aria-label="Kanchli">
-    <div class="spotlight-col__media" data-reveal>
-      <img src="{{ 'sj-red-hand-ahir-embroidered-kanchli-1.webp' | asset_url }}" alt="Model in a dark embroidered kanchli with a black silk drape" loading="lazy">
-      <figure class="spotlight-col__inset">
-        <img src="{{ 'sj-megenta-pink-hand-embroidered-kanchli-1.webp' | asset_url }}" alt="Model in a ceremonial embroidered kanchli" loading="lazy">
-      </figure>
-    </div>
-
-    <div class="spotlight-col__body" data-reveal>
-      <p class="spotlight-col__no" aria-hidden="true">01 / 11</p>
-      <p class="eyebrow">Suf · Paako · Aabhla</p>
-      <h2 class="spotlight-col__name">Kanchli</h2>
-      <p class="spotlight-col__copy">The Kutchi bodice, cut and stitched the way it has been for generations. Sixty hours on the frame before a single seam is closed, and no two are alike — the embroiderer holds the whole geometry in her head as she works.</p>
-
-      <ul class="spotlight-col__facts">
-        <li><strong>60 hrs</strong><span>On the frame</span></li>
-        <li><strong>3</strong><span>Crafts in one piece</span></li>
-        <li><strong>24</strong><span>Pieces online</span></li>
-      </ul>
-
-      <a class="btn" href="#catalogue">Shop the collection <i class="sj-i sj-i--arrow-right ms" style="font-size:16px" aria-hidden="true"></i></a>
+  <section class="section container spotlight-col" aria-label="The shawl edit">
+    <a class="spotlight-col__media" href="/pages/shop-shrujan?c=shawls#catalogue">
+      <img src="{{ 'sj-shop-shawl-detail.webp' | asset_url }}" alt="Close detail of the geometric Soof embroidery on Shrujan’s blue handwoven merino wool shawl" loading="lazy" width="1000" height="1250">
+    </a>
+    <div class="spotlight-col__body">
+      <p class="eyebrow">The shawl edit</p>
+      <h2 class="section-title">One of a kind,<br>stitch by stitch.</h2>
+      <p class="spotlight-col__copy">Worked from the reverse, Soof embroidery grows from the craftswoman’s own sense of pattern. Look closely at the geometry, then see how the whole shawl falls.</p>
+      <div class="shop-banner__actions"><a class="btn" href="/pages/shop-shrujan?c=shawls#catalogue">Find your shawl <span aria-hidden="true">→</span></a><a class="arrow-link" href="/pages/shop-shrujan?c=stoles#catalogue">Explore stoles <span aria-hidden="true">→</span></a></div>
     </div>
   </section>
 {%- endif %}
@@ -363,7 +355,11 @@
       {%- for block in section.blocks %}{% if block.type == 'why' %}{% assign why_i = why_i | plus: 1 %}
       <article class="why-card"{{ block.shopify_attributes }}>
         <div class="why-card__media">
+          {% if block.settings.video_asset != blank %}
+          <video controls playsinline preload="none" poster="{{ block.settings.video_poster | asset_url }}" aria-label="{{ block.settings.alt | escape }}"><source src="{{ block.settings.video_asset | asset_url }}" type="video/mp4"></video>
+          {% else %}
           <img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1200 }}{% else %}{{ block.settings.img_asset | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
+          {% endif %}
           <span class="why-card__no" aria-hidden="true">{% if why_i < 10 %}0{% endif %}{{ why_i }}</span>
         </div>
         <h3 class="why-card__title">{{ block.settings.title }}</h3>
@@ -739,22 +735,27 @@
       "content": "Hero banner"
     },
     {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Shawl edit photograph"
+    },
+    {
       "type": "text",
       "id": "hero_eyebrow",
       "label": "Eyebrow",
-      "default": "Handcrafted Edit"
+      "default": "Shop Shrujan"
     },
     {
       "type": "inline_richtext",
       "id": "hero_title",
       "label": "Title",
-      "default": "Collection"
+      "default": "Stoles, shawls &amp; potlis"
     },
     {
       "type": "textarea",
       "id": "hero_copy",
       "label": "Copy",
-      "default": "Handcrafted with care.<br>Made slowly, meant to last.",
+      "default": "Hand-embroidered by the craftswomen of Kutch. Pieces to wear, carry and keep.",
       "info": "Plain HTML is allowed; the br tag makes the line break."
     },
     {
@@ -1254,6 +1255,16 @@
           "id": "copy",
           "label": "Copy",
           "default": "Directly, and at a rate she agreed to. That arrangement was rare in 1969 and it still is."
+        },
+        {
+          "type": "text",
+          "id": "video_asset",
+          "label": "Optional theme video file"
+        },
+        {
+          "type": "text",
+          "id": "video_poster",
+          "label": "Video poster file"
         }
       ]
     }
