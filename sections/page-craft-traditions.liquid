@@ -92,7 +92,7 @@
 
   {%- if section.settings.show_intro %}
   <section class="section container craft-open" data-reveal>
-    <p class="craft-open__lead">{{ section.settings.open_lead }}</p>
+    <div class="craft-open__visual"><p class="craft-open__lead">{{ section.settings.open_lead }}</p><figure class="craft-open__photo"><img src="{{ 'sj-nov5-craftswoman-courtyard.webp' | asset_url }}" alt="A Shrujan craftswoman working on embroidery in her courtyard in Kutch" loading="lazy" width="1200" height="800"></figure></div>
     <div class="craft-open__copy">
       {%- assign open_paras = section.settings.open_copy | strip | split: nl -%}
       {%- for para in open_paras %}

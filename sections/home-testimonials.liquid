@@ -66,6 +66,48 @@
   assign tm_link = section.settings.picks_url | default: '/pages/shop-shrujan#catalogue'
   assign tm_star = '<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.6L12 17.6 6.1 20.7l1.2-6.6L2.5 9.5l6.6-.9Z"/></svg>'
 -%}
+<style>
+{{ sel }} .tq{grid-template-columns:minmax(0,1fr) minmax(0,1fr);min-height:0;align-items:stretch}
+{{ sel }} .tq__panel{grid-template-rows:auto 1fr auto;padding:clamp(22px,2.4vw,34px);gap:24px;min-height:420px}
+{{ sel }} .tq__quote{font-size:clamp(23px,2.2vw,32px);line-height:1.3;letter-spacing:-.015em}
+{{ sel }} .tq__slide{gap:24px;align-content:center}
+{{ sel }} .tq__face--initials{display:grid;place-items:center;flex:none;border:1px solid var(--hairline);border-radius:var(--radius,8px);background:var(--ivory,#f5f2e6);font-size:14px;letter-spacing:.04em;color:var(--ink)}
+{{ sel }} .tq__photo{min-height:420px}
+{{ sel }} .tq__shot img{object-fit:contain;object-position:center;background:#eeebdf;padding:14px 14px 110px}
+{{ sel }} .tq__shot--craft img{object-fit:cover;padding:0;object-position:center 35%}
+{{ sel }} .tq__shot::after{background:linear-gradient(transparent 58%,rgba(24,23,19,.88))}
+{{ sel }} .tq__item{font-size:clamp(20px,1.8vw,27px);line-height:1.18}
+{{ sel }} .tq__cap{gap:6px;left:22px;right:22px;bottom:20px}
+{{ sel }} .tq__took{font-size:9px;letter-spacing:.12em;line-height:1.4}
+{{ sel }} .tq__go{font-size:10px;letter-spacing:.12em;margin-top:4px}
+{{ sel }} .tq__nav{gap:12px;flex-wrap:wrap;justify-content:space-between}
+{{ sel }} .tq__dots{gap:5px;flex-wrap:wrap;padding-left:0;max-width:100%}
+{{ sel }} .tq__dot{width:30px;height:30px;margin:0;border-radius:var(--radius,8px);flex-shrink:0}
+{{ sel }} .tq__dot img{filter:none;object-fit:cover}
+{{ sel }} .tq__dot.is-active{transform:none}
+{{ sel }} .tq__loved{display:none}
+{{ sel }} .tq__arrow{width:40px;height:40px}
+@media(max-width:900px){
+{{ sel }} .tq{grid-template-columns:1fr;gap:10px}
+{{ sel }} .tq__panel{min-height:0;padding:22px;gap:22px;order:1}
+{{ sel }} .tq__slides{min-height:220px}
+{{ sel }} .tq__quote{font-size:24px;line-height:1.3}
+{{ sel }} .tq__photo{order:2;min-height:0;height:420px}
+{{ sel }} .tq__nav{gap:16px}
+{{ sel }} .tq__dots{max-width:calc(100% - 96px);gap:4px}
+{{ sel }} .tq__dot{width:26px;height:26px}
+{{ sel }} .tq__item{font-size:23px}
+}
+@media(max-width:420px){
+{{ sel }} .tq__panel{padding:18px;gap:18px}
+{{ sel }} .tq__slides{min-height:220px}
+{{ sel }} .tq__quote{font-size:22px}
+{{ sel }} .tq__photo{height:380px}
+{{ sel }} .tq__rating{gap:6px;font-size:9px;letter-spacing:.1em}
+{{ sel }} .tq__count{font-size:10px;letter-spacing:.1em}
+}
+</style>
+
 <section class="section container" aria-label="{{ section.settings.title | escape }}">
   {% render 'sj-hx', meta_l: tm_meta_l, meta_r: tm_meta_r, l1: tm_l1, l2: tm_l2, lede: tm_lede %}
 
@@ -74,18 +116,18 @@
       <div class="tq__top"><span class="tq__rating"><span class="tq__stars" aria-label="5 out of 5 stars">{{ tm_star }}{{ tm_star }}{{ tm_star }}{{ tm_star }}{{ tm_star }}</span>{{ section.settings.rating_count | strip }}</span><span class="tq__count" aria-live="polite"><b>01</b> / {{ tm_total }}</span></div>
       <div class="tq__slides">
       {%- for block in section.blocks %}
-      {%- capture tm_face %}{% if block.settings.image %}{{ block.settings.image | image_url: width: 1200 }}{% else %}{{ block.settings.image_asset | asset_url }}{% endif %}{% endcapture %}
       <figure class="tq__slide{% if forloop.first %} is-active{% endif %}" data-i="{{ forloop.index0 }}"{% unless forloop.first %} aria-hidden="true"{% endunless %} {{ block.shopify_attributes }}>
         <blockquote class="tq__quote">“{{ block.settings.quote | strip }}”</blockquote>
-        <figcaption class="tq__who"><img class="tq__face" src="{{ tm_face }}" alt="" loading="lazy"><span><b class="tq__name">{{ block.settings.name | strip }}</b><span class="tq__city">{{ block.settings.place | strip }} · {{ block.settings.label | strip }}</span></span></figcaption>
+        {%- assign tm_names = block.settings.name | strip | split: ' ' -%}
+        <figcaption class="tq__who"><span class="tq__face tq__face--initials" aria-hidden="true">{{ tm_names.first | slice: 0, 1 }}{{ tm_names.last | slice: 0, 1 }}</span><span><b class="tq__name">{{ block.settings.name | strip }}</b><span class="tq__city">{{ block.settings.place | strip }}</span></span></figcaption>
       </figure>
       {%- endfor %}
       </div>
       <div class="tq__nav">
         <div class="tq__dots">
           {%- for block in section.blocks -%}
-          {%- capture tm_face %}{% if block.settings.image %}{{ block.settings.image | image_url: width: 1200 }}{% else %}{{ block.settings.image_asset | asset_url }}{% endif %}{% endcapture -%}
-          <button class="tq__dot{% if forloop.first %} is-active{% endif %}" type="button" data-i="{{ forloop.index0 }}" aria-label="Review by {{ block.settings.name | strip | escape }}"><img src="{{ tm_face }}" alt="" loading="lazy"></button>
+          {%- capture tm_thumb %}{% if block.settings.photo_url != blank %}{{ block.settings.photo_url }}{% elsif block.settings.photo_asset != blank %}{{ block.settings.photo_asset | asset_url }}{% else %}{{ 'journal-10.webp' | asset_url }}{% endif %}{% endcapture -%}
+          <button class="tq__dot{% if forloop.first %} is-active{% endif %}" type="button" data-i="{{ forloop.index0 }}" aria-label="Review by {{ block.settings.name | strip | escape }}"><img src="{{ tm_thumb | strip }}" alt="" loading="lazy"></button>
           {%- endfor -%}
         </div>
         <span class="tq__loved">{{ section.settings.loved_line_1 | strip }} {{ section.settings.loved_line_2 | strip }}</span>
@@ -94,10 +136,21 @@
     </div>
     <div class="tq__photo">
       {%- for block in section.blocks %}
-      {%- capture tm_shot %}{% if block.settings.buy1_image %}{{ block.settings.buy1_image | image_url: width: 1200 }}{% else %}{{ block.settings.buy1_asset | asset_url }}{% endif %}{% endcapture %}
-      <a class="tq__shot{% if forloop.first %} is-active{% endif %}" data-i="{{ forloop.index0 }}" href="{{ tm_link }}"{% unless forloop.first %} aria-hidden="true" tabindex="-1"{% endunless %}>
-        <img src="{{ tm_shot }}" alt="{{ block.settings.buy1_name | escape }}" loading="lazy">
-        <span class="tq__cap"><span class="tq__took">{{ block.settings.name | strip | split: ' ' | first }} {{ section.settings.took_home_label }}</span><span class="tq__item">{{ block.settings.buy1_name | escape }}</span><span class="tq__go">{{ section.settings.picks_label | strip }} <span aria-hidden="true">→</span></span></span>
+      {%- liquid
+        assign tm_product = block.settings.pick_product
+        assign tm_caption = block.settings.story_caption | default: block.settings.buy1_name
+        assign tm_pick_link = block.settings.story_url | default: '/pages/the-shrujan-story'
+        assign tm_cta = 'Meet the craftswomen'
+        if tm_product != blank
+          assign tm_caption = tm_product.title
+          assign tm_pick_link = tm_product.url
+          assign tm_cta = 'Explore the piece'
+        endif
+      -%}
+      {%- capture tm_shot %}{% if block.settings.photo_url != blank %}{{ block.settings.photo_url }}{% elsif block.settings.photo_asset != blank %}{{ block.settings.photo_asset | asset_url }}{% else %}{{ 'journal-10.webp' | asset_url }}{% endif %}{% endcapture %}
+      <a class="tq__shot{% if block.settings.photo_asset != blank %} tq__shot--craft{% endif %}{% if forloop.first %} is-active{% endif %}" data-i="{{ forloop.index0 }}" href="{{ tm_pick_link }}"{% unless forloop.first %} aria-hidden="true" tabindex="-1"{% endunless %}>
+        <img src="{{ tm_shot | strip }}" alt="{{ tm_caption | escape }}" loading="lazy">
+        <span class="tq__cap"><span class="tq__took">{{ block.settings.photo_context | default: 'From the Shrujan collection' | escape }}</span><span class="tq__item">{{ tm_caption | escape }}</span><span class="tq__go">{{ tm_cta }} <span aria-hidden="true">→</span></span></span>
       </a>
       {%- endfor %}
     </div>
@@ -570,16 +623,40 @@
       "name": "Testimonial",
       "settings": [
         {
-          "type": "image_picker",
-          "id": "image",
-          "label": "Portrait"
+          "type": "header",
+          "content": "Original Shrujan photograph"
+        },
+        {
+          "type": "product",
+          "id": "pick_product",
+          "label": "Related Shopify product"
+        },
+        {
+          "type": "url",
+          "id": "photo_url",
+          "label": "Original photograph URL",
+          "info": "Use a verified original JPG from the product gallery. Do not use generated model images."
         },
         {
           "type": "text",
-          "id": "image_asset",
-          "label": "Portrait fallback asset",
-          "info": "Theme asset filename used when no portrait is picked.",
-          "default": "cat-c1.webp"
+          "id": "photo_asset",
+          "label": "Original craft photograph asset"
+        },
+        {
+          "type": "text",
+          "id": "photo_context",
+          "label": "Photograph context",
+          "default": "From the Shrujan collection"
+        },
+        {
+          "type": "text",
+          "id": "story_caption",
+          "label": "Craft photograph caption"
+        },
+        {
+          "type": "url",
+          "id": "story_url",
+          "label": "Craft story link"
         },
         {
           "type": "text",
@@ -597,7 +674,7 @@
           "type": "text",
           "id": "label",
           "label": "Piece label",
-          "default": "Kora Silk Sari"
+          "default": "Crafted by hand in Kutch"
         },
         {
           "type": "textarea",
@@ -611,42 +688,14 @@
           "content": "Took home — item 1"
         },
         {
-          "type": "image_picker",
-          "id": "buy1_image",
-          "label": "Item 1 image"
-        },
-        {
-          "type": "text",
-          "id": "buy1_asset",
-          "label": "Item 1 fallback asset",
-          "default": "cat-c1.webp"
-        },
-        {
           "type": "text",
           "id": "buy1_name",
           "label": "Item 1 name",
-          "default": "Kora Silk Sari"
+          "default": "From Shrujan"
         },
         {
           "type": "header",
           "content": "Took home — item 2"
-        },
-        {
-          "type": "image_picker",
-          "id": "buy2_image",
-          "label": "Item 2 image"
-        },
-        {
-          "type": "text",
-          "id": "buy2_asset",
-          "label": "Item 2 fallback asset",
-          "default": "frame-r1t4.webp"
-        },
-        {
-          "type": "text",
-          "id": "buy2_name",
-          "label": "Item 2 name",
-          "default": "Ivory Zari Blouse"
         }
       ]
     }
@@ -658,169 +707,193 @@
         {
           "type": "testimonial",
           "settings": {
-            "image_asset": "cat-c1.webp",
             "name": "Meera Shah",
             "place": "Mumbai",
-            "label": "Kora Silk Sari",
+            "label": "Skyblue Handwoven Merino Wool Shawl with Soof Embroidery",
             "quote": "What stood out most was the attention to detail: the fall, the finish, the way the border sits. Five years on it has not lost a single stitch.",
-            "buy1_asset": "cat-c1.webp",
-            "buy1_name": "Kora Silk Sari",
-            "buy2_asset": "frame-r1t4.webp",
-            "buy2_name": "Ivory Zari Blouse"
+            "buy1_name": "Skyblue Handwoven Merino Wool Shawl with Soof Embroidery",
+            "photo_context": "From the Shrujan collection",
+            "pick_product": "shawl-copy-4",
+            "photo_url": "https://cdn.shopify.com/s/files/1/0791/7554/9226/files/20251129_113732.jpg?v=1776341608",
+            "photo_asset": "",
+            "story_caption": "",
+            "story_url": "/pages/the-shrujan-story"
           }
         },
         {
           "type": "testimonial",
           "settings": {
-            "image_asset": "cat-c5.webp",
             "name": "Ananya Iyer",
             "place": "Bengaluru",
-            "label": "Chikankari Set",
+            "label": "Potli Bag",
             "quote": "I wore mine to my sister’s mehendi and three people asked where it was from before dinner. It photographs even better than it looks.",
-            "buy1_asset": "look-b1.webp",
-            "buy1_name": "Chikankari Kurta Set",
-            "buy2_asset": "frame-r1t12.webp",
-            "buy2_name": "Chanderi Dupatta"
+            "buy1_name": "Potli Bag",
+            "photo_context": "From the Shrujan collection",
+            "pick_product": "ahir-batwa-1",
+            "photo_url": "https://cdn.shopify.com/s/files/1/0791/7554/9226/files/0101686.jpg?v=1742294949",
+            "photo_asset": "",
+            "story_caption": "",
+            "story_url": "/pages/the-shrujan-story"
           }
         },
         {
           "type": "testimonial",
           "settings": {
-            "image_asset": "frame-r5t25.webp",
             "name": "Radhika Menon",
             "place": "Kochi",
-            "label": "Zardozi Lehenga",
+            "label": "The people behind Shrujan",
             "quote": "Knowing the name of the woman who embroidered it changes how you wear it. You carry it with respect, not just with pride.",
-            "buy1_asset": "cta-sarree.webp",
-            "buy1_name": "Zardozi Lehenga",
-            "buy2_asset": "frame-r5t25.webp",
-            "buy2_name": "Crimson Silk Odhani"
+            "buy1_name": "The hands behind the piece",
+            "photo_context": "The people behind Shrujan",
+            "pick_product": "",
+            "photo_url": "",
+            "photo_asset": "sj-nov5-craftswoman-courtyard.webp",
+            "story_caption": "The hands behind the piece",
+            "story_url": "/pages/the-shrujan-story#people"
           }
         },
         {
           "type": "testimonial",
           "settings": {
-            "image_asset": "frame-r2t5.webp",
             "name": "Sana Qureshi",
             "place": "Hyderabad",
-            "label": "Phulkari Kurta",
+            "label": "The people behind Shrujan",
             "quote": "It arrived wrapped in mulmul with a handwritten note about the artisan. It felt like receiving heritage, not a parcel.",
-            "buy1_asset": "cat-c2.webp",
-            "buy1_name": "Phulkari Kurta",
-            "buy2_asset": "frame-r2t5.webp",
-            "buy2_name": "Bagh Phulkari Stole"
+            "buy1_name": "Made by the craftswomen of Kutch",
+            "photo_context": "The people behind Shrujan",
+            "pick_product": "",
+            "photo_url": "",
+            "photo_asset": "sj-nov5-craftswomen-together.webp",
+            "story_caption": "Made by the craftswomen of Kutch",
+            "story_url": "/pages/the-shrujan-story#people"
           }
         },
         {
           "type": "testimonial",
           "settings": {
-            "image_asset": "cat-c2.webp",
             "name": "Kavya Nair",
             "place": "Chennai",
-            "label": "Indigo Mulmul Sari",
+            "label": "Dupatta",
             "quote": "The indigo has softened beautifully with every wash instead of fading. It drapes better in year three than it did on day one.",
-            "buy1_asset": "look-b2.webp",
-            "buy1_name": "Indigo Mulmul Sari",
-            "buy2_asset": "frame-r2t14.webp",
-            "buy2_name": "Ajrakh Print Blouse"
+            "buy1_name": "Dupatta",
+            "photo_context": "From the Shrujan collection",
+            "pick_product": "dupatta-copy",
+            "photo_url": "https://cdn.shopify.com/s/files/1/0791/7554/9226/files/IMG_20260417_155803.jpg?v=1776423670",
+            "photo_asset": "",
+            "story_caption": "",
+            "story_url": "/pages/the-shrujan-story"
           }
         },
         {
           "type": "testimonial",
           "settings": {
-            "image_asset": "frame-r3t16.webp",
             "name": "Nisha Bhatia",
             "place": "Chandigarh",
-            "label": "Zari Jacket Set",
+            "label": "Black Pakko Hand Embroidered Kanchli",
             "quote": "I ordered for my engagement with three weeks to spare. It came early, altered exactly to measure, and fit like it was drafted on me.",
-            "buy1_asset": "frame-r3t16.webp",
-            "buy1_name": "Zari Jacket Set",
-            "buy2_asset": "cat-c4.webp",
-            "buy2_name": "Tissue Silk Sharara"
+            "buy1_name": "Black Pakko Hand Embroidered Kanchli",
+            "photo_context": "From the Shrujan collection",
+            "pick_product": "kanchli-copy",
+            "photo_url": "https://cdn.shopify.com/s/files/1/0791/7554/9226/files/IMG_20260709_175825.jpg?v=1783941559",
+            "photo_asset": "",
+            "story_caption": "",
+            "story_url": "/pages/the-shrujan-story"
           }
         },
         {
           "type": "testimonial",
           "settings": {
-            "image_asset": "cat-c4.webp",
             "name": "Divya Reddy",
             "place": "Hyderabad",
-            "label": "Organza Dupatta",
+            "label": "Stole",
             "quote": "Weightless, but the embroidery still has body. I have worn it over three different outfits and it lifts every one of them.",
-            "buy1_asset": "frame-r3t26.webp",
-            "buy1_name": "Organza Suf Dupatta",
-            "buy2_asset": "look-b3.webp",
-            "buy2_name": "Chanderi Anarkali"
+            "buy1_name": "Stole",
+            "photo_context": "From the Shrujan collection",
+            "pick_product": "neran-hand-embroidered-stole-1",
+            "photo_url": "https://cdn.shopify.com/s/files/1/0791/7554/9226/files/0301988.jpg?v=1742884793",
+            "photo_asset": "",
+            "story_caption": "",
+            "story_url": "/pages/the-shrujan-story"
           }
         },
         {
           "type": "testimonial",
           "settings": {
-            "image_asset": "cta-band.webp",
             "name": "Farah Sheikh",
             "place": "Lucknow",
-            "label": "Bridal Trousseau",
+            "label": "The people behind Shrujan",
             "quote": "Two years in the making and worth every month. My mother cried when she saw the mirror work on the dupatta.",
-            "buy1_asset": "hero-right.webp",
-            "buy1_name": "Mirror-Work Bridal Set",
-            "buy2_asset": "frame-r5t15.webp",
-            "buy2_name": "Gota Patti Dupatta"
+            "buy1_name": "Mirror-work, stitched by hand",
+            "photo_context": "The people behind Shrujan",
+            "pick_product": "",
+            "photo_url": "",
+            "photo_asset": "sj-nov5-one-of-a-kind.webp",
+            "story_caption": "Mirror-work, stitched by hand",
+            "story_url": "/pages/the-shrujan-story#people"
           }
         },
         {
           "type": "testimonial",
           "settings": {
-            "image_asset": "frame-r1t20.webp",
             "name": "Tara Deshpande",
             "place": "Pune",
-            "label": "Banarasi Silk Sari",
+            "label": "Coffe Brown Hand Embroidered Kanchli",
             "quote": "I have bought silk at four times this price that did not come close. The zari is real and it shows in the light.",
-            "buy1_asset": "frame-r1t20.webp",
-            "buy1_name": "Banarasi Silk Sari",
-            "buy2_asset": "hero-bottom-2.webp",
-            "buy2_name": "Katan Silk Blouse"
+            "buy1_name": "Coffe Brown Hand Embroidered Kanchli",
+            "photo_context": "From the Shrujan collection",
+            "pick_product": "black-pakko-hand-embroidered-kanchli-copy",
+            "photo_url": "https://cdn.shopify.com/s/files/1/0791/7554/9226/files/IMG_20260709_174314_jpg.jpg?v=1783943997",
+            "photo_asset": "",
+            "story_caption": "",
+            "story_url": "/pages/the-shrujan-story"
           }
         },
         {
           "type": "testimonial",
           "settings": {
-            "image_asset": "cat-c3.webp",
             "name": "Ishita Ghosh",
             "place": "Kolkata",
-            "label": "Kantha Stole",
+            "label": "Stole",
             "quote": "Every running stitch is slightly different, which is exactly the point. Nothing about it looks machine-made.",
-            "buy1_asset": "cat-c3.webp",
-            "buy1_name": "Kantha Silk Stole",
-            "buy2_asset": "frame-r3t6.webp",
-            "buy2_name": "Tussar Kantha Sari"
+            "buy1_name": "Stole",
+            "photo_context": "From the Shrujan collection",
+            "pick_product": "pakko-hand-embroidered-stole-1",
+            "photo_url": "https://cdn.shopify.com/s/files/1/0791/7554/9226/files/0301986.jpg?v=1742884567",
+            "photo_asset": "",
+            "story_caption": "",
+            "story_url": "/pages/the-shrujan-story"
           }
         },
         {
           "type": "testimonial",
           "settings": {
-            "image_asset": "frame-r3t26.webp",
             "name": "Aditi Rao",
             "place": "Bengaluru",
-            "label": "Suf Embroidered Kurta",
+            "label": "The people behind Shrujan",
             "quote": "The customer care team sent me photographs from the workshop while it was being stitched. That is not something you forget.",
-            "buy1_asset": "frame-r2t24.webp",
-            "buy1_name": "Suf Embroidered Kurta",
-            "buy2_asset": "top-right.webp",
-            "buy2_name": "Kutchi Cotton Palazzo"
+            "buy1_name": "From the craftswoman’s hands",
+            "photo_context": "The people behind Shrujan",
+            "pick_product": "",
+            "photo_url": "",
+            "photo_asset": "sj-nov5-hands-embroidery.webp",
+            "story_caption": "From the craftswoman’s hands",
+            "story_url": "/pages/the-shrujan-story#people"
           }
         },
         {
           "type": "testimonial",
           "settings": {
-            "image_asset": "frame-r5t5.webp",
             "name": "Rhea Kapoor",
             "place": "Delhi",
-            "label": "Ajrakh Kurta Set",
+            "label": "Ranipink Handwoven Merino Wool Shawl with Soof Embroidery",
             "quote": "It has become my default for every festive lunch. Comfortable enough to sit through a long meal, sharp enough for photographs.",
-            "buy1_asset": "frame-r5t5.webp",
-            "buy1_name": "Ajrakh Kurta Set",
-            "buy2_asset": "cat-c5.webp",
-            "buy2_name": "Indigo Cotton Stole"
+            "buy1_name": "Ranipink Handwoven Merino Wool Shawl with Soof Embroidery",
+            "photo_context": "From the Shrujan collection",
+            "pick_product": "shawl-copy-3",
+            "photo_url": "https://cdn.shopify.com/s/files/1/0791/7554/9226/files/20251129_114214_ac7ae2ec-4fcb-4b4f-a3de-9e5213eae313.jpg?v=1776340807",
+            "photo_asset": "",
+            "story_caption": "",
+            "story_url": "/pages/the-shrujan-story"
           }
         }
       ]
