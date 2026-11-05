@@ -120,3 +120,5 @@
 .sj-story-editorial #founder .section-title em,
 .sj-story-editorial .sj-kaki-recognition em{font-style:italic!important}
 .sj-story-editorial .sj-kaki-recognition img{height:auto}
+/* Timeline captions occupy their own space below the photograph. */
+.sj-story-editorial .tl__media img{height:auto}
