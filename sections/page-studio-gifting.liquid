@@ -1,71 +1,130 @@
-{%- comment -%}
-  An occasion-led gifting guide. Original settings and blocks are retained so
-  existing page configuration stays compatible; the focused guide replaces
-  the long studio rows. The enquiry is accepted only when Slide confirms it.
-{%- endcomment -%}
+{%- comment -%}A gift guide grounded in the current collection and the craft of Kutch.{%- endcomment -%}
 {%- if section.settings.only_handle == blank or page.handle == section.settings.only_handle -%}
 {%- render 'section-design', section: section -%}
 {{ 'sj-gifting.css' | asset_url | stylesheet_tag }}
 {%- liquid
   assign cfg = section.settings
   assign gifting_id = 'sj-gifting-' | append: section.id
-  assign gifting_phone = cfg.phone | remove: ' ' | remove: '+' | remove: '-' | remove: '(' | remove: ')'
-  assign gifting_text = 'Hello Shrujan, I would like to know more about gifting and collaborations.' | url_encode
+  assign gifting_phone = cfg.phone | remove: ' ' | remove: '+' | remove: '-'
+  assign gifting_text = 'Hello Shrujan, I would like help choosing gifts. My occasion, quantity and date are:' | url_encode
   assign gifting_asset = cfg.hero_asset | default: 'shop-hero.webp'
+  assign gift_blocks = section.blocks | where: 'type', 'gift'
+  assign offer_blocks = section.blocks | where: 'type', 'offer'
+  assign step_blocks = section.blocks | where: 'type', 'step'
+  assign faq_blocks = section.blocks | where: 'type', 'faq'
 -%}
-<div class="sj-gifting" id="{{ gifting_id }}">
-  <section class="sj-gifting__guide" aria-labelledby="{{ gifting_id }}-title">
-    <div class="sj-gifting__hero">
-      <figure class="sj-gifting__photo">
-        <img src="{% if cfg.hero_img %}{{ cfg.hero_img | image_url: width: 1800 }}{% else %}{{ gifting_asset | asset_url }}{% endif %}" alt="{{ cfg.hero_alt | escape }}" width="1600" height="809" fetchpriority="high">
-      </figure>
-      <div class="sj-gifting__hero-copy">
-        <h1 class="sj-gifting__title" id="{{ gifting_id }}-title">{{ cfg.hero_title }}</h1>
-        <p class="sj-gifting__lede">{{ cfg.hero_lede | escape }}</p>
+<div class="sj-gifting sj-gifting--expanded" id="{{ gifting_id }}">
+  <header class="sj-gifting__hero sj-gifting__wrap" aria-labelledby="{{ gifting_id }}-title">
+    <figure class="sj-gifting__photo">
+      <img src="{% if cfg.hero_img != blank %}{{ cfg.hero_img | image_url: width: 1800 }}{% else %}{{ gifting_asset | asset_url }}{% endif %}" alt="{{ cfg.hero_alt | escape }}" width="1600" height="809" fetchpriority="high">
+    </figure>
+    <div class="sj-gifting__hero-copy">
+      <p class="sj-gifting__hero-eyebrow">Kutch, Gujarat <span aria-hidden="true">·</span> Since 1969</p>
+      <h1 class="sj-gifting__title" id="{{ gifting_id }}-title">{{ cfg.hero_title }}</h1>
+      <p class="sj-gifting__lede">{{ cfg.hero_lede | escape }}</p>
+      <div class="sj-gifting__hero-actions">
+        <a class="sj-gifting__button sj-gifting__button--light" href="#{{ gifting_id }}-edit">Explore the gift edit <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>
+        {%- if cfg.show_enquiry -%}<button class="sj-gifting__button sj-gifting__button--ghost" type="button" data-gifting-open aria-haspopup="dialog" aria-controls="{{ gifting_id }}-dialog">Plan a gifting order</button>{%- endif -%}
       </div>
     </div>
-    <div class="sj-gifting__panel">
-      <div class="sj-gifting__content">
-        <i class="sj-i sj-i--gift ms sj-gifting__icon" aria-hidden="true"></i>
-        <p class="sj-gifting__occasions">{{ cfg.occasion_line | default: 'Corporate | Wedding | Festive' | escape }}</p>
-        <h2 class="sj-gifting__help-title">{{ cfg.help_title | default: 'A gift, thoughtfully chosen' | escape }}</h2>
-        <p class="sj-gifting__help-copy">{{ cfg.help_copy | default: 'Tell us about your occasion. Our studio will help you find something personal, from a single keepsake to a collection of gifts.' | escape }}</p>
-        <div class="sj-gifting__actions">
-          <a class="sj-gifting__button" href="https://api.whatsapp.com/send?phone={{ gifting_phone }}&amp;text={{ gifting_text }}" target="_blank" rel="noopener"><i class="sj-i sj-i--whatsapp-logo fab" aria-hidden="true"></i><span>{{ cfg.whatsapp_label | default: 'WhatsApp' | escape }}</span></a>
-          {%- if cfg.show_enquiry -%}
-            <span class="sj-gifting__or">or</span>
-            <button class="sj-gifting__button" type="button" data-gifting-open aria-haspopup="dialog" aria-controls="{{ gifting_id }}-dialog">{{ cfg.form_label | default: 'Fill Form' | escape }}</button>
-          {%- endif -%}
+  </header>
+
+  <nav class="sj-gifting__nav sj-gifting__wrap" aria-label="Explore gifting">
+    <a href="#{{ gifting_id }}-edit">The gift edit</a>
+    <a href="#{{ gifting_id }}-occasions">By occasion</a>
+    <a href="#{{ gifting_id }}-craft">Made by hand</a>
+    <a href="#{{ gifting_id }}-process">How it works</a>
+    <a href="#{{ gifting_id }}-questions">Good to know</a>
+  </nav>
+
+  <section class="sj-gifting__intro sj-gifting__wrap sj-gifting__section">
+    <div><p class="sj-gifting__eyebrow">A little of Kutch, given with love</p><h2 class="sj-gifting__heading">A gift carries more<br>than the occasion.</h2></div>
+    <div class="sj-gifting__intro-copy"><p>A gift carries something of the person who chooses it. At Shrujan, it also carries the skill of the craftswoman who made it.</p><p>Choose hand-embroidered bags, woven textiles and pieces for the home. For one person or a shared celebration, our studio can help you find work that feels right for the people receiving it.</p><div class="sj-gifting__signatures"><span>Crafted by hand</span><span>Rooted in Kutch</span><span>Chosen with care</span></div></div>
+  </section>
+
+  <section class="sj-gifting__section sj-gifting__wrap" id="{{ gifting_id }}-edit" aria-labelledby="{{ gifting_id }}-edit-title">
+    <div class="sj-gifting__section-head"><div><p class="sj-gifting__eyebrow">The gift edit</p><h2 class="sj-gifting__heading" id="{{ gifting_id }}-edit-title">Pieces to give. Stories to keep.</h2></div><p>Everyday companions, gifts for a celebration, and textiles for someone special. A starting point from our current collection.</p></div>
+    <div class="sj-gifting__products">
+      {%- for block in gift_blocks -%}
+        {%- assign gift_product = block.settings.product -%}
+        {%- if gift_product.title == blank -%}{%- assign gift_product = all_products[block.settings.product] -%}{%- endif -%}
+        {%- if gift_product != blank -%}
+        <article class="sj-gifting__product" {{ block.shopify_attributes }}>
+          <a class="sj-gifting__product-image" href="{{ gift_product.url }}" aria-label="View {{ gift_product.title | escape }}">
+            {%- liquid
+              assign gift_image_index = block.settings.image_number | default: 1 | minus: 1
+              assign gift_image = gift_product.images[gift_image_index] | default: gift_product.featured_image
+            -%}
+            <img src="{{ gift_image | image_url: width: 800 }}" alt="{{ gift_image.alt | default: gift_product.title | escape }}" width="600" height="750" loading="lazy">
+            {%- if block.settings.caption != blank -%}<span class="sj-gifting__product-tag">{{ block.settings.caption | escape }}</span>{%- endif -%}
+          </a>
+          <p class="sj-gifting__product-craft">{{ block.settings.craft | escape }}</p>
+          <div class="sj-gifting__product-title-row"><h3><a href="{{ gift_product.url }}">{{ block.settings.label | default: gift_product.title | escape }}</a></h3><span class="sj-gifting__price">{% if gift_product.price_varies %}From {% endif %}{{ gift_product.price | money }}</span></div>
+          <a class="sj-gifting__text-link" href="{{ gift_product.url }}">{% if gift_product.available %}View piece{% else %}View details · currently unavailable{% endif %}<i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>
+        </article>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+    <div class="sj-gifting__edit-foot"><p>Looking for a particular colour, quantity or combination? Let us help you put a selection together.</p><a class="sj-gifting__text-link" href="/pages/shop-shrujan">Explore all pieces <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a></div>
+  </section>
+
+  {%- if cfg.show_offers -%}
+  <section class="sj-gifting__section sj-gifting__wrap" id="{{ gifting_id }}-occasions" aria-labelledby="{{ gifting_id }}-occasions-title">
+    <div class="sj-gifting__section-head"><div><p class="sj-gifting__eyebrow">{{ cfg.ways_eyebrow | escape }}</p><h2 class="sj-gifting__heading" id="{{ gifting_id }}-occasions-title">{{ cfg.ways_title }}</h2></div><p>A single thank-you or gifts shared across a room. Start with the occasion, and we will take it from there.</p></div>
+    <div class="sj-gifting__occasion-grid">
+      {%- for block in offer_blocks -%}
+      <article class="sj-gifting__occasion" {{ block.shopify_attributes }}>
+        <div class="sj-gifting__occasion-image"><img src="{% if block.settings.image != blank %}{{ block.settings.image | image_url: width: 1000 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" width="800" height="650" loading="lazy"><span aria-hidden="true">0{{ forloop.index }}</span></div>
+        <div class="sj-gifting__occasion-copy"><h3>{{ block.settings.name | escape }}</h3><p>{{ block.settings.copy | escape | newline_to_br }}</p>
+          {%- if cfg.show_enquiry -%}<button class="sj-gifting__text-link" type="button" data-gifting-open data-gifting-occasion="{{ block.settings.enquiry_type | escape }}" aria-haspopup="dialog" aria-controls="{{ gifting_id }}-dialog">{{ block.settings.link_label | escape }} <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></button>{%- else -%}<a class="sj-gifting__text-link" href="mailto:{{ cfg.email | escape }}">Write to our studio <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>{%- endif -%}
         </div>
-        <p class="sj-gifting__contact"><a href="mailto:{{ cfg.email | escape }}">{{ cfg.email | escape }}</a></p>
-      </div>
+      </article>
+      {%- endfor -%}
     </div>
   </section>
+  {%- endif -%}
+
+  <section class="sj-gifting__craft" id="{{ gifting_id }}-craft" aria-labelledby="{{ gifting_id }}-craft-title">
+    <div class="sj-gifting__craft-grid sj-gifting__wrap">
+      <div class="sj-gifting__film-wrap">
+        <video class="sj-gifting__film" data-gifting-film data-src="{{ cfg.craft_film | default: 'sj-gifting-craft-montage.mp4' | asset_url }}" poster="{{ cfg.craft_poster | default: 'sj-gifting-craft-montage.webp' | asset_url }}" preload="none" muted playsinline loop aria-label="A montage of Shrujan embroidery, textiles and finishing work"></video>
+        <div class="sj-gifting__film-foot"><span>Before it becomes a gift</span><button class="sj-gifting__film-toggle" type="button" data-gifting-play>Play film <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></button></div>
+      </div>
+      <div class="sj-gifting__craft-copy"><p class="sj-gifting__eyebrow">The work behind the gift</p><h2 class="sj-gifting__heading" id="{{ gifting_id }}-craft-title">The many hands, minds and hearts in every Shrujan.</h2><p>Since 1969, Shrujan has worked with the craftswomen of Kutch to keep the embroidery of their communities alive through a dignified livelihood.</p><p>The women work from their homes, in their own villages. Their skill is in the counted threads, the tiny stitches and the decisions that make each piece their own.</p><ul class="sj-gifting__craft-notes"><li>Made by hand, in Kutch.</li><li>Small variations in stitch and weave belong to the work.</li><li>Something to use, and a craft tradition to carry forward.</li></ul><a class="sj-gifting__text-link" href="/pages/the-shrujan-story">Meet the people behind the work <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a></div>
+    </div>
+  </section>
+
+  {%- if cfg.show_steps -%}
+  <section class="sj-gifting__section sj-gifting__wrap" id="{{ gifting_id }}-process" aria-labelledby="{{ gifting_id }}-process-title">
+    <div class="sj-gifting__section-head"><div><p class="sj-gifting__eyebrow">{{ cfg.steps_eyebrow | escape }}</p><h2 class="sj-gifting__heading" id="{{ gifting_id }}-process-title">{{ cfg.steps_title }}</h2></div><p>For coordinated orders and custom work, a little planning gives the craft the time and attention it needs.</p></div>
+    <ol class="sj-gifting__steps">{%- for block in step_blocks -%}<li {{ block.shopify_attributes }}><span class="sj-gifting__step-no" aria-hidden="true">0{{ forloop.index }}</span><h3>{{ block.settings.title | escape }}</h3><p>{{ block.settings.copy | escape }}</p></li>{%- endfor -%}</ol>
+  </section>
+  {%- endif -%}
+
+  <section class="sj-gifting__bespoke sj-gifting__wrap" aria-labelledby="{{ gifting_id }}-bespoke-title"><div><p class="sj-gifting__eyebrow">Custom collaborations</p><h2 class="sj-gifting__heading" id="{{ gifting_id }}-bespoke-title">Have something particular in mind?</h2></div><div><p>A colour, a material, a craft technique or a project with a specific purpose. Some briefs call for a conversation beyond the current collection.</p><p>Tell us what you are considering. We will discuss what can be developed, the quantities involved and the time the work needs.</p>{%- if cfg.show_enquiry -%}<button class="sj-gifting__text-link" type="button" data-gifting-open data-gifting-occasion="Custom collaboration" aria-haspopup="dialog" aria-controls="{{ gifting_id }}-dialog">Share your brief <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></button>{%- else -%}<a class="sj-gifting__text-link" href="mailto:{{ cfg.email | escape }}">Share your brief <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></a>{%- endif -%}</div></section>
+
+  <section class="sj-gifting__section sj-gifting__wrap sj-gifting__faq" id="{{ gifting_id }}-questions" aria-labelledby="{{ gifting_id }}-faq-title"><div><p class="sj-gifting__eyebrow">Good to know</p><h2 class="sj-gifting__heading" id="{{ gifting_id }}-faq-title">A few things<br>you might ask.</h2><p>Handmade pieces, considered choices.<br>Our studio can help with the details.</p></div><div class="sj-gifting__faq-list">{%- for block in faq_blocks -%}<details {{ block.shopify_attributes }}><summary>{{ block.settings.question | escape }}<span aria-hidden="true"></span></summary><p>{{ block.settings.answer | escape }}</p></details>{%- endfor -%}</div></section>
+
+  <section class="sj-gifting__enquire" id="gifting-enquiry" aria-labelledby="{{ gifting_id }}-contact-title"><div class="sj-gifting__wrap sj-gifting__enquire-grid"><div><p class="sj-gifting__eyebrow">Let us help you choose</p><h2 class="sj-gifting__heading" id="{{ gifting_id }}-contact-title">Tell us who it is for.<br>We’ll start there.</h2><p>Share your occasion, the number of gifts, your budget and the date you have in mind. We will help you explore a suitable selection.</p></div><div class="sj-gifting__contact-actions">{%- if cfg.show_enquiry -%}<button class="sj-gifting__button sj-gifting__button--light" type="button" data-gifting-open aria-haspopup="dialog" aria-controls="{{ gifting_id }}-dialog">Start a gifting enquiry <i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></button>{%- endif -%}<a class="sj-gifting__button sj-gifting__button--ghost" href="https://api.whatsapp.com/send?phone={{ gifting_phone }}&amp;text={{ gifting_text }}" target="_blank" rel="noopener"><i class="sj-i sj-i--whatsapp-logo fab" aria-hidden="true"></i>Speak to us on WhatsApp</a><p class="sj-gifting__contact"><a href="mailto:{{ cfg.email | escape }}">{{ cfg.email | escape }}</a><span aria-hidden="true">·</span><a href="tel:{{ cfg.phone | remove: ' ' | escape }}">{{ cfg.phone | escape }}</a></p></div></div></section>
+
   {%- if cfg.show_enquiry -%}
   <dialog class="sj-gifting__dialog" id="{{ gifting_id }}-dialog" aria-labelledby="{{ gifting_id }}-enquiry-title" aria-describedby="{{ gifting_id }}-enquiry-copy" data-lenis-prevent>
     <div class="sj-gifting__dialog-panel">
       <button class="sj-gifting__close" type="button" data-gifting-close aria-label="Close gifting enquiry"><span aria-hidden="true">×</span></button>
-      <p class="sj-gifting__eyebrow">{{ cfg.enq_eyebrow | escape }}</p>
-      <h2 class="sj-gifting__dialog-title" id="{{ gifting_id }}-enquiry-title">{{ cfg.enq_title }}</h2>
-      <p class="sj-gifting__dialog-copy" id="{{ gifting_id }}-enquiry-copy">{{ cfg.enq_copy | escape }}</p>
-      <form class="sj-gifting__form">
-        <div class="sj-gifting__fields">
-          <p class="sj-gifting__field"><label for="{{ gifting_id }}-name">Name <span aria-hidden="true">*</span></label><input id="{{ gifting_id }}-name" name="name" type="text" required autocomplete="name"></p>
-          <p class="sj-gifting__field"><label for="{{ gifting_id }}-phone">Contact number <span aria-hidden="true">*</span></label><input id="{{ gifting_id }}-phone" name="phone" type="tel" required autocomplete="tel"></p>
-          <p class="sj-gifting__field"><label for="{{ gifting_id }}-email">Email</label><input id="{{ gifting_id }}-email" name="email" type="email" autocomplete="email"></p>
-          <p class="sj-gifting__field"><label for="{{ gifting_id }}-city">City</label><input id="{{ gifting_id }}-city" name="city" type="text" autocomplete="address-level2"></p>
-          <p class="sj-gifting__field sj-gifting__field--wide"><label for="{{ gifting_id }}-occasion">Quantity and occasion</label><input id="{{ gifting_id }}-occasion" name="extra" type="text" placeholder="For example, 50 gifts for a wedding"></p>
-          <p class="sj-gifting__field sj-gifting__field--wide"><label for="{{ gifting_id }}-looking">What are you looking for?</label><textarea id="{{ gifting_id }}-looking" name="looking" rows="3"></textarea></p>
-        </div>
-        <p class="sj-gifting__note">* {{ cfg.note | escape }}</p>
-        <p class="sj-gifting__error" role="alert" tabindex="-1" hidden>We couldn’t send your enquiry just now. Please try again, or <a href="https://api.whatsapp.com/send?phone={{ gifting_phone }}&amp;text={{ gifting_text }}" target="_blank" rel="noopener">speak to us on WhatsApp</a>.</p>
-        <button class="sj-gifting__button sj-gifting__button--solid" type="submit"><span data-gifting-submit>{{ cfg.submit_label | escape }}</span><i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></button>
-      </form>
-      <div class="sj-gifting__success" role="status" hidden>
-        <h3 tabindex="-1">{{ cfg.done_title | escape }}</h3>
-        <p>{{ cfg.done_body }}</p>
-        <button class="sj-gifting__button" type="button" data-gifting-again>{{ cfg.done_again | escape }}</button>
-      </div>
+      <p class="sj-gifting__eyebrow">{{ cfg.enq_eyebrow | escape }}</p><h2 class="sj-gifting__dialog-title" id="{{ gifting_id }}-enquiry-title">{{ cfg.enq_title }}</h2><p class="sj-gifting__dialog-copy" id="{{ gifting_id }}-enquiry-copy">{{ cfg.enq_copy | escape }}</p>
+      <form class="sj-gifting__form"><div class="sj-gifting__fields">
+        <p class="sj-gifting__field"><label for="{{ gifting_id }}-name">Name <span aria-hidden="true">*</span></label><input id="{{ gifting_id }}-name" name="name" type="text" required autocomplete="name"></p>
+        <p class="sj-gifting__field"><label for="{{ gifting_id }}-phone">Contact number <span aria-hidden="true">*</span></label><input id="{{ gifting_id }}-phone" name="phone" type="tel" required autocomplete="tel"></p>
+        <p class="sj-gifting__field"><label for="{{ gifting_id }}-email">Email</label><input id="{{ gifting_id }}-email" name="email" type="email" autocomplete="email"></p>
+        <p class="sj-gifting__field"><label for="{{ gifting_id }}-city">Delivery city</label><input id="{{ gifting_id }}-city" name="city" type="text" autocomplete="address-level2"></p>
+        <p class="sj-gifting__field sj-gifting__field--wide"><label for="{{ gifting_id }}-occasion">Occasion or gifting type</label><select id="{{ gifting_id }}-occasion" name="occasion"><option value="">Please choose</option><option>Corporate & institutional</option><option>Wedding & celebration</option><option>Festive & personal</option><option>Custom collaboration</option><option>Choosing a single gift</option></select></p>
+        <p class="sj-gifting__field"><label for="{{ gifting_id }}-quantity">Approximate quantity</label><input id="{{ gifting_id }}-quantity" name="quantity" type="number" min="1" step="1" inputmode="numeric" placeholder="Number of gifts"></p>
+        <p class="sj-gifting__field"><label for="{{ gifting_id }}-budget">Budget per gift (INR)</label><input id="{{ gifting_id }}-budget" name="budget" type="number" min="0" inputmode="numeric" placeholder="Approximate budget"></p>
+        <p class="sj-gifting__field"><label for="{{ gifting_id }}-date">Required by</label><input id="{{ gifting_id }}-date" name="required_date" type="date"></p>
+        <p class="sj-gifting__field"><label for="{{ gifting_id }}-preference">Product or craft preference</label><input id="{{ gifting_id }}-preference" name="preference" type="text" placeholder="Potlis, stoles, a colour…"></p>
+        <p class="sj-gifting__field sj-gifting__field--wide"><label for="{{ gifting_id }}-looking">Anything else we should know?</label><textarea id="{{ gifting_id }}-looking" name="looking" rows="3" placeholder="Tell us about the people, the occasion or a particular idea."></textarea></p>
+      </div><p class="sj-gifting__note">* Required. Our studio will use these details to respond to your enquiry.</p><p class="sj-gifting__error" role="alert" tabindex="-1" hidden>We couldn’t send your enquiry just now. Please try again, or <a href="https://api.whatsapp.com/send?phone={{ gifting_phone }}&amp;text={{ gifting_text }}" target="_blank" rel="noopener">speak to us on WhatsApp</a>.</p><button class="sj-gifting__button sj-gifting__button--solid" type="submit"><span data-gifting-submit>{{ cfg.submit_label | escape }}</span><i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></button></form>
+      <div class="sj-gifting__success" role="status" hidden><h3 tabindex="-1">{{ cfg.done_title | escape }}</h3><p>{{ cfg.done_body }}</p><button class="sj-gifting__button" type="button" data-gifting-again>{{ cfg.done_again | escape }}</button></div>
       <p class="sj-gifting__dialog-contact">{{ cfg.call_label | escape }} <a href="tel:{{ cfg.phone | remove: ' ' | escape }}">{{ cfg.phone | escape }}</a> · <a href="mailto:{{ cfg.email | escape }}">{{ cfg.email | escape }}</a></p>
     </div>
   </dialog>
@@ -77,9 +136,29 @@
   var root = document.getElementById({{ gifting_id | json }});
   if (!root || root.__giftingInit) return;
   root.__giftingInit = true;
+  var video = root.querySelector('[data-gifting-film]');
+  var filmButton = root.querySelector('[data-gifting-play]');
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var observer, inView = false, userPaused = false;
+  function playFilm() {
+    if (!video.getAttribute('src')) video.src = video.getAttribute('data-src');
+    var result = video.play();
+    if (result && result.catch) result.catch(function () {});
+  }
+  if (video && filmButton) {
+    video.muted = true;
+    video.addEventListener('play', function () { filmButton.firstChild.textContent = 'Pause film '; });
+    video.addEventListener('pause', function () { filmButton.firstChild.textContent = 'Play film '; });
+    filmButton.addEventListener('click', function () { if (video.paused) { userPaused = false; playFilm(); } else { userPaused = true; video.pause(); } });
+    if ('IntersectionObserver' in window) {
+      observer = new IntersectionObserver(function (entries) { inView = entries[0].isIntersecting; if (inView && !reduced && !userPaused && !document.hidden) playFilm(); else video.pause(); }, { threshold: .25 });
+      observer.observe(video);
+    }
+    document.addEventListener('visibilitychange', function () { if (document.hidden) video.pause(); else if (inView && !reduced && !userPaused) playFilm(); });
+  }
   var dialog = root.querySelector('dialog');
   if (!dialog) return;
-  var opener = root.querySelector('[data-gifting-open]');
+  var openers = root.querySelectorAll('[data-gifting-open]');
   var form = dialog.querySelector('form');
   var success = dialog.querySelector('.sj-gifting__success');
   var error = dialog.querySelector('.sj-gifting__error');
@@ -94,72 +173,55 @@
     if (window.Shrujan && window.Shrujan.startScroll) window.Shrujan.startScroll();
     if (previousFocus && previousFocus.isConnected) previousFocus.focus({ preventScroll: true });
   }
-  opener.addEventListener('click', function () {
-    if (typeof dialog.showModal !== 'function') {
-      window.location.href = root.querySelector('.sj-gifting__contact a').href;
-      return;
-    }
-    previousFocus = document.activeElement;
-    savedOverflow = document.documentElement.style.overflow;
-    dialog.showModal();
-    if (window.Shrujan && window.Shrujan.stopScroll) window.Shrujan.stopScroll();
-    document.documentElement.style.overflow = 'hidden';
-    held = true;
-    var focusTarget = success.hidden ? form.querySelector('input') : success.querySelector('h3');
-    focusTarget.focus({ preventScroll: true });
+  Array.prototype.forEach.call(openers, function (opener) {
+    opener.addEventListener('click', function () {
+      if (typeof dialog.showModal !== 'function') { window.location.href = 'mailto:{{ cfg.email | escape }}'; return; }
+      previousFocus = document.activeElement;
+      savedOverflow = document.documentElement.style.overflow;
+      var occasion = opener.getAttribute('data-gifting-occasion');
+      if (occasion && success.hidden) form.elements.occasion.value = occasion;
+      dialog.showModal();
+      if (window.Shrujan && window.Shrujan.stopScroll) window.Shrujan.stopScroll();
+      document.documentElement.style.overflow = 'hidden';
+      held = true;
+      (success.hidden ? form.querySelector('input') : success.querySelector('h3')).focus({ preventScroll: true });
+    });
   });
   dialog.querySelector('[data-gifting-close]').addEventListener('click', function () { dialog.close(); });
   dialog.addEventListener('close', release);
   dialog.addEventListener('cancel', function (event) { event.preventDefault(); dialog.close(); });
-  dialog.addEventListener('click', function (event) {
-    if (event.target !== dialog) return;
-    var rect = dialog.getBoundingClientRect();
-    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
-  });
-  dialog.querySelector('[data-gifting-again]').addEventListener('click', function () {
-    form.reset();
-    form.hidden = false;
-    success.hidden = true;
-    error.hidden = true;
-    form.querySelector('input').focus();
-  });
+  dialog.addEventListener('click', function (event) { if (event.target !== dialog) return; var rect = dialog.getBoundingClientRect(); if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close(); });
+  dialog.querySelector('[data-gifting-again]').addEventListener('click', function () { form.reset(); form.hidden = false; success.hidden = true; error.hidden = true; form.querySelector('input').focus(); });
   form.addEventListener('submit', function (event) {
     event.preventDefault();
     if (submit.disabled || !form.reportValidity()) return;
-    submit.disabled = true;
-    submitText.textContent = 'Sending…';
-    form.setAttribute('aria-busy', 'true');
-    error.hidden = true;
-    Promise.resolve().then(function () {
-      if (!window.SJSlide || typeof window.SJSlide.sendForm !== 'function') return false;
-      return window.SJSlide.sendForm(form, { form: 'Gifting & Collaborations enquiry', type: 'Gifting & Collaborations', tags: ['enquiry', 'studio', 'gifting'] });
-    }).then(function (ok) {
-      if (ok !== true) throw new Error('Enquiry was not accepted');
-      form.hidden = true;
-      success.hidden = false;
-      if (dialog.open) success.querySelector('h3').focus();
-    }).catch(function () {
-      error.hidden = false;
-      if (dialog.open) error.focus();
-    }).then(function () {
-      submit.disabled = false;
-      submitText.textContent = idleText;
-      form.removeAttribute('aria-busy');
-    });
+    submit.disabled = true; submitText.textContent = 'Sending…'; form.setAttribute('aria-busy', 'true'); error.hidden = true;
+    Promise.resolve().then(function () { if (!window.SJSlide || typeof window.SJSlide.sendForm !== 'function') return false; return window.SJSlide.sendForm(form, { form: 'Gifting & Collaborations enquiry', type: form.elements.occasion.value || 'Gifting & Collaborations', tags: ['enquiry', 'studio', 'gifting'] }); }).then(function (ok) { if (ok !== true) throw new Error('Enquiry was not accepted'); form.hidden = true; success.hidden = false; if (dialog.open) success.querySelector('h3').focus(); }).catch(function () { error.hidden = false; if (dialog.open) error.focus(); }).then(function () { submit.disabled = false; submitText.textContent = idleText; form.removeAttribute('aria-busy'); });
   });
-  document.addEventListener('shopify:section:unload', function (event) {
-    if (event.target.contains(root)) { if (dialog.open) dialog.close(); release(); }
-  });
+  document.addEventListener('shopify:section:unload', function (event) { if (event.target.contains(root)) { if (dialog.open) dialog.close(); release(); if (observer) observer.disconnect(); if (video) video.pause(); } });
 })();
 </script>
 {%- endif -%}
+
 {% schema %}
 {
-  "name": "Studio · Gifting",
+  "name": "Studio \u00b7 Gifting",
   "settings": [
     {
       "type": "header",
       "content": "Page"
+    },
+    {
+      "type": "text",
+      "id": "craft_film",
+      "label": "Craft montage theme asset",
+      "default": "sj-gifting-craft-montage.mp4"
+    },
+    {
+      "type": "text",
+      "id": "craft_poster",
+      "label": "Craft montage poster asset",
+      "default": "sj-gifting-craft-montage.webp"
     },
     {
       "type": "text",
@@ -315,7 +377,7 @@
       "type": "text",
       "id": "hours",
       "label": "Hours",
-      "default": "10 AM – 7 PM, Bhuj"
+      "default": "10 AM \u2013 7 PM, Bhuj"
     },
     {
       "type": "text",
@@ -531,7 +593,7 @@
       "type": "color",
       "id": "sec_bg",
       "label": "Background",
-      "info": "Leave empty to keep the section’s own background."
+      "info": "Leave empty to keep the section\u2019s own background."
     },
     {
       "type": "color",
@@ -573,7 +635,7 @@
     },
     {
       "type": "header",
-      "content": "Design — mobile"
+      "content": "Design \u2014 mobile"
     },
     {
       "type": "select",
@@ -718,7 +780,7 @@
           "type": "text",
           "id": "fact_2",
           "label": "Fact 2",
-          "default": "4–8 weeks"
+          "default": "4\u20138 weeks"
         },
         {
           "type": "text",
@@ -731,6 +793,12 @@
           "id": "link_label",
           "label": "Link label",
           "default": "Enquire about this"
+        },
+        {
+          "type": "text",
+          "id": "enquiry_type",
+          "label": "Enquiry occasion to preselect",
+          "info": "Match one of the occasion choices in the enquiry form."
         }
       ]
     },
@@ -751,11 +819,64 @@
           "default": "Numbers, budget, occasion and how long you have. We will tell you honestly what is possible in the time."
         }
       ]
+    },
+    {
+      "type": "gift",
+      "name": "Featured gift",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Short display name"
+        },
+        {
+          "type": "text",
+          "id": "craft",
+          "label": "Material or craft"
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Gifting idea"
+        },
+        {
+          "type": "range",
+          "id": "image_number",
+          "label": "Product image to show",
+          "min": 1,
+          "max": 4,
+          "step": 1,
+          "default": 1
+        }
+      ]
+    },
+    {
+      "type": "faq",
+      "name": "Gifting question",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question"
+        },
+        {
+          "type": "textarea",
+          "id": "answer",
+          "label": "Answer"
+        }
+      ]
     }
   ],
   "presets": [
     {
-      "name": "Studio · Gifting",
+      "name": "Studio \u00b7 Gifting",
       "blocks": [
         {
           "type": "strand",
@@ -791,7 +912,7 @@
         {
           "type": "meta",
           "settings": {
-            "value": "4–12",
+            "value": "4\u201312",
             "label": "Weeks to deliver"
           }
         },
@@ -810,7 +931,7 @@
             "name": "Corporate & Institutional Gifting",
             "copy": "Shrujan collaborates with organisations seeking meaningful, high-quality gifts rooted in craft. These projects often mark important milestones, partnerships or occasions where the intention is to offer something lasting and thoughtfully made.\nOur focus is on craftsmanship, cultural integrity and thoughtful selection, ensuring each gift carries depth and value.",
             "fact_1": "From 25 pieces",
-            "fact_2": "4–8 weeks",
+            "fact_2": "4\u20138 weeks",
             "fact_3": "Presentation packaging",
             "link_label": "Enquire about this"
           }
@@ -823,7 +944,7 @@
             "name": "Wedding & Occasion Gifting",
             "copy": "For weddings and special occasions, we offer handcrafted gifts that bring warmth and individuality to celebrations. These pieces are chosen not only for their beauty but for the stories and skills they carry, making them gifts that are remembered and valued.",
             "fact_1": "From 50 pieces",
-            "fact_2": "6–10 weeks",
+            "fact_2": "6\u201310 weeks",
             "fact_3": "Custom colourways",
             "link_label": "Enquire about this"
           }
@@ -834,7 +955,7 @@
             "asset": "sj-handloom-weaving-cushion-cover-5-1.webp",
             "alt": "Handloom cushion covers in natural dyed cotton",
             "name": "Custom Collaborations",
-            "copy": "Some projects call for something more specific. We work on custom commissions that may involve particular colours, materials or craft techniques, developed through dialogue and aligned with Shrujan’s craft values.\nAll collaborations are undertaken with care, respecting both timelines and the handmade nature of the work",
+            "copy": "Some projects call for something more specific. We work on custom commissions that may involve particular colours, materials or craft techniques, developed through dialogue and aligned with Shrujan\u2019s craft values.\nAll collaborations are undertaken with care, respecting both timelines and the handmade nature of the work",
             "fact_1": "By commission",
             "fact_2": "12+ weeks",
             "fact_3": "Developed with the artisans",
@@ -866,7 +987,7 @@
           "type": "step",
           "settings": {
             "title": "Delivery",
-            "copy": "Packed, documented and shipped — with a card naming the craft and the community behind the piece."
+            "copy": "Packed, documented and shipped \u2014 with a card naming the craft and the community behind the piece."
           }
         }
       ]
