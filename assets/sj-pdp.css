@@ -1337,3 +1337,124 @@
 
 
 .pdp__share{flex-basis:54px;font-size:11px;letter-spacing:.04em}
+
+/* Image-led ways into the piece, with the original destinations preserved. */
+.pdp-page .pdp__quick {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 24px 0 8px;
+  border: 0;
+}
+
+.pdp-page .pdp__quick li,
+.pdp-page .pdp__quick li + li {
+  min-width: 0;
+  border: 0;
+}
+
+.pdp-page .pdp__quick-link--photo {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  justify-content: flex-end;
+  align-items: stretch;
+  height: clamp(140px, 12vw, 170px);
+  padding: 19px;
+  overflow: hidden;
+  border-radius: var(--radius, 7px);
+  background: #5d5144;
+  color: var(--ivory, #f7f3e8);
+  text-align: left;
+  text-decoration: none;
+  transition: none;
+}
+
+.pdp-page .pdp__quick-link--photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(18, 15, 12, .08) 0%, rgba(18, 15, 12, .28) 35%, rgba(18, 15, 12, .84) 100%);
+  pointer-events: none;
+}
+
+.pdp-page .pdp__quick-image {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform .45s ease;
+}
+
+.pdp-page .pdp__quick-copy {
+  position: relative;
+  display: grid;
+  justify-items: start;
+  gap: 9px;
+  color: inherit;
+  font: 500 12px/1.35 var(--font-sans, serif);
+  letter-spacing: .045em;
+  text-transform: none;
+  text-shadow: 0 1px 8px #0005;
+}
+
+.pdp-page .pdp__quick-link--photo .pdp__quick-copy i,
+.pdp-page .pdp__quick-link--photo .pdp__quick-copy svg {
+  color: inherit;
+}
+
+.pdp-page .pdp__quick-link--photo:hover {
+  color: var(--ivory, #f7f3e8);
+  background: #5d5144;
+}
+
+.pdp-page .pdp__quick-link--photo:hover .pdp__quick-image {
+  transform: scale(1.035);
+}
+
+.pdp-page .pdp__quick-link--photo:focus-visible {
+  outline: 2px solid var(--ink, #404041);
+  outline-offset: 4px;
+}
+
+/* The buying column supplies the scroll travel; the photograph stays in view. */
+@media (min-width: 1081px) {
+  .sj-compact-pages .pdp-page.pdp-page--scroll-gallery .pdp__media .pdp__stage {
+    height: auto !important;
+    aspect-ratio: var(--pdp-media-ratio, 1);
+    max-height: min(calc(100svh - var(--pdp-gallery-chrome, 134px)), 880px);
+  }
+}
+
+@media (max-width: 720px) {
+  .pdp-page .pdp__quick {
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  .pdp-page .pdp__quick-link--photo {
+    height: 128px;
+    padding: 15px;
+  }
+
+  .pdp-page .pdp__quick-copy {
+    gap: 8px;
+    font-size: 11px;
+    letter-spacing: .025em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pdp-page .pdp__quick-image {
+    transition: none;
+  }
+}
+
+@media (min-width:1081px) {
+ .pdp-page--scroll-gallery[data-gallery-thumbs="below"] { --pdp-gallery-chrome:238px; }
+}
+.pdp-page .pdp__stage { touch-action:pan-y pinch-zoom; }
