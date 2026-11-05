@@ -210,8 +210,9 @@
     {%- if template.name == 'index' %}
     <link rel="stylesheet" href="{{ 'sj-home.css' | asset_url }}">
     {%- endif %}
+    <link rel="stylesheet" href="{{ 'sj-spacing-nov5.css' | asset_url }}">
   </head>
-  <body>
+  <body{% unless template.name == 'index' %} class="sj-compact-pages"{% endunless %}>
     {%- if template.name == 'index' %}{% render 'sj-loader' %}{% endif %}
     <div id="root">
       {% sections 'header-group' %}
