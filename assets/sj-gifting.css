@@ -1,0 +1,68 @@
+/* Gifting guide: an inset photographic hero and native enquiry dialog. */
+.sj-gifting { color: var(--ink, #2b1d19); background: var(--ivory, #f9f5ea); }
+.sj-gifting__guide { padding: clamp(20px, 2.8vw, 44px) var(--gutter, 40px) 0; }
+.sj-gifting__hero { position: relative; display: grid; place-items: center; min-height: clamp(440px, 40vw, 620px); overflow: hidden; isolation: isolate; border-radius: var(--radius, 7px); background: #726052; }
+.sj-gifting__photo { position: absolute; inset: 0; margin: 0; }
+.sj-gifting__photo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(25, 17, 13, .36), rgba(25, 17, 13, .5)); }
+.sj-gifting__photo img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.sj-gifting__hero-copy { position: relative; z-index: 1; width: min(940px, 100%); padding: 70px 35px; text-align: center; color: #fff; }
+.sj-gifting__title { margin: 0; color: #fff; font: 400 clamp(36px, 4vw, 62px)/1.1 var(--font-display, var(--font-serif, serif)); letter-spacing: .035em; text-transform: uppercase; text-wrap: balance; text-shadow: 0 2px 14px #190e0b55; }
+.sj-gifting__lede { max-width: 660px; margin: 23px auto 0; color: #fff; font: 400 16px/1.75 var(--font-sans, sans-serif); text-wrap: pretty; text-shadow: 0 1px 9px #190e0b77; }
+.sj-gifting__panel { display: flex; align-items: center; justify-content: center; padding: 48px 22px 62px; text-align: center; }
+.sj-gifting__content { width: 100%; max-width: 460px; }
+.sj-gifting__icon { display: inline-block; font-size: 30px; color: var(--maroon, #571c16); margin-bottom: 12px; }
+.sj-gifting__eyebrow { margin: 0 0 13px; font: 500 11px/1.4 var(--font-sans, sans-serif); letter-spacing: .15em; text-transform: uppercase; color: var(--maroon, #571c16); }
+.sj-gifting__occasions { margin: 0 0 20px; font: 500 11px/1.5 var(--font-sans, sans-serif); letter-spacing: .13em; text-transform: uppercase; }
+.sj-gifting__help-title { margin: 0 0 12px; font: 400 clamp(28px, 2.25vw, 34px)/1.12 var(--font-display, var(--font-serif, serif)); color: var(--maroon, #571c16); text-wrap: balance; }
+.sj-gifting__help-copy { margin: 0; font: 400 14px/1.7 var(--font-sans, sans-serif); color: var(--ink-soft, #75665f); }
+.sj-gifting__actions { margin-top: 25px; }
+.sj-gifting__button { appearance: none; display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 52px; width: 100%; margin: 0; padding: 15px 20px; border: 1px solid var(--maroon, #571c16); border-radius: var(--radius, 7px); background: transparent; color: var(--maroon, #571c16); font: 500 12px/1.4 var(--font-sans, sans-serif); letter-spacing: .1em; text-transform: uppercase; text-decoration: none; cursor: pointer; transition: background .2s, color .2s; }
+.sj-gifting__button:hover { color: var(--ivory, #f9f5ea); background: var(--maroon, #571c16); }
+.sj-gifting__button i { font-size: 20px; }
+.sj-gifting__button:disabled { cursor: wait; opacity: .6; }
+.sj-gifting__button--solid { background: var(--maroon, #571c16); color: var(--ivory, #f9f5ea); }
+.sj-gifting__button--solid:hover { background: var(--maroon-deep, #43140f); }
+.sj-gifting__button:focus-visible, .sj-gifting a:focus-visible, .sj-gifting__close:focus-visible, .sj-gifting__field input:focus-visible, .sj-gifting__field textarea:focus-visible { outline: 2px solid var(--maroon, #571c16); outline-offset: 4px; }
+.sj-gifting__or { display: block; margin: 10px 0; font: 400 12px/1.4 var(--font-sans, sans-serif); text-transform: uppercase; color: var(--ink-soft, #75665f); }
+.sj-gifting__contact { margin: 22px 0 0; font: 400 12px/1.4 var(--font-sans, sans-serif); color: var(--ink-soft, #75665f); }
+.sj-gifting__contact a, .sj-gifting__dialog a { text-underline-offset: 3px; }
+.sj-gifting__dialog { box-sizing: border-box; width: min(680px, calc(100vw - 40px)); max-width: none; max-height: calc(100dvh - 40px); margin: auto; padding: 0; border: 0; border-radius: var(--radius, 7px); color: var(--ink, #2b1d19); background: var(--ivory, #f9f5ea); overflow-y: auto; overscroll-behavior: contain; box-shadow: 0 20px 90px #200c0b40; }
+.sj-gifting__dialog::backdrop { background: rgba(30, 16, 13, .6); }
+.sj-gifting__dialog-panel { position: relative; padding: 42px; }
+.sj-gifting__close { position: absolute; top: 12px; right: 12px; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: var(--radius, 7px); color: var(--maroon, #571c16); background: transparent; font: 300 34px/1 var(--font-sans, sans-serif); cursor: pointer; }
+.sj-gifting__dialog-title { margin: 0 35px 12px 0; font: 400 36px/1.12 var(--font-display, var(--font-serif, serif)); color: var(--maroon, #571c16); }
+.sj-gifting__dialog-copy { margin: 0 0 26px; font: 400 14px/1.6 var(--font-sans, sans-serif); color: var(--ink-soft, #75665f); }
+.sj-gifting__fields { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.sj-gifting__field { min-width: 0; margin: 0; }
+.sj-gifting__field--wide { grid-column: 1 / -1; }
+.sj-gifting__field label { display: block; margin-bottom: 7px; font: 500 12px/1.4 var(--font-sans, sans-serif); }
+.sj-gifting__field input, .sj-gifting__field textarea { box-sizing: border-box; width: 100%; min-height: 46px; border: 1px solid var(--hairline-strong, #2b1d1966); border-radius: var(--radius, 7px); padding: 11px 12px; background: transparent; color: var(--ink, #2b1d19); font: 400 16px/1.4 var(--font-sans, sans-serif); }
+.sj-gifting__field textarea { resize: vertical; }
+.sj-gifting__field input::placeholder { opacity: 1; color: var(--ink-soft, #75665f); font-size: 13px; }
+.sj-gifting__note { margin: 18px 0; font: 400 11px/1.5 var(--font-sans, sans-serif); color: var(--ink-soft, #75665f); }
+.sj-gifting__error { margin: 16px 0; padding: 13px; border: 1px solid var(--maroon, #571c16); font: 400 14px/1.6 var(--font-sans, sans-serif); }
+.sj-gifting__error a { text-decoration: underline; }
+.sj-gifting__success h3 { margin: 0 0 12px; font: 400 28px/1.15 var(--font-display, var(--font-serif, serif)); color: var(--maroon, #571c16); }
+.sj-gifting__success p { margin-bottom: 24px; font: 400 15px/1.6 var(--font-sans, sans-serif); }
+.sj-gifting__dialog-contact { margin: 24px 0 0; font: 400 12px/1.7 var(--font-sans, sans-serif); color: var(--ink-soft, #75665f); overflow-wrap: anywhere; }
+.sj-gifting [hidden] { display: none !important; }
+.sj-gifting__noscript { padding: 20px; text-align: center; }
+@media (max-width: 700px) {
+ .sj-gifting__guide { padding-top: 18px; }
+ .sj-gifting__hero { min-height: 450px; }
+ .sj-gifting__photo img { object-position: 24% center; }
+ .sj-gifting__photo::after { background: linear-gradient(180deg, rgba(25, 17, 13, .42), rgba(25, 17, 13, .56)); }
+ .sj-gifting__hero-copy { padding: 50px 24px; }
+ .sj-gifting__title { font-size: clamp(32px, 8vw, 42px); letter-spacing: .025em; }
+ .sj-gifting__lede { margin-top: 22px; font-size: 14px; line-height: 1.7; }
+ .sj-gifting__panel { padding: 36px 0 42px; }
+ .sj-gifting__content { max-width: 420px; }
+ .sj-gifting__occasions { font-size: 10px; }
+ .sj-gifting__help-title { font-size: 29px; }
+ .sj-gifting__dialog { width: calc(100vw - 24px); max-height: calc(100dvh - 24px); }
+ .sj-gifting__dialog-panel { padding: 36px 22px 24px; }
+ .sj-gifting__dialog-title { font-size: 30px; }
+ .sj-gifting__fields { gap: 15px; }
+}
+@media (max-width: 420px) { .sj-gifting__fields { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .sj-gifting__button { transition: none; } }

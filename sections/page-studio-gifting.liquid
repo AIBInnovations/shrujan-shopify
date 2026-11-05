@@ -1,332 +1,154 @@
 {%- comment -%}
-  This section belongs to one page. In the default page template it sits beside
-  the other designed pages and is given its page's handle, so it draws on that
-  page and stays silent on every other. Without a handle it always draws.
+  An occasion-led gifting guide. Original settings and blocks are retained so
+  existing page configuration stays compatible; the focused guide replaces
+  the long studio rows. The enquiry is accepted only when Slide confirms it.
 {%- endcomment -%}
 {%- if section.settings.only_handle == blank or page.handle == section.settings.only_handle -%}
 {%- render 'section-design', section: section -%}
-{{ 'sj-studio.css' | asset_url | stylesheet_tag }}
-{%- comment -%}
-  Region + grid controls. Every default reproduces the built page. The steps grid
-  is two across and stacks below 900px, so the column override is confined to the
-  band the built rule owns rather than flattening the stack on phones.
-
-  The "ways to work together" rows are .studio-row media/body pairs rather than an
-  n-up grid, so they carry a visibility toggle but no column count — there is
-  nothing in the CSS for one to key on.
-{%- endcomment -%}
+{{ 'sj-gifting.css' | asset_url | stylesheet_tag }}
 {%- liquid
   assign cfg = section.settings
-  assign root_sel = '#shopify-section-' | append: section.id
-
-  comment
-    With the form hidden the in-page anchor would have no target, so the offer
-    links fall back to the studio's inbox instead of going nowhere.
-  endcomment
-  assign offer_href = '#gifting-enquiry'
-  unless cfg.show_enquiry
-    assign offer_href = 'mailto:' | append: cfg.email
-  endunless
-
-  comment
-    Mobile group. The stages grid and the ways rows both step at 900px, the rows
-    with the alternating order reset that a stacking control keys on. The
-    masthead photograph is the outlier: it is a 21:9 letterbox with no responsive
-    shape at all, so on a phone it is a band barely taller than the type.
-  endcomment
-  assign gf_style = false
-  if cfg.step_cols != 2 or cfg.step_cols_m != 2
-    assign gf_style = true
-  endif
-  if cfg.row_order_m != 'image' or cfg.hero_ratio_m != 'default'
-    assign gf_style = true
-  endif
+  assign gifting_id = 'sj-gifting-' | append: section.id
+  assign gifting_phone = cfg.phone | remove: ' ' | remove: '+' | remove: '-' | remove: '(' | remove: ')'
+  assign gifting_text = 'Hello Shrujan, I would like to know more about gifting and collaborations.' | url_encode
+  assign gifting_asset = cfg.hero_asset | default: 'shop-hero.webp'
 -%}
-{%- if gf_style -%}
-  <style>
-    {%- if cfg.step_cols != 2 -%}
-      {{ root_sel }} { --step-cols: {{ cfg.step_cols }}; }
-      @media (min-width: 901px) {
-        {{ root_sel }} .steps { grid-template-columns: repeat(var(--step-cols), minmax(0, 1fr)); }
-      }
-    {%- endif -%}
-    {%- if cfg.step_cols_m != 2 or cfg.row_order_m != 'image' -%}
-      @media (max-width: 900px) {
-        {%- if cfg.step_cols_m != 2 -%}
-          {{ root_sel }} .steps { grid-template-columns: repeat({{ cfg.step_cols_m }}, minmax(0, 1fr)); }
-        {%- endif -%}
-        {%- if cfg.row_order_m != 'image' -%}
-          {{ root_sel }} .studio-row__media { order: 2; }
-          {{ root_sel }} .studio-row__body { order: 1; }
-        {%- endif -%}
-      }
-    {%- endif -%}
-    {%- if cfg.hero_ratio_m != 'default' -%}
-      @media (max-width: 720px) {
-        {{ root_sel }} .page-hero__media { aspect-ratio: {{ cfg.hero_ratio_m }}; }
-      }
-    {%- endif -%}
-  </style>
-{%- endif -%}
-{%- assign strand_blocks = section.blocks | where: 'type', 'strand' -%}
-{%- assign meta_blocks = section.blocks | where: 'type', 'meta' -%}
-{%- assign offer_blocks = section.blocks | where: 'type', 'offer' -%}
-{%- assign step_blocks = section.blocks | where: 'type', 'step' -%}
-{%- capture nl %}
-{% endcapture -%}
-<div class="page sj-studio-gifting">
-  <header class="page-hero page-hero--plain sj-gifting-hero" data-reveal>
-    <div class="container page-hero__grid">
-      <div class="page-hero__text">
-        <p class="eyebrow">{{ section.settings.hero_eyebrow | escape }}</p>
-        <h1 class="page-hero__title">{{ section.settings.hero_title }}</h1>
-        <p class="page-hero__lede">{{ section.settings.hero_lede }}</p>
-{%- if section.settings.show_meta %}
-        <ul class="page-meta">
-{%- for block in meta_blocks %}
-          <li {{ block.shopify_attributes }}><span class="page-meta__value">{{ block.settings.value }}</span><span class="page-meta__label">{{ block.settings.label }}</span></li>
-{%- endfor %}
-        </ul>
-{%- endif %}
+<div class="sj-gifting" id="{{ gifting_id }}">
+  <section class="sj-gifting__guide" aria-labelledby="{{ gifting_id }}-title">
+    <div class="sj-gifting__hero">
+      <figure class="sj-gifting__photo">
+        <img src="{% if cfg.hero_img %}{{ cfg.hero_img | image_url: width: 1800 }}{% else %}{{ gifting_asset | asset_url }}{% endif %}" alt="{{ cfg.hero_alt | escape }}" width="1600" height="809" fetchpriority="high">
+      </figure>
+      <div class="sj-gifting__hero-copy">
+        <h1 class="sj-gifting__title" id="{{ gifting_id }}-title">{{ cfg.hero_title }}</h1>
+        <p class="sj-gifting__lede">{{ cfg.hero_lede | escape }}</p>
       </div>
     </div>
-
-    <figure class="container page-hero__media">
-      <img src="{% if section.settings.hero_img %}{{ section.settings.hero_img | image_url: width: 1600 }}{% else %}{{ 'shop-hero.webp' | asset_url }}{% endif %}" alt="{{ section.settings.hero_alt | escape }}" fetchpriority="high">
-    </figure>
-  </header>
-{%- if section.settings.show_strands %}
-
-  <nav class="strands" aria-label="Studio Collection">
-    <div class="container strands__inner">
-      <ol class="strands__list">
-{%- for block in strand_blocks %}
-        <li {{ block.shopify_attributes }}>
-          <a href="{{ block.settings.link | default: '/pages/studio-gifting' }}" class="strands__link{% if block.settings.current %} is-active{% endif %}"{% if block.settings.current %} aria-current="page"{% endif %}>
-            <span class="strands__no">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
-            <span class="strands__label">{{ block.settings.label | escape }}</span>
-          </a>
-        </li>
-{%- endfor %}
-      </ol>
-    </div>
-  </nav>
-{%- endif %}
-{%- if section.settings.show_offers %}
-
-  <section class="section container">
-    <div class="section-intro" data-reveal>
-      <p class="eyebrow">{{ section.settings.ways_eyebrow | escape }}</p>
-      <h2 class="section-title">{{ section.settings.ways_title }}</h2>
-    </div>
-
-    <div class="studio">
-{%- for block in offer_blocks %}
-      <article class="studio-row" data-reveal {{ block.shopify_attributes }}>
-        <div class="studio-row__media">
-          <img src="{% if block.settings.image %}{{ block.settings.image | image_url: width: 1200 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}" alt="{{ block.settings.alt | escape }}" loading="lazy">
+    <div class="sj-gifting__panel">
+      <div class="sj-gifting__content">
+        <i class="sj-i sj-i--gift ms sj-gifting__icon" aria-hidden="true"></i>
+        <p class="sj-gifting__occasions">{{ cfg.occasion_line | default: 'Corporate | Wedding | Festive' | escape }}</p>
+        <h2 class="sj-gifting__help-title">{{ cfg.help_title | default: 'A gift, thoughtfully chosen' | escape }}</h2>
+        <p class="sj-gifting__help-copy">{{ cfg.help_copy | default: 'Tell us about your occasion. Our studio will help you find something personal, from a single keepsake to a collection of gifts.' | escape }}</p>
+        <div class="sj-gifting__actions">
+          <a class="sj-gifting__button" href="https://api.whatsapp.com/send?phone={{ gifting_phone }}&amp;text={{ gifting_text }}" target="_blank" rel="noopener"><i class="sj-i sj-i--whatsapp-logo fab" aria-hidden="true"></i><span>{{ cfg.whatsapp_label | default: 'WhatsApp' | escape }}</span></a>
+          {%- if cfg.show_enquiry -%}
+            <span class="sj-gifting__or">or</span>
+            <button class="sj-gifting__button" type="button" data-gifting-open aria-haspopup="dialog" aria-controls="{{ gifting_id }}-dialog">{{ cfg.form_label | default: 'Fill Form' | escape }}</button>
+          {%- endif -%}
         </div>
-
-        <div class="studio-row__body">
-          <span class="studio-row__no" aria-hidden="true">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
-          <h3 class="studio-row__name">{{ block.settings.name | escape }}</h3>
-{%- assign offer_paras = block.settings.copy | strip | split: nl -%}
-{%- for para in offer_paras -%}
-{%- assign para_text = para | strip -%}
-{%- if para_text != blank %}
-          <p class="studio-row__copy">{{ para_text }}</p>
-{%- endif -%}
-{%- endfor %}
-
-{%- if block.settings.fact_1 != blank or block.settings.fact_2 != blank or block.settings.fact_3 != blank %}
-          <ul class="studio-row__facts">
-{%- if block.settings.fact_1 != blank %}
-            <li>{{ block.settings.fact_1 }}</li>
-{%- endif %}
-{%- if block.settings.fact_2 != blank %}
-            <li>{{ block.settings.fact_2 }}</li>
-{%- endif %}
-{%- if block.settings.fact_3 != blank %}
-            <li>{{ block.settings.fact_3 }}</li>
-{%- endif %}
-          </ul>
-{%- endif %}
-{%- if block.settings.link_label != blank %}
-
-          <a class="arrow-link studio-row__link" href="{{ offer_href }}">{{ block.settings.link_label }}</a>
-{%- endif %}
-        </div>
-      </article>
-{%- endfor %}
-    </div>
-  </section>
-{%- endif %}
-{%- if section.settings.show_steps or section.settings.show_pull %}
-
-  <section class="section container">
-{%- if section.settings.show_steps %}
-    <div class="section-intro" data-reveal>
-      <p class="eyebrow">{{ section.settings.steps_eyebrow | escape }}</p>
-      <h2 class="section-title">{{ section.settings.steps_title }}</h2>
-    </div>
-
-    <ol class="steps" data-reveal-child>
-{%- for block in step_blocks %}
-      <li class="step" {{ block.shopify_attributes }}>
-        <span class="step__no">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
-        <div class="step__body">
-          <h3 class="step__title">{{ block.settings.title }}</h3>
-          <p class="step__copy">{{ block.settings.copy }}</p>
-        </div>
-      </li>
-{%- endfor %}
-    </ol>
-{%- endif %}
-{%- if section.settings.show_pull %}
-
-    <blockquote class="origin__pull" data-reveal>{{ section.settings.pull }}</blockquote>
-{%- endif %}
-  </section>
-{%- endif %}
-{%- if section.settings.show_enquiry %}
-
-  <section class="section container enquiry" id="gifting-enquiry" data-done-title="{{ section.settings.done_title | escape }}" data-done-body="{{ section.settings.done_body | escape }}" data-done-again="{{ section.settings.done_again | escape }}">
-    <div class="enquiry__intro" data-reveal>
-      <p class="eyebrow">{{ section.settings.enq_eyebrow | escape }}</p>
-      <h2 class="section-title">{{ section.settings.enq_title }}</h2>
-      <p class="enquiry__copy">{{ section.settings.enq_copy }}</p>
-
-      <dl class="enquiry__reach">
-        <div>
-          <dt>{{ section.settings.call_label }}</dt>
-          <dd>
-            <a href="tel:{{ section.settings.phone | remove: ' ' }}">{{ section.settings.phone }}</a>
-          </dd>
-        </div>
-        <div>
-          <dt>{{ section.settings.write_label }}</dt>
-          <dd>
-            <a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a>
-          </dd>
-        </div>
-        <div>
-          <dt>{{ section.settings.hours_label }}</dt>
-          <dd>{{ section.settings.hours }}</dd>
-        </div>
-      </dl>
-    </div>
-
-    <form class="enquiry__form" data-reveal>
-      <p class="field">
-        <label for="gifting-enquiry-name">Name <span aria-hidden="true">*</span></label>
-        <input id="gifting-enquiry-name" name="name" type="text" required autocomplete="name">
-      </p>
-
-      <p class="field">
-        <label for="gifting-enquiry-phone">Contact number <span aria-hidden="true">*</span></label>
-        <input id="gifting-enquiry-phone" name="phone" type="tel" required autocomplete="tel">
-      </p>
-
-      <p class="field">
-        <label for="gifting-enquiry-city">City</label>
-        <input id="gifting-enquiry-city" name="city" type="text" autocomplete="address-level2">
-      </p>
-
-      <p class="field">
-        <label for="gifting-enquiry-email">Email</label>
-        <input id="gifting-enquiry-email" name="email" type="email" autocomplete="email">
-      </p>
-
-      <p class="field">
-        <label for="gifting-enquiry-extra">Quantity and occasion</label>
-        <input id="gifting-enquiry-extra" name="extra" type="text" placeholder="150 pieces, Diwali">
-      </p>
-
-      <p class="field field--wide">
-        <label for="gifting-enquiry-looking">What are you looking for?</label>
-        <textarea id="gifting-enquiry-looking" name="looking" rows="3"></textarea>
-      </p>
-
-      <p class="field">
-        <label for="gifting-enquiry-slot">Preferred time slot</label>
-        <select id="gifting-enquiry-slot" name="slot">
-          <option value="" disabled selected>Choose a time</option>
-          <option value="9:00 AM">9:00 AM</option>
-          <option value="9:30 AM">9:30 AM</option>
-          <option value="10:00 AM">10:00 AM</option>
-          <option value="10:30 AM">10:30 AM</option>
-          <option value="11:00 AM">11:00 AM</option>
-          <option value="11:30 AM">11:30 AM</option>
-          <option value="12:00 PM">12:00 PM</option>
-          <option value="12:30 PM">12:30 PM</option>
-          <option value="1:00 PM">1:00 PM</option>
-          <option value="1:30 PM">1:30 PM</option>
-          <option value="2:00 PM">2:00 PM</option>
-          <option value="2:30 PM">2:30 PM</option>
-          <option value="3:00 PM">3:00 PM</option>
-          <option value="3:30 PM">3:30 PM</option>
-          <option value="4:00 PM">4:00 PM</option>
-          <option value="4:30 PM">4:30 PM</option>
-          <option value="5:00 PM">5:00 PM</option>
-          <option value="5:30 PM">5:30 PM</option>
-        </select>
-      </p>
-
-      <div class="enquiry__submit">
-        <button class="btn" type="submit">{{ section.settings.submit_label }} <i class="sj-i sj-i--arrow-right ms" style="font-size:16px" aria-hidden="true"></i></button>
-        <span class="enquiry__note"><span aria-hidden="true">*</span> {{ section.settings.note }}</span>
+        <p class="sj-gifting__contact"><a href="mailto:{{ cfg.email | escape }}">{{ cfg.email | escape }}</a></p>
       </div>
-    </form>
+    </div>
   </section>
-{%- endif %}
+  {%- if cfg.show_enquiry -%}
+  <dialog class="sj-gifting__dialog" id="{{ gifting_id }}-dialog" aria-labelledby="{{ gifting_id }}-enquiry-title" aria-describedby="{{ gifting_id }}-enquiry-copy" data-lenis-prevent>
+    <div class="sj-gifting__dialog-panel">
+      <button class="sj-gifting__close" type="button" data-gifting-close aria-label="Close gifting enquiry"><span aria-hidden="true">×</span></button>
+      <p class="sj-gifting__eyebrow">{{ cfg.enq_eyebrow | escape }}</p>
+      <h2 class="sj-gifting__dialog-title" id="{{ gifting_id }}-enquiry-title">{{ cfg.enq_title }}</h2>
+      <p class="sj-gifting__dialog-copy" id="{{ gifting_id }}-enquiry-copy">{{ cfg.enq_copy | escape }}</p>
+      <form class="sj-gifting__form">
+        <div class="sj-gifting__fields">
+          <p class="sj-gifting__field"><label for="{{ gifting_id }}-name">Name <span aria-hidden="true">*</span></label><input id="{{ gifting_id }}-name" name="name" type="text" required autocomplete="name"></p>
+          <p class="sj-gifting__field"><label for="{{ gifting_id }}-phone">Contact number <span aria-hidden="true">*</span></label><input id="{{ gifting_id }}-phone" name="phone" type="tel" required autocomplete="tel"></p>
+          <p class="sj-gifting__field"><label for="{{ gifting_id }}-email">Email</label><input id="{{ gifting_id }}-email" name="email" type="email" autocomplete="email"></p>
+          <p class="sj-gifting__field"><label for="{{ gifting_id }}-city">City</label><input id="{{ gifting_id }}-city" name="city" type="text" autocomplete="address-level2"></p>
+          <p class="sj-gifting__field sj-gifting__field--wide"><label for="{{ gifting_id }}-occasion">Quantity and occasion</label><input id="{{ gifting_id }}-occasion" name="extra" type="text" placeholder="For example, 50 gifts for a wedding"></p>
+          <p class="sj-gifting__field sj-gifting__field--wide"><label for="{{ gifting_id }}-looking">What are you looking for?</label><textarea id="{{ gifting_id }}-looking" name="looking" rows="3"></textarea></p>
+        </div>
+        <p class="sj-gifting__note">* {{ cfg.note | escape }}</p>
+        <p class="sj-gifting__error" role="alert" tabindex="-1" hidden>We couldn’t send your enquiry just now. Please try again, or <a href="https://api.whatsapp.com/send?phone={{ gifting_phone }}&amp;text={{ gifting_text }}" target="_blank" rel="noopener">speak to us on WhatsApp</a>.</p>
+        <button class="sj-gifting__button sj-gifting__button--solid" type="submit"><span data-gifting-submit>{{ cfg.submit_label | escape }}</span><i class="sj-i sj-i--arrow-right ms" aria-hidden="true"></i></button>
+      </form>
+      <div class="sj-gifting__success" role="status" hidden>
+        <h3 tabindex="-1">{{ cfg.done_title | escape }}</h3>
+        <p>{{ cfg.done_body }}</p>
+        <button class="sj-gifting__button" type="button" data-gifting-again>{{ cfg.done_again | escape }}</button>
+      </div>
+      <p class="sj-gifting__dialog-contact">{{ cfg.call_label | escape }} <a href="tel:{{ cfg.phone | remove: ' ' | escape }}">{{ cfg.phone | escape }}</a> · <a href="mailto:{{ cfg.email | escape }}">{{ cfg.email | escape }}</a></p>
+    </div>
+  </dialog>
+  <noscript><p class="sj-gifting__noscript">For gifting enquiries, <a href="mailto:{{ cfg.email | escape }}">email our studio</a> or contact us on WhatsApp.</p></noscript>
+  {%- endif -%}
 </div>
-
 <script>
 (function () {
-  var root = document.getElementById('gifting-enquiry');
-  if (!root || root.__shrujanInit) return;
-  root.__shrujanInit = true;
-
-  var form = root.querySelector('.enquiry__form');
-  if (!form) return;
-
-  var arrow = '<i class="sj-i sj-i--arrow-right ms" style="font-size:16px" aria-hidden="true"></i>';
-
-  var done = document.createElement('div');
-  done.className = 'enquiry__done';
-  done.setAttribute('role', 'status');
-  done.setAttribute('data-reveal', '');
-  done.innerHTML =
-    '<p class="enquiry__done-title">' + (root.getAttribute('data-done-title') || 'Thank you, we have your request.') + '</p>' +
-    '<p>' + (root.getAttribute('data-done-body') || 'Someone from the Bhuj studio will call you in your chosen slot. If it is urgent, reach us on <a href="tel:+919099974319">+91 9099 974319</a>.') + '</p>' +
-    '<button class="arrow-link" type="button">' + (root.getAttribute('data-done-again') || 'Send another enquiry') + ' ' + arrow + '</button>';
-
-  done.querySelector('button').addEventListener('click', function () {
-    form.reset();
-    done.replaceWith(form);
+  var root = document.getElementById({{ gifting_id | json }});
+  if (!root || root.__giftingInit) return;
+  root.__giftingInit = true;
+  var dialog = root.querySelector('dialog');
+  if (!dialog) return;
+  var opener = root.querySelector('[data-gifting-open]');
+  var form = dialog.querySelector('form');
+  var success = dialog.querySelector('.sj-gifting__success');
+  var error = dialog.querySelector('.sj-gifting__error');
+  var submit = form.querySelector('[type="submit"]');
+  var submitText = submit.querySelector('[data-gifting-submit]');
+  var idleText = submitText.textContent;
+  var previousFocus, savedOverflow, held = false;
+  function release() {
+    if (!held) return;
+    held = false;
+    document.documentElement.style.overflow = savedOverflow;
+    if (window.Shrujan && window.Shrujan.startScroll) window.Shrujan.startScroll();
+    if (previousFocus && previousFocus.isConnected) previousFocus.focus({ preventScroll: true });
+  }
+  opener.addEventListener('click', function () {
+    if (typeof dialog.showModal !== 'function') {
+      window.location.href = root.querySelector('.sj-gifting__contact a').href;
+      return;
+    }
+    previousFocus = document.activeElement;
+    savedOverflow = document.documentElement.style.overflow;
+    dialog.showModal();
+    if (window.Shrujan && window.Shrujan.stopScroll) window.Shrujan.stopScroll();
+    document.documentElement.style.overflow = 'hidden';
+    held = true;
+    var focusTarget = success.hidden ? form.querySelector('input') : success.querySelector('h3');
+    focusTarget.focus({ preventScroll: true });
   });
-
-  // the enquiry goes to Slide (assets/sj-ui.js, Theme settings → Slide);
-  // the thank-you shows once Slide has it, a note with the studio's numbers
-  // if it could not be sent
-  var err = document.createElement('p');
-  err.className = 'enquiry__error';
-  err.setAttribute('role', 'alert');
-  err.hidden = true;
-  err.innerHTML = 'It could not be sent just now. Please try again, or write to us on <a href="https://api.whatsapp.com/send?phone=919099974319" target="_blank" rel="noopener">WhatsApp</a> or call <a href="tel:+919099974319">+91 90999 74319</a>.';
-  form.querySelector('.enquiry__submit').before(err);
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    var btn = form.querySelector('[type="submit"]');
-    var slide = window.SJSlide;
-    if (!slide) { form.replaceWith(done); return; }
-    btn.disabled = true;
-    err.hidden = true;
-    slide.sendForm(form, { form: 'Gifting & Collaborations enquiry', type: 'Gifting & Collaborations', tags: ['enquiry', 'studio'] }).then(function (ok) {
-      btn.disabled = false;
-      if (ok) form.replaceWith(done);
-      else err.hidden = false;
+  dialog.querySelector('[data-gifting-close]').addEventListener('click', function () { dialog.close(); });
+  dialog.addEventListener('close', release);
+  dialog.addEventListener('cancel', function (event) { event.preventDefault(); dialog.close(); });
+  dialog.addEventListener('click', function (event) {
+    if (event.target !== dialog) return;
+    var rect = dialog.getBoundingClientRect();
+    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
+  });
+  dialog.querySelector('[data-gifting-again]').addEventListener('click', function () {
+    form.reset();
+    form.hidden = false;
+    success.hidden = true;
+    error.hidden = true;
+    form.querySelector('input').focus();
+  });
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    if (submit.disabled || !form.reportValidity()) return;
+    submit.disabled = true;
+    submitText.textContent = 'Sending…';
+    form.setAttribute('aria-busy', 'true');
+    error.hidden = true;
+    Promise.resolve().then(function () {
+      if (!window.SJSlide || typeof window.SJSlide.sendForm !== 'function') return false;
+      return window.SJSlide.sendForm(form, { form: 'Gifting & Collaborations enquiry', type: 'Gifting & Collaborations', tags: ['enquiry', 'studio', 'gifting'] });
+    }).then(function (ok) {
+      if (ok !== true) throw new Error('Enquiry was not accepted');
+      form.hidden = true;
+      success.hidden = false;
+      if (dialog.open) success.querySelector('h3').focus();
+    }).catch(function () {
+      error.hidden = false;
+      if (dialog.open) error.focus();
+    }).then(function () {
+      submit.disabled = false;
+      submitText.textContent = idleText;
+      form.removeAttribute('aria-busy');
     });
+  });
+  document.addEventListener('shopify:section:unload', function (event) {
+    if (event.target.contains(root)) { if (dialog.open) dialog.close(); release(); }
   });
 })();
 </script>
@@ -338,6 +160,43 @@
     {
       "type": "header",
       "content": "Page"
+    },
+    {
+      "type": "text",
+      "id": "hero_asset",
+      "label": "Hero theme asset",
+      "default": "shop-hero.webp",
+      "info": "Used when no hero image is selected."
+    },
+    {
+      "type": "text",
+      "id": "occasion_line",
+      "label": "Gifting occasions",
+      "default": "Corporate | Wedding | Festive"
+    },
+    {
+      "type": "text",
+      "id": "help_title",
+      "label": "Help heading",
+      "default": "A gift, thoughtfully chosen"
+    },
+    {
+      "type": "textarea",
+      "id": "help_copy",
+      "label": "Help copy",
+      "default": "Tell us about your occasion. Our studio will help you find something personal, from a single keepsake to a collection of gifts."
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_label",
+      "label": "WhatsApp button label",
+      "default": "WhatsApp"
+    },
+    {
+      "type": "text",
+      "id": "form_label",
+      "label": "Form button label",
+      "default": "Fill Form"
     },
     {
       "type": "text",
@@ -355,13 +214,13 @@
       "type": "inline_richtext",
       "id": "hero_title",
       "label": "Hero title",
-      "default": "Gifting &amp; Collaborations"
+      "default": "Gifting with Shrujan"
     },
     {
       "type": "textarea",
       "id": "hero_lede",
       "label": "Hero lede",
-      "default": "We work with organisations and individuals to create refined handcrafted gifts that reflect care, craft and cultural meaning. Each project is approached with attention to detail and an understanding that gifting can be both personal and deeply considered."
+      "default": "Celebrate meaningful moments with hand-embroidered gifts from Kutch. From personal keepsakes to gifts for weddings, festivities and shared milestones, each piece carries the warmth of the hand that made it."
     },
     {
       "type": "image_picker",
@@ -372,7 +231,7 @@
       "type": "text",
       "id": "hero_alt",
       "label": "Hero image alt text",
-      "default": "An embroidered tote, potli and cushion beside models in Kutchi dupattas"
+      "default": "Shrujan embroidered tote, potli and cushion with Kutchi garments"
     },
     {
       "type": "text",
@@ -480,7 +339,7 @@
       "type": "inline_richtext",
       "id": "done_body",
       "label": "Success message",
-      "default": "Someone from the Bhuj studio will call you in your chosen slot. If it is urgent, reach us on <a href=\"tel:+919099974319\">+91 9099 974319</a>."
+      "default": "Our studio will be in touch to discuss your gifting enquiry."
     },
     {
       "type": "text",
@@ -526,7 +385,7 @@
       "type": "checkbox",
       "id": "show_enquiry",
       "label": "Show the enquiry form",
-      "info": "With the form hidden, each “ways to work together” link points at the studio email instead of the form.",
+      "info": "Show Fill Form and the gifting enquiry dialog.",
       "default": true
     },
     {
