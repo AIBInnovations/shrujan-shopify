@@ -142,9 +142,9 @@
 
   assign craft = product.metafields.shrujan.craft.value
   assign material = product.metafields.shrujan.material.value | default: product.metafields.custom.material.value
-  assign description_lower = product.description | downcase
+  assign description_lower = product.description | strip_html | downcase
   assign care_in_description = false
-  if description_lower contains 'care'
+  if description_lower contains 'care:' or description_lower contains 'care instructions'
     assign care_in_description = true
   endif
 
@@ -658,6 +658,7 @@
       <section class="section container pdp-rec" aria-label="Complete the look">
         <div class="section-head"><div class="section-head__titles"><p class="eyebrow">Complete the look</p><h2 class="section-title">Pair with <em>this piece</em></h2></div><a class="arrow-link" href="{{ shop_url }}">Explore the collection {{ icon_arrow_16 }}</a></div>
         <div class="curated__grid">
+          <!-- pdp-selection all={{ collections['all'].products.size }} shawls={{ collections['shawls'].products.size }} wraps={{ wraps.size }} potlis={{ potlis.size }} garments={{ garments.size }} pairs={{ pairing_candidates.size }} similar={{ related_candidates.size }} group={{ product_group }} current-image={{ product.featured_image.src }} first-pair={{ pairing_candidates.first.title }} first-available={{ pairing_candidates.first.available }} -->
           {%- assign rec_n = 0 -%}
           {%- for pass in (1..2) -%}
             {%- if pass == 1 -%}{%- assign candidate_products = complementary -%}{%- else -%}{%- assign candidate_products = pairing_candidates -%}{%- endif -%}
