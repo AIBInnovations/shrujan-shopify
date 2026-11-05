@@ -236,14 +236,17 @@
     if (!v || v.__dh) return v;
     v.__dh = true;
     var start = parseFloat(v.getAttribute('data-start')) || 0;
+    var endTrim = parseFloat(v.getAttribute('data-end-trim'));
+    if (!isFinite(endTrim)) endTrim = 5.4;
+    endTrim = Math.max(0, endTrim);
     v.muted = true;
     v.loop = false;
     if (!v.getAttribute('src') && v.getAttribute('data-src')) v.setAttribute('src', sized(v.getAttribute('data-src')));
     var toStart = function () { if (start && v.currentTime < start - 0.4) { try { v.currentTime = start; } catch (e) {} } };
     v.addEventListener('loadedmetadata', toStart);
     v.addEventListener('timeupdate', function () {
-      // Keep short clips intact; only the longer craft films have closing cards.
-      if (v.duration && v.duration - start > 7.4 && v.currentTime > v.duration - 5.4) { try { v.currentTime = start; } catch (e) {} }
+      // Edited montages play in full; original craft films may trim closing cards.
+      if (endTrim > 0 && v.duration && v.duration - start > endTrim + 2 && v.currentTime > v.duration - endTrim) { try { v.currentTime = start; } catch (e) {} }
     });
     v.addEventListener('ended', function () {
       try { v.currentTime = start; } catch (e) {}
