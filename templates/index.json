@@ -11,39 +11,44 @@
   "sections": {
     "home-hero": {
       "type": "home-hero",
-      "settings": {},
+      "settings": {
+        "duration": 9.5
+      },
       "blocks": {
         "hero_soof": {
           "type": "story",
           "settings": {
-            "film": "sj-embroidery-detail-hero.mp4",
+            "film": "sj-hero-embroidery-montage.mp4",
             "start": 0,
-            "poster_asset": "sj-embroidery-detail-hero.webp",
+            "poster_asset": "sj-hero-embroidery-montage.webp",
             "title": "Consciously crafted\nsince 1969.",
             "btn_label": "Shop the collection",
-            "btn_link": "/pages/shop-shrujan"
+            "btn_link": "/pages/shop-shrujan",
+            "end_trim": 0
           }
         },
         "hero_ajrakh": {
           "type": "story",
           "settings": {
-            "film": "craft-ajrakh.mp4",
-            "start": 8,
-            "poster_asset": "craft-ajrakh-poster.webp",
+            "film": "sj-hero-ajrakh-montage.mp4",
+            "start": 0,
+            "poster_asset": "sj-hero-ajrakh-montage.webp",
             "title": "A sustainable story\nof the crafts of Kutch.",
             "btn_label": "Craft Traditions",
-            "btn_link": "/pages/video"
+            "btn_link": "/pages/video",
+            "end_trim": 0
           }
         },
         "hero_weaving": {
           "type": "story",
           "settings": {
-            "film": "craft-weaving.mp4",
-            "start": 8,
-            "poster_asset": "craft-weaving-poster.webp",
+            "film": "sj-hero-weaving-montage.mp4",
+            "start": 0,
+            "poster_asset": "sj-hero-weaving-montage.webp",
             "title": "Threads\nof life.",
             "btn_label": "The Shrujan Story",
-            "btn_link": "/pages/the-shrujan-story"
+            "btn_link": "/pages/the-shrujan-story",
+            "end_trim": 0
           }
         }
       },

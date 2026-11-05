@@ -26,7 +26,7 @@
 
   comment
     Each story, whether a block or a default, becomes one line
-    film|poster url|start|title lines (~)|button|link, so one loop draws them.
+    film|poster url|start|title lines (~)|button|link|end trim, so one loop draws them.
   endcomment
   assign rows = ''
   if stories.size > 0
@@ -38,14 +38,15 @@
         assign p_url = bs.poster_asset | default: 'craft-embroidery-poster.webp' | asset_url
       endif
       assign t_lines = bs.title | strip | newline_to_br | replace: '<br />', '~'
-      assign row = bs.film | append: '|' | append: p_url | append: '|' | append: bs.start | append: '|' | append: t_lines | append: '|' | append: bs.btn_label | append: '|' | append: bs.btn_link
+      assign end_trim = bs.end_trim | default: 5.4
+      assign row = bs.film | append: '|' | append: p_url | append: '|' | append: bs.start | append: '|' | append: t_lines | append: '|' | append: bs.btn_label | append: '|' | append: bs.btn_link | append: '|' | append: end_trim
       assign rows = rows | append: row | append: '^'
     endfor
   else
     for d in story_defaults
       assign f = d | split: '|'
       assign p_url = f[1] | asset_url
-      assign row = f[0] | append: '|' | append: p_url | append: '|' | append: f[2] | append: '|' | append: f[3] | append: '|' | append: f[4] | append: '|' | append: f[5]
+      assign row = f[0] | append: '|' | append: p_url | append: '|' | append: f[2] | append: '|' | append: f[3] | append: '|' | append: f[4] | append: '|' | append: f[5] | append: '|5.4'
       assign rows = rows | append: row | append: '^'
     endfor
   endif
@@ -57,7 +58,7 @@
       {%- for r in rows -%}
         {%- assign f = r | split: '|' -%}
         {%- capture film -%}{% render 'sj-film-url', src: f[0] %}{%- endcapture -%}
-        <div class="dh__media{% if forloop.first %} is-active{% endif %}"><video class="dh__video" data-src="{{ film }}" preload="{% if forloop.first %}auto{% else %}none{% endif %}" poster="{{ f[1] }}" data-start="{{ f[2] | default: 0 }}" muted playsinline aria-hidden="true"></video></div>
+        <div class="dh__media{% if forloop.first %} is-active{% endif %}"><video class="dh__video" data-src="{{ film }}" preload="{% if forloop.first %}auto{% else %}none{% endif %}" poster="{{ f[1] }}" data-start="{{ f[2] | default: 0 }}" data-end-trim="{{ f[6] | default: 5.4 }}" muted playsinline aria-hidden="true"></video></div>
       {%- endfor -%}
     </div>
     <div class="dh__content">
@@ -214,6 +215,7 @@
       "settings": [
         { "type": "text", "id": "film", "label": "Film", "info": "A full URL from Content → Files, or a theme file. The craft films (craft-*.mp4) play in 1080p.", "default": "craft-embroidery.mp4" },
         { "type": "number", "id": "start", "label": "Start the film at (seconds)", "default": 0 },
+        { "type": "range", "id": "end_trim", "label": "Skip closing card", "min": 0, "max": 6, "step": 0.1, "unit": "s", "default": 5.4, "info": "Use 0 to play a montage in full." },
         { "type": "image_picker", "id": "poster", "label": "Still (shown before the film and in its thumbnail)" },
         { "type": "text", "id": "poster_asset", "label": "Or theme image file", "default": "craft-embroidery-poster.webp" },
         { "type": "textarea", "id": "title", "label": "Title", "info": "One line per line of the title.", "default": "Living craft traditions,\ncarried forward\nsince 1969." },
