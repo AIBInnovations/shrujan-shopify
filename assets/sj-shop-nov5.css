@@ -89,3 +89,56 @@
 /* Filtering and smooth scrolling must never leave the craft stories hidden. */
 .sj-shop-refresh .shop-why .shop-head,.sj-shop-refresh .shop-why .why-card{opacity:1!important;visibility:visible!important;transform:none!important}
 .sj-shop-refresh .shop-banner__overlay,.sj-shop-refresh .shop-banner__overlay *{text-shadow:none!important}
+/* The complete shop introduction, including its square collections, fits one screen. */
+.sj-shop-refresh .shop-banner{height:calc(100svh - var(--header-h,68px) - var(--offer-h,36px))!important;min-height:0!important;max-height:none!important;margin-top:0;margin-bottom:0;display:flex!important;flex-direction:column;gap:0;padding-top:10px;padding-bottom:0;--hero-card-size:clamp(100px,16svh,150px)}
+.sj-shop-refresh .shop-banner__frame{display:block;position:relative;flex:1 1 0;min-height:0;height:auto!important;border-radius:var(--radius,7px);isolation:isolate}
+.sj-shop-refresh .shop-banner__frame:after{content:"";display:block!important;position:absolute;inset:0;background:linear-gradient(90deg,rgba(22,28,27,.5),rgba(22,28,27,.36),rgba(22,28,27,.3));z-index:1;pointer-events:none}
+.sj-shop-refresh .shop-banner__portrait{display:block;position:absolute!important;inset:0;z-index:0;width:100%;height:100%;aspect-ratio:auto;max-height:none!important}
+.sj-shop-refresh .shop-banner__portrait img{width:100%;height:100%;object-fit:cover;object-position:center 26%!important}
+.sj-shop-refresh .shop-banner__caption{display:none}
+.sj-shop-refresh .shop-banner__overlay{position:relative!important;inset:auto!important;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;padding:clamp(20px,3vw,44px)!important;color:#faf8ed;text-align:center;background:none}
+.sj-shop-refresh .shop-banner__overlay>*{max-width:100%!important}
+.sj-shop-refresh .shop-banner__eyebrow{font-size:11px;letter-spacing:.2em;color:inherit;margin:0 0 15px}
+.sj-shop-refresh .shop-banner__title{max-width:none!important;font-size:clamp(34px,4.4vw,62px)!important;line-height:1.1;letter-spacing:-.025em;color:inherit}
+.sj-shop-refresh .shop-banner__copy{color:rgba(250,248,237,.9);font-size:16px;line-height:1.5;margin:16px 0 0;max-width:44ch!important}
+.sj-shop-refresh .shop-banner__actions{justify-content:center;margin-top:22px;gap:18px 26px}
+.sj-shop-refresh .shop-banner__actions .arrow-link{color:inherit}
+.sj-shop-refresh .shop-banner__actions .btn{padding:15px 22px;background:var(--maroon,#924241);border-color:var(--maroon,#924241)}
+.sj-shop-refresh .shop-banner__signature{display:none}
+.sj-shop-refresh .shop-banner>.shop-assure{padding-block:9px!important;flex:0 0 auto;border-bottom:0}
+.sj-shop-refresh .shop-banner .shop-assure__row{justify-content:center;gap:10px 26px}
+.sj-shop-refresh .shop-banner>.shop-banner__side{padding:8px 0 12px;flex:0 0 auto;min-height:0;position:relative}
+.sj-shop-refresh .shop-banner__side .shop-head{align-items:center;text-align:center;margin-bottom:10px}
+.sj-shop-refresh .shop-banner__side .shop-head .section-title{font-size:22px;line-height:1.15}
+.sj-shop-refresh .shop-cats__rail{gap:18px;padding:0 0 2px;margin:0;scrollbar-width:none;justify-content:flex-start}
+.sj-shop-refresh .shop-cats__rail::-webkit-scrollbar{display:none}
+.sj-shop-refresh .medallion{flex:0 0 var(--hero-card-size);width:var(--hero-card-size);align-items:center;text-align:center}
+.sj-shop-refresh .medallion__disc{width:var(--hero-card-size)!important;aspect-ratio:1}
+.sj-shop-refresh .medallion__name{font-size:14px;line-height:1.2;margin-top:8px;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.sj-shop-refresh .medallion__sub{font-size:9px;letter-spacing:.08em;margin-top:3px}
+.sj-shop-refresh .shop-cats__wrap{position:relative}
+.sj-shop-refresh .shop-cats__arrows{position:absolute!important;inset:auto 0 calc(100% + 7px) auto!important;margin:0;gap:6px;transform:none!important}
+.sj-shop-refresh .shop-cats__arrows button{width:28px;height:28px}
+@media(max-width:720px){
+.sj-shop-refresh .shop-banner{--hero-card-size:clamp(86px,13svh,110px);height:calc(100svh - var(--header-h,58px) - var(--offer-h,36px))!important;padding-top:6px;margin-top:0}
+.sj-shop-refresh .shop-banner__overlay{padding:20px!important}
+.sj-shop-refresh .shop-banner__eyebrow{font-size:9px;margin-bottom:12px}
+.sj-shop-refresh .shop-banner__title{font-size:clamp(27px,8.4vw,38px)!important;max-width:18ch!important}
+.sj-shop-refresh .shop-banner__copy{font-size:13px;line-height:1.45;margin-top:12px;max-width:33ch!important}
+.sj-shop-refresh .shop-banner__actions{margin-top:18px;gap:14px}
+.sj-shop-refresh .shop-banner__actions .btn{font-size:9px;padding:13px 14px}
+.sj-shop-refresh .shop-banner__actions .arrow-link{font-size:10px}
+.sj-shop-refresh .shop-banner .shop-assure__row{gap:6px 12px;justify-content:center;flex-wrap:nowrap}
+.sj-shop-refresh .shop-banner .shop-assure__title{font-size:9px;white-space:nowrap}
+.sj-shop-refresh .shop-banner .shop-assure__mark{width:14px;height:14px}
+.sj-shop-refresh .shop-banner .shop-assure__mark i{font-size:13px!important}
+.sj-shop-refresh .shop-banner>.shop-banner__side{padding:6px 0 10px}
+.sj-shop-refresh .shop-banner__side .shop-head{margin-bottom:9px}
+.sj-shop-refresh .shop-banner__side .shop-head .section-title{font-size:19px}
+.sj-shop-refresh .shop-cats__rail{gap:12px}
+.sj-shop-refresh .medallion{flex-basis:var(--hero-card-size)}
+.sj-shop-refresh .medallion__name{font-size:12px;margin-top:6px}
+.sj-shop-refresh .medallion__sub{font-size:8px;margin-top:2px}
+.sj-shop-refresh .shop-cats__arrows{display:none}
+}
+@media(min-width:721px) and (max-height:720px){.sj-shop-refresh .shop-banner{--hero-card-size:90px}.sj-shop-refresh .shop-banner__copy{font-size:14px}.sj-shop-refresh .shop-banner__actions{margin-top:16px}.sj-shop-refresh .shop-banner__title{font-size:36px!important}.sj-shop-refresh .shop-banner__side .shop-head .section-title{font-size:20px}}

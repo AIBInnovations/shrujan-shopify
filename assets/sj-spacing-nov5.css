@@ -1,0 +1,52 @@
+/* Compact internal-page rhythm: content keeps its own space, no doubled section gutters. */
+.sj-compact-pages{--section-gap:clamp(28px,3.3vw,48px)}
+.sj-compact-pages main .page{padding-bottom:32px}
+.sj-compact-pages main .section{padding-top:var(--section-gap)}
+.sj-compact-pages .page-hero{margin-bottom:28px}
+.sj-compact-pages .page-hero--frame{min-height:clamp(340px,62svh,660px)!important}
+.sj-compact-pages .section-head{margin-bottom:24px}
+.sj-compact-pages .page-cta{margin-top:36px;padding-top:24px;gap:20px}
+.sj-compact-pages .page-cta>p{font-size:clamp(23px,2.6vw,36px);max-width:34ch}
+.sj-compact-pages .pdpx{padding-block:40px}
+.sj-compact-pages .pdp__description.store-article{padding-bottom:0!important;margin-bottom:22px}
+.sj-compact-pages .pdp__detail:not(.is-open) .pdp__detail-inner,.sj-compact-pages .pdp__detail:not(.is-open) .pdp__detail-inner p{padding-bottom:0!important;min-height:0}
+.sj-compact-pages .pdp__detail:not(.is-open) .pdp__detail-panel{min-height:0;height:0;overflow:hidden}
+.sj-compact-pages .pdp-page .pdp__stage{height:auto!important;aspect-ratio:var(--pdp-media-ratio,1);max-height:none}
+.sj-compact-pages .pdp-page .pdp__main-shot{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.sj-compact-pages .craft-open{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(24px,4vw,56px);align-items:start;padding-bottom:0}
+.sj-compact-pages .craft-open__lead{font-size:clamp(27px,2.8vw,40px);line-height:1.25;max-width:19ch}
+.sj-compact-pages .craft-open__copy{font-size:16px;line-height:1.65;max-width:none}
+.sj-compact-pages .craft-open__copy p+p{margin-top:16px}
+.sj-compact-pages .craft-entry{min-height:0!important;padding-block:28px}
+.sj-compact-pages .craft-entry:first-child{padding-top:0}
+.sj-compact-pages .store-empty{min-height:0;padding-block:44px}
+/* Two compact, image-led destination cards replace the isolated CTA rows. */
+.sj-cta-card-wrap{padding-top:0!important;margin-top:32px;margin-bottom:24px}
+.sj-cta-card{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);border:1px solid var(--hairline);border-radius:var(--radius,7px);overflow:hidden;background:var(--ivory-2,#eeeadb);min-height:0}
+.sj-cta-card__media{margin:0;min-width:0;aspect-ratio:1.7;overflow:hidden}
+.sj-cta-card__media img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.sj-cta-card__body{align-self:center;padding:clamp(24px,3.2vw,44px)}
+.sj-cta-card__body .eyebrow{font-size:10px;letter-spacing:.16em;margin:0 0 16px}
+.sj-cta-card__title{font-size:clamp(25px,2.5vw,38px);line-height:1.2;letter-spacing:-.02em;font-weight:400;margin:0;max-width:25ch}
+.sj-cta-card__copy{font-size:15px;line-height:1.65;color:var(--ink-soft);max-width:44ch;margin:16px 0 0}
+.sj-cta-card__body .btn{margin-top:24px;font-size:10px;letter-spacing:.14em;padding:17px 22px;gap:20px}
+@media(max-width:720px){
+.sj-compact-pages{--section-gap:28px}
+.sj-compact-pages main .page{padding-bottom:24px}
+.sj-compact-pages .page-hero{padding-top:26px;padding-bottom:24px;margin-bottom:20px}
+.sj-compact-pages .page-hero--frame{min-height:380px!important}
+.sj-compact-pages .page-cta{margin-top:24px;padding-top:20px;gap:18px}
+.sj-compact-pages .pdpx{padding-block:28px}
+.sj-compact-pages .craft-open{grid-template-columns:1fr;gap:18px}
+.sj-compact-pages .craft-open__lead{font-size:27px;max-width:none}
+.sj-compact-pages .craft-open__copy{font-size:15px}
+.sj-compact-pages .craft-entry{padding-block:22px}
+.sj-cta-card-wrap{margin-top:24px;margin-bottom:16px}
+.sj-cta-card{grid-template-columns:1fr}
+.sj-cta-card__media{aspect-ratio:2.1;max-height:200px}
+.sj-cta-card__body{padding:24px}
+.sj-cta-card__title{font-size:27px}
+.sj-cta-card__body .btn{margin-top:20px}
+}
+
+.sj-compact-pages [data-pdp-sku],.sj-compact-pages .pdp__sku{display:none!important}

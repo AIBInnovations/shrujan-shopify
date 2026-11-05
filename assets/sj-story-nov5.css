@@ -122,3 +122,58 @@
 .sj-story-editorial .sj-kaki-recognition img{height:auto}
 /* Timeline captions occupy their own space below the photograph. */
 .sj-story-editorial .tl__media img{height:auto}
+/* November 5 spacing pass: centered chapter headings and a compact page rhythm. */
+.sj-story-editorial .section{padding-block:44px}
+.sj-story-editorial .sj-story-hero{margin-bottom:24px;padding-block:36px}
+.sj-story-editorial .section-intro,
+.sj-story-editorial .section-head,
+.sj-story-editorial .lldc-visit__head,
+.sj-story-editorial .sj-story-film__intro{margin-inline:auto;text-align:center}
+.sj-story-editorial h1,
+.sj-story-editorial h2,
+.sj-story-editorial .section-intro>.eyebrow,
+.sj-story-editorial .section-head>.eyebrow,
+.sj-story-editorial .sj-story-film__intro>.eyebrow,
+.sj-story-editorial .page-hero__text>.eyebrow{text-align:center}
+.sj-story-editorial .section-intro__copy,
+.sj-story-editorial .sj-story-film__intro p,
+.sj-story-editorial .page-hero__title,
+.sj-story-editorial .page-hero__lede{margin-inline:auto}
+.sj-story-editorial .sj-story-hero .page-hero__text{text-align:center}
+.sj-story-editorial .sj-story-hero .page-meta{justify-content:center}
+/* The legacy .origin is already a grid. It must be a plain text column inside
+   this new two-column photo/text composition, rather than a nested two-up grid. */
+.sj-story-editorial .sj-origin-editorial{grid-template-columns:repeat(2,minmax(0,1fr));align-items:center;gap:clamp(28px,4vw,58px)}
+.sj-story-editorial .sj-origin-editorial>.origin{display:block;width:100%;max-width:none;margin:0;min-width:0}
+.sj-story-editorial .sj-origin-editorial .origin__lead{max-width:none;font-size:clamp(21px,1.9vw,28px);line-height:1.5}
+.sj-story-editorial .sj-origin-editorial .origin__more{margin-top:18px}
+.sj-story-editorial .sj-origin-editorial .origin__body{display:block;max-width:none;margin-top:16px}
+.sj-story-editorial .sj-origin-editorial .origin__body p+p{margin-top:14px}
+.sj-story-editorial .sj-origin-editorial .origin__gallery{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.sj-story-editorial .sj-origin-editorial .origin__shot{aspect-ratio:1.7}
+.sj-story-editorial .sj-origin-editorial .origin__shot:first-child{aspect-ratio:1.8;grid-column:1/-1}
+.sj-story-editorial .origin__pull{margin-block:30px}
+.sj-story-editorial .craft__stats{margin-top:24px;padding-block:20px}
+/* Eight chapter links share one row. Smaller screens keep a scrollable rail. */
+.sj-story-editorial .chapters{margin-top:0;margin-bottom:10px}
+.sj-story-editorial .chapters__inner{min-width:0}
+.sj-story-editorial .chapters__list{display:flex;flex-wrap:nowrap;gap:4px;overflow-x:auto;overflow-y:hidden;width:100%;max-width:100%;scrollbar-width:thin;list-style:none;justify-content:flex-start}
+.sj-story-editorial .chapters__list>li{flex:1 0 auto;min-width:0}
+.sj-story-editorial .chapters__link{display:flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;padding:13px 10px}
+.sj-story-editorial .chapters__no,
+.sj-story-editorial .chapters__label{font-size:10px;line-height:1.2;letter-spacing:.06em;white-space:nowrap}
+@media(max-width:900px){
+.sj-story-editorial .chapters__list>li{flex:0 0 auto}
+.sj-story-editorial .chapters__link{padding:12px 11px}
+}
+@media(max-width:620px){
+.sj-story-editorial .section{padding-block:28px}
+.sj-story-editorial .sj-story-hero{padding-block:22px;margin-bottom:24px}
+.sj-story-editorial .sj-origin-editorial{grid-template-columns:1fr;gap:24px}
+.sj-story-editorial .sj-origin-editorial .origin__lead{font-size:22px;line-height:1.5}
+.sj-story-editorial .sj-origin-editorial .origin__gallery{grid-template-columns:repeat(2,minmax(0,1fr))}
+.sj-story-editorial .section-intro{margin-bottom:24px}
+.sj-story-editorial .origin__pull{margin-block:26px}
+.sj-story-editorial .craft__stats{margin-top:20px;padding-block:16px}
+.sj-story-editorial .chapters{margin-bottom:6px}
+}
