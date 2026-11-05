@@ -88,3 +88,4 @@
 .sj-shop-refresh .why-card__media:has(video) .why-card__no{display:none}
 /* Filtering and smooth scrolling must never leave the craft stories hidden. */
 .sj-shop-refresh .shop-why .shop-head,.sj-shop-refresh .shop-why .why-card{opacity:1!important;visibility:visible!important;transform:none!important}
+.sj-shop-refresh .shop-banner__overlay,.sj-shop-refresh .shop-banner__overlay *{text-shadow:none!important}
