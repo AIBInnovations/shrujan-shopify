@@ -235,20 +235,25 @@
   elsif product_context contains 'cushion' or product_context contains 'takiya' or product_context contains 'home'
     assign product_group = 'home'
   endif
-  assign wraps = collections['shawls'].products | concat: collections['stoles'].products | concat: collections['dupattas'].products
-  assign garments = collections['kanchli'].products | concat: collections['top'].products
-  assign potlis = collections['potlis-batwas'].products
-  assign pairing_candidates = wraps | concat: potlis
-  assign related_candidates = collections['all'].products
+  assign pair_handles = 'shawls,stoles,potlis-batwas'
+  assign related_handles = 'top,tops-1,kanchli,dresses,pant'
   if product_group == 'wraps'
-    assign pairing_candidates = potlis | concat: garments
-    assign related_candidates = wraps
-  elsif product_group == 'home'
-    assign related_candidates = collections['home-decor'].products | concat: collections['cushion-covers'].products
-    assign pairing_candidates = related_candidates
+    assign pair_handles = 'potlis-batwas,kanchli,top'
+    assign related_handles = 'shawls,stoles,dupattas'
   elsif product_group == 'bags'
-    assign related_candidates = potlis | concat: collections['hand-bag'].products | concat: collections['cross-body-bags-and-sling-bags'].products
+    assign related_handles = 'potlis-batwas,hand-bag,cross-body-bags-and-sling-bags'
+  elsif product_group == 'home'
+    assign related_handles = 'home-decor,cushion-covers,takiya-covers'
+    assign pair_handles = related_handles
+  elsif product_context contains 'kanchli'
+    assign related_handles = 'kanchli'
+  elsif product_context contains 'dress'
+    assign related_handles = 'dresses'
+  elsif product_context contains 'pant'
+    assign related_handles = 'pant'
   endif
+  assign pair_sources = pair_handles | prepend: '_merchant,' | split: ','
+  assign related_sources = related_handles | prepend: '_merchant,' | split: ','
   assign complementary = product.metafields['shopify--discovery--product_recommendation']['complementary_products'].value
   assign related = product.metafields['shopify--discovery--product_recommendation']['related_products'].value
   comment
@@ -658,15 +663,14 @@
       <section class="section container pdp-rec" aria-label="Complete the look">
         <div class="section-head"><div class="section-head__titles"><p class="eyebrow">Complete the look</p><h2 class="section-title">Pair with <em>this piece</em></h2></div><a class="arrow-link" href="{{ shop_url }}">Explore the collection {{ icon_arrow_16 }}</a></div>
         <div class="curated__grid">
-          <!-- pdp-selection all={{ collections['all'].products.size }} shawls={{ collections['shawls'].products.size }} wraps={{ wraps.size }} potlis={{ potlis.size }} garments={{ garments.size }} pairs={{ pairing_candidates.size }} similar={{ related_candidates.size }} group={{ product_group }} current-image={{ product.featured_image.src }} first-pair={{ pairing_candidates.first.title }} first-available={{ pairing_candidates.first.available }} -->
           {%- assign rec_n = 0 -%}
-          {%- for pass in (1..2) -%}
-            {%- if pass == 1 -%}{%- assign candidate_products = complementary -%}{%- else -%}{%- assign candidate_products = pairing_candidates -%}{%- endif -%}
+          {%- for source_handle in pair_sources -%}
+            {%- if source_handle == '_merchant' -%}{%- assign candidate_products = complementary -%}{%- else -%}{%- assign candidate_products = collections[source_handle].products -%}{%- endif -%}
             {%- for p in candidate_products -%}
               {%- assign p_key = '|' | append: p.handle | append: '|' -%}
               {%- assign image_key = '|' | append: p.featured_image.src | append: '|' -%}
               {%- if shown contains p_key or shown_images contains image_key or p.available == false -%}{%- continue -%}{%- endif -%}
-              {%- if pass == 2 -%}
+              {%- unless source_handle == '_merchant' -%}
                 {%- assign candidate_context = p.title | append: ' ' | append: p.type | downcase -%}
                 {%- assign pair_ok = false -%}
                 {%- if product_group == 'wraps' -%}
@@ -679,7 +683,7 @@
                   {%- if candidate_context contains 'shawl' or candidate_context contains 'stole' or candidate_context contains 'potli' or candidate_context contains 'batwa' -%}{%- assign pair_ok = true -%}{%- endif -%}
                 {%- endif -%}
                 {%- unless pair_ok -%}{%- continue -%}{%- endunless -%}
-              {%- endif -%}
+              {%- endunless -%}
               {%- render 'piece-card', product: p, show_swatches: cfg.card_swatches, quick_label: cfg.add_label, sold_out_label: cfg.sold_out_label -%}
               {%- assign shown = shown | append: p.handle | append: '|' -%}
               {%- assign shown_images = shown_images | append: p.featured_image.src | append: '|' -%}
@@ -697,13 +701,13 @@
         <div class="section-head"><div class="section-head__titles"><p class="eyebrow">Another colour, another stitch</p><h2 class="section-title">{% if product_group == 'wraps' %}More shawls <em>&amp; stoles</em>{% elsif product_group == 'bags' %}More bags <em>&amp; potlis</em>{% else %}More to <em>choose from</em>{% endif %}</h2></div><a class="arrow-link" href="{{ shop_url }}">Shop everything {{ icon_arrow_16 }}</a></div>
         <div class="curated__grid">
           {%- assign other_n = 0 -%}
-          {%- for pass in (1..2) -%}
-            {%- if pass == 1 -%}{%- assign candidate_products = related -%}{%- else -%}{%- assign candidate_products = related_candidates -%}{%- endif -%}
+          {%- for source_handle in related_sources -%}
+            {%- if source_handle == '_merchant' -%}{%- assign candidate_products = related -%}{%- else -%}{%- assign candidate_products = collections[source_handle].products -%}{%- endif -%}
             {%- for p in candidate_products -%}
               {%- assign p_key = '|' | append: p.handle | append: '|' -%}
               {%- assign image_key = '|' | append: p.featured_image.src | append: '|' -%}
               {%- if shown contains p_key or shown_images contains image_key or p.available == false -%}{%- continue -%}{%- endif -%}
-              {%- if pass == 2 -%}
+              {%- unless source_handle == '_merchant' -%}
                 {%- assign candidate_context = p.title | append: ' ' | append: p.type | downcase -%}
                 {%- assign related_ok = false -%}
                 {%- if product_group == 'wraps' -%}
@@ -716,7 +720,7 @@
                   {%- if p.type == product.type -%}{%- assign related_ok = true -%}{%- endif -%}
                 {%- endif -%}
                 {%- unless related_ok -%}{%- continue -%}{%- endunless -%}
-              {%- endif -%}
+              {%- endunless -%}
               {%- render 'piece-card', product: p, show_swatches: cfg.card_swatches, quick_label: cfg.add_label, sold_out_label: cfg.sold_out_label -%}
               {%- assign shown = shown | append: p.handle | append: '|' -%}
               {%- assign shown_images = shown_images | append: p.featured_image.src | append: '|' -%}
