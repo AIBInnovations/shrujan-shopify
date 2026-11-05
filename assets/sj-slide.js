@@ -529,7 +529,7 @@
 
   const sheet = new CSSStyleSheet();
   // Keep the images and purchase information visible until a visitor opens chat.
-  const quietPage = /^\/(?:products\/|collections\/|pages\/(?:shop-shrujan|the-shrujan-story)(?:\/|$))/.test(location.pathname);
+  const quietPage = location.pathname === '/' || /^\/(?:products\/|collections\/|pages\/(?:shop-shrujan|the-shrujan-story)(?:\/|$))/.test(location.pathname);
   sheet.replaceSync(CSS + (quietPage ? '\n.sq-widget .sq-tz { display: none !important; }' : ''));
 
   const attach = Element.prototype.attachShadow;

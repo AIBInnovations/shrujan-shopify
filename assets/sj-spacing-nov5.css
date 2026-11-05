@@ -51,5 +51,9 @@
 
 .sj-compact-pages [data-pdp-sku],.sj-compact-pages .pdp__sku{display:none!important}
 .sj-compact-pages .craft-open__photo{margin:22px 0 0;aspect-ratio:2.3;border-radius:var(--radius,7px);overflow:hidden}
-.sj-compact-pages .craft-open__photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 52%}
+.sj-compact-pages .craft-open__photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 15%}
 @media(max-width:720px){.sj-compact-pages .craft-open__photo{aspect-ratio:2.1;margin-top:18px}}
+/* The Sale uses the same collection structure without an empty full-screen floor. */
+.sj-compact-pages .page:not(.sj-collection-refresh) .ch{min-height:0!important;padding-bottom:24px}
+.sj-compact-pages .page:not(.sj-collection-refresh) .ch__media{min-height:0;height:clamp(340px,40vw,520px)}
+@media(max-width:720px){.sj-compact-pages .page:not(.sj-collection-refresh) .ch__media{height:330px}}
