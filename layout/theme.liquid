@@ -54,7 +54,63 @@
         {%- if current_page != 1 %} — page {{ current_page }}{% endif %} — SHRUJAN
       {%- endif -%}
     </title>
+    {%- liquid
+      comment
+        Pages left over from the old site: published, in Google, and blank under
+        this theme (the old one drew them from its own layouts; the old theme shows
+        them blank too). While a page like that still has no text of its own, it
+        sends the visitor on to where its subject lives now and tells search
+        engines the same. Write content into the page in Shopify and it shows
+        instead. Never in the theme editor.
+      endcomment
+      assign moved_to = ''
+      if request.page_type == 'page' and request.design_mode == false
+        assign page_words = page.content | strip_html | strip
+        if page_words == blank
+          case page.handle
+            when 'media'
+              assign moved_to = '/pages/the-shrujan-story#press'
+            when 'our-founder', 'our-founder-1', 'our-founder-2', 'our-founder-3'
+              assign moved_to = '/pages/the-shrujan-story#founder'
+            when 'people-of-shrujan'
+              assign moved_to = '/pages/the-shrujan-story#people'
+            when 'philosophy-and-values'
+              assign moved_to = '/pages/the-shrujan-story#values'
+            when 'living-archive'
+              assign moved_to = '/pages/the-shrujan-story#journal'
+            when 'shop-locator'
+              assign moved_to = '/pages/find-us'
+            when 'crafts', 'explore-kutch-crafts', 'mashroo', 'masharoo', 'hand-block-print', 'pottery', 'beadwork', 'tie-dye'
+              assign moved_to = '/pages/video'
+            when 'craft-journal'
+              assign moved_to = '/blogs/news'
+            when 'all-collection'
+              assign moved_to = '/pages/shop-shrujan'
+            when 'all-bag'
+              assign moved_to = '/collections/bags'
+            when 'home-furnishing'
+              assign moved_to = '/collections/home-decor'
+            when 'accessories'
+              assign moved_to = '/collections/accessories'
+            when 'return-exchange-policy'
+              assign moved_to = '/policies/refund-policy'
+            when 'privacy-policy'
+              assign moved_to = '/policies/privacy-policy'
+            when 'avinya'
+              assign moved_to = '/pages/studio-avinya'
+            when 'arrange-viewing-experience'
+              assign moved_to = '/pages/visit-experience'
+          endcase
+        endif
+      endif
+    -%}
+    {%- if moved_to != blank -%}
+    <link rel="canonical" href="{{ shop.url }}{{ moved_to | split: '#' | first }}">
+    <meta http-equiv="refresh" content="0; url={{ moved_to }}">
+    <script>location.replace({{ moved_to | json }});</script>
+    {%- else -%}
     <link rel="canonical" href="{{ canonical_url }}">
+    {%- endif -%}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     {%- comment -%} the pairing chosen in Theme settings → Typography {%- endcomment -%}

@@ -1,8 +1,23 @@
-{%- comment -%}Recognise existing page handles and explicitly assigned Find Us templates.{%- endcomment -%}
+{%- comment -%}
+  Recognise existing page handles and explicitly assigned Find Us templates.
+  A Contact page shows Find Us too (the user, 2026-11-11: routes that work): it
+  was an empty page under the generic template, and Find Us is where the
+  stores, numbers, email, WhatsApp and socials are.
+{%- endcomment -%}
 {%- liquid
   assign compact_handle = page.handle | remove: '-'
   assign compact_title = page.title | handleize | remove: '-'
-  if template.suffix == 'find-us' or compact_handle == 'findus' or compact_handle == 'finduss' or compact_title == 'findus' or compact_title == 'finduss'
+  assign find_us = false
+  if template.suffix == 'find-us'
+    assign find_us = true
+  endif
+  if compact_handle == 'findus' or compact_handle == 'finduss' or compact_title == 'findus' or compact_title == 'finduss'
+    assign find_us = true
+  endif
+  if compact_handle == 'contact' or compact_handle == 'contactus'
+    assign find_us = true
+  endif
+  if find_us
     echo 'true'
   endif
 -%}
