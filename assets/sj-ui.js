@@ -833,12 +833,15 @@
     openEnquire(a.getAttribute('data-enquire') || '');
   });
 
-  /* ---------- 4. a Studio Collection enquiry ----------
+  /* ---------- 4. the enquiry dialog ----------
      The user: Heritage on the home page opens a form of its own, with a
      button beside it that goes on to WhatsApp. Any element with
-     data-studio-enquire="heritage" (or "avinya") opens it; the fields are
-     the collection page's own form, and it goes to Slide as that page's
-     does. The WhatsApp button carries whatever has been written so far. */
+     data-studio-enquire="heritage" (or "avinya", "visit", "studio") opens it;
+     the fields are the collection page's own form, and it goes to Slide as
+     that page's does. The WhatsApp button carries whatever has been written
+     so far. The inner pages' buttons that used to open the mail app open it
+     too (the user, 2026-11-11: one form, with the fields each need); their
+     mailto stays as the link for anyone without scripts. */
   var STUDIO = {
     heritage: {
       eyebrow: 'Studio Collection · Heritage', title: 'Interested to explore the Heritage Collection?',
@@ -853,6 +856,20 @@
       interest: 'What draws you to Avinya', hint: 'A wall piece, a commission…', submit: 'Request a callback',
       form: 'Avinya enquiry', type: 'Avinya', img: 'sj-studio-detail-avinya.webp',
       wa: 'Hello Shrujan, I would like to know more about the Avinya Collection.',
+    },
+    visit: {
+      eyebrow: 'Visit Shrujan', title: 'Plan a visit to the campus',
+      copy: 'Tell us when you would like to come and how many of you. Someone from the Bhuj studio will call you back to plan the day.',
+      interest: 'When would you like to visit?', hint: 'A date, and how many of you', submit: 'Request a visit',
+      form: 'Visit enquiry', type: 'Visit', img: 'visit-campus.webp',
+      wa: 'Hello Shrujan, I would like to plan a visit to the campus.',
+    },
+    studio: {
+      eyebrow: 'Studio Collection', title: 'Ask about this piece',
+      copy: 'Tell us what you have in mind and when you are free. Someone from the Bhuj studio will call you back.',
+      interest: 'The piece', hint: 'Which piece you are asking about', submit: 'Request a callback',
+      form: 'Studio enquiry', type: 'Studio', img: 'sj-heritage-detail.webp',
+      wa: 'Hello Shrujan, I would like to know more about a Studio Collection piece.',
     },
   };
   var SLOTS = ['10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM'];
@@ -917,7 +934,7 @@
       var shown = function () { form.hidden = true; studio.querySelector('.sjx__done').hidden = false; };
       if (!window.SJSlide) { shown(); return; }
       btn.disabled = true;
-      var where = /\/pages\/studio-/.test(location.pathname) ? 'studio-page' : 'home';
+      var where = /\/pages\/studio-/.test(location.pathname) ? 'studio-page' : location.pathname === '/' ? 'home' : 'page';
       window.SJSlide.sendForm(form, { form: c.form, type: c.type, tags: ['enquiry', 'studio', where] }).then(function (ok) {
         btn.disabled = false;
         if (ok) { shown(); return; }
@@ -947,7 +964,10 @@
     var form = studio.querySelector('.sjx__form');
     // opened from a product's card: the piece is already named
     var piece = (from && from.getAttribute && from.getAttribute('data-studio-piece')) || '';
-    if (piece) form.querySelector('[name="extra"]').value = piece;
+    var extra = form.querySelector('[name="extra"]');
+    if (piece) extra.value = piece;
+    else if (extra.getAttribute('data-from-piece')) extra.value = '';
+    extra.setAttribute('data-from-piece', piece ? '1' : '');
     form.hidden = false;
     studio.querySelector('.sjx__done').hidden = true;
     studio.querySelector('.sjx__err').hidden = true;

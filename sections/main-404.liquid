@@ -10,6 +10,31 @@
 {%- liquid
   assign cfg = section.settings
 -%}
+{%- comment -%}
+  Addresses that moved, or that people try (the privacy policy's own text
+  links /contact): the visitor goes straight on rather than meeting a dead
+  end. Shopify's URL redirects (Online Store, Navigation, URL Redirects) are
+  the better home for these; this catches them until they are added there.
+{%- endcomment -%}
+<script>
+  (function () {
+    var moved = {
+      '/contact': '/pages/find-us',
+      '/contact-us': '/pages/find-us',
+      '/pages/contact': '/pages/find-us',
+      '/pages/contact-us': '/pages/find-us',
+      '/pages/findus': '/pages/find-us',
+      '/pages/stores': '/pages/find-us',
+      '/pages/store-locator': '/pages/find-us',
+      '/pages/visit': '/pages/visit-experience',
+      '/pages/heritage': '/pages/studio-heritage',
+      '/pages/avinya': '/pages/studio-avinya',
+      '/pages/gifting': '/pages/studio-gifting'
+    };
+    var to = moved[location.pathname.replace(/\/+$/, '').toLowerCase()];
+    if (to) location.replace(to + location.hash);
+  })();
+</script>
 <section class="container store-gate">
   <div class="store-gate__inner" data-reveal>
     {%- if cfg.show_image %}

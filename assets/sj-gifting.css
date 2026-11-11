@@ -173,29 +173,20 @@
 .sj-gifting__close { position: absolute; top: 12px; right: 12px; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: var(--radius, 7px); color: var(--maroon, #571c16); background: transparent; font: 300 34px/1 var(--font-sans, sans-serif); cursor: pointer; }
 .sj-gifting__dialog-title { margin: 0 35px 12px 0; font: 400 36px/1.12 var(--font-display, var(--font-serif, serif)); color: var(--maroon, #571c16); }
 .sj-gifting__dialog-copy { margin: 0 0 26px; font: 400 14px/1.6 var(--font-sans, sans-serif); color: var(--ink-soft, #75665f); }
-.sj-gifting__fields { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.sj-gifting__fields { display: grid; grid-template-columns: 1fr 1fr; }
+/* labels, fields, the button, the note and errors: assets/sj-forms.css */
 .sj-gifting__field { min-width: 0; margin: 0; }
 .sj-gifting__field--wide { grid-column: 1 / -1; }
-.sj-gifting__field label { display: block; margin-bottom: 7px; font: 500 12px/1.4 var(--font-sans, sans-serif); }
-.sj-gifting__field input, .sj-gifting__field textarea { box-sizing: border-box; width: 100%; min-height: 46px; border: 1px solid var(--hairline-strong, #2b1d1966); border-radius: var(--radius, 7px); padding: 11px 12px; background: transparent; color: var(--ink, #2b1d19); font: 400 16px/1.4 var(--font-sans, sans-serif); }
-.sj-gifting__field textarea { resize: vertical; }
-.sj-gifting__field input::placeholder { opacity: 1; color: var(--ink-soft, #75665f); font-size: 13px; }
-.sj-gifting__note { margin: 18px 0; font: 400 11px/1.5 var(--font-sans, sans-serif); color: var(--ink-soft, #75665f); }
-.sj-gifting__error { margin: 16px 0; padding: 13px; border: 1px solid var(--maroon, #571c16); font: 400 14px/1.6 var(--font-sans, sans-serif); }
-.sj-gifting__error a { text-decoration: underline; }
 .sj-gifting__success h3 { margin: 0 0 12px; font: 400 28px/1.15 var(--font-display, var(--font-serif, serif)); color: var(--maroon, #571c16); }
 .sj-gifting__success p { margin-bottom: 24px; font: 400 15px/1.6 var(--font-sans, sans-serif); }
 .sj-gifting__dialog-contact { margin: 24px 0 0; font: 400 12px/1.7 var(--font-sans, sans-serif); color: var(--ink-soft, #75665f); overflow-wrap: anywhere; }
 .sj-gifting [hidden] { display: none !important; }
 .sj-gifting__noscript { padding: 20px; text-align: center; }
 
-.sj-gifting__field select { box-sizing:border-box; width:100%; min-height:46px; padding:11px 12px; border:1px solid #40404166; border-radius:var(--radius,5px); color:inherit; background:transparent; font:400 16px/1.4 var(--font-sans,serif); }
 .sj-gifting__dialog p { font-size:14px; }
-.sj-gifting__dialog .sj-gifting__note { font-size:11px; }
 @media(max-width:700px) {
  .sj-gifting__dialog { width:calc(100vw - 24px); max-height:calc(100dvh - 24px); }
  .sj-gifting__dialog-panel { padding:36px 22px 24px; }
  .sj-gifting__dialog-title { font-size:30px; }
- .sj-gifting__fields { gap:15px; }
 }
 @media(max-width:420px) { .sj-gifting__fields { grid-template-columns:1fr; } }

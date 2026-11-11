@@ -136,7 +136,7 @@
           {%- endfor %}
         </ul>
 
-        <a class="arrow-link studio-row__link" href="{{ block.settings.link | default: '/pages/studio-heritage' | escape }}">{{ block.settings.link_label | escape }} <i class="sj-i sj-i--arrow-right ms" style="font-size:16px" aria-hidden="true"></i></a>
+        <a class="arrow-link studio-row__link" href="{{ block.settings.link | default: '/pages/studio-heritage' | escape }}"{% if block.settings.link contains 'mailto:' %} data-studio-enquire="studio" data-studio-piece="{{ block.settings.name | strip_html | escape }}" data-studio-img="{% if block.settings.image %}{{ block.settings.image | image_url: width: 900 }}{% else %}{{ block.settings.asset | asset_url }}{% endif %}"{% endif %}>{{ block.settings.link_label | escape }} <i class="sj-i sj-i--arrow-right ms" style="font-size:16px" aria-hidden="true"></i></a>
       </div>
     </article>
     {%- endif -%}

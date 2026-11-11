@@ -22,7 +22,35 @@
       {%- if request.page_type == 'index' -%}
         Shrujan – Consciously Crafted since 1969
       {%- else -%}
-        {{ page_title }}{% if current_tags %} — {{ current_tags | join: ', ' }}{% endif %}
+        {%- liquid
+          comment
+            Several pages were made in Shopify with their handle as their title,
+            so the tab and Google read "the-shrujan-story". Until they are renamed
+            under Online Store, Pages, such a page gets its proper name here.
+          endcomment
+          assign title_text = page_title
+          if request.page_type == 'page' and page.title == page.handle
+            case page.handle
+              when 'visit-experience'
+                assign title_text = 'Visit & Experience'
+              when 'studio-heritage'
+                assign title_text = 'Heritage Collection'
+              when 'studio-avinya'
+                assign title_text = 'Avinya Collection'
+              when 'studio-gifting'
+                assign title_text = 'Gifting & Collaborations'
+              else
+                assign title_words = page.handle | split: '-'
+                assign title_text = ''
+                for w in title_words
+                  assign title_word = w | capitalize
+                  assign title_text = title_text | append: ' ' | append: title_word
+                endfor
+                assign title_text = title_text | strip
+            endcase
+          endif
+        -%}
+        {{ title_text }}{% if current_tags %} — {{ current_tags | join: ', ' }}{% endif %}
         {%- if current_page != 1 %} — page {{ current_page }}{% endif %} — SHRUJAN
       {%- endif -%}
     </title>
@@ -203,6 +231,8 @@
     <link rel="stylesheet" href="{{ 'sj-site.css' | asset_url }}">
     {%- comment -%} the search overlay, the helpdesk and the Enquire tab, on every page (awwwards-preview/src/ui.css, ui.js) {%- endcomment %}
     <link rel="stylesheet" href="{{ 'sj-ui.css' | asset_url }}">
+    {%- comment -%} one look for every form on the inner pages (hand-written) {%- endcomment %}
+    <link rel="stylesheet" href="{{ 'sj-forms.css' | asset_url }}">
     {%- comment -%} the bag drawer, on every page (snippets/sj-cart-drawer, hand-written) {%- endcomment %}
     <link rel="stylesheet" href="{{ 'sj-cart.css' | asset_url }}">
     {%- comment -%} Slide's website chat beside the helpdesk and the drawers (hand-written) {%- endcomment %}
