@@ -65,8 +65,12 @@
       endcomment
       assign moved_to = ''
       if request.page_type == 'page' and request.design_mode == false
-        assign page_words = page.content | strip_html | strip
-        if page_words == blank
+        comment
+          Under twelve words is a placeholder, not a page (one held "coming soon"
+          and a stray heading).
+        endcomment
+        assign page_words = page.content | strip_html | strip | split: ' '
+        if page_words.size < 12
           case page.handle
             when 'media'
               assign moved_to = '/pages/the-shrujan-story#press'
@@ -98,8 +102,30 @@
               assign moved_to = '/policies/privacy-policy'
             when 'avinya'
               assign moved_to = '/pages/studio-avinya'
-            when 'arrange-viewing-experience'
+            when 'arrange-viewing-experience', 'explore-kutch', 'kutch-map', 'culture-communities'
               assign moved_to = '/pages/visit-experience'
+            when 'about-us', 'about-us-1', 'about-us-main', 'about-us-v2', 'about-us-v3'
+              assign moved_to = '/pages/the-shrujan-story'
+            when 'our-foundation'
+              assign moved_to = '/pages/the-shrujan-story#origins'
+            when 'our-journey', 'our-journery', 'timeline'
+              assign moved_to = '/pages/the-shrujan-story#journey'
+            when 'awards'
+              assign moved_to = '/pages/the-shrujan-story#honours'
+            when 'photo-archive'
+              assign moved_to = '/pages/the-shrujan-story#journal'
+            when 'founding-members'
+              assign moved_to = '/pages/founding-member'
+            when 'kutch-crafts', 'kutch-hand-weaving', 'the-craft'
+              assign moved_to = '/pages/video'
+            when 'avinya-exhibitions-installations'
+              assign moved_to = '/pages/studio-avinya'
+            when 'customised-gifting'
+              assign moved_to = '/pages/studio-gifting'
+            when 'brands', 'home-collecttion', 'collection-two', 'collection-three', 'collection-four', 'collection-five', 'collection-six', 'collection-seven', 'men-lookbook', 'wishlist', 'comming-soon'
+              assign moved_to = '/pages/shop-shrujan'
+            when 'faq'
+              assign moved_to = '/#support'
           endcase
         endif
       endif
