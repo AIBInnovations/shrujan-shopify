@@ -5271,7 +5271,6 @@ a.house-tile:hover .house-tile__arrow {
      still leave room for the mark on a 390px screen. Account and wishlist come
      out — both are reachable from the drawer — leaving search and the bag. */
   .header-utils .utility-link[aria-label='Account'],
-  .header-utils .utility-link[aria-label='Stores'],
   .header-utils .utility-link[aria-label='Wishlist'] {
     display: none;
   }
