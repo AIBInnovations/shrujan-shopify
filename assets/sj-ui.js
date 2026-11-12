@@ -882,17 +882,18 @@
         '<div class="sjx__panel">' +
           '<button type="button" class="sjx__close" data-sjx-close aria-label="Close">' + ic('x') + '</button>' +
           '<div class="sjx__art"><img alt="" loading="lazy"></div>' +
-          '<div class="sjx__main">' +
+          '<div class="sjx__main" data-lenis-prevent>' +
             '<p class="sjx__eyebrow"></p><h2 class="sjx__title" id="sjx-title"></h2><p class="sjx__copy"></p>' +
             '<form class="sjx__form" novalidate>' +
               '<label class="sjx__f"><span>Name *</span><input name="name" type="text" required autocomplete="name"></label>' +
               '<label class="sjx__f"><span>Contact number *</span><input name="phone" type="tel" required autocomplete="tel"></label>' +
               '<label class="sjx__f"><span>City</span><input name="city" type="text" autocomplete="address-level2"></label>' +
               '<label class="sjx__f"><span>Email</span><input name="email" type="email" autocomplete="email"></label>' +
-              '<label class="sjx__f sjx__f--wide"><span class="sjx__interest"></span><input name="extra" type="text"></label>' +
-              '<label class="sjx__f sjx__f--wide"><span>What are you looking for?</span><textarea name="looking" rows="2"></textarea></label>' +
-              '<label class="sjx__f sjx__f--wide"><span>Preferred time for a call</span><select name="slot"><option value="">Any time</option>' +
+              // the when and the call time share a row, so the form fits one screen
+              '<label class="sjx__f sjx__f--pair"><span class="sjx__interest"></span><input name="extra" type="text"></label>' +
+              '<label class="sjx__f sjx__f--pair"><span>Preferred time for a call</span><select name="slot"><option value="">Any time</option>' +
                 SLOTS.map(function (t) { return '<option>' + t + '</option>'; }).join('') + '</select></label>' +
+              '<label class="sjx__f sjx__f--wide"><span>What are you looking for?</span><textarea name="looking" rows="2"></textarea></label>' +
               '<p class="sjx__err" role="alert" hidden></p>' +
               '<div class="sjx__acts">' +
                 '<button type="submit" class="sjx__btn sjx__btn--solid"><span class="sjx__submit"></span> ' + ic('arrow-right') + '</button>' +

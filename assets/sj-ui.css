@@ -2087,9 +2087,14 @@ html.sj-pre .sje__tab {
   pointer-events: none;
 }
 
+/* the words column scrolls on its own when a screen is too short for it: it
+   has to be held to the panel's height for that, and Lenis has to leave its
+   wheel alone (data-lenis-prevent in ui.js) */
 .sjx__main {
+  max-height: calc(100svh - 48px);
   overflow-y: auto;
-  padding: clamp(26px, 3.4vw, 44px);
+  overscroll-behavior: contain;
+  padding: clamp(24px, 2.8vw, 36px);
 }
 
 .sjx__eyebrow {
@@ -2107,12 +2112,12 @@ html.sj-pre .sje__tab {
 .sjx__title {
   margin: 0;
   padding-right: 32px;
-  font: 400 var(--fs-3xl, 32px) / 1.12 var(--font-display);
+  font: 400 clamp(24px, 2.1vw, 30px) / 1.15 var(--font-display);
   color: var(--ink, #404041);
 }
 
 .sjx__copy {
-  margin: 12px 0 0;
+  margin: 8px 0 0;
   font: 400 var(--fs-base, 14px) / 1.65 var(--font-sans);
   color: var(--ink-soft, #706e68);
 }
@@ -2121,7 +2126,7 @@ html.sj-pre .sje__tab {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px 20px;
-  margin: 22px 0 0;
+  margin: 16px 0 0;
 }
 
 .sjx__form[hidden] {
@@ -2280,25 +2285,32 @@ html.sj-pre .sje__tab {
     transform: translateY(40px);
   }
 
-  .sjx__art {
-    height: 110px;
+  /* the photo gives way on a phone, so the form fits the screen */
+  .sjx__panel {
+    grid-template-rows: minmax(0, 1fr);
   }
 
-  .sjx__art::after {
-    inset: 10px;
+  .sjx__art {
+    display: none;
   }
 
   .sjx__main {
-    padding: 22px var(--gutter, 16px) calc(22px + env(safe-area-inset-bottom));
+    max-height: 92svh;
+    padding: 20px var(--gutter, 16px) calc(20px + env(safe-area-inset-bottom));
   }
 
   .sjx__title {
     font-size: var(--fs-2xl, 24px);
   }
 
+  /* short fields stay two across; the when and the call time take the row */
   .sjx__form {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 14px;
+  }
+
+  .sjx__f--pair {
+    grid-column: 1 / -1;
   }
 
   .sjx__btn {

@@ -304,3 +304,39 @@
     border-color: #1f9d55;
   }
 }
+
+/* ---- the enquiry dialog fits one screen: tighter than a page's form --- */
+.sjx__form {
+  row-gap: 14px;
+  column-gap: 20px;
+}
+
+.sjx__f > span {
+  margin-bottom: 4px;
+}
+
+.sjx__form :is(input[type="text"], input[type="tel"], input[type="email"], input[type="number"], input[type="date"], input:not([type]), select) {
+  min-height: 40px;
+  padding: 7px 0 8px;
+}
+
+.sjx__form textarea {
+  min-height: 64px;
+  padding: 10px 12px;
+}
+
+.sjx__acts .sjx__btn--solid,
+.sjx__acts .sjx__btn--wa {
+  min-height: 48px;
+}
+
+.sjx__note {
+  margin-top: 10px;
+}
+
+/* side by side where there is room: send, and WhatsApp */
+@media (min-width: 721px) {
+  .sjx__acts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
