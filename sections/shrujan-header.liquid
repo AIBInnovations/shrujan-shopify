@@ -412,6 +412,10 @@
     </a>
 
     <div class="header-utils">
+      {%- if hs.show_stores %}
+      {%- comment -%} the stores, at the top as on the reference the user sent (2026-11-12) {%- endcomment %}
+      <a class="utility-link" href="{{ hs.stores_url | default: '/pages/find-us' }}" aria-label="Stores"><span>Stores</span> <i class="sj-i sj-i--map-pin ms" style="font-size:18px" aria-hidden="true"></i></a>
+      {%- endif %}
       {%- if hs.show_search %}
       <a class="utility-link" href="{{ hs.search_url | default: routes.search_url }}" aria-label="Search" data-sj-search><span>Search</span> <i class="sj-i sj-i--magnifying-glass ms" style="font-size:18px" aria-hidden="true"></i></a>
       {%- endif %}
@@ -696,6 +700,18 @@
       "id": "show_wishlist",
       "label": "Show wishlist",
       "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stores",
+      "label": "Show stores",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "stores_url",
+      "label": "Stores link",
+      "default": "/pages/find-us"
     },
     {
       "type": "checkbox",

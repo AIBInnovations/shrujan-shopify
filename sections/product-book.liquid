@@ -1,4 +1,5 @@
 {%- render 'section-design', section: section -%}
+{%- if section.settings.only_handle == blank or page.handle == section.settings.only_handle -%}
 {{ 'sj-pdp.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'sj-pdp.js' | asset_url }}" defer></script>
 {%- comment -%}
@@ -47,9 +48,10 @@
           <input type="hidden" name="contact[tags]" value="booking">
           <input type="hidden" name="contact[Product]" value="{{ p_title | escape }}">
           <input type="hidden" name="contact[Page]" value="{{ request.path | escape }}">
+          {%- if s.topic != blank %}<input type="hidden" name="contact[Enquiry]" value="{{ s.topic | escape }}">{% endif -%}
 
           <fieldset class="pdpx-book__step">
-            <legend class="pdpx-book__lab"><b>01</b>How would you like to meet?</legend>
+            <legend class="pdpx-book__lab"><b>01</b>{{ s.step1_label | default: 'How would you like to meet?' | escape }}</legend>
             <div class="pdpx-book__modes">
               {%- assign modes = s.modes | split: ',' -%}
               {%- for m in modes -%}
@@ -63,6 +65,12 @@
                     assign micon = 'phone'
                   elsif mlow contains 'visit' or mlow contains 'store'
                     assign micon = 'storefront'
+                  elsif mlow contains 'group'
+                    assign micon = 'handshake'
+                  elsif mlow contains 'family' or mlow contains 'friend'
+                    assign micon = 'house-line'
+                  elsif mlow contains 'me' or mlow contains 'own'
+                    assign micon = 'user'
                   endif
                 -%}
                 <label class="pdpx-book__pill"><input type="radio" name="contact[Call type]" value="{{ mm | escape }}"{% if forloop.first %} checked{% endif %}><span><i class="sj-i sj-i--{{ micon }} ms" aria-hidden="true"></i>{{ mm | escape }}</span></label>
@@ -103,6 +111,11 @@
               <label><span>Email</span><input type="email" name="contact[email]" autocomplete="email" required></label>
               <label><span>Anything we should know?</span><input type="text" name="contact[body]" data-pdpx-body value="{% if p_title != blank %}About {{ p_title | escape }}{% endif %}"></label>
             </div>
+            {%- if s.people_label != blank %}
+            <div class="pdpx-book__row">
+              <label><span>{{ s.people_label | escape }}</span><input type="number" name="contact[People]" min="1" max="200" inputmode="numeric"></label>
+            </div>
+            {%- endif %}
           </fieldset>
 
           <p class="pdpx-book__summary" data-pdpx-summary hidden><i class="sj-i sj-i--calendar ms" aria-hidden="true"></i><span></span></p>
@@ -119,12 +132,17 @@
     </div>
   </div>
 </section>
+{%- endif -%}
 
 {% schema %}
 {
   "name": "Product — Book a call",
   "tag": "div",
   "settings": [
+    { "type": "text", "id": "only_handle", "label": "Show only on the page with this handle", "info": "Leave empty on product pages. On a page template, the page's handle, e.g. visit-experience." },
+    { "type": "text", "id": "topic", "label": "Topic sent with each request", "info": "Shows in the email, e.g. Campus visit." },
+    { "type": "text", "id": "step1_label", "label": "First question", "default": "How would you like to meet?" },
+    { "type": "text", "id": "people_label", "label": "Ask how many are coming", "info": "A label such as How many of you? Empty hides it." },
     { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "Personal assistance" },
     { "type": "text", "id": "title_1", "label": "Title, first line", "default": "See it with us" },
     { "type": "text", "id": "title_2", "label": "Title, second line (in red)", "default": "before you buy" },

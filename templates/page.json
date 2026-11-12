@@ -901,8 +901,8 @@
             "name": "Visit the Shrujan Campus",
             "copy": "A visit to the Shrujan campus offers a behind-the-scenes look at how craft and design come together. This is where ideas are developed, sampling takes place and the detailed pre- and post-production processes are carried out in close collaboration with artisan communities.\nVisitors gain insight into the journey from traditional skills to finished pieces, understanding the care, time and coordination involved at each stage. The campus visit is about process and practice \u2014 an opportunity to see how Shrujan works beyond the retail space.",
             "points": "Design studio & sampling\nPre and post production\nThe coordination team",
-            "cta_label": "Enquire About a Visit",
-            "cta_link": "mailto:marketing@shrujan.com?subject=Campus%20visit"
+            "cta_label": "Book a visit",
+            "cta_link": "#book"
           }
         },
         "b2": {
@@ -931,8 +931,8 @@
         "b4": {
           "type": "stop",
           "settings": {
-            "asset": "visit-lldc.webp",
-            "image_alt": "A round white gallery building on the design centre campus",
+            "asset": "lldc-hero.webp",
+            "image_alt": "The LLDC museum gallery, with Kutch costumes shown on figures",
             "where": "Ajrakhpur \u00b7 20 min from Bhuj",
             "name": "LLDC Museum",
             "copy": "The Living & Learning Design Centre \u2014 galleries, archive and teaching studios.",
@@ -1682,6 +1682,30 @@
       "settings": {
         "only_handle": "sale"
       }
+    },
+    "visit_book": {
+      "type": "product-book",
+      "settings": {
+        "only_handle": "visit-experience",
+        "topic": "Campus visit",
+        "step1_label": "Who is coming?",
+        "people_label": "How many of you?",
+        "eyebrow": "By appointment",
+        "title_1": "Book a visit",
+        "title_2": "to the Shrujan campus",
+        "lede": "Choose a day and a time, and tell us how many of you are coming. We confirm every visit on WhatsApp or by email.",
+        "point_1": "Walk through the studio and the store at Bhujodi",
+        "point_2": "See the embroidery and the cloth up close",
+        "point_3": "Help with custom pieces and gifting",
+        "hours": "Mon\u2013Sat, 10 AM to 7 PM (IST)",
+        "modes": "Just me, Family or friends, A group",
+        "send_label": "Request this visit",
+        "whatsapp": "919099974319",
+        "whatsapp_label": "Or send it on WhatsApp",
+        "note": "We confirm every visit personally. Your details are used only to arrange it.",
+        "done_title": "Thank you, we have your request.",
+        "done_text": "We will confirm the day and time with you on WhatsApp or by email."
+      }
     }
   },
   "order": [
@@ -1690,6 +1714,7 @@
     "craft",
     "lldc",
     "visit",
+    "visit_book",
     "studio",
     "heritage",
     "avinya",
