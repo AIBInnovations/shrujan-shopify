@@ -993,6 +993,37 @@
     if (openStudio(t.getAttribute('data-studio-enquire'), t)) e.preventDefault();
   });
 
+  /* ---------- the name as the logo, in headings ----------
+     The user (2026-11-13): where "Shrujan" is written in a heading, the logo
+     stands in its place: the wordmark alone, "since 1969" stays as words where
+     a heading has it. Only headings and the few display names below, never
+     running text. The span reads as "Shrujan" (role img, aria-label), so
+     screen readers and search still have the name; without scripts the word
+     shows. Drawn by .sj-wordmark in site.css, in the heading's own colour. */
+  (function () {
+    var base = window.SHRUJAN_ASSET_BASE;
+    if (!base) return;
+    doc.documentElement.style.setProperty('--sj-wordmark', 'url("' + base + 'logo-wordmark.png")');
+    var word = /\bShrujan\b/i;
+    [].forEach.call(doc.querySelectorAll('main h1, main h2, main h3, main .col__name, main .reel__title, main .stop__name'), function (h) {
+      var walk = doc.createTreeWalker(h, NodeFilter.SHOW_TEXT), found = [], t;
+      while ((t = walk.nextNode())) if (word.test(t.nodeValue)) found.push(t);
+      found.forEach(function (node) {
+        var frag = doc.createDocumentFragment();
+        node.nodeValue.split(/\b(Shrujan)\b/i).forEach(function (part, i) {
+          if (i % 2) {
+            var mark = doc.createElement('span');
+            mark.className = 'sj-wordmark';
+            mark.setAttribute('role', 'img');
+            mark.setAttribute('aria-label', 'Shrujan');
+            frag.appendChild(mark);
+          } else if (part) frag.appendChild(doc.createTextNode(part));
+        });
+        node.parentNode.replaceChild(frag, node);
+      });
+    });
+  })();
+
   /* ---------- the keyboard ---------- */
   doc.addEventListener('keydown', function (e) {
     var typing = /input|textarea|select/i.test((e.target && e.target.tagName) || '') || (e.target && e.target.isContentEditable);

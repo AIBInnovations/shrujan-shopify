@@ -813,6 +813,21 @@ html.sj-hdr-away .site-header {
   }
 }
 
+/* ---- the name as the logo in headings (ui.js): the wordmark, its letters
+   the height of the heading's capitals and on its baseline, in the heading's
+   own colour (the logo file is white, used as a mask). Measured off
+   logo-wordmark.png: the letters stand 53% of its height, the baseline 19%
+   from its foot. ---- */
+.sj-wordmark {
+  display: inline-block;
+  height: 1.36em;
+  aspect-ratio: 1644 / 715;
+  vertical-align: -0.255em;
+  background-color: currentColor;
+  -webkit-mask: var(--sj-wordmark) center / contain no-repeat;
+  mask: var(--sj-wordmark) center / contain no-repeat;
+}
+
 /* ---- phones: one left and right margin for everything (the user:
    spacing not proper, content hidden, left and right spacing off on many
    pages). Blocks used to step out to a 5px screen edge while their text
