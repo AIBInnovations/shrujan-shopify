@@ -196,7 +196,9 @@
         "hero_title": "Stoles, shawls &amp; potlis",
         "hero_copy": "Hand-embroidered by the craftswomen of Kutch. Pieces to wear, carry and keep.",
         "cats_title": "Find your piece",
-        "cats_copy": "Explore the craft, the colour and the detail."
+        "cats_copy": "Explore the craft, the colour and the detail.",
+        "show_spotlight": false,
+        "show_why": false
       }
     },
     "story": {

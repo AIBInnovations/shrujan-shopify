@@ -186,8 +186,47 @@
         </div>
         <p class="shop-banner__signature">Shrujan · Consciously crafted since 1969</p>
       </div>
-      <a class="shop-banner__portrait" href="/products/shawl-copy-4" aria-label="Explore hand-embroidered pieces by Shrujan">
-        <img src="{% if section.settings.hero_image %}{{ section.settings.hero_image | image_url: width: 1400 }}{% else %}{{ 'sj-nov5-hands-embroidery.webp' | asset_url }}{% endif %}" alt="A Shrujan craftswoman stitching a textile by hand in Kutch" fetchpriority="high" width="1000" height="1250">
+      <a class="shop-banner__portrait" href="/products/shawl-copy-4" aria-label="Explore hand-embroidered pieces by Shrujan"{% if section.settings.hero_slides %} data-shop-slides{% endif %}>
+        {%- comment -%} The work being done, one photo after another (2026-11-13): each photo
+          sits where its person and stitching both show. Photos 2-4 load after the page
+          and only change while the hero is on screen. {%- endcomment -%}
+        {%- liquid
+          assign slide_files = 'sj-nov5-craftswoman-courtyard.webp|sj-nov5-hands-embroidery.webp|sj-nov5-craftswomen-together.webp|sj-story-home-embroidery.webp' | split: '|'
+          assign slide_pos = '38% 20%|50% 50%|72% 35%|50% 38%' | split: '|'
+          assign slide_w = '1800|1200|1800|1000' | split: '|'
+          assign slide_h = '1200|1800|1200|1500' | split: '|'
+        -%}
+        {%- for file in slide_files -%}
+          {%- liquid
+            assign n = forloop.index0
+            case forloop.index
+              when 1
+                assign pick = section.settings.hero_image
+              when 2
+                assign pick = section.settings.hero_image_2
+              when 3
+                assign pick = section.settings.hero_image_3
+              else
+                assign pick = section.settings.hero_image_4
+            endcase
+            if pick
+              assign slide_src = pick | image_url: width: 1800
+              assign w = pick.width
+              assign h = pick.height
+              assign pos = '50% 40%'
+            else
+              assign slide_src = file | asset_url
+              assign w = slide_w[n]
+              assign h = slide_h[n]
+              assign pos = slide_pos[n]
+            endif
+          -%}
+          {%- if forloop.first -%}
+        <img class="shop-banner__slide is-on" src="{{ slide_src }}" alt="A Shrujan craftswoman embroidering by hand in Kutch" fetchpriority="high" width="{{ w }}" height="{{ h }}" style="--pos:{{ pos }}">
+          {%- elsif section.settings.hero_slides -%}
+        <img class="shop-banner__slide" data-src="{{ slide_src }}" alt="" decoding="async" width="{{ w }}" height="{{ h }}" style="--pos:{{ pos }}">
+          {%- endif -%}
+        {%- endfor %}
         <span class="shop-banner__caption">Handwoven. Hand-embroidered. <span aria-hidden="true">↗</span></span>
       </a>
     </div>
@@ -385,6 +424,39 @@
     <a class="btn btn--ghost" href="{{ section.settings.cta_link | default: '/pages/video' }}">{{ section.settings.cta_label }} <i class="sj-i sj-i--arrow-right ms" style="font-size:16px" aria-hidden="true"></i></a>
   </section>
 </div>
+
+<script>
+/* The hero photos, one after another: photos 2-4 load once the page has, each
+   change waits for its photo, and nothing moves off screen or for reduced motion. */
+(function () {
+  var box = document.querySelector('#shopify-section-{{ section.id }} [data-shop-slides]');
+  if (!box || box.__slides) return;
+  box.__slides = true;
+  var slides = [].slice.call(box.querySelectorAll('.shop-banner__slide'));
+  if (slides.length < 2 || !window.matchMedia || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var at = 0, timer = null, seen = true;
+  function fill() {
+    slides.forEach(function (im) { if (im.dataset.src && !im.getAttribute('src')) im.src = im.dataset.src; });
+  }
+  function next() {
+    var cur = slides[at], to = (at + 1) % slides.length, nx = slides[to];
+    if (!nx.complete || !nx.naturalWidth) return;
+    cur.classList.add('was-on');
+    cur.classList.remove('is-on');
+    nx.classList.add('is-on');
+    setTimeout(function () { cur.classList.remove('was-on'); }, 1600);
+    at = to;
+  }
+  function run() { if (!timer && seen && !document.hidden) timer = setInterval(next, 5000); }
+  function stop() { clearInterval(timer); timer = null; }
+  if (document.readyState === 'complete') fill(); else window.addEventListener('load', fill);
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (e) { seen = e[0].isIntersecting; if (seen) run(); else stop(); }).observe(box);
+  }
+  document.addEventListener('visibilitychange', function () { if (document.hidden) stop(); else run(); });
+  run();
+})();
+</script>
 
 <script>
 (function () {
@@ -747,7 +819,29 @@
     {
       "type": "image_picker",
       "id": "hero_image",
-      "label": "Shawl edit photograph"
+      "label": "Hero photo 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "hero_slides",
+      "label": "Show the hero photos one after another",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image_2",
+      "label": "Hero photo 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image_3",
+      "label": "Hero photo 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image_4",
+      "label": "Hero photo 4",
+      "info": "Empty photos use the craftswomen at work."
     },
     {
       "type": "text",
