@@ -418,11 +418,13 @@
     </div>
   </section>
 {%- endif %}
+{%- if section.settings.show_cta %}
 
   <section class="section container page-cta" data-reveal>
     <p>{{ section.settings.cta_text }}</p>
     <a class="btn btn--ghost" href="{{ section.settings.cta_link | default: '/pages/video' }}">{{ section.settings.cta_label }} <i class="sj-i sj-i--arrow-right ms" style="font-size:16px" aria-hidden="true"></i></a>
   </section>
+{%- endif %}
 </div>
 
 <script>
@@ -895,6 +897,12 @@
     {
       "type": "header",
       "content": "Page CTA"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Show the closing link",
+      "default": true
     },
     {
       "type": "text",

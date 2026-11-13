@@ -198,7 +198,8 @@
         "cats_title": "Find your piece",
         "cats_copy": "Explore the craft, the colour and the detail.",
         "show_spotlight": false,
-        "show_why": false
+        "show_why": false,
+        "show_cta": false
       }
     },
     "story": {
