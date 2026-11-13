@@ -2429,6 +2429,34 @@ html.sj-pre .dh__strip {
   margin-left: 0.3em;
 }
 
+/* the title as the full Shrujan logo, "since 1969" beneath it (the user,
+   2026-11-13), with the two ornaments set diagonally as the words had them */
+.hst__title--logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hst__title--logo .hst__logo {
+  display: block;
+  width: 6.4em;
+  max-width: 100%;
+  aspect-ratio: 1644 / 893;
+  background-color: currentColor;
+  -webkit-mask: var(--hst-logo) center / contain no-repeat;
+  mask: var(--hst-logo) center / contain no-repeat;
+}
+
+.hst__title--logo .hst__orn:first-child {
+  align-self: flex-start;
+  margin: 0.5em 0.6em 0 0;
+}
+
+.hst__title--logo .hst__orn:last-child {
+  align-self: flex-end;
+  margin: 0 0 0.45em 0.6em;
+}
+
 .hst__orn {
   display: inline-block;
   color: #924241;

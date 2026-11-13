@@ -828,6 +828,21 @@ html.sj-hdr-away .site-header {
   mask: var(--sj-wordmark) center / contain no-repeat;
 }
 
+/* Inside a word that rises in its own clipping box (the home titles), the
+   logo must take no more height in the line than a word does: the box sits on
+   the top of the line, so a taller box drops the logo below the words beside
+   it (the user, 2026-11-13: "alignment issue, fix everywhere"). The peacock
+   stands out above the box; the bottom edge still clips the rise. */
+:is(.idx__w, .arch__w, .sj-word, .rl__w, .hx__w, .tq__w) .sj-wordmark {
+  /* only the top: the bottom margin edge is what sits on the baseline */
+  margin-top: -0.6em;
+}
+
+:is(.idx__w, .arch__w, .sj-word, .rl__w, .hx__w, .tq__w):has(.sj-wordmark) {
+  overflow: visible;
+  clip-path: inset(-1em -0.2em 0 -0.2em);
+}
+
 /* ---- phones: one left and right margin for everything (the user:
    spacing not proper, content hidden, left and right spacing off on many
    pages). Blocks used to step out to a 5px screen edge while their text

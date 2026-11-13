@@ -94,7 +94,11 @@
     </ul>
     {%- endif %}
     <div class="hst__head">
+      {%- if s.title_logo -%}
+      <h2 class="hst__title hst__title--logo" id="hst-title-{{ section.id }}"><span class="hst__orn">{{ orn }}</span><span class="hst__logo" role="img" aria-label="Shrujan, since 1969" style="--hst-logo:url('{{ 'logo-shrujan.png' | asset_url }}')"></span><span class="hst__orn">{{ orn }}</span></h2>
+      {%- else -%}
       <h2 class="hst__title" id="hst-title-{{ section.id }}"><span><span class="hst__orn">{{ orn }}</span>{% if s.title_small_1 != blank %}<small>{{ s.title_small_1 | escape }}</small> {% endif %}{{ s.title_1 | escape }}</span>{% if s.title_2 != blank %}<span>{% if s.title_small_2 != blank %}<small>{{ s.title_small_2 | escape }}</small> {% endif %}{{ s.title_2 | escape }}<span class="hst__orn">{{ orn }}</span></span>{% endif %}</h2>
+      {%- endif %}
       <div class="hst__rule" aria-hidden="true"><i></i><span class="hst__orn">{{ orn }}</span><i></i></div>
       {%- if s.lede != blank %}<p class="hst__lede">{{ s.lede | escape }}</p>{% endif %}
       {%- if s.btn_label != blank %}<a class="hst__btn" href="{{ s.btn_link | escape }}">{{ s.btn_label | escape }} {{ arrow }}</a>{% endif %}
@@ -107,6 +111,7 @@
   "name": "Home — Shrujan story",
   "tag": "div",
   "settings": [
+    { "type": "checkbox", "id": "title_logo", "label": "Show the full Shrujan logo as the title", "info": "The logo with Since 1969 under it, in place of the title words below.", "default": true },
     { "type": "text", "id": "title_small_1", "label": "Title, first line: small word", "default": "The" },
     { "type": "text", "id": "title_1", "label": "Title, first line", "default": "Shrujan Story" },
     { "type": "text", "id": "title_small_2", "label": "Title, second line: small words", "default": "since" },
