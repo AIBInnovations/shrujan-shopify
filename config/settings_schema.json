@@ -149,9 +149,13 @@
         "type": "select",
         "id": "font_pairing",
         "label": "Font pairing",
-        "info": "Brand follows Shrujan's brand language: Baskerville throughout. Heritage sets headlines in Marcellus, flared Roman letters. Calligraphic and Poster use faces drawn alongside Indian scripts; Poster is the heaviest. Original is the pairing the site was first designed with.",
-        "default": "brand",
+        "info": "Brand + Jost, the default: Baskerville for headings, titles and names, Jost for text, menus, prices, buttons and forms. Brand follows Shrujan's brand language: Baskerville throughout. Heritage sets headlines in Marcellus, flared Roman letters. Calligraphic and Poster use faces drawn alongside Indian scripts; Poster is the heaviest. Original is the pairing the site was first designed with.",
+        "default": "brand_jost",
         "options": [
+          {
+            "value": "brand_jost",
+            "label": "Brand: Baskerville + Jost"
+          },
           {
             "value": "brand",
             "label": "Brand: Baskerville"

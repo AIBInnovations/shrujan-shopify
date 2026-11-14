@@ -159,6 +159,12 @@
     {%- assign font_synthesis_off = false -%}
     {%- assign font_display = '' -%}
     {%- case settings.font_pairing -%}
+      {%- when 'brand_jost' -%}
+        {%- comment -%} Brand + Jost (the user, 2026-11-14): the brand's Baskerville for headings, titles and names; Jost, a geometric sans after Futura, for text, menus, prices, buttons and forms {%- endcomment -%}
+        {%- assign font_families = 'family=Baskervville:ital,wght@0,400..700;1,400..700&family=Jost:ital,wght@0,300..700;1,300..700' -%}
+        {%- assign font_display = "'Baskervville', 'Baskerville', 'Libre Baskerville', Georgia, serif" -%}
+        {%- assign font_serif = "'Baskervville', 'Baskerville', 'Libre Baskerville', Georgia, serif" -%}
+        {%- assign font_sans = "'Jost', 'Futura', 'Avenir Next', system-ui, sans-serif" -%}
       {%- when 'heritage' -%}
         {%- assign font_families = 'family=Marcellus&family=Hind:wght@300;400;500;600' -%}
         {%- assign font_serif = "'Marcellus', 'Optima', Georgia, serif" -%}
@@ -274,6 +280,10 @@
       }
       {%- if font_synthesis_off %}
       html { font-synthesis: style small-caps; }
+      {%- endif -%}
+      {%- if settings.font_pairing == 'brand_jost' %}
+      /* Brand + Jost: prices and totals in the text face, with the rest of the shop's numbers */
+      .pdp__price, .pdp__option-price, .cart-aside__total, .store-totals__row--grand, .sjc__sum--total dd { font-family: var(--font-sans); }
       {%- endif -%}
       {%- if settings.type_scale != 100 -%}
         {%- assign ts = settings.type_scale | divided_by: 100.0 -%}
