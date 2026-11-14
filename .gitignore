@@ -5,3 +5,5 @@ template-fragments/
 
 # macOS metadata written beside every file on non-Mac volumes
 ._*
+config.bat
+node_modules
