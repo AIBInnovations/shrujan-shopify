@@ -164,3 +164,4 @@
 .sj-shop-refresh .shop-rail__item.is-active .shop-rail__n{color:inherit}
 .sj-shop-refresh .shop-rail__note{display:none}
 }
+@media (max-width:720px){.sj-shop-refresh .shop-body>*{min-width:0;max-width:100%}.sj-shop-refresh .shop-rail{width:100%;overflow:visible}}
