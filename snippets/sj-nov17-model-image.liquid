@@ -6,6 +6,10 @@
 {%- endcomment -%}
 {%- liquid
   assign model_sku = ''
+  comment
+    The model mockups are switched off for now (2026-11-17): every caller falls
+    back to the product's own photo. To bring them back, delete this comment
+    line and the endcomment line below the case.
   case product.handle
     when 'black-handwoven-merino-wool-shawl-with-sodha-mix-embroidery'
       assign model_sku = 'SHWL0000012500130'
@@ -68,6 +72,7 @@
     when 'sea-green-merino-handwoven-muffler'
       assign model_sku = 'MFLR0000012500101'
   endcase
+  endcomment
   if model_sku != blank
     assign model_file = 'sj-nov17-' | append: model_sku | append: '-model.webp'
     echo model_file | asset_url
