@@ -158,8 +158,8 @@
             <div class="piece__media">
               {%- if item.featured_image %}
               <img
-                src="{{ item.featured_image | image_url: width: 700 }}"
-                srcset="{{ item.featured_image | image_url: width: 420 }} 420w, {{ item.featured_image | image_url: width: 700 }} 700w, {{ item.featured_image | image_url: width: 1040 }} 1040w"
+                src="{% render 'sj-nov17-model-image', product: item, width: 700 %}"
+                srcset="{% render 'sj-nov17-model-image', product: item, width: 420 %} 420w, {% render 'sj-nov17-model-image', product: item, width: 700 %} 700w, {% render 'sj-nov17-model-image', product: item, width: 1040 %} 1040w"
                 sizes="(max-width: 600px) 48vw, (max-width: 900px) 32vw, 24vw"
                 alt="{{ item.featured_image.alt | default: item.title | escape }}"
                 loading="lazy"
