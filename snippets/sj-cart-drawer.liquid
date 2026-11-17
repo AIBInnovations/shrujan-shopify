@@ -95,7 +95,7 @@
   "fallback": [
     {%- for p in rec_pool limit: 12 -%}
       {%- assign pv = p.selected_or_first_available_variant -%}
-      {"id": {{ p.id }}, "handle": {{ p.handle | json }}, "title": {{ p.title | json }}, "url": {{ p.url | json }}, "price": {{ p.price }}, "compare": {{ p.compare_at_price | default: 0 }}, "available": {{ p.available | json }}, "variant": {{ pv.id | default: 0 }}, "multi": {% if p.has_only_default_variant %}false{% else %}true{% endif %}, "img": {% if p.featured_image %}{{ p.featured_image | image_url: width: 480 | json }}{% else %}null{% endif %}}{% unless forloop.last %},{% endunless %}
+      {"id": {{ p.id }}, "handle": {{ p.handle | json }}, "title": {{ p.title | json }}, "url": {{ p.url | json }}, "price": {{ p.price }}, "compare": {{ p.compare_at_price | default: 0 }}, "available": {{ p.available | json }}, "variant": {{ pv.id | default: 0 }}, "multi": {% if p.has_only_default_variant %}false{% else %}true{% endif %}, "img": {% if p.featured_image %}{% capture rec_image %}{% render 'sj-nov17-model-image', product: p, width: 480 %}{% endcapture %}{{ rec_image | strip | json }}{% else %}null{% endif %}}{% unless forloop.last %},{% endunless %}
     {%- endfor -%}
   ],
   "cart": {{ cart | json }}

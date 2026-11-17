@@ -40,7 +40,7 @@
 <a class="piece" href="{{ product.url }}">
   <div class="piece__media">
     {%- if product.featured_image -%}
-      <img src="{{ product.featured_image | image_url: width: 900 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy">
+      <img src="{% render 'sj-nov17-model-image', product: product, width: 900 %}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy">
     {%- else -%}
       {{ 'product-1' | placeholder_svg_tag: 'piece__ph' }}
     {%- endif -%}
