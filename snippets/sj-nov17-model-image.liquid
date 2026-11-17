@@ -1,0 +1,83 @@
+{%- comment -%}
+  Model photography for the 30 products in the November 2026 spreadsheet.
+  Match full product handles so similarly named pieces keep their own embroidery.
+  Accepts: product, width (optional), only_model (no original-image fallback).
+  Output is one image URL; prices, variants, product media and product data stay native.
+{%- endcomment -%}
+{%- liquid
+  assign model_sku = ''
+  case product.handle
+    when 'black-handwoven-merino-wool-shawl-with-sodha-mix-embroidery'
+      assign model_sku = 'SHWL0000012500130'
+    when 'black-handwoven-merino-wool-shawl-with-soof-embroidery'
+      assign model_sku = 'SHWL0000012500071'
+    when 'dark-olive-green-handwoven-merino-wool-shawl-with-neran-embroidery'
+      assign model_sku = 'SHWL0000012500097'
+    when 'dark-olive-green-handwoven-merino-wool-shawl-with-sodha-mix-embroidery'
+      assign model_sku = 'SHWL0000012500149'
+    when 'dark-purple-handwoven-merino-wool-shawl-with-sodha-mix-embroidery'
+      assign model_sku = 'SHWL0000012500143'
+    when 'dark-sea-blue-handwoven-merino-wool-shawl-with-neran-embroidery'
+      assign model_sku = 'SHWL0000012500135'
+    when 'light-lavender-handwoven-merino-wool-shawl-with-soof-embroidery'
+      assign model_sku = 'SHWL0000012500095'
+    when 'magenta-handwoven-merino-wool-shawl-with-soof-embroidery'
+      assign model_sku = 'SHWL0000012500115'
+    when 'navy-blue-handwoven-merino-wool-shawl-with-sodha-mix-embroidery'
+      assign model_sku = 'SHWL0000012500064'
+    when 'navy-blue-handwoven-merino-wool-shawl-with-soof-embroidery'
+      assign model_sku = 'SHWL0000012500094'
+    when 'navy-blue-handwoven-merino-wool-shawl-with-soof-embroidery-1'
+      assign model_sku = 'SHWL0000012500037'
+    when 'navy-blue-handwoven-merino-wool-shawl-with-soof-embroidery-2'
+      assign model_sku = 'SHWL1330012200028'
+    when 'pista-handwoven-merino-wool-shawl-with-soof-embroidery'
+      assign model_sku = 'SHWL0000012600043'
+    when 'sky-blue-handwoven-merino-wool-shawl-with-sodha-mix-embroidery'
+      assign model_sku = 'SHWL0000012500024'
+    when 'turquoise-handwoven-merino-wool-shawl-with-soof-embroidery'
+      assign model_sku = 'SHWL0000012500056'
+    when 'blush-pink-handwoven-merino-wool-muffler-with-soof-embroidery'
+      assign model_sku = 'MFLR0000012600145'
+    when 'cream-handwoven-merino-wool-muffler-with-soof-embroidery'
+      assign model_sku = 'MFLR0000012600106'
+    when 'greyish-blue-handwoven-merino-wool-muffler-with-soof-embroidery'
+      assign model_sku = 'MFLR0000012600123'
+    when 'light-brown-handwoven-merino-wool-muffler-with-soof-embroidery'
+      assign model_sku = 'MFLR0000012600038'
+    when 'light-pink-merino-handwoven-muffler'
+      assign model_sku = 'MFLR0000012600096'
+    when 'lime-green-handwoven-merino-wool-muffler-with-soof-embroidery'
+      assign model_sku = 'MFLR0000012600014'
+    when 'magenta-pink-green-merino-handwoven-muffler'
+      assign model_sku = 'MFLR0000012600055'
+    when 'mahendi-green-handwoven-merino-wool-muffler-with-soof-embroidery'
+      assign model_sku = 'MFLR0000012600141'
+    when 'mahendi-green-merino-handwoven-muffler'
+      assign model_sku = 'MFLR0000012600063'
+    when 'mustard-yellow-merino-handwoven-muffler'
+      assign model_sku = 'MFLR0000012600064'
+    when 'olive-grey-handwoven-merino-wool-muffler-with-soof-embroidery'
+      assign model_sku = 'MFLR0000012500213'
+    when 'peacock-blue-handwoven-merino-wool-muffler-with-soof-embroidery'
+      assign model_sku = 'MFLR0000012600044'
+    when 'pista-handwoven-merino-wool-muffler-with-soof-embroidery'
+      assign model_sku = 'MFLR0000012600078'
+    when 'sea-blue-handwoven-merino-wool-muffler-with-soof-embroidery'
+      assign model_sku = 'MFLR0000012600032'
+    when 'sea-green-merino-handwoven-muffler'
+      assign model_sku = 'MFLR0000012500101'
+  endcase
+  if model_sku != blank
+    assign model_file = 'sj-nov17-' | append: model_sku | append: '-model.webp'
+    if width != blank
+      assign model_size = width | append: 'x'
+      echo model_file | asset_img_url: model_size
+    else
+      echo model_file | asset_url
+    endif
+  elsif only_model != true and product.featured_image
+    assign image_width = width | default: 900
+    echo product.featured_image | image_url: width: image_width
+  endif
+-%}

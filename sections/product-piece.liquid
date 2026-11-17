@@ -286,25 +286,44 @@
   in the customizer replaces the one in its slot; the rest stay as designed.
 {%- endcomment -%}
 {%- assign face_files = 'cat-c1.webp,frame-r5t25.webp,cat-c5.webp,frame-r2t5.webp' | split: ',' -%}
+{%- capture model_image -%}{%- render 'sj-nov17-model-image', product: product, only_model: true -%}{%- endcapture -%}
+{%- liquid
+  assign original_shot_count = shot_count
+  assign model_offset = 0
+  if model_image != blank
+    assign model_offset = 1
+    assign shot_count = shot_count | plus: 1
+  endif
+-%}
 {%- if product != blank -%}
   <div class="page pdp-page{% if cfg.gallery_scroll and cfg.gallery_sticky and shot_count > 1 %} pdp-page--scroll-gallery{% endif %}" data-gallery-thumbs="{{ cfg.gallery_thumbs }}" data-cart-add="{{ routes.cart_add_url }}">
     <nav class="container pdp__breadcrumb" aria-label="Breadcrumb"><a href="{{ shop_url }}">Shop Shrujan</a><span aria-hidden="true">/</span><span>{{ product.title | escape }}</span></nav>
     <div class="container pdp">
       <div class="pdp__media">
         <div class="pdp__rail" aria-label="Product images">
-          {%- for media in shots limit: shot_count -%}
-            <button type="button" class="pdp__thumb{% if forloop.first %} is-active{% endif %}" aria-label="View image {{ forloop.index }} of {{ shot_count }}"{% if forloop.first %} aria-current="true"{% endif %}>
+          {%- if model_image != blank -%}
+            <button type="button" class="pdp__thumb is-active" aria-label="View image 1 of {{ shot_count }}" aria-current="true">
+              <img src="{% render 'sj-nov17-model-image', product: product, width: 200 %}" alt="" loading="lazy">
+            </button>
+          {%- endif -%}
+          {%- for media in shots limit: original_shot_count -%}
+            <button type="button" class="pdp__thumb{% if forloop.first and model_image == blank %} is-active{% endif %}" aria-label="View image {{ forloop.index | plus: model_offset }} of {{ shot_count }}"{% if forloop.first and model_image == blank %} aria-current="true"{% endif %}>
               <img src="{{ media.preview_image | image_url: width: 200 }}" alt="" loading="lazy">
             </button>
           {%- endfor -%}
         </div>
         <div class="pdp__stage" style="--pdp-media-ratio: 1" tabindex="0" aria-label="Product gallery">
           {%- if shot_count > 0 -%}
-            {%- for media in shots limit: shot_count -%}
-              <figure class="pdp__shot{% if forloop.first %} is-active{% endif %}" aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}">
+            {%- if model_image != blank -%}
+              <figure class="pdp__shot is-active" aria-hidden="false">
+                <img src="{{ model_image }}" data-full="{{ model_image }}" alt="{{ product.title | escape }} worn by a model" loading="eager" fetchpriority="high" width="1086" height="1448">
+              </figure>
+            {%- endif -%}
+            {%- for media in shots limit: original_shot_count -%}
+              <figure class="pdp__shot{% if forloop.first and model_image == blank %} is-active{% endif %}" aria-hidden="{% if forloop.first and model_image == blank %}false{% else %}true{% endif %}">
                 {%- case media.media_type -%}
                   {%- when 'image' -%}
-                    <img src="{{ media.preview_image | image_url: width: 1600 }}" data-full="{{ media.preview_image | image_url: width: 2400 }}" alt="{{ media.alt | default: product.title | escape }}" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"{% if forloop.first %} fetchpriority="high"{% endif %} width="{{ media.preview_image.width }}" height="{{ media.preview_image.height }}">
+                    <img src="{{ media.preview_image | image_url: width: 1600 }}" data-full="{{ media.preview_image | image_url: width: 2400 }}" alt="{{ media.alt | default: product.title | escape }}" loading="{% if forloop.first and model_image == blank %}eager{% else %}lazy{% endif %}"{% if forloop.first and model_image == blank %} fetchpriority="high"{% endif %} width="{{ media.preview_image.width }}" height="{{ media.preview_image.height }}">
                   {%- when 'video' -%}
                     {{ media | video_tag: controls: true, preload: 'none', image_size: '1400x', loop: false }}
                   {%- when 'external_video' -%}
