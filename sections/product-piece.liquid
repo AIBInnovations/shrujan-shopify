@@ -520,6 +520,7 @@
             {%- for d_i in (2..6) -%}
               {%- liquid
                 assign d_rich = false
+                assign d_care_own = false
                 case d_i
                   when 1
                     assign d_title = cfg.detail1_title
@@ -530,6 +531,14 @@
                     assign d_body = cfg.detail2_body
                     if care_in_description
                       assign d_body = blank
+                    endif
+                    comment
+                      A piece's own care (the shrujan.care metafield, one "Label: text"
+                      per line) wins over the shared copy, e.g. wool for the merino shawls.
+                    endcomment
+                    if product.metafields.shrujan.care != blank
+                      assign d_body = product.metafields.shrujan.care.value
+                      assign d_care_own = true
                     endif
                   when 3
                     assign d_title = cfg.detail3_title
@@ -572,7 +581,17 @@
                       {{ d_body }}
                     {%- else -%}
                       {%- assign d_lines = d_body | newline_to_br | split: '<br />' -%}
-                      {%- for d_line in d_lines -%}{%- assign d_l = d_line | strip -%}{%- if d_l != blank %}<p>{{ d_l }}</p>{% endif -%}{%- endfor -%}
+                      {%- for d_line in d_lines -%}{%- assign d_l = d_line | strip -%}
+                        {%- if d_l == blank -%}{%- continue -%}{%- endif -%}
+                        {%- assign d_parts = d_l | split: ': ' -%}
+                        {%- if d_care_own and d_parts.size > 1 and d_parts[0].size < 26 -%}
+                          <p><strong>{{ d_parts[0] | escape }}</strong> {{ d_l | remove_first: d_parts[0] | remove_first: ': ' | escape }}</p>
+                        {%- elsif d_care_own -%}
+                          <p>{{ d_l | escape }}</p>
+                        {%- else -%}
+                          <p>{{ d_l }}</p>
+                        {%- endif -%}
+                      {%- endfor -%}
                     {%- endif -%}
                   </div>
                 </div>
