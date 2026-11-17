@@ -1448,3 +1448,10 @@
 @media (prefers-reduced-motion: reduce) {
   .pdp-pin, .sjh { transition: none; }
 }
+
+/* One frame for every piece (2026-11-17): the stage is square and the photo fills
+   it, so a 3:4 shot no longer makes the gallery taller than the column beside it
+   and every product page keeps the same rhythm. "View detail" still opens the
+   whole photograph. */
+.pdp-page .pdp__shot img,
+.sj-compact-pages .pdp-page .pdp__main-shot { object-fit: cover; }
