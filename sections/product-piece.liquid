@@ -763,6 +763,42 @@
   </div>
 {%- endif -%}
 
+{%- if product.available -%}
+{%- comment -%} the pinned Add to bag for phones: shown while the real button is off screen (sj-pdp.css) {%- endcomment -%}
+<div class="pdp-pin" data-pdp-pin aria-hidden="true" inert>
+  <div class="pdp-pin__info"><span class="pdp-pin__name">{{ product.title | escape }}</span><span class="pdp-pin__price" data-pdp-pin-price>{{ product.selected_or_first_available_variant.price | money | strip_html }}</span></div>
+  <button type="button" class="btn pdp-pin__add">{{ section.settings.add_label }}</button>
+</div>
+<script>
+(function () {
+  var bar = document.querySelector('[data-pdp-pin]');
+  var sec = bar && bar.closest('.shopify-section');
+  var form = sec && sec.querySelector('.pdp__cta');
+  var add = sec && sec.querySelector('.pdp__add');
+  if (!form || !add || !('IntersectionObserver' in window)) return;
+  var mq = window.matchMedia('(max-width: 1080px)');
+  var price = bar.querySelector('[data-pdp-pin-price]');
+  var inView = true; // until the observer reports, assume the real button is showing
+  function set() {
+    var on = mq.matches && !inView && !add.disabled;
+    bar.classList.toggle('is-on', on);
+    document.documentElement.classList.toggle('pdp-pin-on', on);
+    if (on) { bar.removeAttribute('inert'); bar.removeAttribute('aria-hidden'); }
+    else { bar.setAttribute('inert', ''); bar.setAttribute('aria-hidden', 'true'); }
+  }
+  new IntersectionObserver(function (es) { inView = es[0].isIntersecting; set(); }).observe(form);
+  if (mq.addEventListener) mq.addEventListener('change', set); else mq.addListener(set);
+  bar.querySelector('button').addEventListener('click', function () { add.click(); });
+  // keep the price in step with the real button when the variant changes
+  new MutationObserver(function () {
+    var t = add.textContent.split(' \u2014 ')[1];
+    if (t) price.textContent = t;
+    set();
+  }).observe(add, { childList: true, characterData: true, subtree: true, attributes: true, attributeFilter: ['disabled'] });
+})();
+</script>
+{%- endif -%}
+
 <script>
 (function () {
   var root = document.getElementById('shopify-section-{{ section.id }}');
