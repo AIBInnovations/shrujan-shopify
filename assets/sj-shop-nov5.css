@@ -150,3 +150,17 @@
 .sj-shop-refresh .shop-banner__portrait .shop-banner__slide.is-on{z-index:2;opacity:1;transform:scale(1)}
 .sj-shop-refresh .shop-banner__portrait .shop-banner__slide:not([src]){display:none}
 @media (prefers-reduced-motion:reduce){.sj-shop-refresh .shop-banner__portrait .shop-banner__slide{transition:none;transform:none}}
+/* Phones: the collection filter is one row of small chips that scrolls sideways,
+   not a boxed two-column list a screen tall (2026-11-17). */
+@media (max-width:720px){
+.sj-shop-refresh .shop-rail{position:static;padding:0;margin:0 0 8px!important;border:0;border-radius:0;background:none}
+.sj-shop-refresh .shop-rail__title{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.sj-shop-refresh .shop-rail__list{display:flex;flex-wrap:nowrap;gap:8px;margin:0 calc(-1 * var(--gutter,16px));padding:4px var(--gutter,16px);overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;scroll-padding-inline:var(--gutter,16px);scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 var(--gutter,16px),#000 calc(100% - 32px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 var(--gutter,16px),#000 calc(100% - 32px),transparent 100%)}
+.sj-shop-refresh .shop-rail__list::-webkit-scrollbar{display:none}
+.sj-shop-refresh .shop-rail__list>li{display:block;flex:none;grid-column:auto;scroll-snap-align:start}
+.sj-shop-refresh .shop-rail__item{display:inline-flex;align-items:center;gap:6px;width:auto;min-height:36px;padding:0 14px;border-radius:999px;font-size:13px;line-height:1;white-space:nowrap;color:var(--ink-soft);background:none;box-shadow:inset 0 0 0 1px var(--hairline-strong)}
+.sj-shop-refresh .shop-rail__item.is-active{color:var(--ivory);background:var(--ink);box-shadow:none;font-weight:400}
+.sj-shop-refresh .shop-rail__n{font-size:11px;opacity:.7}
+.sj-shop-refresh .shop-rail__item.is-active .shop-rail__n{color:inherit}
+.sj-shop-refresh .shop-rail__note{display:none}
+}
