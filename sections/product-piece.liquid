@@ -585,7 +585,7 @@
                         {%- if d_l == blank -%}{%- continue -%}{%- endif -%}
                         {%- assign d_parts = d_l | split: ': ' -%}
                         {%- if d_care_own and d_parts.size > 1 and d_parts[0].size < 26 -%}
-                          <p><strong>{{ d_parts[0] | escape }}</strong> {{ d_l | remove_first: d_parts[0] | remove_first: ': ' | escape }}</p>
+                          <p><strong>{{ d_parts[0] | escape }}:</strong> {{ d_l | remove_first: d_parts[0] | remove_first: ': ' | escape }}</p>
                         {%- elsif d_care_own -%}
                           <p>{{ d_l | escape }}</p>
                         {%- else -%}
