@@ -70,12 +70,7 @@
   endcase
   if model_sku != blank
     assign model_file = 'sj-nov17-' | append: model_sku | append: '-model.webp'
-    if width != blank
-      assign model_size = width | append: 'x'
-      echo model_file | asset_img_url: model_size
-    else
-      echo model_file | asset_url
-    endif
+    echo model_file | asset_url
   elsif only_model != true and product.featured_image
     assign image_width = width | default: 900
     echo product.featured_image | image_url: width: image_width
