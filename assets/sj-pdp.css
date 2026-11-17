@@ -1449,9 +1449,15 @@
   .pdp-pin, .sjh { transition: none; }
 }
 
-/* One frame for every piece (2026-11-17): the stage is square, so a 3:4 shot no
-   longer makes the gallery taller (and narrower) than the column beside it. The
-   photo is shown whole inside it, never cropped: a portrait shot sits centred
-   on the stage's own ground, and no head or hem is cut. */
+/* The gallery frame (2026-11-17): always the full width of its column, with no
+   bands left or right, and shaped like the photo on show (the script sets
+   --pdp-media-ratio), so the photo fills it and is never cropped. No height cap:
+   a cap made portrait shots narrower than the column and opened a gap beside
+   the buying column. */
 .pdp-page .pdp__shot img,
 .sj-compact-pages .pdp-page .pdp__main-shot { object-fit: contain; }
+.sj-compact-pages .pdp-page .pdp__stage,
+.sj-compact-pages .pdp-page.pdp-page--scroll-gallery .pdp__media .pdp__stage {
+  width: 100%;
+  max-height: none;
+}

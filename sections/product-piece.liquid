@@ -312,7 +312,7 @@
             </button>
           {%- endfor -%}
         </div>
-        <div class="pdp__stage" style="--pdp-media-ratio: 1" tabindex="0" aria-label="Product gallery">
+        <div class="pdp__stage" style="--pdp-media-ratio: {{ product.featured_media.preview_image.aspect_ratio | default: 1 }}" tabindex="0" aria-label="Product gallery">
           {%- if shot_count > 0 -%}
             {%- if model_image != blank -%}
               <figure class="pdp__shot is-active" aria-hidden="false">
@@ -878,7 +878,21 @@
       s.classList.toggle('is-active', j === i);
       s.setAttribute('aria-hidden', j !== i ? 'true' : 'false');
     });
+    fitStage();
   }
+
+  // The frame takes the shape of the photo on show, so a photo fills it edge to
+  // edge and is never cropped: square shots stay square, 3:4 shots stand taller.
+  var stageEl = root.querySelector('.pdp__stage');
+  function fitStage() {
+    var img = stageEl && stageEl.querySelector('.pdp__shot.is-active img');
+    if (!img) return;
+    var w = img.naturalWidth || +img.getAttribute('width');
+    var h = img.naturalHeight || +img.getAttribute('height');
+    if (w > 0 && h > 0) stageEl.style.setProperty('--pdp-media-ratio', String(w / h));
+  }
+  fitStage();
+  if (stageEl) Array.prototype.forEach.call(stageEl.querySelectorAll('.pdp__shot img'), function (im) { im.addEventListener('load', function () { if (im.closest('.pdp__shot').classList.contains('is-active')) fitStage(); }); });
 
   function applyOpen() {
     detailEls.forEach(function (d, j) {
