@@ -175,6 +175,9 @@
       {%- assign chapter_n = 0 -%}
       {%- for block in section.blocks -%}
         {%- if block.type == 'chapter' -%}
+          {%- if block.settings.anchor == 'journey' and section.settings.show_journey == false -%}
+            {%- continue -%}
+          {%- endif -%}
           {%- assign chapter_n = chapter_n | plus: 1 %}
       <li {{ block.shopify_attributes }}>
         <a href="#{{ block.settings.anchor | escape }}" class="chapters__link{% if chapter_n == 1 %} is-active{% endif %}"{% if chapter_n == 1 %} aria-current="true"{% endif %}><span class="chapters__no">{% if chapter_n < 10 %}0{% endif %}{{ chapter_n }}</span><span class="chapters__label">{{ block.settings.label | escape }}</span></a>
